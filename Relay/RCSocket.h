@@ -8,13 +8,17 @@
 
 #import <Foundation/Foundation.h>
 
-@interface RCSocket : NSObject {
-	NSString *_server;
-	NSString *_nick;
-	NSString *_port;
+@interface RCSocket : NSObject <NSStreamDelegate> {
+	NSString *server;
+	NSString *nick;
+	int port;
+	BOOL wantsSSL;
 	NSInputStream *iStream;
 	NSOutputStream *oStream;
 }
-@property (nonatomic, retain, setter = setServer:) NSString *server;
-
+@property (nonatomic, retain) NSString *server;
+@property (nonatomic, retain) NSString *nick;
+@property (nonatomic, assign) int port;
+@property (nonatomic, assign) BOOL wantsSSL;
+- (BOOL)connect;
 @end

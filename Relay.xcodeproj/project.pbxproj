@@ -17,6 +17,7 @@
 		5000FAEC14A4F17100EFE069 /* RCViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5000FAEA14A4F17100EFE069 /* RCViewController_iPhone.xib */; };
 		5000FAEF14A4F17100EFE069 /* RCViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5000FAED14A4F17100EFE069 /* RCViewController_iPad.xib */; };
 		5000FAFB14A4F2AE00EFE069 /* RCSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 5000FAFA14A4F2AE00EFE069 /* RCSocket.m */; };
+		5000FB0314A4F86500EFE069 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5000FB0214A4F86500EFE069 /* CFNetwork.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		5000FAEE14A4F17100EFE069 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/RCViewController_iPad.xib; sourceTree = "<group>"; };
 		5000FAF914A4F2AE00EFE069 /* RCSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCSocket.h; sourceTree = "<group>"; };
 		5000FAFA14A4F2AE00EFE069 /* RCSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCSocket.m; sourceTree = "<group>"; };
+		5000FB0214A4F86500EFE069 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +45,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5000FB0314A4F86500EFE069 /* CFNetwork.framework in Frameworks */,
 				5000FAD614A4F17100EFE069 /* UIKit.framework in Frameworks */,
 				5000FAD814A4F17100EFE069 /* Foundation.framework in Frameworks */,
 				5000FADA14A4F17100EFE069 /* CoreGraphics.framework in Frameworks */,
@@ -72,6 +75,7 @@
 		5000FAD414A4F17100EFE069 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5000FB0214A4F86500EFE069 /* CFNetwork.framework */,
 				5000FAD514A4F17100EFE069 /* UIKit.framework */,
 				5000FAD714A4F17100EFE069 /* Foundation.framework */,
 				5000FAD914A4F17100EFE069 /* CoreGraphics.framework */,
