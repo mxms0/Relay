@@ -1,0 +1,309 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		5000FAD614A4F17100EFE069 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5000FAD514A4F17100EFE069 /* UIKit.framework */; };
+		5000FAD814A4F17100EFE069 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5000FAD714A4F17100EFE069 /* Foundation.framework */; };
+		5000FADA14A4F17100EFE069 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5000FAD914A4F17100EFE069 /* CoreGraphics.framework */; };
+		5000FAE014A4F17100EFE069 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5000FADE14A4F17100EFE069 /* InfoPlist.strings */; };
+		5000FAE214A4F17100EFE069 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5000FAE114A4F17100EFE069 /* main.m */; };
+		5000FAE614A4F17100EFE069 /* RCAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5000FAE514A4F17100EFE069 /* RCAppDelegate.m */; };
+		5000FAE914A4F17100EFE069 /* RCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5000FAE814A4F17100EFE069 /* RCViewController.m */; };
+		5000FAEC14A4F17100EFE069 /* RCViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5000FAEA14A4F17100EFE069 /* RCViewController_iPhone.xib */; };
+		5000FAEF14A4F17100EFE069 /* RCViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5000FAED14A4F17100EFE069 /* RCViewController_iPad.xib */; };
+		5000FAFB14A4F2AE00EFE069 /* RCSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 5000FAFA14A4F2AE00EFE069 /* RCSocket.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		5000FAD114A4F17100EFE069 /* Relay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Relay.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5000FAD514A4F17100EFE069 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		5000FAD714A4F17100EFE069 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		5000FAD914A4F17100EFE069 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		5000FADD14A4F17100EFE069 /* Relay-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Relay-Info.plist"; sourceTree = "<group>"; };
+		5000FADF14A4F17100EFE069 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		5000FAE114A4F17100EFE069 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		5000FAE314A4F17100EFE069 /* Relay-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Relay-Prefix.pch"; sourceTree = "<group>"; };
+		5000FAE414A4F17100EFE069 /* RCAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCAppDelegate.h; sourceTree = "<group>"; };
+		5000FAE514A4F17100EFE069 /* RCAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCAppDelegate.m; sourceTree = "<group>"; };
+		5000FAE714A4F17100EFE069 /* RCViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCViewController.h; sourceTree = "<group>"; };
+		5000FAE814A4F17100EFE069 /* RCViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCViewController.m; sourceTree = "<group>"; };
+		5000FAEB14A4F17100EFE069 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/RCViewController_iPhone.xib; sourceTree = "<group>"; };
+		5000FAEE14A4F17100EFE069 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/RCViewController_iPad.xib; sourceTree = "<group>"; };
+		5000FAF914A4F2AE00EFE069 /* RCSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCSocket.h; sourceTree = "<group>"; };
+		5000FAFA14A4F2AE00EFE069 /* RCSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCSocket.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		5000FACE14A4F17100EFE069 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5000FAD614A4F17100EFE069 /* UIKit.framework in Frameworks */,
+				5000FAD814A4F17100EFE069 /* Foundation.framework in Frameworks */,
+				5000FADA14A4F17100EFE069 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		5000FAC614A4F17100EFE069 = {
+			isa = PBXGroup;
+			children = (
+				5000FADB14A4F17100EFE069 /* Relay */,
+				5000FAD414A4F17100EFE069 /* Frameworks */,
+				5000FAD214A4F17100EFE069 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		5000FAD214A4F17100EFE069 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5000FAD114A4F17100EFE069 /* Relay.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5000FAD414A4F17100EFE069 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				5000FAD514A4F17100EFE069 /* UIKit.framework */,
+				5000FAD714A4F17100EFE069 /* Foundation.framework */,
+				5000FAD914A4F17100EFE069 /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		5000FADB14A4F17100EFE069 /* Relay */ = {
+			isa = PBXGroup;
+			children = (
+				5000FAFD14A4F2B500EFE069 /* Backend */,
+				5000FAE414A4F17100EFE069 /* RCAppDelegate.h */,
+				5000FAE514A4F17100EFE069 /* RCAppDelegate.m */,
+				5000FAE714A4F17100EFE069 /* RCViewController.h */,
+				5000FAE814A4F17100EFE069 /* RCViewController.m */,
+				5000FAEA14A4F17100EFE069 /* RCViewController_iPhone.xib */,
+				5000FAED14A4F17100EFE069 /* RCViewController_iPad.xib */,
+				5000FADC14A4F17100EFE069 /* Supporting Files */,
+			);
+			path = Relay;
+			sourceTree = "<group>";
+		};
+		5000FADC14A4F17100EFE069 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				5000FADD14A4F17100EFE069 /* Relay-Info.plist */,
+				5000FADE14A4F17100EFE069 /* InfoPlist.strings */,
+				5000FAE114A4F17100EFE069 /* main.m */,
+				5000FAE314A4F17100EFE069 /* Relay-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		5000FAFD14A4F2B500EFE069 /* Backend */ = {
+			isa = PBXGroup;
+			children = (
+				5000FAF914A4F2AE00EFE069 /* RCSocket.h */,
+				5000FAFA14A4F2AE00EFE069 /* RCSocket.m */,
+			);
+			name = Backend;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		5000FAD014A4F17100EFE069 /* Relay */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5000FAF214A4F17100EFE069 /* Build configuration list for PBXNativeTarget "Relay" */;
+			buildPhases = (
+				5000FACD14A4F17100EFE069 /* Sources */,
+				5000FACE14A4F17100EFE069 /* Frameworks */,
+				5000FACF14A4F17100EFE069 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Relay;
+			productName = Relay;
+			productReference = 5000FAD114A4F17100EFE069 /* Relay.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		5000FAC814A4F17100EFE069 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+				ORGANIZATIONNAME = "American Heritage School";
+			};
+			buildConfigurationList = 5000FACB14A4F17100EFE069 /* Build configuration list for PBXProject "Relay" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 5000FAC614A4F17100EFE069;
+			productRefGroup = 5000FAD214A4F17100EFE069 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5000FAD014A4F17100EFE069 /* Relay */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		5000FACF14A4F17100EFE069 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5000FAE014A4F17100EFE069 /* InfoPlist.strings in Resources */,
+				5000FAEC14A4F17100EFE069 /* RCViewController_iPhone.xib in Resources */,
+				5000FAEF14A4F17100EFE069 /* RCViewController_iPad.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5000FACD14A4F17100EFE069 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5000FAE214A4F17100EFE069 /* main.m in Sources */,
+				5000FAE614A4F17100EFE069 /* RCAppDelegate.m in Sources */,
+				5000FAE914A4F17100EFE069 /* RCViewController.m in Sources */,
+				5000FAFB14A4F2AE00EFE069 /* RCSocket.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		5000FADE14A4F17100EFE069 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5000FADF14A4F17100EFE069 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		5000FAEA14A4F17100EFE069 /* RCViewController_iPhone.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5000FAEB14A4F17100EFE069 /* en */,
+			);
+			name = RCViewController_iPhone.xib;
+			sourceTree = "<group>";
+		};
+		5000FAED14A4F17100EFE069 /* RCViewController_iPad.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5000FAEE14A4F17100EFE069 /* en */,
+			);
+			name = RCViewController_iPad.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		5000FAF014A4F17100EFE069 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		5000FAF114A4F17100EFE069 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		5000FAF314A4F17100EFE069 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Relay/Relay-Prefix.pch";
+				INFOPLIST_FILE = "Relay/Relay-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		5000FAF414A4F17100EFE069 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Relay/Relay-Prefix.pch";
+				INFOPLIST_FILE = "Relay/Relay-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		5000FACB14A4F17100EFE069 /* Build configuration list for PBXProject "Relay" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5000FAF014A4F17100EFE069 /* Debug */,
+				5000FAF114A4F17100EFE069 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5000FAF214A4F17100EFE069 /* Build configuration list for PBXNativeTarget "Relay" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5000FAF314A4F17100EFE069 /* Debug */,
+				5000FAF414A4F17100EFE069 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 5000FAC814A4F17100EFE069 /* Project object */;
+}
