@@ -20,11 +20,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+	[self.view setBackgroundColor:[UIColor whiteColor]];
 	RCSocket *sock = [[RCSocket alloc] init];
 	[sock setServer:@"fr.ac3xx.com"];
 	[sock setPort:6667];
 	[sock setWantsSSL:NO];
-    [sock setSrvpass:@"privateircftw"];
+    [sock setServPass:@"privateircftw"];
 	BOOL r = [sock connect];
 	// Do any additional setup after loading the view, typically from a nib.
 }

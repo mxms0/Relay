@@ -9,7 +9,7 @@
 #import "RCSocket.h"
 
 @implementation RCSocket
-@synthesize server, nick, port, wantsSSL, srvpass;
+@synthesize server, nick, port, wantsSSL, servPass;
 
 - (BOOL)connect {
 	CFStreamCreatePairWithSocketToHost(NULL, (CFStringRef)server, port ? port : 6667, (CFReadStreamRef *)&iStream, (CFWriteStreamRef *)&oStream);
@@ -32,8 +32,8 @@
 		[settings release];
 	}
     
-    if (srvpass)
-        [self sendMessage:[NSString stringWithFormat:@"PASS %@", srvpass]];
+    if (servPass)
+        [self sendMessage:[NSString stringWithFormat:@"PASS %@", servPass]];
     
     [self sendMessage:@"USER ac3xx ac3xx ac3xx ac3xx"];
     [self sendMessage:@"NICK ac3xx-lolcake"];
@@ -42,16 +42,29 @@
 }
 
 - (void)stream:(NSStream *)aStream handleEvent:(NSStreamEvent)eventCode {
-    uint8_t buffer[1024];
-    long len;
+	uint8_t buffer[1024];
+    NSInteger length;
+	switch (eventCode) {
+		case NSStreamEventEndEncountered:
+			break;
+		case NSStreamEventErrorOccurred:
+			break;
+		case NSStreamEventHasBytesAvailable:
+			break;
+		case NSStreamEventHasSpaceAvailable:
+			break;
+		case NSStreamEventNone:
+			break;
+		case NSStreamEventOpenCompleted:
+			break;
+			
+	}
     switch (eventCode) {
         case NSStreamEventHasBytesAvailable:
-            
             while ([iStream hasBytesAvailable]) {
-                len = [iStream read:buffer maxLength:sizeof(buffer)];
-                if (len > 0) {
-                    
-                    NSString *output = [[NSString alloc] initWithBytes:buffer length:len encoding:NSASCIIStringEncoding]; 
+                length = [iStream read:buffer maxLength:sizeof(buffer)];
+                if (length > 0) {     
+                    NSString *output = [[NSString alloc] initWithBytes:buffer length:(NSUInteger)length encoding:NSASCIIStringEncoding]; 
                     NSLog(@"%@", output);
                     if (output != nil) {
                         NSArray *msg = [self parseString:output];
@@ -73,8 +86,8 @@
     }
 }
 
-- (NSArray*)parseString:(NSString*)string {
-    NSScanner* scan=[NSScanner scannerWithString:string];
+- (NSArray *)parseString:(NSString *)string {
+    NSScanner *scan = [NSScanner scannerWithString:string];
     if([string hasPrefix:@":"]) {
         [scan setScanLocation:1];
     }
@@ -89,10 +102,10 @@
     return [NSArray arrayWithObjects:sender, command, argument, nil];
 }
 
-- (void)sendMessage:(NSString*)command{
-    NSString *msg  = [NSString stringWithFormat:@"%@\r\n", command];
-    NSData *msgdata = [[NSData alloc] initWithData:[msg dataUsingEncoding:NSASCIIStringEncoding]];
-    [oStream write:[msgdata bytes] maxLength:[msgdata length]];
+- (void)sendMessage:(NSString *)command {
+	NSString *message = [command stringByAppendingString:@"\r\n"];
+    NSData *messageData = [message dataUsingEncoding:NSASCIIStringEncoding];
+    [oStream write:[messageData bytes] maxLength:[messageData length]];
 }
 
 - (void)dealloc {
