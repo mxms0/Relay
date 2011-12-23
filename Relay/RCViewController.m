@@ -21,9 +21,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	RCSocket *sock = [[RCSocket alloc] init];
-	[sock setServer:@"irc.saurik.com"];
+	[sock setServer:@"fr.ac3xx.com"];
 	[sock setPort:6667];
 	[sock setWantsSSL:NO];
+    [sock setSrvpass:@"privateircftw"];
 	BOOL r = [sock connect];
 	// Do any additional setup after loading the view, typically from a nib.
 }

@@ -11,6 +11,7 @@
 @interface RCSocket : NSObject <NSStreamDelegate> {
 	NSString *server;
 	NSString *nick;
+    NSString *srvpass;
 	int port;
 	BOOL wantsSSL;
 	NSInputStream *iStream;
@@ -18,7 +19,10 @@
 }
 @property (nonatomic, retain) NSString *server;
 @property (nonatomic, retain) NSString *nick;
+@property (nonatomic, retain) NSString *srvpass;
 @property (nonatomic, assign) int port;
 @property (nonatomic, assign) BOOL wantsSSL;
 - (BOOL)connect;
+- (void)sendMessage:(NSString*)command;
+- (NSArray*)parseString:(NSString*)string;
 @end
