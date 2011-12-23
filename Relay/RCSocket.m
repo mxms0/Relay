@@ -7,6 +7,7 @@
 //
 
 #import "RCSocket.h"
+#define B_LOG(y) NSLog(@"LOG: %s %d %@ %d", __FILE__, __LINE__, NSStringFromSelector(_cmd), y);
 
 @implementation RCSocket
 @synthesize server, nick, port, wantsSSL, servPass;
@@ -36,54 +37,56 @@
         [self sendMessage:[NSString stringWithFormat:@"PASS %@", servPass]];
     
     [self sendMessage:@"USER ac3xx ac3xx ac3xx ac3xx"];
-    [self sendMessage:@"NICK ac3xx-lolcake"];
+    [self sendMessage:@"NICK ac3xxlulz"];
     
 	return YES;
 }
 
 - (void)stream:(NSStream *)aStream handleEvent:(NSStreamEvent)eventCode {
-	uint8_t buffer[1024];
-    NSInteger length;
+	static NSMutableString *response;
 	switch (eventCode) {
 		case NSStreamEventEndEncountered:
+			B_LOG(NSStreamEventEndEncountered);
 			break;
 		case NSStreamEventErrorOccurred:
+			B_LOG(NSStreamEventErrorOccurred);
 			break;
 		case NSStreamEventHasBytesAvailable:
+		//	B_LOG(NSStreamEventHasBytesAvailable);
+			if (!response) 
+				response = [[NSMutableString alloc] init];
+			uint8_t buffer;
+			NSInteger read = [(NSInputStream *)aStream read:&buffer maxLength:1];
+			if (read)
+				[response appendFormat:@"%c", buffer];
+			if ([response hasSuffix:@"\r\n"]) {
+				[self messageRecieved:response];
+				[response release];
+				response = nil;
+			}
 			break;
 		case NSStreamEventHasSpaceAvailable:
+			B_LOG(NSStreamEventHasSpaceAvailable);
 			break;
 		case NSStreamEventNone:
+			B_LOG(NSStreamEventNone);
 			break;
 		case NSStreamEventOpenCompleted:
+			B_LOG(NSStreamEventOpenCompleted);
 			break;
 			
 	}
-    switch (eventCode) {
-        case NSStreamEventHasBytesAvailable:
-            while ([iStream hasBytesAvailable]) {
-                length = [iStream read:buffer maxLength:sizeof(buffer)];
-                if (length > 0) {     
-                    NSString *output = [[NSString alloc] initWithBytes:buffer length:(NSUInteger)length encoding:NSASCIIStringEncoding]; 
-                    NSLog(@"%@", output);
-                    if (output != nil) {
-                        NSArray *msg = [self parseString:output];
-                        NSString *antispoof = nil;
-                        [[NSScanner scannerWithString:[msg objectAtIndex:0]] scanUpToString:@"!" intoString:&antispoof];
-                        if ([[msg objectAtIndex:0] isEqualToString:@"PING"]) {
-                            [self sendMessage:[@"PONG " stringByAppendingString:[msg objectAtIndex:1]]];
-                        } else if([[msg objectAtIndex:1] isEqualToString:@"PRIVMSG"] && [[msg objectAtIndex:0] isEqualToString:antispoof]) {
-                            [self sendMessage:[@"NOTICE " stringByAppendingString:[msg objectAtIndex:1]]];
-                        }
-                    }
-                }
-            }
-            
-            break;
-            
-        default:
-            break;
-    }
+}
+
+- (void)messageRecieved:(NSString *)message {
+	if ([message hasPrefix:@"PING"]) {
+		NSLog(@"PING! %@", message);
+		NSRange rangeOfPing = [message rangeOfString:@"PING :"];
+		[self sendMessage:[@"PONG " stringByAppendingString:[message substringWithRange:NSMakeRange(rangeOfPing.location+rangeOfPing.length, message.length-(rangeOfPing.location+rangeOfPing.length))]]];
+	}
+	else {
+		objc_msgSend([RCResponseParser sharedParser], NSSelectorFromString([NSStringFromSelector(_cmd) stringByAppendingString:@"delegate:"]), message, self);
+	}
 }
 
 - (NSArray *)parseString:(NSString *)string {

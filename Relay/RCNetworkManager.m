@@ -10,9 +10,9 @@
 
 @implementation RCNetworkManager
 
-static RCNetworkManager *rcNetworkManager;
+static RCNetworkManager *rcNetworkManager = nil;
 
-+ (RCNetworkManager*)shared {
++ (RCNetworkManager *)sharedManager {
     if (!rcNetworkManager) {
         rcNetworkManager = [[RCNetworkManager alloc] init];
     }

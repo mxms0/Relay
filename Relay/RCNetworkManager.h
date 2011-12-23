@@ -10,6 +10,6 @@
 
 @interface RCNetworkManager : NSObject
 
-+ (RCNetworkManager*)shared;
++ (RCNetworkManager *)sharedManager;
 
 @end

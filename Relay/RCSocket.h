@@ -7,7 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-
+#import "RCResponseParser.h"
+#import <objc/runtime.h>
 
 @interface RCSocket : NSObject <NSStreamDelegate> {
 	NSString *server;
@@ -24,6 +25,7 @@
 @property (nonatomic, assign) int port;
 @property (nonatomic, assign) BOOL wantsSSL;
 - (BOOL)connect;
-- (void)sendMessage:(NSString*)command;
+- (void)messageRecieved:(NSString *)message;
+- (void)sendMessage:(NSString *)command;
 - (NSArray*)parseString:(NSString*)string;
 @end
