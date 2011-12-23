@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
+
 @interface RCSocket : NSObject <NSStreamDelegate> {
 	NSString *server;
 	NSString *nick;
