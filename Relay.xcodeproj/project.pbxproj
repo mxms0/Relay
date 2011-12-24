@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1A06C47714A5037C00BFBB32 /* RCNetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A06C47614A5037C00BFBB32 /* RCNetworkManager.m */; };
 		5000FAD614A4F17100EFE069 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5000FAD514A4F17100EFE069 /* UIKit.framework */; };
 		5000FAD814A4F17100EFE069 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5000FAD714A4F17100EFE069 /* Foundation.framework */; };
 		5000FADA14A4F17100EFE069 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5000FAD914A4F17100EFE069 /* CoreGraphics.framework */; };
@@ -17,14 +16,12 @@
 		5000FAE914A4F17100EFE069 /* RCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5000FAE814A4F17100EFE069 /* RCViewController.m */; };
 		5000FAEC14A4F17100EFE069 /* RCViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5000FAEA14A4F17100EFE069 /* RCViewController_iPhone.xib */; };
 		5000FAEF14A4F17100EFE069 /* RCViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5000FAED14A4F17100EFE069 /* RCViewController_iPad.xib */; };
-		5000FAFB14A4F2AE00EFE069 /* RCSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 5000FAFA14A4F2AE00EFE069 /* RCSocket.m */; };
 		5000FB0314A4F86500EFE069 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5000FB0214A4F86500EFE069 /* CFNetwork.framework */; };
-		5000FB5C14A513E200EFE069 /* RCResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 5000FB5B14A513E200EFE069 /* RCResponseParser.m */; };
+		5000FB6C14A551A200EFE069 /* RCSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 5000FB6B14A551A200EFE069 /* RCSocket.m */; };
+		5000FB6F14A551B600EFE069 /* RCResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 5000FB6E14A551B600EFE069 /* RCResponseParser.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1A06C47514A5037C00BFBB32 /* RCNetworkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCNetworkManager.h; sourceTree = "<group>"; };
-		1A06C47614A5037C00BFBB32 /* RCNetworkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCNetworkManager.m; sourceTree = "<group>"; };
 		5000FAD114A4F17100EFE069 /* Relay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Relay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5000FAD514A4F17100EFE069 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		5000FAD714A4F17100EFE069 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -39,11 +36,11 @@
 		5000FAE814A4F17100EFE069 /* RCViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCViewController.m; sourceTree = "<group>"; };
 		5000FAEB14A4F17100EFE069 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/RCViewController_iPhone.xib; sourceTree = "<group>"; };
 		5000FAEE14A4F17100EFE069 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/RCViewController_iPad.xib; sourceTree = "<group>"; };
-		5000FAF914A4F2AE00EFE069 /* RCSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCSocket.h; sourceTree = "<group>"; };
-		5000FAFA14A4F2AE00EFE069 /* RCSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCSocket.m; sourceTree = "<group>"; };
 		5000FB0214A4F86500EFE069 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
-		5000FB5A14A513E200EFE069 /* RCResponseParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCResponseParser.h; sourceTree = "<group>"; };
-		5000FB5B14A513E200EFE069 /* RCResponseParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCResponseParser.m; sourceTree = "<group>"; };
+		5000FB6A14A551A200EFE069 /* RCSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCSocket.h; sourceTree = "<group>"; };
+		5000FB6B14A551A200EFE069 /* RCSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCSocket.m; sourceTree = "<group>"; };
+		5000FB6D14A551B600EFE069 /* RCResponseParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCResponseParser.h; sourceTree = "<group>"; };
+		5000FB6E14A551B600EFE069 /* RCResponseParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCResponseParser.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,13 +89,8 @@
 		5000FADB14A4F17100EFE069 /* Relay */ = {
 			isa = PBXGroup;
 			children = (
+				5000FB5D14A52A5500EFE069 /* UI */,
 				5000FAFD14A4F2B500EFE069 /* Backend */,
-				5000FAE414A4F17100EFE069 /* RCAppDelegate.h */,
-				5000FAE514A4F17100EFE069 /* RCAppDelegate.m */,
-				5000FAE714A4F17100EFE069 /* RCViewController.h */,
-				5000FAE814A4F17100EFE069 /* RCViewController.m */,
-				5000FAEA14A4F17100EFE069 /* RCViewController_iPhone.xib */,
-				5000FAED14A4F17100EFE069 /* RCViewController_iPad.xib */,
 				5000FADC14A4F17100EFE069 /* Supporting Files */,
 			);
 			path = Relay;
@@ -107,6 +99,8 @@
 		5000FADC14A4F17100EFE069 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				5000FAEA14A4F17100EFE069 /* RCViewController_iPhone.xib */,
+				5000FAED14A4F17100EFE069 /* RCViewController_iPad.xib */,
 				5000FADD14A4F17100EFE069 /* Relay-Info.plist */,
 				5000FADE14A4F17100EFE069 /* InfoPlist.strings */,
 				5000FAE114A4F17100EFE069 /* main.m */,
@@ -118,14 +112,23 @@
 		5000FAFD14A4F2B500EFE069 /* Backend */ = {
 			isa = PBXGroup;
 			children = (
-				5000FAF914A4F2AE00EFE069 /* RCSocket.h */,
-				5000FAFA14A4F2AE00EFE069 /* RCSocket.m */,
-				1A06C47514A5037C00BFBB32 /* RCNetworkManager.h */,
-				1A06C47614A5037C00BFBB32 /* RCNetworkManager.m */,
-				5000FB5A14A513E200EFE069 /* RCResponseParser.h */,
-				5000FB5B14A513E200EFE069 /* RCResponseParser.m */,
+				5000FB6D14A551B600EFE069 /* RCResponseParser.h */,
+				5000FB6E14A551B600EFE069 /* RCResponseParser.m */,
+				5000FB6A14A551A200EFE069 /* RCSocket.h */,
+				5000FB6B14A551A200EFE069 /* RCSocket.m */,
+				5000FAE414A4F17100EFE069 /* RCAppDelegate.h */,
+				5000FAE514A4F17100EFE069 /* RCAppDelegate.m */,
 			);
 			name = Backend;
+			sourceTree = "<group>";
+		};
+		5000FB5D14A52A5500EFE069 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				5000FAE714A4F17100EFE069 /* RCViewController.h */,
+				5000FAE814A4F17100EFE069 /* RCViewController.m */,
+			);
+			name = UI;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -195,9 +198,8 @@
 				5000FAE214A4F17100EFE069 /* main.m in Sources */,
 				5000FAE614A4F17100EFE069 /* RCAppDelegate.m in Sources */,
 				5000FAE914A4F17100EFE069 /* RCViewController.m in Sources */,
-				5000FAFB14A4F2AE00EFE069 /* RCSocket.m in Sources */,
-				1A06C47714A5037C00BFBB32 /* RCNetworkManager.m in Sources */,
-				5000FB5C14A513E200EFE069 /* RCResponseParser.m in Sources */,
+				5000FB6C14A551A200EFE069 /* RCSocket.m in Sources */,
+				5000FB6F14A551B600EFE069 /* RCResponseParser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

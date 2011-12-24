@@ -7,7 +7,7 @@
 //
 
 #import "RCViewController.h"
-#import "RCSocket.h"
+
 
 @implementation RCViewController
 
@@ -34,6 +34,7 @@
 	if (!cell) {
 		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier] autorelease];
 	}
+//	cell.textLabel.text = [rooms objectAtIndex:indexPath.row];
 	return cell;
 }
 
@@ -43,13 +44,30 @@
     [super viewDidLoad];
 	[self.view setBackgroundColor:[UIColor whiteColor]];
 	self.title = @"Relay";
+	[self.navigationItem setRightBarButtonItem:[[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addNewConnection)] autorelease]];
+	
 	RCSocket *sock = [[RCSocket alloc] init];
-	[sock setServer:@"fr.ac3xx.com"];
+	[sock setServer:@"irc.evilpengu.in"];
 	[sock setPort:6667];
 	[sock setWantsSSL:NO];
-	[sock setServPass:@"privateircftw"];
-	BOOL r = [sock connect];
+//	[sock setServPass:@"privateircftw"];
+	if ([sock connect]) {
+		//fdsfsd
+	}
 	// Do any additional setup after loading the view, typically from a nib.
+}
+
+- (void)addRoom:(NSString *)room {
+//	[rooms addObject:room];
+	[self.tableView reloadData];
+}
+
+- (void)addNewConnection {
+//	RCAddNetworkViewController *vc = [[RCAddNetworkViewController alloc] initWithStyle:UITableViewStyleGrouped];
+//	UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+//	nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+//	[self presentModalViewController:nav animated:YES];
+//	[vc release];
 }
 
 - (void)viewDidUnload {

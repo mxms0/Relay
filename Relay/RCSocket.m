@@ -10,9 +10,11 @@
 #define B_LOG(y) NSLog(@"LOG: %s %d %@ %d", __FILE__, __LINE__, NSStringFromSelector(_cmd), y);
 
 @implementation RCSocket
-@synthesize server, nick, port, wantsSSL, servPass;
+@synthesize server, nick, port, wantsSSL, servPass, status;
 
 - (BOOL)connect {
+	parser = [[RCResponseParser alloc] init];
+	parser.delegate = self;
 	CFStreamCreatePairWithSocketToHost(NULL, (CFStringRef)server, port ? port : 6667, (CFReadStreamRef *)&iStream, (CFWriteStreamRef *)&oStream);
 	[iStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 	[oStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
@@ -32,7 +34,11 @@
 		CFWriteStreamSetProperty((CFWriteStreamRef)oStream, kCFStreamPropertySSLSettings, (CFTypeRef)settings);
 		[settings release];
 	}
-    
+	isRegistered = NO;
+	if ([self status] == RCSocketStatusOpen || [self status] == RCSocketStatusConnecting) {
+		return NO; //already connected or trying to connect.
+	}
+	status = RCSocketStatusConnecting;
     if (servPass)
         [self sendMessage:[NSString stringWithFormat:@"PASS %@", servPass]];
     
@@ -42,14 +48,22 @@
 	return YES;
 }
 
+- (BOOL)disconnect {
+	[parser release];
+	return YES;
+}
+
 - (void)stream:(NSStream *)aStream handleEvent:(NSStreamEvent)eventCode {
 	static NSMutableString *response;
 	switch (eventCode) {
 		case NSStreamEventEndEncountered:
-			B_LOG(NSStreamEventEndEncountered);
+			if (status != RCSocketStatusError)
+				status = RCSocketStatuClosed;
+		//	B_LOG(NSStreamEventEndEncountered);
 			break;
 		case NSStreamEventErrorOccurred:
-			B_LOG(NSStreamEventErrorOccurred);
+			status = RCSocketStatusError;
+		//	B_LOG(NSStreamEventErrorOccurred);
 			break;
 		case NSStreamEventHasBytesAvailable:
 		//	B_LOG(NSStreamEventHasBytesAvailable);
@@ -66,13 +80,15 @@
 			}
 			break;
 		case NSStreamEventHasSpaceAvailable:
-			B_LOG(NSStreamEventHasSpaceAvailable);
+			if (status == RCSocketStatusConnecting) 
+				status = RCSocketStatusOpen;
+		//	B_LOG(NSStreamEventHasSpaceAvailable);
 			break;
 		case NSStreamEventNone:
-			B_LOG(NSStreamEventNone);
+		//	B_LOG(NSStreamEventNone);
 			break;
 		case NSStreamEventOpenCompleted:
-			B_LOG(NSStreamEventOpenCompleted);
+		//	B_LOG(NSStreamEventOpenCompleted);
 			break;
 			
 	}
@@ -85,17 +101,25 @@
 		[self sendMessage:[@"PONG " stringByAppendingString:[message substringWithRange:NSMakeRange(rangeOfPing.location+rangeOfPing.length, message.length-(rangeOfPing.location+rangeOfPing.length))]]];
 	}
 	else {
-		objc_msgSend([RCResponseParser sharedParser], NSSelectorFromString([NSStringFromSelector(_cmd) stringByAppendingString:@"delegate:"]), message, self);
+		[parser messageRecieved:message];
 	}
+}
+
+- (void)respondToVersion:(NSString *)from {
+	NSLog(@"VERSION: %@",from);
+	[self sendMessage:[@"NOTICE VERSION " stringByAppendingFormat:@"%@ RELAY 1.0!",from]];
+}
+
+- (void)addRoom:(NSString *)roomName {
+	NSLog(@"Meh. %@",roomName);
 }
 
 - (NSArray *)parseString:(NSString *)string {
     NSScanner *scan = [NSScanner scannerWithString:string];
-    if([string hasPrefix:@":"]) {
+    if ([string hasPrefix:@":"]) {
         [scan setScanLocation:1];
     }
     NSString *sender = nil;
-    
     NSString *command = nil;
     NSString *argument = nil;
     

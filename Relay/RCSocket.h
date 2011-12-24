@@ -10,12 +10,23 @@
 #import "RCResponseParser.h"
 #import <objc/runtime.h>
 
+typedef enum RCSocketStatus {
+	RCSocketStatusNotOpen,
+	RCSocketStatusConnecting,
+	RCSocketStatusOpen,
+	RCSocketStatusError,
+	RCSocketStatuClosed
+} RCSocketStatus;
+
 @interface RCSocket : NSObject <NSStreamDelegate> {
+	RCResponseParser *parser;
 	NSString *server;
 	NSString *nick;
     NSString *servPass;
 	int port;
+	RCSocketStatus status;
 	BOOL wantsSSL;
+	BOOL isRegistered;
 	NSInputStream *iStream;
 	NSOutputStream *oStream;
 }
@@ -24,8 +35,11 @@
 @property (nonatomic, retain) NSString *servPass;
 @property (nonatomic, assign) int port;
 @property (nonatomic, assign) BOOL wantsSSL;
+@property (nonatomic, assign) RCSocketStatus status;
 - (BOOL)connect;
+- (BOOL)disconnect;
+- (void)respondToVersion:(NSString *)from;
 - (void)messageRecieved:(NSString *)message;
 - (void)sendMessage:(NSString *)command;
-- (NSArray*)parseString:(NSString*)string;
+- (NSArray *)parseString:(NSString *)string;
 @end

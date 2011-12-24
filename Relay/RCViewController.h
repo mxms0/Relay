@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "RCSocket.h"
 
 @interface RCViewController : UITableViewController {
-	
 }
 
 @end
