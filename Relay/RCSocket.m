@@ -132,7 +132,6 @@
 }
 
 - (void)channel:(NSString *)chan recievedMessage:(NSString *)msg fromUser:(NSString *)usr {
-	[self joinRoom:msg];
 	NSLog(@"%@:[%@:%@]", chan, msg, usr);
 }
 
