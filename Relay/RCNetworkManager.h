@@ -7,7 +7,15 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "RCNEtwork.h"
 
-@interface RCNetworkManager : NSObject
+@interface RCNetworkManager : NSObject {
 
+}
+
++ (id)sharedNetworkManager;
+- (void)unpack;
+- (id)networks;
++ (void)saveNetworks;
+- (void)addNetwork:(RCNetwork *)net;
 @end

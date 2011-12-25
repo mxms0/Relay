@@ -17,7 +17,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	return 1;
+	return [[[RCNetworkManager sharedNetworkManager] networks] count];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -42,6 +42,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+	[[RCNetworkManager sharedNetworkManager] unpack];
+	
 	[self.view setBackgroundColor:[UIColor whiteColor]];
 	self.title = @"Relay";
 	[self.navigationItem setRightBarButtonItem:[[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addNewConnection)] autorelease]];
@@ -63,11 +65,11 @@
 }
 
 - (void)addNewConnection {
-//	RCAddNetworkViewController *vc = [[RCAddNetworkViewController alloc] initWithStyle:UITableViewStyleGrouped];
-//	UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
-//	nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-//	[self presentModalViewController:nav animated:YES];
-//	[vc release];
+	RCAddNetworkViewController *vc = [[RCAddNetworkViewController alloc] initWithStyle:UITableViewStyleGrouped];
+	UINavigationController *nav = [[[UINavigationController alloc] initWithRootViewController:vc] autorelease];
+	nav.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+	[self presentModalViewController:nav animated:YES];
+	[vc release];
 }
 
 - (void)viewDidUnload {

@@ -83,6 +83,7 @@
 - (void)perform001:(NSString *)reg {
 	@autoreleasepool {
 		NSLog(@"Registered.");
+		[delegate setIsRegistered:YES];
 	}
 }
 

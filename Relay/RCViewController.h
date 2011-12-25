@@ -8,8 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "RCSocket.h"
+#import "RCNetworkManager.h"
+#import "RCAddNetworkViewController.h"
 
 @interface RCViewController : UITableViewController {
+	RCNetworkManager *manager;
 }
 
 @end

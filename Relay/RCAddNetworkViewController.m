@@ -38,8 +38,19 @@
     // e.g. self.myOutlet = nil;
 }
 
+- (void)doneWithJoin {
+	[self dismissModalViewControllerAnimated:YES];
+}
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+	UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(doneWithJoin)];
+	[self.navigationItem setLeftBarButtonItem:cancel];
+	[cancel release];
+	UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneConnection)];
+	done.enabled = NO;
+	[self.navigationItem setRightBarButtonItem:done];
+	[done release];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -64,7 +75,7 @@
 		case 1:
 			return 5;
 		case 2:
-			return 2;
+			return 3;
 	}
 	return (int)@"HAXX!!!";
 }
@@ -83,13 +94,13 @@
 	return @"  HAXXX !!! ";
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    static NSString *CellIdentifier = @"Cell";
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSString *CellIdentifier = [NSString stringWithFormat:@"CELL_%d_%d", indexPath.section, indexPath.row];
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+		cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     switch (indexPath.section) {
 		case 0:
@@ -131,6 +142,10 @@
 			switch (indexPath.row) {
 				case 0:
 					cell.textLabel.text = @"Connect At Launch";
+					UISwitch *cnt = [[UISwitch alloc] init];
+					[cnt setOn:NO];
+					[cell setAccessoryView:cnt];
+					[cnt release];
 					break;
 				case 1:
 					cell.textLabel.text = @"Alternate Nicknames";

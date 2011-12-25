@@ -10,11 +10,12 @@
 #define B_LOG(y) NSLog(@"LOG: %s %d %@ %d", __FILE__, __LINE__, NSStringFromSelector(_cmd), y);
 
 @implementation RCSocket
-@synthesize server, nick, port, wantsSSL, servPass, status, channels;
+@synthesize server, nick, port, wantsSSL, servPass, status, channels, isRegistered;
 
 - (BOOL)connect {
 	parser = [[RCResponseParser alloc] init];
 	channels = [[NSMutableArray alloc] init];
+	isRegistered = NO;
 	parser.delegate = self;
 	CFStreamCreatePairWithSocketToHost(NULL, (CFStringRef)server, port ? port : 6667, (CFReadStreamRef *)&iStream, (CFWriteStreamRef *)&oStream);
 	[iStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
@@ -35,7 +36,6 @@
 		CFWriteStreamSetProperty((CFWriteStreamRef)oStream, kCFStreamPropertySSLSettings, (CFTypeRef)settings);
 		[settings release];
 	}
-	isRegistered = NO;
 	if ([self status] == RCSocketStatusOpen || [self status] == RCSocketStatusConnecting) {
 		return NO; //already connected or trying to connect.
 	}
@@ -50,6 +50,8 @@
 }
 
 - (BOOL)disconnect {
+	[self sendMessage:@"QUIT Relay 1.0\r\n"];
+	status = RCSocketStatuClosed;
 	[parser release];
 	return YES;
 }
@@ -125,6 +127,10 @@
 		[channels addObject:roomName];
 	}
 	NSLog(@"Meh. %@",roomName);
+}
+
+- (BOOL)isConnected {
+	return ((status == RCSocketStatusOpen) || (status == RCSocketStatusConnecting));
 }
 
 - (void)addUser:(NSString *)_nick toRoom:(NSString *)room {

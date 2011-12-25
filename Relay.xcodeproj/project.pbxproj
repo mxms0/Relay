@@ -19,6 +19,10 @@
 		5000FB0314A4F86500EFE069 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5000FB0214A4F86500EFE069 /* CFNetwork.framework */; };
 		5000FB6C14A551A200EFE069 /* RCSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 5000FB6B14A551A200EFE069 /* RCSocket.m */; };
 		5000FB6F14A551B600EFE069 /* RCResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 5000FB6E14A551B600EFE069 /* RCResponseParser.m */; };
+		502EB86714A667ED000B939F /* RCChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 502EB86414A667ED000B939F /* RCChannel.m */; };
+		502EB86814A667ED000B939F /* RCNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 502EB86614A667ED000B939F /* RCNetwork.m */; };
+		502EB88714A6A288000B939F /* RCAddNetworkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 502EB88514A6A288000B939F /* RCAddNetworkViewController.m */; };
+		502EB89014A6C7C9000B939F /* RCNetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 502EB88F14A6C7C9000B939F /* RCNetworkManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +45,14 @@
 		5000FB6B14A551A200EFE069 /* RCSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCSocket.m; sourceTree = "<group>"; };
 		5000FB6D14A551B600EFE069 /* RCResponseParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCResponseParser.h; sourceTree = "<group>"; };
 		5000FB6E14A551B600EFE069 /* RCResponseParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCResponseParser.m; sourceTree = "<group>"; };
+		502EB86314A667ED000B939F /* RCChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCChannel.h; sourceTree = "<group>"; };
+		502EB86414A667ED000B939F /* RCChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCChannel.m; sourceTree = "<group>"; };
+		502EB86514A667ED000B939F /* RCNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCNetwork.h; sourceTree = "<group>"; };
+		502EB86614A667ED000B939F /* RCNetwork.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCNetwork.m; sourceTree = "<group>"; };
+		502EB88514A6A288000B939F /* RCAddNetworkViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCAddNetworkViewController.m; sourceTree = "<group>"; };
+		502EB88614A6A288000B939F /* RCAddNetworkViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCAddNetworkViewController.h; sourceTree = "<group>"; };
+		502EB88E14A6C7C8000B939F /* RCNetworkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCNetworkManager.h; sourceTree = "<group>"; };
+		502EB88F14A6C7C9000B939F /* RCNetworkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCNetworkManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +124,12 @@
 		5000FAFD14A4F2B500EFE069 /* Backend */ = {
 			isa = PBXGroup;
 			children = (
+				502EB88E14A6C7C8000B939F /* RCNetworkManager.h */,
+				502EB88F14A6C7C9000B939F /* RCNetworkManager.m */,
+				502EB86314A667ED000B939F /* RCChannel.h */,
+				502EB86414A667ED000B939F /* RCChannel.m */,
+				502EB86514A667ED000B939F /* RCNetwork.h */,
+				502EB86614A667ED000B939F /* RCNetwork.m */,
 				5000FB6D14A551B600EFE069 /* RCResponseParser.h */,
 				5000FB6E14A551B600EFE069 /* RCResponseParser.m */,
 				5000FB6A14A551A200EFE069 /* RCSocket.h */,
@@ -127,6 +145,8 @@
 			children = (
 				5000FAE714A4F17100EFE069 /* RCViewController.h */,
 				5000FAE814A4F17100EFE069 /* RCViewController.m */,
+				502EB88614A6A288000B939F /* RCAddNetworkViewController.h */,
+				502EB88514A6A288000B939F /* RCAddNetworkViewController.m */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -200,6 +220,10 @@
 				5000FAE914A4F17100EFE069 /* RCViewController.m in Sources */,
 				5000FB6C14A551A200EFE069 /* RCSocket.m in Sources */,
 				5000FB6F14A551B600EFE069 /* RCResponseParser.m in Sources */,
+				502EB86714A667ED000B939F /* RCChannel.m in Sources */,
+				502EB86814A667ED000B939F /* RCNetwork.m in Sources */,
+				502EB88714A6A288000B939F /* RCAddNetworkViewController.m in Sources */,
+				502EB89014A6C7C9000B939F /* RCNetworkManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
