@@ -9,7 +9,7 @@
 #import "RCAddNetworkViewController.h"
 
 @implementation RCAddNetworkViewController
-@synthesize _user, _nick, _name, _sPass, _nPass, _description, _server, _port, hasSSL;
+@synthesize _user, _nick, _name, _sPass, _nPass, _description, _server, _port, hasSSL, connectAtLaunch;
 
 - (id)initWithStyle:(UITableViewStyle)style {
 	if ((self = [super initWithStyle:style])) {
@@ -138,9 +138,25 @@
 					break;
 				case 2:
 					cell.textLabel.text = @"Port";
+					UITextField *pField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 170, 22)];
+					[pField setAdjustsFontSizeToFitWidth:YES];
+					[pField setPlaceholder:@"6667"];
+					[pField setKeyboardType:UIKeyboardTypeNumberPad];
+					[pField setReturnKeyType:UIReturnKeyNext];
+					[pField setTag:3];
+					[pField setText:_port];
+					[pField setKeyboardAppearance:UIKeyboardAppearanceAlert];
+					[pField setDelegate:self];
+                    [cell setAccessoryView:pField];
+                    [pField release];
 					break;
 				case 3:
 					cell.textLabel.text = @"Use SSL";
+					UISwitch *cnt = [[UISwitch alloc] init];
+					[cnt setOn:hasSSL];
+					[cnt addTarget:self action:@selector(sslSwitched:) forControlEvents:UIControlEventValueChanged];
+					[cell setAccessoryView:cnt];
+					[cnt release];
 					break;
 			}
 			break;
@@ -168,13 +184,12 @@
 				case 0:
 					cell.textLabel.text = @"Connect At Launch";
 					UISwitch *cnt = [[UISwitch alloc] init];
-					[cnt setOn:hasSSL];
-					[cnt addTarget:self action:@selector(sslSwitched:) forControlEvents:UIControlEventValueChanged];
+					[cnt setOn:connectAtLaunch];
+					[cnt addTarget:self action:@selector(launchSwitched:) forControlEvents:UIControlEventValueChanged];
 					[cell setAccessoryView:cnt];
 					[cnt release];
 					break;
 				case 1:
-					cell.textLabel.text = @"Alternate Nicknames";
 					break;
 				case 2:
 					cell.textLabel.text = @"Auto Commands";
@@ -189,6 +204,10 @@
 
 - (void)sslSwitched:(UISwitch *)s {
 	hasSSL = s.on;
+}
+
+- (void)launchSwitched:(UISwitch *)s {
+	connectAtLaunch = s.on;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
