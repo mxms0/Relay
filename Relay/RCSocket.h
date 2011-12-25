@@ -27,6 +27,7 @@ typedef enum RCSocketStatus {
 	RCSocketStatus status;
 	BOOL wantsSSL;
 	BOOL isRegistered;
+	NSMutableArray *channels;
 	NSInputStream *iStream;
 	NSOutputStream *oStream;
 }
@@ -36,10 +37,14 @@ typedef enum RCSocketStatus {
 @property (nonatomic, assign) int port;
 @property (nonatomic, assign) BOOL wantsSSL;
 @property (nonatomic, assign) RCSocketStatus status;
+@property (nonatomic, retain) NSMutableArray *channels;
 - (BOOL)connect;
 - (BOOL)disconnect;
 - (void)respondToVersion:(NSString *)from;
 - (void)messageRecieved:(NSString *)message;
 - (void)sendMessage:(NSString *)command;
+- (void)channel:(NSString *)chan recievedMessage:(NSString *)msg fromUser:(NSString *)usr;
+- (void)addUser:(NSString *)nick toRoom:(NSString *)room;
+- (void)addRoom:(NSString *)roomName;
 - (NSArray *)parseString:(NSString *)string;
 @end

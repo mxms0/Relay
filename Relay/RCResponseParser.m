@@ -44,8 +44,40 @@
 
 - (void)performJOIN:(NSString *)join {
 	NSLog(@"SHOULD BE JOINING SOME FUCKER %@",join);
-	join = [join substringWithRange:NSMakeRange(1, join.length-1)];
-	[delegate addRoom:join];
+	join = [join stringByReplacingOccurrencesOfString:@"\r\n" withString:@""];
+	NSString *crap = @"";
+	NSScanner *_sc = [[NSScanner alloc] initWithString:[join substringWithRange:NSMakeRange(1, join.length-1)]];
+	[_sc scanUpToString:@" " intoString:&crap];
+	NSString *cmd = @"";
+	[_sc scanUpToString:@" " intoString:&cmd];
+	NSString *chan = @"";
+	[_sc scanUpToString:@"" intoString:&chan];
+	NSString *nick = @"";
+	NSString *user = @"";
+	NSString *hosts = @"";
+	[self parseHostmask:crap intoNick:&nick intoUser:&user intoHostmask:&hosts];
+	NSLog(@"Stuff. CMD:%@ Chan:%@ Nick:%@ User:%@",cmd,chan,nick,user);
+	if ([nick isEqualToString:[delegate nick]]) {
+		// sajoined...
+		@try {
+			[delegate addRoom:[chan substringWithRange:NSMakeRange(1, chan.length-1)]];
+			// just incase :)
+		}
+		@catch (NSException *ee) {
+			NSLog(@"0.oo.. %@",ee);
+		}
+	}
+	else {
+		// add to channel list. :)
+		@try {
+			[delegate addUser:nick toRoom:[chan substringWithRange:NSMakeRange(1, chan.length-1)]];
+		}
+		@catch (NSException *e) {
+			NSLog(@"Ooooo %@", e);
+		}
+	}
+//	join = [join substringWithRange:NSMakeRange(1, join.length-1)];
+//	[delegate addRoom:join];
 }
 
 - (void)perform001:(NSString *)reg {
@@ -77,8 +109,10 @@
 //	if (argument.length <= _scan.scanLocation+2)
 //		[_scan setScanLocation:_scan.scanLocation+2];
 //	else NSLog(@"0.o.. idk what to do here....");
+
 	[_scan setScanLocation:_scan.scanLocation+2];
 	[_scan scanUpToString:@"" intoString:&message];
+		NSLog(@"HAZ: %@ %@ %@ %@ %@",nick, user, hostmask, channel, message);
 	if ([message hasPrefix:@"\x01"] && [message hasSuffix:@"\x01"]) {
 		NSLog(@"WWEEEEEEEEEEE");
 		NSString *command = nil;
@@ -98,9 +132,12 @@
 			NSLog(@"Action Recieved From:%@ with:%@", nick, argument);
 		}
 		else if ([command isEqualToString:@"VERSION"]) {
-			[delegate sendMessage:[@"NOTICE " stringByAppendingFormat:@"%@ :\x01Relay 1.0\x01\r\n", nick]];
+			[delegate sendMessage:[@"NOTICE " stringByAppendingFormat:@"%@ %cVERSION Relay 1.0 iOS Version %@%c\r\n", nick,0x01,[[UIDevice currentDevice] systemVersion], 0x01]];
 		}
+		return;
 	}
+	// otherwise send to channell... :)
+	[delegate channel:channel recievedMessage:message fromUser:user];
 }
 
 - (void)perform005:(NSString *)infos {

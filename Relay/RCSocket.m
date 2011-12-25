@@ -10,10 +10,11 @@
 #define B_LOG(y) NSLog(@"LOG: %s %d %@ %d", __FILE__, __LINE__, NSStringFromSelector(_cmd), y);
 
 @implementation RCSocket
-@synthesize server, nick, port, wantsSSL, servPass, status;
+@synthesize server, nick, port, wantsSSL, servPass, status, channels;
 
 - (BOOL)connect {
 	parser = [[RCResponseParser alloc] init];
+	channels = [[NSMutableArray alloc] init];
 	parser.delegate = self;
 	CFStreamCreatePairWithSocketToHost(NULL, (CFStringRef)server, port ? port : 6667, (CFReadStreamRef *)&iStream, (CFWriteStreamRef *)&oStream);
 	[iStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
@@ -74,6 +75,7 @@
 			if (read)
 				[response appendFormat:@"%c", buffer];
 			if ([response hasSuffix:@"\r\n"]) {
+				NSLog(@"Raw.: %@", response);
 				[self messageRecieved:response];
 				[response release];
 				response = nil;
@@ -107,11 +109,31 @@
 
 - (void)respondToVersion:(NSString *)from {
 	NSLog(@"VERSION: %@",from);
-	[self sendMessage:[@"NOTICE VERSION " stringByAppendingFormat:@"%@ RELAY 1.0!",from]];
+	[self sendMessage:[@"NOTICE VERSION " stringByAppendingFormat:@"%@ Relay 1.0b1!",from]];
+}
+
+- (void)joinRoom:(NSString *)room {
+	if (![channels containsObject:room]) {
+		[self sendMessage:[@"JOIN " stringByAppendingString:room]];
+		[self addRoom:room];
+	}
+	else return;
 }
 
 - (void)addRoom:(NSString *)roomName {
+	if (![channels containsObject:roomName]) {
+		[channels addObject:roomName];
+	}
 	NSLog(@"Meh. %@",roomName);
+}
+
+- (void)addUser:(NSString *)_nick toRoom:(NSString *)room {
+	NSLog(@"%@ Joiend %@", _nick, room);
+}
+
+- (void)channel:(NSString *)chan recievedMessage:(NSString *)msg fromUser:(NSString *)usr {
+	[self joinRoom:msg];
+	NSLog(@"%@:[%@:%@]", chan, msg, usr);
 }
 
 - (NSArray *)parseString:(NSString *)string {
@@ -139,6 +161,7 @@
 	[super dealloc];
 	[server release];
 	[nick release];
+	[channels release];
 	[iStream release];
 	[oStream release];
 }
