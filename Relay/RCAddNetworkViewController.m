@@ -8,12 +8,12 @@
 
 #import "RCAddNetworkViewController.h"
 
-
 @implementation RCAddNetworkViewController
+@synthesize _user, _nick, _name, _sPass, _nPass, _description, _server, _port, hasSSL;
 
 - (id)initWithStyle:(UITableViewStyle)style {
 	if ((self = [super initWithStyle:style])) {
-        // Custom initialization
+		hasSSL = NO;
     }
     return self;
 }
@@ -22,8 +22,6 @@
     [super didReceiveMemoryWarning];
 	// stuff.
 }
-
-#pragma mark - View lifecycle
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -61,8 +59,6 @@
 	return YES;
 }
 
-#pragma mark - Table view data source
-
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // Return the number of sections.
     return 3;
@@ -94,6 +90,14 @@
 	return @"  HAXXX !!! ";
 }
 
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+//	[textField resignFirstResponder];
+	[[[self tableView] viewWithTag:textField.tag+1] becomeFirstResponder];
+	[[self tableView] scrollToRowAtIndexPath:[self.tableView indexPathForCell:(UITableViewCell *)[textField superview]] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+
+	return NO;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString *CellIdentifier = [NSString stringWithFormat:@"CELL_%d_%d", indexPath.section, indexPath.row];
     
@@ -107,9 +111,30 @@
 			switch (indexPath.row) {
 				case 0:
 					cell.textLabel.text = @"Description";
+					UITextField *dField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 170, 22)];
+					[dField setAdjustsFontSizeToFitWidth:YES];
+					[dField setPlaceholder:@"Enter a description"];
+					[dField setTag:1];
+					[dField setText:_description];
+					[dField setDelegate:self];
+					[dField setKeyboardAppearance:UIKeyboardAppearanceAlert];
+					[dField setReturnKeyType:UIReturnKeyNext];
+					[cell setAccessoryView:dField];
+					[dField release];
 					break;
 				case 1:
 					cell.textLabel.text = @"Address";
+                    UITextField *address = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 170, 22)];
+                    address.adjustsFontSizeToFitWidth = YES;
+                    address.placeholder = @"irc.network.tld";
+                    address.keyboardType = UIKeyboardTypeURL;
+					address.text = _server;
+                    address.returnKeyType = UIReturnKeyNext;
+                    address.tag = 2;
+                    address.keyboardAppearance = UIKeyboardAppearanceAlert;
+                    [address setDelegate:self];
+                    [cell setAccessoryView:address];
+                    [address release];
 					break;
 				case 2:
 					cell.textLabel.text = @"Port";
@@ -143,7 +168,8 @@
 				case 0:
 					cell.textLabel.text = @"Connect At Launch";
 					UISwitch *cnt = [[UISwitch alloc] init];
-					[cnt setOn:NO];
+					[cnt setOn:hasSSL];
+					[cnt addTarget:self action:@selector(sslSwitched:) forControlEvents:UIControlEventValueChanged];
 					[cell setAccessoryView:cnt];
 					[cnt release];
 					break;
@@ -161,49 +187,11 @@
     return cell;
 }
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
+- (void)sslSwitched:(UISwitch *)s {
+	hasSSL = s.on;
 }
-*/
 
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-#pragma mark - Table view delegate
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     // Navigation logic may go here. Create and push another view controller.
     /*
      <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
