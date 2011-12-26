@@ -61,7 +61,7 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // Return the number of sections.
-    return 3;
+    return 4;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -69,8 +69,10 @@
 		case 0:
 			return 4;
 		case 1:
-			return 5;
+			return 3;
 		case 2:
+			return 2;
+		case 3:
 			return 3;
 	}
 	return (int)@"HAXX!!!";
@@ -83,6 +85,8 @@
 		case 1:
 			return @"User Information";
 		case 2:
+			return @"Authentication";
+		case 3:
 			return @"Advanced";
 		default:
 			break;
@@ -105,12 +109,14 @@
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
 		cell.selectionStyle = UITableViewCellSelectionStyleNone;
+		cell.textLabel.font = [UIFont boldSystemFontOfSize:15.5];
     }
     switch (indexPath.section) {
 		case 0:
 			switch (indexPath.row) {
 				case 0:
 					cell.textLabel.text = @"Description";
+							cell.textLabel.font = [UIFont boldSystemFontOfSize:16];
 					UITextField *dField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 170, 22)];
 					[dField setAdjustsFontSizeToFitWidth:YES];
 					[dField setPlaceholder:@"Enter a description"];
@@ -171,15 +177,19 @@
 				case 2:
 					cell.textLabel.text = @"Real Name";
 					break;
-				case 3:
-					cell.textLabel.text = @"Nick Password";
-					break;
-				case 4:
-					cell.textLabel.text = @"Server Password";
-					break;
 			}
 			break;
 		case 2:
+			switch (indexPath.row) {
+				case 0:
+					cell.textLabel.text = @"NickServ";
+					break;
+				case 1:
+					cell.textLabel.text = @"Server";
+					break;
+			}
+			break;
+		case 3:
 			switch (indexPath.row) {
 				case 0:
 					cell.textLabel.text = @"Connect At Launch";
@@ -190,9 +200,14 @@
 					[cnt release];
 					break;
 				case 1:
+					cell.textLabel.text = @"Alternate Nicknames";
+					cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+					cell.selectionStyle = UITableViewCellSelectionStyleBlue;
 					break;
 				case 2:
 					cell.textLabel.text = @"Auto Commands";
+					cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+					cell.selectionStyle = UITableViewCellSelectionStyleBlue;
 					break;
 			}
 			break;
@@ -211,6 +226,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	[tableView deselectRowAtIndexPath:indexPath animated:YES];
     // Navigation logic may go here. Create and push another view controller.
     /*
      <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
