@@ -22,6 +22,8 @@ typedef enum RCSocketStatus {
 	RCResponseParser *parser;
 	NSString *server;
 	NSString *nick;
+	NSString *username;
+	NSString *realName;
     NSString *servPass;
 	int port;
 	BOOL isRegistered;
@@ -33,6 +35,8 @@ typedef enum RCSocketStatus {
 }
 @property (nonatomic, retain) NSString *server;
 @property (nonatomic, retain) NSString *nick;
+@property (nonatomic, retain) NSString *username;
+@property (nonatomic, retain) NSString *realName;
 @property (nonatomic, retain) NSString *servPass;
 @property (nonatomic, assign) int port;
 @property (nonatomic, assign) BOOL wantsSSL;

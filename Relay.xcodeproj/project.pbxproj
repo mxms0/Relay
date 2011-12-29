@@ -23,6 +23,9 @@
 		502EB86814A667ED000B939F /* RCNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 502EB86614A667ED000B939F /* RCNetwork.m */; };
 		502EB88714A6A288000B939F /* RCAddNetworkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 502EB88514A6A288000B939F /* RCAddNetworkViewController.m */; };
 		502EB89014A6C7C9000B939F /* RCNetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 502EB88F14A6C7C9000B939F /* RCNetworkManager.m */; };
+		504C1F3014AACCFF00F6EED5 /* NSAttributedString+Attributes.m in Sources */ = {isa = PBXBuildFile; fileRef = 504C1F2D14AACCFF00F6EED5 /* NSAttributedString+Attributes.m */; };
+		504C1F3114AACCFF00F6EED5 /* OHAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 504C1F2F14AACCFF00F6EED5 /* OHAttributedLabel.m */; };
+		504C1F3614AACFDE00F6EED5 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 504C1F3514AACFDE00F6EED5 /* CoreText.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -53,6 +56,11 @@
 		502EB88614A6A288000B939F /* RCAddNetworkViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCAddNetworkViewController.h; sourceTree = "<group>"; };
 		502EB88E14A6C7C8000B939F /* RCNetworkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCNetworkManager.h; sourceTree = "<group>"; };
 		502EB88F14A6C7C9000B939F /* RCNetworkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCNetworkManager.m; sourceTree = "<group>"; };
+		504C1F2C14AACCFF00F6EED5 /* NSAttributedString+Attributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+Attributes.h"; sourceTree = "<group>"; };
+		504C1F2D14AACCFF00F6EED5 /* NSAttributedString+Attributes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSAttributedString+Attributes.m"; sourceTree = "<group>"; };
+		504C1F2E14AACCFF00F6EED5 /* OHAttributedLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OHAttributedLabel.h; sourceTree = "<group>"; };
+		504C1F2F14AACCFF00F6EED5 /* OHAttributedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OHAttributedLabel.m; sourceTree = "<group>"; };
+		504C1F3514AACFDE00F6EED5 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +68,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				504C1F3614AACFDE00F6EED5 /* CoreText.framework in Frameworks */,
 				5000FB0314A4F86500EFE069 /* CFNetwork.framework in Frameworks */,
 				5000FAD614A4F17100EFE069 /* UIKit.framework in Frameworks */,
 				5000FAD814A4F17100EFE069 /* Foundation.framework in Frameworks */,
@@ -90,6 +99,7 @@
 		5000FAD414A4F17100EFE069 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				504C1F3514AACFDE00F6EED5 /* CoreText.framework */,
 				5000FB0214A4F86500EFE069 /* CFNetwork.framework */,
 				5000FAD514A4F17100EFE069 /* UIKit.framework */,
 				5000FAD714A4F17100EFE069 /* Foundation.framework */,
@@ -124,6 +134,7 @@
 		5000FAFD14A4F2B500EFE069 /* Backend */ = {
 			isa = PBXGroup;
 			children = (
+				504C1F2A14AACCF300F6EED5 /* OH */,
 				502EB88E14A6C7C8000B939F /* RCNetworkManager.h */,
 				502EB88F14A6C7C9000B939F /* RCNetworkManager.m */,
 				502EB86314A667ED000B939F /* RCChannel.h */,
@@ -149,6 +160,17 @@
 				502EB88514A6A288000B939F /* RCAddNetworkViewController.m */,
 			);
 			name = UI;
+			sourceTree = "<group>";
+		};
+		504C1F2A14AACCF300F6EED5 /* OH */ = {
+			isa = PBXGroup;
+			children = (
+				504C1F2C14AACCFF00F6EED5 /* NSAttributedString+Attributes.h */,
+				504C1F2D14AACCFF00F6EED5 /* NSAttributedString+Attributes.m */,
+				504C1F2E14AACCFF00F6EED5 /* OHAttributedLabel.h */,
+				504C1F2F14AACCFF00F6EED5 /* OHAttributedLabel.m */,
+			);
+			name = OH;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -224,6 +246,8 @@
 				502EB86814A667ED000B939F /* RCNetwork.m in Sources */,
 				502EB88714A6A288000B939F /* RCAddNetworkViewController.m in Sources */,
 				502EB89014A6C7C9000B939F /* RCNetworkManager.m in Sources */,
+				504C1F3014AACCFF00F6EED5 /* NSAttributedString+Attributes.m in Sources */,
+				504C1F3114AACCFF00F6EED5 /* OHAttributedLabel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

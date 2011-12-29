@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "RCSocket.h"
+#import "RCNetwork.h"
 #import "RCNetworkManager.h"
 #import "RCAddNetworkViewController.h"
 

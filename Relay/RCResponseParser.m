@@ -43,7 +43,7 @@
 }
 
 - (void)performJOIN:(NSString *)join {
-	NSLog(@"SHOULD BE JOINING SOME FUCKER %@",join);
+
 	join = [join stringByReplacingOccurrencesOfString:@"\r\n" withString:@""];
 	NSString *crap = @"";
 	NSScanner *_sc = [[NSScanner alloc] initWithString:[join substringWithRange:NSMakeRange(1, join.length-1)]];

@@ -44,10 +44,15 @@ static id sharedInstance = nil;
 }
 
 - (void)addNetwork:(RCNetwork *)net {
-	if (![networks containsObject:net]) {
-		[networks addObject:net];
-		[self saveNetworks];
+	NSLog(@"WHATTT %@ : %@", networks, net);
+	for (RCNetwork *netw in networks) {
+		if ([netw.sDescription isEqualToString:net.sDescription]) {
+			NSLog(@"ERROR: Cannot have two servers with the same description.");
+			return;
+		}
 	}
+	[networks addObject:net];
+	[self saveNetworks];
 }
 
 - (void)dealloc {

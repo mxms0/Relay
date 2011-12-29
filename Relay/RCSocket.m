@@ -10,7 +10,7 @@
 #define B_LOG(y) NSLog(@"LOG: %s %d %@ %d", __FILE__, __LINE__, NSStringFromSelector(_cmd), y);
 
 @implementation RCSocket
-@synthesize server, nick, port, wantsSSL, servPass, status, channels, isRegistered;
+@synthesize server, nick, port, wantsSSL, servPass, status, channels, isRegistered, username, realName;
 
 - (BOOL)connect {
 	parser = [[RCResponseParser alloc] init];
@@ -43,16 +43,27 @@
     if (servPass)
         [self sendMessage:[NSString stringWithFormat:@"PASS %@", servPass]];
     
-    [self sendMessage:@"USER ac3xx ac3xx ac3xx ac3xx"];
-    [self sendMessage:@"NICK ac3xxlulz"];
+    [self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ %@", (username ? username : nick), nick, nick, (realName ? realName : nick)]];
+    [self sendMessage:[@"NICK " stringByAppendingString:nick]];
     
 	return YES;
 }
 
 - (BOOL)disconnect {
-	[self sendMessage:@"QUIT Relay 1.0\r\n"];
+	[self sendMessage:@"QUIT Relay 1.0"];
 	status = RCSocketStatuClosed;
 	[parser release];
+	[iStream close];
+	[oStream close];
+	[iStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+	[oStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+	[iStream setDelegate:nil];
+	[oStream setDelegate:nil];
+	[iStream release];
+	[oStream release];
+	iStream = nil;
+	oStream = nil;
+	NSLog(@"Disconnected...");
 	return YES;
 }
 
@@ -60,16 +71,19 @@
 	static NSMutableString *response;
 	switch (eventCode) {
 		case NSStreamEventEndEncountered:
-			if (status != RCSocketStatusError)
+			if (status != RCSocketStatusError) {
 				status = RCSocketStatuClosed;
-		//	B_LOG(NSStreamEventEndEncountered);
+				[self disconnect];
+			}
 			break;
 		case NSStreamEventErrorOccurred:
+			if (status == RCSocketStatusError) {
+				[self disconnect];
+				[[NSNotificationCenter defaultCenter] postNotificationName:@"RELOAD_NETWORKS" object:nil];
+			}
 			status = RCSocketStatusError;
-		//	B_LOG(NSStreamEventErrorOccurred);
 			break;
 		case NSStreamEventHasBytesAvailable:
-		//	B_LOG(NSStreamEventHasBytesAvailable);
 			if (!response) 
 				response = [[NSMutableString alloc] init];
 			uint8_t buffer;
@@ -77,7 +91,6 @@
 			if (read)
 				[response appendFormat:@"%c", buffer];
 			if ([response hasSuffix:@"\r\n"]) {
-				NSLog(@"Raw.: %@", response);
 				[self messageRecieved:response];
 				[response release];
 				response = nil;
@@ -86,13 +99,11 @@
 		case NSStreamEventHasSpaceAvailable:
 			if (status == RCSocketStatusConnecting) 
 				status = RCSocketStatusOpen;
-		//	B_LOG(NSStreamEventHasSpaceAvailable);
+				[[NSNotificationCenter defaultCenter] postNotificationName:@"RELOAD_NETWORKS" object:nil];
 			break;
 		case NSStreamEventNone:
-		//	B_LOG(NSStreamEventNone);
 			break;
 		case NSStreamEventOpenCompleted:
-		//	B_LOG(NSStreamEventOpenCompleted);
 			break;
 			
 	}
@@ -166,6 +177,8 @@
 	[super dealloc];
 	[server release];
 	[nick release];
+	[username release];
+	[realName release];
 	[channels release];
 	[iStream release];
 	[oStream release];

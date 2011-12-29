@@ -17,5 +17,6 @@
 - (void)unpack;
 - (id)networks;
 + (void)saveNetworks;
+- (void)saveNetworks;
 - (void)addNetwork:(RCNetwork *)net;
 @end

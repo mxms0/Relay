@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-@interface RCChannel : NSObject
-
+@interface RCChannel : NSObject {
+	NSString *name;
+}
+- (id)initWithRoomName:(NSString *)_name;
+- (void)messageRecieved:(NSString *)message from:(NSString *)from;
 @end

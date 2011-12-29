@@ -8,11 +8,12 @@
 
 #import <Foundation/Foundation.h>
 #import "RCSocket.h"
+#import "RCChannel.h"
 
 @interface RCNetwork : NSObject {
 	RCSocket *socket;
 	NSString *server;
-	NSString *description;
+	NSString *sDescription;
 	NSString *username;
 	NSString *nickname;
 	NSString *realname;
@@ -24,7 +25,7 @@
 }
 @property (nonatomic, retain) RCSocket *socket;
 @property (nonatomic, retain) NSString *server;
-@property (nonatomic, retain) NSString *description;
+@property (nonatomic, retain) NSString *sDescription;
 @property (nonatomic, retain) NSString *username;
 @property (nonatomic, retain) NSString *nickname;
 @property (nonatomic, retain) NSString *realname;
@@ -35,7 +36,11 @@
 @property (nonatomic, assign) BOOL wantsSSL;
 
 + (id)createNetworkWithAddress:(NSString *)url port:(int)port wantsSSL:(BOOL)_ssl description:(NSString *)_description withUsername:(NSString *)_username andNickname:(NSString *)_nickName realName:(NSString *)_realName serverPassword:(NSString *)_sPass nickServPass:(NSString *)_nPass;
+- (void)encodeWithCoder:(NSCoder *)coder;
+- (void)joinRoom:(NSString *)room;
 - (void)connect;
+- (BOOL)isConnected;
 - (void)disconnect;
+- (NSString *)connectionStatus;
 
 @end
