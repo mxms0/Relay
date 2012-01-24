@@ -11,8 +11,4 @@
 
 @synthesize channelName;
 
-- (void)messageRecieved:(NSString *)msg {
-	
-}
-
 @end
