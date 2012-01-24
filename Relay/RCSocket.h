@@ -2,55 +2,31 @@
 //  RCSocket.h
 //  Relay
 //
-//  Created by Max Shavrick on 12/23/11.
-//  Copyright (c) 2011 American Heritage School. All rights reserved.
+//  Created by Max Shavrick on 1/16/12.
+//  Copyright (c) 2012 American Heritage School. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import "RCResponseParser.h"
-#import <objc/runtime.h>
 
-typedef enum RCSocketStatus {
-	RCSocketStatusNotOpen,
-	RCSocketStatusConnecting,
-	RCSocketStatusOpen,
-	RCSocketStatusError,
-	RCSocketStatuClosed
-} RCSocketStatus;
+
+
 
 @interface RCSocket : NSObject <NSStreamDelegate> {
-	RCResponseParser *parser;
-	NSString *server;
-	NSString *nick;
-	NSString *username;
-	NSString *realName;
-    NSString *servPass;
-	int port;
-	BOOL isRegistered;
-	RCSocketStatus status;
-	BOOL wantsSSL;
-	NSMutableArray *channels;
+	id network;
+	int task;
 	NSInputStream *iStream;
 	NSOutputStream *oStream;
+	RCSocketStatus status;
+	NSOperationQueue *queue;
+	id <RCResponseDelegate> delegate;
 }
-@property (nonatomic, retain) NSString *server;
-@property (nonatomic, retain) NSString *nick;
-@property (nonatomic, retain) NSString *username;
-@property (nonatomic, retain) NSString *realName;
-@property (nonatomic, retain) NSString *servPass;
-@property (nonatomic, assign) int port;
-@property (nonatomic, assign) BOOL wantsSSL;
-@property (nonatomic, assign) RCSocketStatus status;
-@property (nonatomic, retain) NSMutableArray *channels;
-@property (nonatomic, assign) BOOL isRegistered;
-- (BOOL)connect;
-- (BOOL)disconnect;
-- (void)respondToVersion:(NSString *)from;
-- (void)messageRecieved:(NSString *)message;
-- (void)sendMessage:(NSString *)command;
-- (void)channel:(NSString *)chan recievedMessage:(NSString *)msg fromUser:(NSString *)usr;
-- (void)addUser:(NSString *)nick toRoom:(NSString *)room;
-- (void)addRoom:(NSString *)roomName;
-- (BOOL)isConnected;
-- (NSArray *)parseString:(NSString *)string;
+@property (nonatomic, retain) id <RCResponseDelegate> delegate;
+@property (nonatomic, readonly) RCSocketStatus status;
+- (id)initWithNetwork:(id)_network;
+- (BOOL)_connect;
+- (BOOL)_disconnect;
+- (BOOL)sendMessage:(NSString *)msg;
+- (void)recievedMessage:(NSString *)msg;
+- (BOOL)_isConnecting;
+- (BOOL)_isConnected;
 @end

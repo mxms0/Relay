@@ -2,18 +2,16 @@
 //  RCViewController.h
 //  Relay
 //
-//  Created by Max Shavrick on 12/23/11.
-//  Copyright (c) 2011 American Heritage School. All rights reserved.
+//  Created by Max Shavrick on 1/13/12.
 //
 
 #import <UIKit/UIKit.h>
-#import "RCSocket.h"
-#import "RCNetwork.h"
 #import "RCNetworkManager.h"
-#import "RCAddNetworkViewController.h"
+#import "RCTableCell.h"
+#import "RCTableHeaderView.h"
 
 @interface RCViewController : UITableViewController {
-	RCNetworkManager *manager;
+	
 }
 
 @end

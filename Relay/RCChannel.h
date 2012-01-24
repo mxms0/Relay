@@ -2,15 +2,14 @@
 //  RCChannel.h
 //  Relay
 //
-//  Created by James Long on 24/12/2011.
-//  Copyright (c) 2011 American Heritage School. All rights reserved.
+//  Created by Max Shavrick on 1/23/12.
 //
 
 #import <Foundation/Foundation.h>
 
 @interface RCChannel : NSObject {
-	NSString *name;
+	NSString *channelName;
 }
-- (id)initWithRoomName:(NSString *)_name;
-- (void)messageRecieved:(NSString *)message from:(NSString *)from;
+@property (nonatomic, retain) NSString *channelName;
+
 @end

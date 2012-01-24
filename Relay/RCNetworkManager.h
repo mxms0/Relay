@@ -2,21 +2,19 @@
 //  RCNetworkManager.h
 //  Relay
 //
-//  Created by Max Shavrick on 12/24/11.
-//  Copyright (c) 2011 American Heritage School. All rights reserved.
+//  Created by Max Shavrick on 1/13/12.
 //
 
 #import <Foundation/Foundation.h>
-#import "RCNEtwork.h"
+#import "RCNetwork.h"
 
 @interface RCNetworkManager : NSObject {
-
+	
 }
-
-+ (id)sharedNetworkManager;
-- (void)unpack;
-- (id)networks;
++ (RCNetworkManager *)sharedNetworkManager;
++ (void)ircNetworkWithInfo:(NSDictionary *)info;
+- (NSMutableArray *)networks;
 + (void)saveNetworks;
 - (void)saveNetworks;
-- (void)addNetwork:(RCNetwork *)net;
+
 @end

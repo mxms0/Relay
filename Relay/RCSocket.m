@@ -2,186 +2,153 @@
 //  RCSocket.m
 //  Relay
 //
-//  Created by Max Shavrick on 12/23/11.
-//  Copyright (c) 2011 American Heritage School. All rights reserved.
+//  Created by Max Shavrick on 1/16/12.
+//  Copyright (c) 2012 American Heritage School. All rights reserved.
 //
 
 #import "RCSocket.h"
-#define B_LOG(y) NSLog(@"LOG: %s %d %@ %d", __FILE__, __LINE__, NSStringFromSelector(_cmd), y);
+#import "RCNetwork.h"
+#import <objc/runtime.h>
 
 @implementation RCSocket
-@synthesize server, nick, port, wantsSSL, servPass, status, channels, isRegistered, username, realName;
+@synthesize delegate, status;
 
-- (BOOL)connect {
-	parser = [[RCResponseParser alloc] init];
-	channels = [[NSMutableArray alloc] init];
-	isRegistered = NO;
-	parser.delegate = self;
-	CFStreamCreatePairWithSocketToHost(NULL, (CFStringRef)server, port ? port : 6667, (CFReadStreamRef *)&iStream, (CFWriteStreamRef *)&oStream);
-	[iStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-	[oStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-	[iStream setDelegate:self];
-	[oStream setDelegate:self];
-	if ([iStream streamStatus] == NSStreamStatusNotOpen)
-		[iStream open];
-	if ([oStream streamStatus] == NSStreamStatusNotOpen)
-		[oStream open];
-	if (wantsSSL) {
-		[iStream setProperty:NSStreamSocketSecurityLevelNegotiatedSSL forKey:NSStreamSocketSecurityLevelKey];
-		[oStream setProperty:NSStreamSocketSecurityLevelNegotiatedSSL forKey:NSStreamSocketSecurityLevelKey];
-		NSDictionary *settings = [[NSDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithBool:YES], kCFStreamSSLAllowsExpiredCertificates,
-								  [NSNumber numberWithBool:YES], kCFStreamSSLAllowsAnyRoot, [NSNumber numberWithBool:NO], 
-								  kCFStreamSSLValidatesCertificateChain, kCFNull, kCFStreamSSLPeerName, nil];
-		CFReadStreamSetProperty((CFReadStreamRef)iStream, kCFStreamPropertySSLSettings, (CFTypeRef)settings);
-		CFWriteStreamSetProperty((CFWriteStreamRef)oStream, kCFStreamPropertySSLSettings, (CFTypeRef)settings);
-		[settings release];
+- (id)initWithNetwork:(id)_network {
+	if ((self = [super init])) {
+		status = RCSocketStatusNotOpen;
+		network = _network;
+		queue = [[NSOperationQueue alloc] init];
 	}
-	if ([self status] == RCSocketStatusOpen || [self status] == RCSocketStatusConnecting) {
-		return NO; //already connected or trying to connect.
-	}
-	status = RCSocketStatusConnecting;
-    if (servPass)
-        [self sendMessage:[NSString stringWithFormat:@"PASS %@", servPass]];
-    
-    [self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ %@", (username ? username : nick), nick, nick, (realName ? realName : nick)]];
-    [self sendMessage:[@"NICK " stringByAppendingString:nick]];
-    
-	return YES;
+	return self;
 }
 
-- (BOOL)disconnect {
-	[self sendMessage:@"QUIT Relay 1.0"];
-	status = RCSocketStatuClosed;
-	[parser release];
-	[iStream close];
-	[oStream close];
-	[iStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-	[oStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-	[iStream setDelegate:nil];
-	[oStream setDelegate:nil];
-	[iStream release];
-	[oStream release];
-	iStream = nil;
-	oStream = nil;
-	NSLog(@"Disconnected...");
-	return YES;
+- (BOOL)_connect {
+	if ((status != RCSocketStatusConnecting) && (status != RCSocketStatusConnected)) {
+	}
+	return NO;
+}
+
+- (BOOL)sendMessage:(NSString *)msg {
+
+	return NO;
 }
 
 - (void)stream:(NSStream *)aStream handleEvent:(NSStreamEvent)eventCode {
-	static NSMutableString *response;
+	static NSMutableString *data = nil;
 	switch (eventCode) {
-		case NSStreamEventEndEncountered:
-			if (status != RCSocketStatusError) {
-				status = RCSocketStatuClosed;
-				[self disconnect];
-			}
+		case NSStreamEventEndEncountered: // 16 - Called on ping timeout/closing link
+			status = RCSocketStatusClosed;
+			[delegate networkDidRecieveResponse:1];
+			NSLog(@"NSStreamEventEndEncountered:%d",NSStreamEventEndEncountered);
+			[[NSNotificationCenter defaultCenter] postNotificationName:RELOAD_KEY object:nil];
 			break;
-		case NSStreamEventErrorOccurred:
-			if (status == RCSocketStatusError) {
-				[self disconnect];
-				[[NSNotificationCenter defaultCenter] postNotificationName:@"RELOAD_NETWORKS" object:nil];
-			}
+		case NSStreamEventErrorOccurred: /// 8 - Unknowns/bad interwebz
 			status = RCSocketStatusError;
+			[delegate networkDidRecieveResponse:1];
+			NSLog(@"NSStreamEventErrorOccurred:%d",NSStreamEventErrorOccurred);
+			[[NSNotificationCenter defaultCenter] postNotificationName:RELOAD_KEY object:nil];
 			break;
-		case NSStreamEventHasBytesAvailable:
-			if (!response) 
-				response = [[NSMutableString alloc] init];
+		case NSStreamEventHasBytesAvailable: // 2
+			if (!data) data = [NSMutableString new];
 			uint8_t buffer;
-			NSInteger read = [(NSInputStream *)aStream read:&buffer maxLength:1];
-			if (read)
-				[response appendFormat:@"%c", buffer];
-			if ([response hasSuffix:@"\r\n"]) {
-				[self messageRecieved:response];
-				[response release];
-				response = nil;
+			NSUInteger bytesRead = [(NSInputStream *)aStream read:&buffer maxLength:1];
+			if (bytesRead)
+				[data appendFormat:@"%c", buffer];
+			if ([data hasSuffix:@"\r\n"]) {
+				[self recievedMessage:data];
+				[data release];
+				data = nil;
 			}
 			break;
-		case NSStreamEventHasSpaceAvailable:
-			if (status == RCSocketStatusConnecting) 
-				status = RCSocketStatusOpen;
-				[[NSNotificationCenter defaultCenter] postNotificationName:@"RELOAD_NETWORKS" object:nil];
+		case NSStreamEventHasSpaceAvailable: // 4
+			if (status == RCSocketStatusConnecting)
+				status = RCSocketStatusConnected;
+			NSLog(@"NSStreamEventHasSpaceAvailable:%d",NSStreamEventHasSpaceAvailable);
 			break;
 		case NSStreamEventNone:
+			NSLog(@"NSStreamEventNone:%d",NSStreamEventNone);
 			break;
-		case NSStreamEventOpenCompleted:
+		case NSStreamEventOpenCompleted: // 1
+			status = RCSocketStatusConnected;
+			NSLog(@"NSStreamEventOpenCompleted:%d",NSStreamEventOpenCompleted);
+			[[NSNotificationCenter defaultCenter] postNotificationName:RELOAD_KEY object:nil];
 			break;
-			
 	}
 }
 
-- (void)messageRecieved:(NSString *)message {
-	if ([message hasPrefix:@"PING"]) {
-		NSLog(@"PING! %@", message);
-		NSRange rangeOfPing = [message rangeOfString:@"PING :"];
-		[self sendMessage:[@"PONG " stringByAppendingString:[message substringWithRange:NSMakeRange(rangeOfPing.location+rangeOfPing.length, message.length-(rangeOfPing.location+rangeOfPing.length))]]];
+- (BOOL)_isConnecting {
+	return (status == RCSocketStatusConnecting);
+}
+- (BOOL)_isConnected {
+	return (status == RCSocketStatusConnected);
+}
+
+- (void)recievedMessage:(NSString *)msg {
+	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+	if ([msg hasPrefix:@"PING"]) {
+		[self sendMessage:[@"PONG" stringByAppendingString:[msg substringWithRange:NSMakeRange(4, msg.length-4)]]];
+		[p drain];
+		return;
 	}
-	else {
-		[parser messageRecieved:message];
+	else if ([msg hasPrefix:@"ERROR"]) {
+		[p drain];
+		return;
+		// handle error..
 	}
+	NSScanner *_scanr = [[NSScanner alloc] initWithString:msg];
+	NSString *from = @"0_Max";
+	NSString *cmd = @"0_HAI";
+	[_scanr scanUpToString:@" " intoString:&from];
+	[_scanr setScanLocation:[_scanr scanLocation]+1];
+	[_scanr scanUpToString:@" " intoString:&cmd];
+	NSLog(@"Crap:%@ cmd:%@", from, cmd);
+	NSString *_msg = [NSString stringWithFormat:@"handle%@:", cmd];
+	SEL _pSEL = NSSelectorFromString(_msg);
+	if ([self respondsToSelector:_pSEL]) 
+		[self performSelectorInBackground:_pSEL withObject:msg];
+	else NSLog(@"PLZ IMPLEMENT: %s", (char *)_pSEL);
+	// some messages begin with \x01
+	// i think all messages end of \x0D\x0A
+	// \x0D\x0A = \r\n :D
+	if ([msg hasSuffix:@"\x0A"]) NSLog(@"Haider. %@", [msg dataUsingEncoding:NSUTF8StringEncoding]);
+	NSLog(@"message: %@",msg);
+	[_scanr release];
+	[p drain]; 
 }
 
-- (void)respondToVersion:(NSString *)from {
-	NSLog(@"VERSION: %@",from);
-	[self sendMessage:[@"NOTICE VERSION " stringByAppendingFormat:@"%@ Relay 1.0b1!",from]];
-}
+- (BOOL)_disconnect {
 
-- (void)joinRoom:(NSString *)room {
-	if (![channels containsObject:room]) {
-		[self sendMessage:[@"JOIN " stringByAppendingString:room]];
-		[self addRoom:room];
+	if ((status == RCSocketStatusConnected) || (status == RCSocketStatusConnecting)) {
+		[self sendMessage:@"QUIT :Relay 1.0"];
+		status = RCSocketStatusClosed;
+		[[UIApplication sharedApplication] endBackgroundTask:task];
+		task = UIBackgroundTaskInvalid;
+		[[NSNotificationCenter defaultCenter] postNotificationName:RELOAD_KEY object:nil];
+		[oStream close];
+		[iStream close];
+		[oStream release];
+		[iStream release];
+		oStream = nil;
+		iStream = nil;
+			NSLog(@"Disconnecting..");
 	}
-	else return;
+	return YES;
 }
 
-- (void)addRoom:(NSString *)roomName {
-	if (![channels containsObject:roomName]) {
-		[channels addObject:roomName];
-	}
-	NSLog(@"Meh. %@",roomName);
+- (void)handleNotice:(NSString *)aNotice {
+	
 }
 
-- (BOOL)isConnected {
-	return ((status == RCSocketStatusOpen) || (status == RCSocketStatusConnecting));
+- (void)handle001:(NSString *)welcome {
+	
 }
 
-- (void)addUser:(NSString *)_nick toRoom:(NSString *)room {
-	NSLog(@"%@ Joiend %@", _nick, room);
-}
-
-- (void)channel:(NSString *)chan recievedMessage:(NSString *)msg fromUser:(NSString *)usr {
-	NSLog(@"%@:[%@:%@]", chan, msg, usr);
-}
-
-- (NSArray *)parseString:(NSString *)string {
-    NSScanner *scan = [NSScanner scannerWithString:string];
-    if ([string hasPrefix:@":"]) {
-        [scan setScanLocation:1];
-    }
-    NSString *sender = nil;
-    NSString *command = nil;
-    NSString *argument = nil;
-    
-    [scan scanUpToString:@" " intoString:&sender];
-    [scan scanUpToString:@" " intoString:&command];
-    [scan scanUpToString:@"\r\n" intoString:&argument];
-    return [NSArray arrayWithObjects:sender, command, argument, nil];
-}
-
-- (void)sendMessage:(NSString *)command {
-	NSString *message = [command stringByAppendingString:@"\r\n"];
-    NSData *messageData = [message dataUsingEncoding:NSASCIIStringEncoding];
-    [oStream write:[messageData bytes] maxLength:[messageData length]];
+- (void)handle002:(NSString *)host {
+	
 }
 
 - (void)dealloc {
 	[super dealloc];
-	[server release];
-	[nick release];
-	[username release];
-	[realName release];
-	[channels release];
-	[iStream release];
-	[oStream release];
 }
 
 @end
