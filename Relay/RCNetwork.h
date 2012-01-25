@@ -6,6 +6,8 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "RCChannel.h"
+
 typedef enum RCSocketStatus {
 	RCSocketStatusConnecting,
 	RCSocketStatusConnected,
@@ -16,6 +18,8 @@ typedef enum RCSocketStatus {
 
 @interface RCNetwork : NSObject <NSStreamDelegate> {
 	NSMutableArray *channels;
+	NSMutableArray *titles;
+	NSMutableDictionary *_channels;
 	NSString *sDescription;
 	NSString *server;
 	NSString *nick;
@@ -32,6 +36,7 @@ typedef enum RCSocketStatus {
 	BOOL useSSL;
 	BOOL COL;
 }
+@property (nonatomic, retain) NSMutableArray *titles;
 @property (nonatomic, retain) NSMutableArray *channels;
 @property (nonatomic, retain) NSString *sDescription;
 @property (nonatomic, retain) NSString *server;
@@ -54,6 +59,8 @@ typedef enum RCSocketStatus {
 - (BOOL)sendMessage:(NSString *)msg;
 - (void)recievedMessage:(NSString *)msg;
 - (void)errorOccured:(NSError *)error;
+- (void)setupRooms:(NSArray *)rooms;
+- (void)addChannel:(NSString *)_chan join:(BOOL)join;
 - (NSString *)connectionStatus;
 - (void)handlePING:(NSString *)pong;
 - (void)handleCTCPRequest:(NSString *)request;

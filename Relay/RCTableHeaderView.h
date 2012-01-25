@@ -13,8 +13,7 @@
 
 @end
 
-@interface RCTableHeaderView : UIView {
-
+@interface RCTableHeaderView : UIButton {
 }
 
 - (void)setNetwork:(RCNetwork *)network;

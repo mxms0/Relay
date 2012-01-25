@@ -16,11 +16,13 @@
 #pragma mark - TABLE_VIEW SHIT
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	return [[[RCNetworkManager sharedNetworkManager] networks] count];
+		NSLog(@"nffff %@", [[[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:section] channels]);
+	return [[[[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:section] channels] count];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-	return 1;
+	
+	return [[[RCNetworkManager sharedNetworkManager] networks] count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -29,16 +31,19 @@
 		_c = [[[RCTableCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"0_CELL_0"] autorelease];
 		_c.selectionStyle = UITableViewCellSelectionStyleGray;
 	}
-	_c.textLabel.text = [[[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.row] sDescription];
-	_c.detailTextLabel.text = ([[[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.row] connectionStatus]);
+	RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.section];
+	_c.textLabel.text = [[[net channels] objectAtIndex:indexPath.row] channelName];
+
+//	_c.textLabel.text = [[[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.section] sDescription];
+//	_c.detailTextLabel.text = ([[[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.row] connectionStatus]);
 	return _c;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
-	RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.row];
-	if ([net isConnected]) [net disconnect];
-	else [net connect];
+//	RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.section];
+//	if ([net isConnected]) [net disconnect];
+//	else [net connect];
 	
 }
 
@@ -64,7 +69,7 @@
 	[RCNetworkManager ircNetworkWithInfo:[NSDictionary dictionaryWithObjectsAndKeys:
 										  @"_m", USER_KEY, 
 										  @"_m", NICK_KEY,
-										  @"0_m f", NAME_KEY,
+										  @"0_m_hai", NAME_KEY,
 										  @"privateircftw", S_PASS_KEY,
 										  @"", N_PASS_KEY,
 										  @"feer", DESCRIPTION_KEY,
@@ -72,6 +77,7 @@
 										  @"6667", PORT_KEY,
 										  [NSNumber numberWithBool:0], SSL_KEY,
 										  [NSNumber numberWithBool:1], COL_KEY,
+										  [NSArray arrayWithObjects:@"#chat", @"#tttt", nil], CHANNELS_KEY,
 										  nil]];
 	for (RCNetwork *net in [[RCNetworkManager sharedNetworkManager] networks])
 		if ([net COL]) [net connect];

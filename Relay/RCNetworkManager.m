@@ -25,18 +25,23 @@ static NSMutableArray *networks = nil;
 	[network setPort:[[info objectForKey:PORT_KEY] intValue]];
 	[network setUseSSL:[[info objectForKey:SSL_KEY] boolValue]];
 	[network setCOL:[[info objectForKey:COL_KEY] boolValue]];
+	[network setTitles:[info objectForKey:CHANNELS_KEY]];
 	
 	for (RCNetwork *net in [[RCNetworkManager sharedNetworkManager] networks]) {
-		if ([[net descriptionForComparing] isEqualToString:[network descriptionForComparing]])
+		if ([[net descriptionForComparing] isEqualToString:[network descriptionForComparing]]) {
+			[network release];
 			return;
+		}
 	}
+	// if it passes, then setup to not waste memory.
+	[network setupRooms:[info objectForKey:CHANNELS_KEY]];
 	[networks addObject:network];
 	[[self sharedNetworkManager] saveNetworks];
 	[network release];
 }
 
 + (void)saveNetworks {
-	[[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:[[self sharedNetworkManager] networks]] forKey:NETS_KEY];
+	[[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:networks] forKey:NETS_KEY];
 }
 
 - (void)saveNetworks {
@@ -46,6 +51,7 @@ static NSMutableArray *networks = nil;
 + (RCNetworkManager *)sharedNetworkManager {
 	if (!snManager)
 		snManager = [[self alloc] init];
+	NSLog(@"Singletonloading.. %@", snManager);
 	return snManager;
 }
 
@@ -55,7 +61,8 @@ static NSMutableArray *networks = nil;
 			networks = [[NSKeyedUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:NETS_KEY]] mutableCopy];
 		else networks = [[NSMutableArray alloc] init];
 	}
-	return self;
+	snManager = self;
+	return snManager;
 }
 
 - (NSMutableArray *)networks {

@@ -6,19 +6,24 @@
 //
 
 #import "RCNetwork.h"
+#import "RCNetworkManager.h"
 
 @implementation RCNetwork
 
-@synthesize channels, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL;
+@synthesize titles, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, channels;
 
 - (id)init {
-	if ((self = [super init])) 
+	if ((self = [super init])) {
+		_channels = [[NSMutableDictionary alloc] init];
 		channels = [[NSMutableArray alloc] init];
+	}
 	return self;
 }
 
 - (id)initWithCoder:(NSCoder *)coder {
 	if ((self = [super init])) {
+		_channels = [[NSMutableDictionary alloc] init];
+		channels = [[NSMutableArray alloc] init];
 		NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 		[self setUsername:[coder decodeObjectForKey:USER_KEY]];
 		[self setNick:[coder decodeObjectForKey:NICK_KEY]];
@@ -29,10 +34,11 @@
 		[self setServer:[coder decodeObjectForKey:SERVR_ADDR_KEY]];
 		[self setPort:[[coder decodeObjectForKey:PORT_KEY] intValue]];
 		[self setUseSSL:[[coder decodeObjectForKey:SSL_KEY] boolValue]];
-		[self setChannels:[[coder decodeObjectForKey:CHANNELS_KEY] mutableCopy]];
 		[self setCOL:[[coder decodeObjectForKey:COL_KEY] boolValue]];
+		 [self setupRooms:[coder decodeObjectForKey:CHANNELS_KEY]];
 		[p drain];
 	}
+	NSLog(@"INITIALIZING. %@", self);
 	return self;
 }
 
@@ -47,10 +53,12 @@
 	[coder encodeObject:[NSNumber numberWithInt:port] forKey:PORT_KEY];
 	[coder encodeObject:[NSNumber numberWithBool:useSSL] forKey:SSL_KEY];
 	[coder encodeObject:[NSNumber numberWithBool:COL] forKey:COL_KEY];
-	[coder encodeObject:channels forKey:CHANNELS_KEY];
+	[coder encodeObject:titles forKey:CHANNELS_KEY];
 }
 
 - (void)dealloc {
+	[_channels release];
+	[titles release];
 	[server release];
 	[nick release];
 	[username release];
@@ -64,14 +72,31 @@
 
 - (NSString *)description {
 	return [self descriptionForComparing];
-	//	return [NSString stringWithFormat:@"<%@: %p>", NSStringFromClass([self class]), self];
-	//%@%@%@%@%@%@%@%d%d%d
 }
 
 - (NSString *)descriptionForComparing {
 	return [NSString stringWithFormat:@"%@%@%@%@%@%@%@%d%d%d", username, nick, realname, spass, npass, sDescription, server, port, useSSL, COL];
 }
 
+- (void)setupRooms:(NSArray *)rooms {
+	titles = (NSMutableArray *)rooms;
+	for (int i = 0; i < [rooms count]; i++) {
+		RCChannel *_chan = [[RCChannel alloc] init];
+		[_chan setChannelName:[rooms objectAtIndex:i]];
+		[channels addObject:_chan];
+		[_chan release];
+	}
+}
+- (void)addChannel:(NSString *)_chan join:(BOOL)join {
+	if (![titles containsObject:_chan]) {
+		RCChannel *chan = [[RCChannel alloc] init];
+		[chan setChannelName:_chan];
+		[channels addObject:chan];
+		[chan release];
+	}
+	else return;
+ 
+}
 
 #pragma mark - SOCKET STUFF
 
@@ -295,12 +320,25 @@
 	// no such nick/channel
 }
 
+- (void)handle403:(NSString *)blasphemey {
+	// no such channel
+}
+
 - (void)handle421:(NSString *)unknown {
 	NSLog(@"Unknown : %@ BYTES: %@", unknown, [unknown dataUsingEncoding:NSUTF8StringEncoding]);
 }
 
 - (void)handle422:(NSString *)motd {
 	// motd.
+}
+
+- (void)handle433:(NSString *)use {
+	// nick is in use.
+	[self sendMessage:[@"NICK " stringByAppendingFormat:@"%@_", nick]];
+}
+// test...
+- (void)handle:(id)s Closing:(id)x {
+	NSLog(@"fdfdsfsdfdsf %@", s);
 }
 
 - (void)handleNOTICE:(NSString *)notice {
@@ -382,15 +420,27 @@
 }
 
 - (void)handleJOIN:(NSString *)join {
-	// add/remove user unless self
+	// add user unless self
 	NSScanner *_scanner = [[NSScanner alloc] initWithString:join];
 	NSString *user = @"_";
 	NSString *cmd = user; // unused
 	NSString *room = cmd;
+	NSString *_nick = room;
 	[_scanner scanUpToString:@" " intoString:&user];
 	[_scanner scanUpToString:@" " intoString:&cmd];
 	[_scanner scanUpToString:@" :" intoString:&room];
-	NSLog(@"%@ joined %@", user, room);
+	user = [user substringFromIndex:1];
+	room = [room substringFromIndex:1];
+	[self parseUsermask:user nick:&_nick user:nil hostmask:nil];
+	NSLog(@"VARS: %@ %@ %@", user, _nick, room);
+	if ([_nick isEqualToString:nick]) {
+		NSLog(@"hai");
+		// i was joined...
+		// [self addChannel:room join:NO];
+		// crash from god knows where...
+		// some kind of crash in objc_msgSend... :x
+		// may be due to threading.. or some shit.
+	}
 	[_scanner release];
 }
 

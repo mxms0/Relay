@@ -11,4 +11,13 @@
 
 @synthesize channelName;
 
+- (void)dealloc {
+	[channelName release];
+	[super dealloc];
+}
+
+- (id)description {
+	return [NSString stringWithFormat:@"[%@ %@]", [super description], channelName];
+}
+
 @end
