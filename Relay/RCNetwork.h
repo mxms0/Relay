@@ -18,7 +18,6 @@ typedef enum RCSocketStatus {
 
 @interface RCNetwork : NSObject <NSStreamDelegate> {
 	NSMutableArray *channels;
-	NSMutableArray *titles;
 	NSMutableDictionary *_channels;
 	NSString *sDescription;
 	NSString *server;
@@ -32,12 +31,14 @@ typedef enum RCSocketStatus {
 	RCSocketStatus status;
 	int task;
 	int port;
+	int _scores; // ha. funny. jokes. get it. under_scores. ><
 	BOOL isRegistered;
 	BOOL useSSL;
 	BOOL COL;
+	BOOL shouldSave;
 }
-@property (nonatomic, retain) NSMutableArray *titles;
 @property (nonatomic, retain) NSMutableArray *channels;
+@property (nonatomic, retain) NSMutableDictionary *_channels;
 @property (nonatomic, retain) NSString *sDescription;
 @property (nonatomic, retain) NSString *server;
 @property (nonatomic, retain) NSString *nick;
@@ -54,8 +55,6 @@ typedef enum RCSocketStatus {
 - (BOOL)disconnect;
 - (BOOL)isConnected;
 - (NSString *)descriptionForComparing;
-- (id)initWithCoder:(NSCoder *)coder;
-- (void)encodeWithCoder:(NSCoder *)coder;
 - (BOOL)sendMessage:(NSString *)msg;
 - (void)recievedMessage:(NSString *)msg;
 - (void)errorOccured:(NSError *)error;
@@ -65,4 +64,5 @@ typedef enum RCSocketStatus {
 - (void)handlePING:(NSString *)pong;
 - (void)handleCTCPRequest:(NSString *)request;
 - (void)parseUsermask:(NSString *)mask nick:(NSString **)nick user:(NSString **)user hostmask:(NSString **)hostmask;
+- (id)infoDictionary;
 @end

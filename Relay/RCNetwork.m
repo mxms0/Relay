@@ -10,55 +10,38 @@
 
 @implementation RCNetwork
 
-@synthesize titles, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, channels;
+@synthesize sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, channels, _channels;
 
 - (id)init {
 	if ((self = [super init])) {
-		_channels = [[NSMutableDictionary alloc] init];
+		shouldSave = NO;
+		_scores = 0;
 		channels = [[NSMutableArray alloc] init];
+		_channels = [[NSMutableDictionary alloc] init];
 	}
 	return self;
 }
 
-- (id)initWithCoder:(NSCoder *)coder {
-	if ((self = [super init])) {
-		_channels = [[NSMutableDictionary alloc] init];
-		channels = [[NSMutableArray alloc] init];
-		NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
-		[self setUsername:[coder decodeObjectForKey:USER_KEY]];
-		[self setNick:[coder decodeObjectForKey:NICK_KEY]];
-		[self setRealname:[coder decodeObjectForKey:NAME_KEY]];
-		[self setSpass:[coder decodeObjectForKey:S_PASS_KEY]];
-		[self setNpass:[coder decodeObjectForKey:N_PASS_KEY]];
-		[self setSDescription:[coder decodeObjectForKey:DESCRIPTION_KEY]];
-		[self setServer:[coder decodeObjectForKey:SERVR_ADDR_KEY]];
-		[self setPort:[[coder decodeObjectForKey:PORT_KEY] intValue]];
-		[self setUseSSL:[[coder decodeObjectForKey:SSL_KEY] boolValue]];
-		[self setCOL:[[coder decodeObjectForKey:COL_KEY] boolValue]];
-		 [self setupRooms:[coder decodeObjectForKey:CHANNELS_KEY]];
-		[p drain];
-	}
-	NSLog(@"INITIALIZING. %@", self);
-	return self;
-}
-
-- (void)encodeWithCoder:(NSCoder *)coder {
-	[coder encodeObject:username forKey:USER_KEY];
-	[coder encodeObject:nick forKey:NICK_KEY];
-	[coder encodeObject:realname forKey:NAME_KEY];
-	[coder encodeObject:spass forKey:S_PASS_KEY];
-	[coder encodeObject:npass forKey:N_PASS_KEY];
-	[coder encodeObject:sDescription forKey:DESCRIPTION_KEY];
-	[coder encodeObject:server forKey:SERVR_ADDR_KEY];
-	[coder encodeObject:[NSNumber numberWithInt:port] forKey:PORT_KEY];
-	[coder encodeObject:[NSNumber numberWithBool:useSSL] forKey:SSL_KEY];
-	[coder encodeObject:[NSNumber numberWithBool:COL] forKey:COL_KEY];
-	[coder encodeObject:titles forKey:CHANNELS_KEY];
+- (id)infoDictionary {
+	return [NSDictionary dictionaryWithObjectsAndKeys:
+			username, USER_KEY,
+			nick, NICK_KEY,
+			realname, NAME_KEY,
+			spass, S_PASS_KEY,
+			npass, N_PASS_KEY,
+			sDescription, DESCRIPTION_KEY,
+			server, SERVR_ADDR_KEY,
+			[NSNumber numberWithInt:port], PORT_KEY,
+			[NSNumber numberWithBool:useSSL], SSL_KEY,
+			channels, CHANNELS_KEY,
+			[NSNumber numberWithBool:COL], COL_KEY,
+			nil];
 }
 
 - (void)dealloc {
+	NSLog(@"cya.");
+	[channels release];
 	[_channels release];
-	[titles release];
 	[server release];
 	[nick release];
 	[username release];
@@ -66,33 +49,34 @@
 	[spass release];
 	[npass release];
 	[sDescription release];
-	[channels release];
 	[super dealloc];
 }
 
 - (NSString *)description {
-	return [self descriptionForComparing];
+	return [NSString stringWithFormat:@"<%@: %p; %@;>", NSStringFromClass([self class]), self, [self infoDictionary]];
 }
 
 - (NSString *)descriptionForComparing {
-	return [NSString stringWithFormat:@"%@%@%@%@%@%@%@%d%d%d", username, nick, realname, spass, npass, sDescription, server, port, useSSL, COL];
+	return [NSString stringWithFormat:@"%@%@%@%@%d%d", username, nick, realname, server, port, useSSL];
 }
 
 - (void)setupRooms:(NSArray *)rooms {
-	titles = (NSMutableArray *)rooms;
-	for (int i = 0; i < [rooms count]; i++) {
-		RCChannel *_chan = [[RCChannel alloc] init];
-		[_chan setChannelName:[rooms objectAtIndex:i]];
-		[channels addObject:_chan];
-		[_chan release];
+	for (NSString *_chan in rooms) {
+		[self addChannel:_chan join:NO];
 	}
 }
 - (void)addChannel:(NSString *)_chan join:(BOOL)join {
-	if (![titles containsObject:_chan]) {
+	if (![[_channels allKeys] containsObject:_chan]) {
 		RCChannel *chan = [[RCChannel alloc] init];
 		[chan setChannelName:_chan];
-		[channels addObject:chan];
+		[[self _channels] setObject:chan forKey:_chan];
 		[chan release];
+		if (![[self channels] containsObject:_chan])
+			[[self channels] addObject:_chan];
+		if (join)
+			[self sendMessage:[@"JOIN " stringByAppendingString:_chan]];
+		[[NSNotificationCenter defaultCenter] postNotificationName:RELOAD_KEY object:nil];
+		shouldSave = YES;
 	}
 	else return;
  
@@ -131,7 +115,6 @@
 	if ([spass length] > 0) {
 		[self sendMessage:[@"PASS " stringByAppendingString:spass]];
 	}
-	
 	[self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)]];
 	[self sendMessage:[@"NICK " stringByAppendingString:nick]];
 	return YES;
@@ -142,12 +125,12 @@
 	switch (eventCode) {
 		case NSStreamEventEndEncountered: // 16 - Called on ping timeout/closing link
 			status = RCSocketStatusClosed;
-			NSLog(@"NSStreamEventEndEncountered:%d",NSStreamEventEndEncountered);
+			NSLog(@"NSStreamEventEndEncountered:%d", NSStreamEventEndEncountered);
 			[[NSNotificationCenter defaultCenter] postNotificationName:RELOAD_KEY object:nil];
 			return;
 		case NSStreamEventErrorOccurred: /// 8 - Unknowns/bad interwebz
 			status = RCSocketStatusError;
-			NSLog(@"NSStreamEventErrorOccurred:%d",NSStreamEventErrorOccurred);
+			NSLog(@"NSStreamEventErrorOccurred:%d", NSStreamEventErrorOccurred);
 			[[NSNotificationCenter defaultCenter] postNotificationName:RELOAD_KEY object:nil];
 			return;
 		case NSStreamEventHasBytesAvailable: // 2
@@ -165,14 +148,14 @@
 		case NSStreamEventHasSpaceAvailable: // 4
 			if (status == RCSocketStatusConnecting)
 				status = RCSocketStatusConnected;
-			NSLog(@"NSStreamEventHasSpaceAvailable:%d",NSStreamEventHasSpaceAvailable);
+			NSLog(@"NSStreamEventHasSpaceAvailable:%d", NSStreamEventHasSpaceAvailable);
 			return;
 		case NSStreamEventNone:
-			NSLog(@"NSStreamEventNone:%d",NSStreamEventNone);
+			NSLog(@"NSStreamEventNone:%d", NSStreamEventNone);
 			return;
 		case NSStreamEventOpenCompleted: // 1
 			status = RCSocketStatusConnected;
-			NSLog(@"NSStreamEventOpenCompleted:%d",NSStreamEventOpenCompleted);
+			NSLog(@"NSStreamEventOpenCompleted:%d", NSStreamEventOpenCompleted);
 			[[NSNotificationCenter defaultCenter] postNotificationName:RELOAD_KEY object:nil];
 			return;
 	}
@@ -203,7 +186,6 @@
 		[p drain];
 		return;
 	}
-	
 	NSScanner *_scanr = [[NSScanner alloc] initWithString:msg];
 	NSString *from = @"_"; // what is wrong with you
 	NSString *cmd = @"_"; // i agree with him ^
@@ -213,10 +195,11 @@
 	NSString *selName = [NSString stringWithFormat:@"handle%@:", cmd];
 	SEL pSEL = NSSelectorFromString(selName);
 	if ([self respondsToSelector:pSEL]) 
-		[self performSelectorInBackground:pSEL withObject:msg];
+		[self performSelector:pSEL withObject:msg];
 	else NSLog(@"PLZ IMPLEMENT: %s MSG: %@", (char *)pSEL, msg);
 	
 	if (![msg hasSuffix:@"\x0A"]) NSLog(@"HAXHAXHAXHAXHAXHAHAX000101010");
+	// told not to always trust server. 
 	[_scanr release];
 	// some messages begin with \x01
 	// i think all messages end of \x0D\x0A
@@ -226,7 +209,7 @@
 
 - (BOOL)disconnect {
 	if ((status == RCSocketStatusConnected) || (status == RCSocketStatusConnecting)) {
-		[self sendMessage:@"QUIT \x3A Relay 1.0"];
+		[self sendMessage:@"QUIT :Relay 1.0"];
 		status = RCSocketStatusClosed;
 		[[UIApplication sharedApplication] endBackgroundTask:task];
 		task = UIBackgroundTaskInvalid;
@@ -243,8 +226,11 @@
 }
 
 - (void)networkDidRegister:(BOOL)reg {
-	[self sendMessage:@"JOIN #tttt"];
-	[self sendMessage:@"PRIVMSG #tttt \x1F\x16\x03\x31\x32Ohai!\x03\x16\x1F"];
+	// do jOC (join on connect) rooms
+	NSLog(@"Meh. %@ : %@", channels, _channels);
+	for (RCChannel *chan in channels) {
+		/*if ([[_channels objectForKey:chan] joinOnConnect])*/ [[_channels objectForKey:chan] setJoined:YES withArgument:nil];
+	}
 }
 
 - (BOOL)isConnected {
@@ -334,11 +320,10 @@
 
 - (void)handle433:(NSString *)use {
 	// nick is in use.
-	[self sendMessage:[@"NICK " stringByAppendingFormat:@"%@_", nick]];
-}
-// test...
-- (void)handle:(id)s Closing:(id)x {
-	NSLog(@"fdfdsfsdfdsf %@", s);
+	_scores++;
+	NSString *format = @"%@";
+	for (int i = 0; i < _scores; i++) format = [format stringByAppendingString:@"_"];
+	[self sendMessage:[@"NICK " stringByAppendingFormat:format, nick]];
 }
 
 - (void)handleNOTICE:(NSString *)notice {
@@ -349,17 +334,20 @@
 	NSLog(@"MSG: %@ BYTES: %@", privmsg, [privmsg dataUsingEncoding:NSASCIIStringEncoding]);
 	NSLog(@"HAS COLOR: %d", (BOOL)([privmsg rangeOfString:@"\x03"].location != NSNotFound));
 	NSScanner *_scanner = [[NSScanner alloc] initWithString:privmsg];
-	NSString *from = @"_";
+	NSString *from = @"";
 	NSString *cmd = from; // will be unused.
-	NSString *room = cmd;
-	NSString *msg = room;
+	NSString *room = from;
+	NSString *msg = from;
 	[_scanner scanUpToString:@" " intoString:&from];
 	[_scanner scanUpToString:@" " intoString:&cmd];
 	[_scanner scanUpToString:@" " intoString:&room];
 	[_scanner scanUpToString:@" :" intoString:&msg];
-	NSLog(@"From = %@; Room = %@; Msg = %@;", from, room, msg);
-	if ([msg hasPrefix:@"\x3A\x01"]) {
-		msg = [msg substringFromIndex:2];
+	msg = [msg substringFromIndex:1];
+	from = [from substringFromIndex:1];
+	[self parseUsermask:from nick:&from user:nil hostmask:nil];
+	NSLog(@"vars %@ %@ %@ %@", from, cmd, room, msg);
+	if ([msg hasPrefix:@"\x01"]) {
+		msg = [msg substringFromIndex:1];
 		NSLog(@"HAI. %@:%@", msg, [msg dataUsingEncoding:NSUTF8StringEncoding]);
 		if ([msg hasPrefix:@"PING"]) {
 			[self handlePING:privmsg];
@@ -369,20 +357,29 @@
 				 || [msg hasPrefix:@"USERINFO"] 
 				 || [msg hasPrefix:@"CLIENTINFO"]) {
 			[self handleCTCPRequest:privmsg];
-
 		}
 		else if ([msg hasPrefix:@"ACTION"]) {
-				
-		}		
+			msg = [msg substringWithRange:NSMakeRange(7, msg.length-8)];
+			[((RCChannel *)[_channels objectForKey:room]) recievedMessage:msg from:from type:RCMessageTypeAction];
+			[[NSNotificationCenter defaultCenter] postNotificationName:RELOAD_KEY object:nil];
+			[_scanner release];
+			return;
+		}
 	}
 	else {
-	
+//		msg = [msg substringWithRange:NSMakeRange(0, )];
+		[((RCChannel *)[_channels objectForKey:room]) recievedMessage:msg from:from type:RCMessageTypeNormal];
+		[[NSNotificationCenter defaultCenter] postNotificationName:RELOAD_KEY object:nil];
 		// tell the channel a message was recieved. P:
 	}
 	[_scanner release];
 }
 
 - (void)handleKICK:(NSString *)aKick {
+	
+}
+
+- (void)handleNICK:(NSString *)nickChange {
 	
 }
 
@@ -412,7 +409,7 @@
 	else if ([request isEqualToString:@"CLIENTINFO"]) 
 		extra = @"CLIENTINFO VERSION CLIENTINFO USERINFO PING TIME UPTIME";
 	else 
-		NSLog(@"WTF?!?!!");
+		NSLog(@"WTF?!?!! %@", request);
 	[self sendMessage:[@"NOTICE " stringByAppendingFormat:@"%@ \x01%@ %@\x01", _from, request, extra]];
 	[_sc release];
 	[p drain];
@@ -421,9 +418,10 @@
 
 - (void)handleJOIN:(NSString *)join {
 	// add user unless self
+	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSScanner *_scanner = [[NSScanner alloc] initWithString:join];
 	NSString *user = @"_";
-	NSString *cmd = user; // unused
+	NSString *cmd = user;
 	NSString *room = cmd;
 	NSString *_nick = room;
 	[_scanner scanUpToString:@" " intoString:&user];
@@ -431,17 +429,22 @@
 	[_scanner scanUpToString:@" :" intoString:&room];
 	user = [user substringFromIndex:1];
 	room = [room substringFromIndex:1];
+	NSString *__nick = nick;
 	[self parseUsermask:user nick:&_nick user:nil hostmask:nil];
 	NSLog(@"VARS: %@ %@ %@", user, _nick, room);
-	if ([_nick isEqualToString:nick]) {
-		NSLog(@"hai");
-		// i was joined...
-		// [self addChannel:room join:NO];
-		// crash from god knows where...
-		// some kind of crash in objc_msgSend... :x
-		// may be due to threading.. or some shit.
+	for (int i = 0; i < _scores; i++) __nick = [__nick stringByAppendingString:@"_"];
+	if ([_nick isEqualToString:__nick]) {
+		[self addChannel:[room stringByReplacingOccurrencesOfString:@"\r\n" withString:@""] join:NO];
+		[_scanner release];
+		return;
 	}
+	NSLog(@"%@ JOINED %@", _nick, room);
 	[_scanner release];
+	[p drain];
+}
+
+- (void)handleQUIT:(NSString *)quitter {
+	 
 }
 
 - (void)handleMODE:(NSString *)modes {

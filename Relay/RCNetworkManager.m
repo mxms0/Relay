@@ -12,8 +12,7 @@
 static id snManager = nil;
 static NSMutableArray *networks = nil;
 
-+ (void)ircNetworkWithInfo:(NSDictionary *)info {
-	(void)[[self class] sharedNetworkManager];
+- (void)ircNetworkWithInfo:(NSDictionary *)info {
 	RCNetwork *network = [[RCNetwork alloc] init];
 	[network setUsername:[info objectForKey:USER_KEY]];
 	[network setNick:[info objectForKey:NICK_KEY]];
@@ -25,23 +24,44 @@ static NSMutableArray *networks = nil;
 	[network setPort:[[info objectForKey:PORT_KEY] intValue]];
 	[network setUseSSL:[[info objectForKey:SSL_KEY] boolValue]];
 	[network setCOL:[[info objectForKey:COL_KEY] boolValue]];
-	[network setTitles:[info objectForKey:CHANNELS_KEY]];
 	
-	for (RCNetwork *net in [[RCNetworkManager sharedNetworkManager] networks]) {
+	for (RCNetwork *net in networks) {
 		if ([[net descriptionForComparing] isEqualToString:[network descriptionForComparing]]) {
 			[network release];
 			return;
 		}
 	}
-	// if it passes, then setup to not waste memory.
 	[network setupRooms:[info objectForKey:CHANNELS_KEY]];
 	[networks addObject:network];
-	[[self sharedNetworkManager] saveNetworks];
-	[network release];
+	[self saveNetworks];
 }
 
 + (void)saveNetworks {
-	[[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:networks] forKey:NETS_KEY];
+	NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithContentsOfFile:PREFS_ABSOLUT];
+	NSMutableArray *temp = [[NSMutableArray alloc] init];
+	for (RCNetwork *net in networks) {
+		[temp addObject:[net infoDictionary]];
+	}
+	[dict setObject:[NSKeyedArchiver archivedDataWithRootObject:temp] forKey:NETS_KEY];
+	if (![dict writeToFile:PREFS_ABSOLUT atomically:NO]) {
+		// FIX IT
+		NSLog(@"Couldn't save...:l");
+	}
+	[temp release];
+	[dict release];
+}
+
+- (void)unpack {
+	NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithContentsOfFile:PREFS_ABSOLUT];
+	NSArray *nets = [[NSArray alloc] initWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:[dict objectForKey:NETS_KEY]]];
+	for (NSDictionary *dict in nets) {
+		[[RCNetworkManager sharedNetworkManager] ircNetworkWithInfo:dict];
+	}
+	[nets release];
+	[dict release];
+	for (RCNetwork *net in [[RCNetworkManager sharedNetworkManager] networks])
+		if ([net COL]) [net connect];
+	[[NSNotificationCenter defaultCenter] postNotificationName:RELOAD_KEY object:NULL];
 }
 
 - (void)saveNetworks {
@@ -49,25 +69,21 @@ static NSMutableArray *networks = nil;
 }
 
 + (RCNetworkManager *)sharedNetworkManager {
-	if (!snManager)
-		snManager = [[self alloc] init];
-	NSLog(@"Singletonloading.. %@", snManager);
+	@synchronized(self) {
+		if (!snManager) snManager = [[self alloc] init];
+	}
 	return snManager;
 }
 
 - (RCNetworkManager *)init {
 	if ((self = [super init])) {
-		if ([[NSUserDefaults standardUserDefaults] objectForKey:NETS_KEY])
-			networks = [[NSKeyedUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:NETS_KEY]] mutableCopy];
-		else networks = [[NSMutableArray alloc] init];
+		networks = [[NSMutableArray alloc] init];
 	}
 	snManager = self;
 	return snManager;
 }
 
 - (NSMutableArray *)networks {
-	if (!networks)
-		networks = [[NSMutableArray alloc] init];
 	return networks;
 }
 

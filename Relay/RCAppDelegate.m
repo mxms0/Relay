@@ -6,8 +6,8 @@
 //
 
 #import "RCAppDelegate.h"
-
 #import "RCViewController.h"
+#import "RCNetworkManager.h"
 
 @implementation RCAppDelegate
 
@@ -29,6 +29,18 @@
 	[rcv release];
 	self.window.rootViewController = self.navigationController;
     [self.window makeKeyAndVisible];
+	NSFileManager *manager = [NSFileManager defaultManager];
+	NSString *path = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingString:PREFS_PLIST];
+	[[NSUserDefaults standardUserDefaults] setObject:path forKey:PREFS_PLIST];
+	[[NSUserDefaults standardUserDefaults] synchronize];
+	
+	if (![manager fileExistsAtPath:PREFS_ABSOLUT]) {
+		if (![manager createFileAtPath:PREFS_ABSOLUT contents:(NSData *)[NSDictionary dictionary] attributes:NULL]) {
+			NSLog(@"fucked.");
+			// fucked.
+		}
+	}
+	[[RCNetworkManager sharedNetworkManager] unpack];
     return YES;
 }
 

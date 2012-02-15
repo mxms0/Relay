@@ -16,6 +16,8 @@
 		[_gradient release];
 		self.textLabel.backgroundColor = [UIColor clearColor];
 		self.textLabel.textColor = [UIColor whiteColor];
+		self.detailTextLabel.numberOfLines = 0;
+		self.detailTextLabel.backgroundColor = [UIColor clearColor];
 	}
 	return self;
 }

@@ -2,7 +2,7 @@
 //  Relay.h
 //  Relay
 //
-//  Created by Max Shavrick on 1/16/12.
+//  Created by Maximus on 1/16/12.
 //
 
 #ifndef Relay_Relay_h
@@ -24,6 +24,8 @@
 	#ifndef kCFCoreFoundationVersionNumber_iPhoneOS_4_0
 		#define kCFCoreFoundationVersionNumber_iPhoneOS_4_0 550.32
 	#endif
+	#define PREFS_PLIST @"/Networks.plist"
+	#define PREFS_ABSOLUT [[NSUserDefaults standardUserDefaults] objectForKey:PREFS_PLIST]
 #endif
 
 /* NOTES

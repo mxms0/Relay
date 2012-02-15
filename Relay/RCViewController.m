@@ -16,13 +16,16 @@
 #pragma mark - TABLE_VIEW SHIT
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-		NSLog(@"nffff %@", [[[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:section] channels]);
-	return [[[[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:section] channels] count];
+	RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:section];
+	return [[net channels] count];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-	
 	return [[[RCNetworkManager sharedNetworkManager] networks] count];
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -32,19 +35,16 @@
 		_c.selectionStyle = UITableViewCellSelectionStyleGray;
 	}
 	RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.section];
-	_c.textLabel.text = [[[net channels] objectAtIndex:indexPath.row] channelName];
-
-//	_c.textLabel.text = [[[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.section] sDescription];
-//	_c.detailTextLabel.text = ([[[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.row] connectionStatus]);
+	_c.textLabel.text = [[net channels] objectAtIndex:indexPath.row];
+	_c.detailTextLabel.text = [[[net _channels] objectForKey:_c.textLabel.text] lastMessage];
+	_c.detailTextLabel.frame = CGRectMake(_c.detailTextLabel.frame.origin.x, _c.detailTextLabel.frame.origin.y, 300, _c.detailTextLabel.frame.size.height);
 	return _c;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
-//	RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.section];
-//	if ([net isConnected]) [net disconnect];
-//	else [net connect];
-	
+	RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.section];
+	NSLog(@"Could be registering events for .. .%@", [net _channels]);	
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
@@ -65,8 +65,7 @@
 	self.title = @"Relay";
 	[[self view] setBackgroundColor:[UIColor blackColor]];
 	self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-	(void)[RCNetworkManager sharedNetworkManager];
-	[RCNetworkManager ircNetworkWithInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+	[[RCNetworkManager sharedNetworkManager] ircNetworkWithInfo:[NSDictionary dictionaryWithObjectsAndKeys:
 										  @"_m", USER_KEY, 
 										  @"_m", NICK_KEY,
 										  @"0_m_hai", NAME_KEY,
@@ -79,9 +78,6 @@
 										  [NSNumber numberWithBool:1], COL_KEY,
 										  [NSArray arrayWithObjects:@"#chat", @"#tttt", nil], CHANNELS_KEY,
 										  nil]];
-	for (RCNetwork *net in [[RCNetworkManager sharedNetworkManager] networks])
-		if ([net COL]) [net connect];
-	NSLog(@"Nets. %@", [[RCNetworkManager sharedNetworkManager] networks]);
 }
 
 - (void)viewDidUnload {
