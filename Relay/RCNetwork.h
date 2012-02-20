@@ -28,6 +28,7 @@ typedef enum RCSocketStatus {
 	NSString *npass;
 	NSInputStream *iStream;
 	NSOutputStream *oStream;
+	NSMutableString *sendQueue;
 	RCSocketStatus status;
 	int task;
 	int port;
@@ -36,6 +37,7 @@ typedef enum RCSocketStatus {
 	BOOL useSSL;
 	BOOL COL;
 	BOOL shouldSave;
+	BOOL canSend;
 }
 @property (nonatomic, retain) NSMutableArray *channels;
 @property (nonatomic, retain) NSMutableDictionary *_channels;
@@ -56,6 +58,7 @@ typedef enum RCSocketStatus {
 - (BOOL)isConnected;
 - (NSString *)descriptionForComparing;
 - (BOOL)sendMessage:(NSString *)msg;
+- (BOOL)sendMessage:(NSString *)msg canWait:(BOOL)canWait;
 - (void)recievedMessage:(NSString *)msg;
 - (void)errorOccured:(NSError *)error;
 - (void)setupRooms:(NSArray *)rooms;

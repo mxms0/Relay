@@ -16,6 +16,8 @@
 	if ((self = [super init])) {
 		shouldSave = NO;
 		_scores = 0;
+		isRegistered = NO;
+		canSend = YES;
 		channels = [[NSMutableArray alloc] init];
 		_channels = [[NSMutableDictionary alloc] init];
 	}
@@ -67,16 +69,16 @@
 }
 - (void)addChannel:(NSString *)_chan join:(BOOL)join {
 	if (![[_channels allKeys] containsObject:_chan]) {
-		RCChannel *chan = [[RCChannel alloc] init];
-		[chan setChannelName:_chan];
+		NSLog(@"Adding.. [%@]", _chan);
+		RCChannel *chan = [[RCChannel alloc] initWithChannelName:_chan];
+		[chan setDelegate:self];
 		[[self _channels] setObject:chan forKey:_chan];
 		[chan release];
 		if (![[self channels] containsObject:_chan])
 			[[self channels] addObject:_chan];
-		if (join)
-			[self sendMessage:[@"JOIN " stringByAppendingString:_chan]];
+		if (join) [chan setJoined:YES withArgument:nil];
 		[[NSNotificationCenter defaultCenter] postNotificationName:RELOAD_KEY object:nil];
-		shouldSave = YES;
+		if (isRegistered) shouldSave = YES; // if we aren't registered.. it's _likely_ just setup.
 	}
 	else return;
  
@@ -113,10 +115,10 @@
 	}
 	status = RCSocketStatusConnecting;
 	if ([spass length] > 0) {
-		[self sendMessage:[@"PASS " stringByAppendingString:spass]];
+		[self sendMessage:[@"PASS " stringByAppendingString:spass] canWait:NO];
 	}
-	[self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)]];
-	[self sendMessage:[@"NICK " stringByAppendingString:nick]];
+	[self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
+	[self sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
 	return YES;
 }
 
@@ -146,8 +148,16 @@
 			}
 			return;
 		case NSStreamEventHasSpaceAvailable: // 4
-			if (status == RCSocketStatusConnecting)
-				status = RCSocketStatusConnected;
+			if (status == RCSocketStatusConnecting) status = RCSocketStatusConnected;
+			
+			if (sendQueue) {
+				canSend = NO;
+				[oStream write:(uint8_t *)[sendQueue UTF8String] maxLength:[sendQueue length]];
+				[oStream write:(uint8_t *)"\r\n" maxLength:2];
+				[sendQueue release];
+				sendQueue = nil;
+			}
+			canSend = YES;
 			NSLog(@"NSStreamEventHasSpaceAvailable:%d", NSStreamEventHasSpaceAvailable);
 			return;
 		case NSStreamEventNone:
@@ -162,11 +172,27 @@
 }
 
 - (BOOL)sendMessage:(NSString *)msg {
-	NSData *messageData = [[msg stringByAppendingString:@"\r\n"] dataUsingEncoding:NSASCIIStringEncoding];
-	if ([oStream write:[messageData bytes] maxLength:[messageData length]] != -1) {
-		return YES;
+	NSLog(@"Sending.. %@", msg);
+	return [self sendMessage:msg canWait:YES];
+}
+
+- (BOOL)sendMessage:(NSString *)msg canWait:(BOOL)canWait {
+	if ((!canWait) || isRegistered) {
+		NSData *messageData = [[msg stringByAppendingString:@"\r\n"] dataUsingEncoding:NSASCIIStringEncoding];
+		if (canSend) {
+			if ([oStream write:[messageData bytes] maxLength:[messageData length]] != -1) {
+				NSLog(@"hai. sent: %@", msg);
+					return YES;
+			}
+			else {
+				NSLog(@"BLASPHEMYY");
+			}
+			[self errorOccured:[oStream streamError]];
+		}
 	}
-	[self errorOccured:[oStream streamError]];
+	NSLog(@"Adding to queue... %@",msg);
+	if (!sendQueue) sendQueue = [[NSMutableString alloc] init];
+	[sendQueue appendFormat:@"%@\r\n", msg];
 	return NO;
 }
 
@@ -227,9 +253,13 @@
 
 - (void)networkDidRegister:(BOOL)reg {
 	// do jOC (join on connect) rooms
-	NSLog(@"Meh. %@ : %@", channels, _channels);
-	for (RCChannel *chan in channels) {
-		/*if ([[_channels objectForKey:chan] joinOnConnect])*/ [[_channels objectForKey:chan] setJoined:YES withArgument:nil];
+	isRegistered = YES;
+//	[self sendMessage:@"JOIN #chat"];
+//	[self sendMessage:@"PRIVMSG #chat :ohai Hackintech! :D"];
+//	[self sendMessage:@"PRIVMSG #chat :hai ac3xx! ;D"];
+	for (NSString *chan in channels) {
+		NSLog(@"Haichan %@:%@", chan, [_channels objectForKey:chan]);
+		[[_channels objectForKey:chan] setJoined:YES withArgument:nil];
 	}
 }
 
@@ -367,7 +397,19 @@
 		}
 	}
 	else {
-//		msg = [msg substringWithRange:NSMakeRange(0, )];
+		if ([room isEqualToString:nick]) {
+			// privmsg or some other mechanical contraptiona.. :(
+			room = from;
+		}
+		if (![_channels objectForKey:room]) {
+			// magicall.. 0.0
+			// has to be a private message.
+			// Reasoning: 
+			// if we are registered to events from a channel,
+			// we must have sent JOIN #channel;
+			// which we have caught, and added the RCChannel already.
+			[self addChannel:room join:YES];
+		}
 		[((RCChannel *)[_channels objectForKey:room]) recievedMessage:msg from:from type:RCMessageTypeNormal];
 		[[NSNotificationCenter defaultCenter] postNotificationName:RELOAD_KEY object:nil];
 		// tell the channel a message was recieved. P:
@@ -455,7 +497,7 @@
 - (void)handlePING:(NSString *)pong {
 	NSLog(@"SEND PONG! : %@", pong);
 	if ([pong hasPrefix:@"PING"]) {
-		[self sendMessage:[@"PONG " stringByAppendingString:[pong substringWithRange:NSMakeRange(5, pong.length-5)]]];
+		[self sendMessage:[@"PONG " stringByAppendingString:[pong substringWithRange:NSMakeRange(5, pong.length-5)]] canWait:NO];
 	}
 	else {
 		NSScanner *scannr = [[NSScanner alloc] initWithString:pong];

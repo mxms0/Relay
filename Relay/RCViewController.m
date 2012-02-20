@@ -44,7 +44,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.section];
-	NSLog(@"Could be registering events for .. .%@", [net _channels]);	
+	[self.navigationController pushViewController:[[[net _channels] objectForKey:[(UITableViewCell *)[tableView cellForRowAtIndexPath:indexPath] textLabel].text] panel] animated:YES];
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {

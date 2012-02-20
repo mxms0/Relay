@@ -10,12 +10,15 @@
 
 @implementation RCChannel
 
-@synthesize channelName, lastMessage, joinOnConnect, delegate;
+@synthesize channelName, lastMessage, joinOnConnect, delegate, panel;
 
-- (id)init {
+- (id)initWithChannelName:(NSString *)_chan {
 	if ((self = [super init])) {
+		channelName = [_chan retain];
 		lastMessage = @"";
+		joined = NO;
 		users = [[NSMutableDictionary alloc] init];
+		panel = [[RCChatPanel alloc] initWithStyle:UITableViewStylePlain andChannel:self];
 	}
 	return self;
 }
@@ -34,16 +37,23 @@
 - (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type {
 	NSLog(@"%@:%@", from, message);
 	NSLog(@"%@:%@", [from dataUsingEncoding:NSUTF8StringEncoding], [message dataUsingEncoding:NSUTF8StringEncoding]);
+	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+	RCMessageFlavor flavor;
 	switch (type) {
 		case RCMessageTypeAction:
 			lastMessage = [[NSString stringWithFormat:@"\u2022 %@: %@", from, message] copy];
+			flavor = RCMessageFlavorNormal;
 			break;
 		case RCMessageTypeNormal:
 			lastMessage = [[NSString stringWithFormat:@"%@: %@", from, message] copy];
+			flavor = RCMessageFlavorNormal;
 			break;
 		case RCMessageTypeNotice:
+			flavor = RCMessageFlavorNotice;
 			break;
 	}
+	[panel postMessage:lastMessage withFlavor:flavor];
+	[p drain];
 	return;
 }
 
@@ -62,16 +72,46 @@
 - (void)setJoined:(BOOL)joind withArgument:(NSString *)arg1 {
 	if (joined == joind) return;
 	joined = joind;
-	if (joined) {
-		(void)[delegate sendMessage:[@"JOIN " stringByAppendingString:channelName]];
-	}
-	else {
-		(void)[delegate sendMessage:[@"PART " stringByAppendingString:(arg1 ? arg1 : @"Leaving...")]];
+	if ([[self channelName] hasPrefix:@"#"]) {
+		if (joined) {
+			NSLog(@"Joining..%@", channelName);
+			[delegate sendMessage:[@"JOIN " stringByAppendingString:channelName]];
+		}
+		else {
+			NSLog(@"Parting.. %@", channelName);
+			[delegate sendMessage:[@"PART " stringByAppendingString:(arg1 ? arg1 : @"Leaving...")]];
+		}
 	}
 }
 
 - (BOOL)joined {
 	return joined;
+}
+
+- (void)userWouldLikeToPartakeInThisConversation:(NSString *)message {
+	if (message) {
+		if ([message hasPrefix:@"/"]) {
+			NSString *_tmp = [message substringFromIndex:1];
+			NSScanner *scanner = [[NSScanner alloc] initWithString:_tmp];
+			NSString *command = @"_";
+			NSString *argument1 = command;
+			NSString *argument2 = argument1;
+			[scanner scanUpToString:@" " intoString:&command];
+			[scanner scanUpToString:@" " intoString:&argument1];
+			argument2 = [_tmp substringFromIndex:[scanner scanLocation]];
+			if ([command isEqualToStringNoCase:@"privmsg"] || [command isEqualToStringNoCase:@"query"] || [command isEqualToStringNoCase:@"msg"]) {
+				[delegate addChannel:argument1 join:YES];
+			}
+			NSLog(@"Hai. %@ %@ %@", command, argument1, argument2);
+			[delegate sendMessage:[message substringFromIndex:1]];
+		}
+		else { 
+			if ([delegate sendMessage:[@"PRIVMSG " stringByAppendingFormat:@"%@ :%@", channelName, message]]) {
+				[self recievedMessage:message from:[delegate nick] type:RCMessageTypeNormal];
+			}
+		}
+	}
+	
 }
 
 - (void)recievedEvent:(RCEventType)type from:(NSString *)from message:(NSString *)msg {
