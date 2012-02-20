@@ -78,6 +78,20 @@
 										  [NSNumber numberWithBool:1], COL_KEY,
 										  [NSArray arrayWithObjects:@"#chat", @"#tttt", nil], CHANNELS_KEY,
 										  nil]];
+	[[RCNetworkManager sharedNetworkManager] ircNetworkWithInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+																 @"_m", USER_KEY, 
+																 @"_m", NICK_KEY,
+																 @"0_m_hai", NAME_KEY,
+																 @"", S_PASS_KEY,
+																 @"", N_PASS_KEY,
+																 @"SK", DESCRIPTION_KEY,
+																 @"irc.saurik.com", SERVR_ADDR_KEY,
+																 @"6667", PORT_KEY,
+																 [NSNumber numberWithBool:0], SSL_KEY,
+																 [NSNumber numberWithBool:1], COL_KEY,
+																 [NSArray arrayWithObjects:@"#bacon", @"#kk", nil], CHANNELS_KEY,
+																 nil]];
+	
 }
 
 - (void)viewDidUnload {
@@ -85,27 +99,23 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-	NSLog(@"[%s%d]", (char *)_cmd, animated);
     [super viewWillAppear:animated];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-	NSLog(@"[%s%d]", (char *)_cmd, animated);
     [super viewDidAppear:animated];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-	NSLog(@"[%s%d]", (char *)_cmd, animated);
 	[super viewWillDisappear:animated];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
-	NSLog(@"[%s%d]", (char *)_cmd, animated);
 	[super viewDidDisappear:animated];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-	return YES;
+	return ((interfaceOrientation == UIInterfaceOrientationPortrait) || (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown));
 }
 
 @end

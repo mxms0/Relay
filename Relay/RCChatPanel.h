@@ -8,11 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "RCChatCell.h"
-
-typedef enum RCMessageFlavor {
-	RCMessageFlavorNotice,
-	RCMessageFlavorNormal
-} RCMessageFlavor;
+#import "RCMessage.h"
 
 @class RCChannel;
 @interface RCChatPanel : UIViewController <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate> {

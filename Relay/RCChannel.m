@@ -10,12 +10,13 @@
 
 @implementation RCChannel
 
-@synthesize channelName, lastMessage, joinOnConnect, delegate, panel;
+@synthesize channelName, lastMessage, joinOnConnect, delegate, panel, topic;
 
 - (id)initWithChannelName:(NSString *)_chan {
 	if ((self = [super init])) {
 		channelName = [_chan retain];
 		lastMessage = @"";
+		joinOnConnect = YES;
 		joined = NO;
 		users = [[NSMutableDictionary alloc] init];
 		panel = [[RCChatPanel alloc] initWithStyle:UITableViewStylePlain andChannel:self];
@@ -114,7 +115,17 @@
 	
 }
 
+- (void)setTopic:(NSString *)_topic fromUser:(NSString *)usr {
+	topic = [_topic retain];
+	if (usr) {
+		[self recievedEvent:RCEventTypeTopic from:usr message:_topic];
+		return;
+	}
+	[self.panel.tableView reloadData];
+}
+
 - (void)recievedEvent:(RCEventType)type from:(NSString *)from message:(NSString *)msg {
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	switch (type) {
 		case RCEventTypeBan:
 			// ooOoOOOooo!!!!!
@@ -128,7 +139,11 @@
 		case RCEventTypePart:
 			// baibai || cyah.
 			break;
+		case RCEventTypeTopic:
+			[panel postMessage:[NSString stringWithFormat:@"%@ changed the topic to %@", from, msg] withFlavor:RCMessageFlavorAction];
+			break;
 	}
+	[pool drain];
 }
 
 @end

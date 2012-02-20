@@ -28,22 +28,47 @@ CTFontRef CTFontCreateFromUIFont(UIFont *font) {
 	return self;
 }
 
-- (void)_textHasBeenSet {
+- (void)_textHasBeenSet:(RCMessageFlavor)flavor {
+	currentFlavor = flavor;
 	NSMutableAttributedString *attr = [[NSMutableAttributedString alloc] initWithString:self.textLabel.text];
 	[attr setTextColor:[UIColor blackColor]];
 	[attr setFont:[UIFont fontWithName:@"Helvetica" size:12]];
-	[attr setTextBold:YES range:NSMakeRange(0, [self.textLabel.text rangeOfString:@":"].location)];
+	self.backgroundColor = [UIColor whiteColor];
+	switch (flavor) {
+		case RCMessageFlavorAction:
+			[attr setTextBold:YES range:NSMakeRange(0, self.textLabel.text.length)];
+			[attr setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeClip)];
+			break;
+		case RCMessageFlavorNormal:
+			[attr setTextBold:YES range:NSMakeRange(0, [self.textLabel.text rangeOfString:@":"].location)];
+			break;
+		case RCMessageFlavorNotice:
+			[attr setTextIsUnderlined:YES];
+			[attr setTextBold:YES range:NSMakeRange(0, self.textLabel.text.length)];
+			self.backgroundColor = [UIColor redColor];
+			break;
+	}
 	[self.textLabel setAttributedText:attr];
 	[attr release];
 }
 
 - (float)calculateHeightForLabel {
+	
 	int maxWidth = [[UIScreen mainScreen] applicationFrame].size.width-4; // 2 here, 2 there.. :P
-	int lengthOfName = [[self.textLabel.text substringWithRange:NSMakeRange(0, [self.textLabel.text rangeOfString:@":"].location)] sizeWithFont:[UIFont fontWithName:@"Helvetica-Bold" size:12]].width;
-	int lengthOfMsg = [[self.textLabel.text substringWithRange:NSMakeRange([self.textLabel.text rangeOfString:@":"].location, self.textLabel.text.length-[self.textLabel.text rangeOfString:@":"].location)] sizeWithFont:[UIFont fontWithName:@"Helvetica" size:12]].width;
-	int finalLength = lengthOfMsg += lengthOfName;
-	int heightToUse = ((finalLength += (finalLength % maxWidth))/maxWidth);
+	int lengthOfName, lengthOfMsg, finalLength, heightToUse;
+	if (currentFlavor == RCMessageFlavorNormal) {
+		lengthOfName = [[self.textLabel.text substringWithRange:NSMakeRange(0, [self.textLabel.text rangeOfString:@":"].location)] sizeWithFont:[UIFont fontWithName:@"Helvetica-Bold" size:12]].width;
+		lengthOfMsg = [[self.textLabel.text substringWithRange:NSMakeRange([self.textLabel.text rangeOfString:@":"].location, self.textLabel.text.length-[self.textLabel.text rangeOfString:@":"].location)] sizeWithFont:[UIFont fontWithName:@"Helvetica" size:12]].width;
+		finalLength = lengthOfMsg += lengthOfName;
+		heightToUse = ((finalLength += (finalLength % maxWidth))/maxWidth);
+	}
+	
+	else {
+		lengthOfMsg = [self.textLabel.text sizeWithFont:[UIFont fontWithName:@"Helvetica-Bold" size:12]].width;
+		heightToUse = ((lengthOfMsg - (lengthOfMsg % maxWidth))/lengthOfMsg);
+	}
 	return (heightToUse <= 1 ? 1 : heightToUse)*15;
+	
 }
 
 - (void)layoutSubviews {

@@ -53,7 +53,6 @@
 }
 
 - (BOOL)becomeFirstResponder {
-	NSLog(@"HFFDS");
 	[self repositionKeyboardForUse:YES];
 	[field becomeFirstResponder];
 	return YES;
@@ -96,8 +95,13 @@
 	
 }
 
-- (void)postMessage:(NSString *)message withFlavor:(RCMessageFlavor)flavor {
+- (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor {
+	RCMessage *message = [[RCMessage alloc] init];
+	[message setMessage:_message];
+	[message setFlavor:flavor];
 	[messages addObject:message];
+	[message release];
+	
 	[self.tableView beginUpdates];
 	[self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0]] withRowAnimation:UITableViewRowAnimationMiddle];
 	[self.tableView endUpdates];
@@ -141,8 +145,19 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Return YES for supported orientations
-	return YES;
+	return ((interfaceOrientation == UIInterfaceOrientationPortrait) || (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown));
 }
+/*
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+	[UIView beginAnimations:nil context:NULL];
+	[UIView setAnimationDuration:duration];
+	if (UIInterfaceOrientationIsLandscape(toInterfaceOrientation)) {
+		[self.tableView setFrame:CGRectMake(0, 0, <#CGFloat width#>, <#CGFloat height#>)
+	}
+	else {
+		
+	}
+}*/
 
 #pragma mark - Table view data source
 
@@ -165,14 +180,19 @@
     }
 //	[cell _setText:[messages objectAtIndex:indexPath.row]];
     // Configure the cell...
-	cell.textLabel.text = [messages objectAtIndex:indexPath.row];
-	[cell _textHasBeenSet];
+	RCMessage *_message = [messages objectAtIndex:indexPath.row];
+	cell.textLabel.text = [_message message];
+	[cell _textHasBeenSet:(RCMessageFlavor)_message.flavor];
 //	NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
 //	dateFormatter.dateStyle = NSDateFormatterNoStyle;
 //	dateFormatter.timeStyle = NSDateFormatterShortStyle;
 //	NSString *timestamp = [dateFormatter stringFromDate:[NSDate date]];
 //	NSLog(@"Hai. %@", timestamp);
     return cell;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+	return channel.topic;
 }
 
 #pragma mark - Table view delegate

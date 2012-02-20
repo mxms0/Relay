@@ -19,7 +19,8 @@ typedef enum RCEventType {
 	RCEventTypeKick,
 	RCEventTypeBan,
 	RCEventTypePart,
-	RCEventTypeJoin
+	RCEventTypeJoin,
+	RCEventTypeTopic
 } RCEventType;
 
 @class RCNetwork;
@@ -27,6 +28,7 @@ typedef enum RCEventType {
 	NSMutableDictionary *users;
 	NSString *channelName;
 	NSString *lastMessage;
+	NSString *topic;
 	RCChatPanel *panel;
 	BOOL joined;
 	BOOL joinOnConnect;
@@ -37,6 +39,7 @@ typedef enum RCEventType {
 @property (nonatomic, assign) BOOL joinOnConnect;
 @property (nonatomic, retain) RCNetwork *delegate;
 @property (nonatomic, readonly) RCChatPanel *panel;
+@property (nonatomic, readonly) NSString *topic;
 - (id)initWithChannelName:(NSString *)_name;
 - (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type;
 - (void)recievedEvent:(RCEventType)type from:(NSString *)from message:(NSString *)msg;
@@ -46,4 +49,5 @@ typedef enum RCEventType {
 - (void)setJoined:(BOOL)joind withArgument:(NSString *)arg1;
 - (void)userWouldLikeToPartakeInThisConversation:(NSString *)message;
 // yes, seriously. :P spent like 15 minutes and felt this was best suited. 
+- (void)setTopic:(NSString *)_topic fromUser:(NSString *)usr;
 @end

@@ -12,12 +12,14 @@
 #import <Foundation/Foundation.h>
 #import "OHAttributedLabel.h"
 #import "NSAttributedString+Attributes.h"
+#import "RCMessage.h"
 
 @interface RCChatCell : UITableViewCell {
 	OHAttributedLabel *textLabel;
+	RCMessageFlavor currentFlavor;
 }
 @property (nonatomic, retain) OHAttributedLabel *textLabel;
 CTFontRef CTFontCreateFromUIFont(UIFont *font);
-- (void)_textHasBeenSet;
+- (void)_textHasBeenSet:(RCMessageFlavor)flavor;
 - (float)calculateHeightForLabel;
 @end

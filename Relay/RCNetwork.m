@@ -258,8 +258,7 @@
 //	[self sendMessage:@"PRIVMSG #chat :ohai Hackintech! :D"];
 //	[self sendMessage:@"PRIVMSG #chat :hai ac3xx! ;D"];
 	for (NSString *chan in channels) {
-		NSLog(@"Haichan %@:%@", chan, [_channels objectForKey:chan]);
-		[[_channels objectForKey:chan] setJoined:YES withArgument:nil];
+		if ([[_channels objectForKey:chan] joinOnConnect]) [[_channels objectForKey:chan] setJoined:YES withArgument:nil];
 	}
 }
 
@@ -309,6 +308,30 @@
 	// Relay[3067:f803] MSG: :fr.ac3xx.com 251 _m :There are 1 users and 4 invisible on 1 servers
 }
 
+- (void)handle252:(NSString *)opsOnline {
+	// :irc.saurik.com 252 _m 2 :operator(s) online
+}
+
+- (void)handle332:(NSString *)topic {
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	NSScanner *_scanner = [[NSScanner alloc] initWithString:topic];
+	NSString *crap = @"_";
+	NSString *to = crap;
+	NSString *room = to;
+	NSString *_topic = room;
+	[_scanner scanUpToString:@" " intoString:&crap];
+	[_scanner scanUpToString:@" " intoString:&crap];
+	[_scanner scanUpToString:@" " intoString:&to];
+	[_scanner scanUpToString:@" " intoString:&room];
+	[_scanner scanUpToString:@"\r\n" intoString:&_topic];
+	_topic = [_topic substringFromIndex:1];
+	NSLog(@"Haid. %@ ",_topic);
+	[[_channels objectForKey:room] setTopic:_topic fromUser:nil];
+	// :irc.saurik.com 332 _m #bacon :Bacon | where2start? kitchen | Canadian Bacon? get out. | WE SPEAK: BACON, ENGLISH, PORTUGUESE, DEUTSCH. | http://blog.craftzine.com/bacon-starry-night.jpg THIS IS YOU ¬†
+	[_scanner release];
+	[pool drain];
+}
+
 - (void)handle254:(NSString *)rooms {
 	// number of channels active
 }
@@ -325,11 +348,27 @@
 	// Relay[2794:f803] MSG: :fr.ac3xx.com 266 _m :Current Global Users: 5  Max: 6
 }
 
+- (void)handle333:(NSString *)numbers {
+	// :irc.saurik.com 333 _m #bacon Bacon!~S_S@adsl-184-33-54-96.mia.bellsouth.net 1329680840
+}
+
 - (void)handle353:(NSString *)users {
 	// add users to room listing..
 }
 - (void)handle366:(NSString *)end {
 	// end of /NAMES list
+}
+
+- (void)handle375:(NSString *)motd {
+	// :irc.saurik.com 375 _m :irc.saurik.com message of the day
+}
+
+- (void)handle372:(NSString *)noMotd {
+	// :irc.saurik.com 372 _m :- Please edit /etc/inspircd/motd
+}
+
+- (void)handle376:(NSString *)endOfMotd {
+	// :irc.saurik.com 376 _m :End of message of the day.
 }
 
 - (void)handle401:(NSString *)blasphemey {
@@ -375,7 +414,6 @@
 	msg = [msg substringFromIndex:1];
 	from = [from substringFromIndex:1];
 	[self parseUsermask:from nick:&from user:nil hostmask:nil];
-	NSLog(@"vars %@ %@ %@ %@", from, cmd, room, msg);
 	if ([msg hasPrefix:@"\x01"]) {
 		msg = [msg substringFromIndex:1];
 		NSLog(@"HAI. %@:%@", msg, [msg dataUsingEncoding:NSUTF8StringEncoding]);
@@ -439,7 +477,6 @@
 	[_sc scanUpToString:@" " intoString:&to];
 	[_sc scanUpToString:@" " intoString:&request];
 	[self parseUsermask:_from nick:&_from user:nil hostmask:nil];
-	NSLog(@"VARS: %@ %@ %@ %@", _from, cmd, to, request);
 	request = [request substringWithRange:NSMakeRange(2, request.length-5)];
 
 	if ([request isEqualToString:@"TIME"]) 
@@ -473,14 +510,12 @@
 	room = [room substringFromIndex:1];
 	NSString *__nick = nick;
 	[self parseUsermask:user nick:&_nick user:nil hostmask:nil];
-	NSLog(@"VARS: %@ %@ %@", user, _nick, room);
 	for (int i = 0; i < _scores; i++) __nick = [__nick stringByAppendingString:@"_"];
 	if ([_nick isEqualToString:__nick]) {
 		[self addChannel:[room stringByReplacingOccurrencesOfString:@"\r\n" withString:@""] join:NO];
 		[_scanner release];
 		return;
 	}
-	NSLog(@"%@ JOINED %@", _nick, room);
 	[_scanner release];
 	[p drain];
 }
@@ -495,7 +530,6 @@
 }
 
 - (void)handlePING:(NSString *)pong {
-	NSLog(@"SEND PONG! : %@", pong);
 	if ([pong hasPrefix:@"PING"]) {
 		[self sendMessage:[@"PONG " stringByAppendingString:[pong substringWithRange:NSMakeRange(5, pong.length-5)]] canWait:NO];
 	}
@@ -515,6 +549,30 @@
 		[self sendMessage:[@"PRIVMSG " stringByAppendingFormat:@"%@ \x01%@ %@\x01", user, @"PING", [msg substringWithRange:NSMakeRange(8, msg.length-9)]]];
 	}
 }
+
+- (void)handlehost:(NSString *)hostInfo {
+	// :Your host is irc.saurik.com, running version InspIRCd-1.1.18+Gudbrandsdalsost
+	// .. ... . .. .. only at irc.saurik.comm
+}
+
+- (void)handleTOPIC:(NSString *)topic {
+	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+	NSScanner *_scan = [[NSScanner alloc] initWithString:topic];
+	NSString *from = @"_";
+	NSString *cmd = from;
+	NSString *room = cmd;
+	NSString *newTopic = room;
+	[_scan scanUpToString:@" " intoString:&from];
+	[_scan scanUpToString:@" " intoString:&cmd];
+	[_scan scanUpToString:@" " intoString:&room];
+	[_scan scanUpToString:@"\r\n" intoString:&newTopic];
+	newTopic = [newTopic substringFromIndex:1];
+	from = [from substringFromIndex:1];
+	[self parseUsermask:from nick:&from user:nil hostmask:nil];
+	[[_channels objectForKey:room] setTopic:newTopic fromUser:from];
+	[p drain];
+}
+
 // PRIVMSG victim :\001CLIENTINFO\001/////
 - (void)parseUsermask:(NSString *)mask nick:(NSString **)_nick user:(NSString **)user hostmask:(NSString **)hostmask {
 	if (_nick)
