@@ -43,6 +43,7 @@ CTFontRef CTFontCreateFromUIFont(UIFont *font) {
 			[attr setTextBold:YES range:NSMakeRange(0, [self.textLabel.text rangeOfString:@":"].location)];
 			break;
 		case RCMessageFlavorNotice:
+            NSLog(@"%@ - %i", attr.string, attr.length);
 			[attr setTextIsUnderlined:YES];
 			[attr setTextBold:YES range:NSMakeRange(0, self.textLabel.text.length)];
 			self.backgroundColor = [UIColor redColor];
@@ -73,7 +74,10 @@ CTFontRef CTFontCreateFromUIFont(UIFont *font) {
 
 - (void)layoutSubviews {
 	[super layoutSubviews];
-	[self.textLabel setFrame:CGRectMake(2,2, 320, [self calculateHeightForLabel])];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+        [self.textLabel setFrame:CGRectMake(2,2, 768, [self calculateHeightForLabel])];
+    else
+        [self.textLabel setFrame:CGRectMake(2,2, 320, [self calculateHeightForLabel])];
 	[self.textLabel setNeedsDisplay];
 }
 

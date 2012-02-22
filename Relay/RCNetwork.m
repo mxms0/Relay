@@ -460,7 +460,17 @@
 }
 
 - (void)handleNICK:(NSString *)nickChange {
-	
+    NSScanner *_scanner = [[NSScanner alloc] initWithString:nickChange];
+	NSString *from = @"";
+	NSString *cmd = from; // will be unused.
+	NSString *to = from;
+	[_scanner scanUpToString:@" " intoString:&from];
+	[_scanner scanUpToString:@" " intoString:&cmd];
+	[_scanner scanUpToString:@" " intoString:&to];
+    from = [from substringFromIndex:1];
+    to = [to substringFromIndex:1];
+    [self parseUsermask:from nick:&from user:nil hostmask:nil];
+	[((RCChannel *)[_channels objectForKey:@"#chat"]) recievedMessage:[NSString stringWithFormat:@"changed their nick to %@", to] from:from type:RCMessageTypeAction];
 }
 
 - (void)handleCTCPRequest:(NSString *)_request {

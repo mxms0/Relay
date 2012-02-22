@@ -16,16 +16,22 @@
 	if ((self = [super init])) {
 		[self.view setBackgroundColor:[UIColor whiteColor]];
 		[self setChannel:chan];
-		self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 320, 385) style:style];
+		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+            self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 768, 650) style:style];
+        else
+            self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 320, 385) style:style];
 		self.tableView.delegate = self;
 		self.tableView.dataSource = self;
 		[self.view addSubview:tableView];
 		[tableView release];
 		[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 		messages = [[NSMutableArray alloc] init];
-		_bar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 372, 44)];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+            _bar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 820, 44)];
+        else
+            _bar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 372, 44)];
 		[_bar setTintColor:UIColorFromRGB(0x38475C)];
-		field = [[UITextField alloc] initWithFrame:CGRectMake(0, 5, 307, 31)];
+		field = [[UITextField alloc] initWithFrame:CGRectMake(0, 5, 755, 31)];
 		[field setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
 		[field setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
 		[field setBorderStyle:UITextBorderStyleRoundedRect];
@@ -75,16 +81,29 @@
 	[self repositionKeyboardForUse:YES];
 }
 
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    [self repositionKeyboardForUse:NO];
+}
+
 - (void)repositionKeyboardForUse:(BOOL)key {
 	[UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationDuration:0.25];
 	if (key) {
-		[_bar setFrame:CGRectMake(0, 156, 320, 44)];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+            [_bar setFrame:CGRectMake(0, 652, 768, 44)];
+        else
+            [_bar setFrame:CGRectMake(0, 156, 320, 44)];
 	}
 	else {
-		[_bar setFrame:CGRectMake(0, 386, 320, 44)];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+            [_bar setFrame:CGRectMake(0, 916, 768, 44)];
+        else
+            [_bar setFrame:CGRectMake(0, 386, 320, 44)];
 	}
-	[self.tableView setFrame:CGRectMake(0, 0, 320, _bar.frame.origin.y)];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+        [self.tableView setFrame:CGRectMake(0, 0, 768, _bar.frame.origin.y)];
+    else
+        [self.tableView setFrame:CGRectMake(0, 0, 320, _bar.frame.origin.y)];
 	[UIView commitAnimations];
 }
 
