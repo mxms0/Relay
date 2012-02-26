@@ -7,7 +7,6 @@
 
 #import <UIKit/UIKit.h>
 #import "RCNetwork.h"
-#import "RCGradientView.h"
 
 @protocol RCTableHeaderViewDelegate <NSObject>
 

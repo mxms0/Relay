@@ -7,6 +7,7 @@
 
 #import <Foundation/Foundation.h>
 #import "RCChannel.h"
+#import "RCNavigator.h"
 
 typedef enum RCSocketStatus {
 	RCSocketStatusConnecting,
@@ -24,6 +25,7 @@ typedef enum RCSocketStatus {
 	NSString *nick;
 	NSString *username;
 	NSString *realname;
+	NSString *useNick;
 	NSString *spass;
 	NSString *npass;
 	NSInputStream *iStream;
@@ -32,6 +34,7 @@ typedef enum RCSocketStatus {
 	RCSocketStatus status;
 	int task;
 	int port;
+	int index;
 	int _scores; // ha. funny. jokes. get it. under_scores. ><
 	BOOL isRegistered;
 	BOOL useSSL;
@@ -52,7 +55,9 @@ typedef enum RCSocketStatus {
 @property (nonatomic, assign) BOOL isRegistered;
 @property (nonatomic, assign) BOOL useSSL;
 @property (nonatomic, assign) BOOL COL;
+@property (nonatomic, assign) int index;
 
+- (NSString *)_description;
 - (BOOL)connect;
 - (BOOL)disconnect;
 - (BOOL)isConnected;

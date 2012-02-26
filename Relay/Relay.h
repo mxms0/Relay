@@ -20,13 +20,14 @@
 	#define NETS_KEY @"0_NETWORKS"
 	#define NET_INFO_KEY @"0_NET_INFO"
 	#define COL_KEY @"0_CONNECT_ON_LAUNCH"
-	#define RELOAD_KEY @"0_RELOAD_TABLE"
+	#define RELOAD_KEY @"0_RELOAD_LIST"
 	#ifndef kCFCoreFoundationVersionNumber_iPhoneOS_4_0
 		#define kCFCoreFoundationVersionNumber_iPhoneOS_4_0 550.32
 	#endif
 	#define PREFS_PLIST @"/Networks.plist"
 	#define PREFS_ABSOLUT [[NSUserDefaults standardUserDefaults] objectForKey:PREFS_PLIST]
 	#define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
+	#define isPad (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
 #endif
 
 /* NOTES

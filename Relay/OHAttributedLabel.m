@@ -385,7 +385,7 @@ BOOL CTRunContainsCharactersFromStringRange(CTRunRef run, NSRange range) {
 	if (activeLink && (NSEqualRanges(activeLink.range,linkAtTouchesEnded.range) || closeToStart)) {
 		BOOL openLink = (self.delegate && [self.delegate respondsToSelector:@selector(attributedLabel:shouldFollowLink:)])
 		? [self.delegate attributedLabel:self shouldFollowLink:activeLink] : YES;
-		if (openLink) [[UIApplication sharedApplication] openURL:activeLink.URL];
+		if (openLink) NSLog(@"SHould be handling this link...");//[[UIApplication sharedApplication] openURL:activeLink.URL];
 	}
 	
 	[activeLink release];
@@ -405,15 +405,14 @@ BOOL CTRunContainsCharactersFromStringRange(CTRunRef run, NSRange range) {
 // MARK: Drawing Text
 /////////////////////////////////////////////////////////////////////////////
 
--(void)resetTextFrame {
+- (void)resetTextFrame {
 	if (textFrame) {
 		CFRelease(textFrame);
 		textFrame = NULL;
 	}
 }
 
-- (void)drawTextInRect:(CGRect)aRect
-{
+- (void)drawTextInRect:(CGRect)aRect {
 	if (_attributedText) {
 		CGContextRef ctx = UIGraphicsGetCurrentContext();
 		CGContextSaveGState(ctx);
@@ -459,13 +458,13 @@ BOOL CTRunContainsCharactersFromStringRange(CTRunRef run, NSRange range) {
 		CTFrameDraw(textFrame, ctx);
 
 		CGContextRestoreGState(ctx);
-	} else {
+	}
+	else {
 		[super drawTextInRect:aRect];
 	}
 }
 
--(void)drawActiveLinkHighlightForRect:(CGRect)rect
-{
+- (void)drawActiveLinkHighlightForRect:(CGRect)rect {
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	CGContextSaveGState(ctx);
 	CGContextConcatCTM(ctx, CGAffineTransformMakeTranslation(rect.origin.x, rect.origin.y));
@@ -537,7 +536,7 @@ BOOL CTRunContainsCharactersFromStringRange(CTRunRef run, NSRange range) {
 // MARK: -
 /////////////////////////////////////////////////////////////////////////////
 
--(void)resetAttributedText {
+- (void)resetAttributedText {
 	NSMutableAttributedString* mutAttrStr = [NSMutableAttributedString attributedStringWithString:self.text];
 	[mutAttrStr setFont:self.font];
 	[mutAttrStr setTextColor:self.textColor];
@@ -547,13 +546,13 @@ BOOL CTRunContainsCharactersFromStringRange(CTRunRef run, NSRange range) {
 	self.attributedText = mutAttrStr;
 }
 
--(NSAttributedString*)attributedText {
+- (NSAttributedString*)attributedText {
 	if (!_attributedText) {
 		[self resetAttributedText];
 	}
 	return [[_attributedText copy] autorelease]; // immutable autoreleased copy
 }
--(void)setAttributedText:(NSAttributedString*)attributedText {
+- (void)setAttributedText:(NSAttributedString*)attributedText {
 	[_attributedText release];
 	_attributedText = [attributedText mutableCopy];
 	[self removeAllCustomLinks];
@@ -563,27 +562,27 @@ BOOL CTRunContainsCharactersFromStringRange(CTRunRef run, NSRange range) {
 
 /////////////////////////////////////////////////////////////////////////////
 
--(void)setText:(NSString *)text {
+- (void)setText:(NSString *)text {
 	NSString* cleanedText = [[text stringByReplacingOccurrencesOfString:@"\r\n" withString:@"\n"]
 							 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 	[super setText:cleanedText]; // will call setNeedsDisplay too
 	[self resetAttributedText];
 }
--(void)setFont:(UIFont *)font {
+- (void)setFont:(UIFont *)font {
 	[_attributedText setFont:font];
 	[super setFont:font]; // will call setNeedsDisplay too
 }
--(void)setTextColor:(UIColor *)color {
+- (void)setTextColor:(UIColor *)color {
 	[_attributedText setTextColor:color];
 	[super setTextColor:color]; // will call setNeedsDisplay too
 }
--(void)setTextAlignment:(UITextAlignment)alignment {
+- (void)setTextAlignment:(UITextAlignment)alignment {
 	CTTextAlignment coreTextAlign = CTTextAlignmentFromUITextAlignment(alignment);
 	CTLineBreakMode coreTextLBMode = CTLineBreakModeFromUILineBreakMode(self.lineBreakMode);
 	[_attributedText setTextAlignment:coreTextAlign lineBreakMode:coreTextLBMode];
 	[super setTextAlignment:alignment]; // will call setNeedsDisplay too
 }
--(void)setLineBreakMode:(UILineBreakMode)lineBreakMode {
+- (void)setLineBreakMode:(UILineBreakMode)lineBreakMode {
 	CTTextAlignment coreTextAlign = CTTextAlignmentFromUITextAlignment(self.textAlignment);
 	CTLineBreakMode coreTextLBMode = CTLineBreakModeFromUILineBreakMode(lineBreakMode);
 	[_attributedText setTextAlignment:coreTextAlign lineBreakMode:coreTextLBMode];
@@ -594,22 +593,22 @@ BOOL CTRunContainsCharactersFromStringRange(CTRunRef run, NSRange range) {
 	[self warnAboutKnownIssues_CheckLineBreakMode];
 #endif	
 }
--(void)setCenterVertically:(BOOL)val {
+- (void)setCenterVertically:(BOOL)val {
 	centerVertically = val;
 	[self setNeedsDisplay];
 }
 
--(void)setAutomaticallyAddLinksForType:(NSTextCheckingTypes)types {
+- (void)setAutomaticallyAddLinksForType:(NSTextCheckingTypes)types {
 	automaticallyAddLinksForType = types;
 	[self setNeedsDisplay];
 }
 
--(void)setExtendBottomToFit:(BOOL)val {
+- (void)setExtendBottomToFit:(BOOL)val {
 	extendBottomToFit = val;
 	[self setNeedsDisplay];
 }
 
--(void)setNeedsDisplay {
+- (void)setNeedsDisplay {
 	[self resetTextFrame];
 	[super setNeedsDisplay];
 }

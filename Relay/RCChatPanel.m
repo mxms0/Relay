@@ -14,24 +14,19 @@
 
 - (id)initWithStyle:(UITableViewStyle)style andChannel:(RCChannel *)chan {
 	if ((self = [super init])) {
-		[self.view setBackgroundColor:[UIColor whiteColor]];
+		[self setBackgroundColor:[UIColor clearColor]];
 		[self setChannel:chan];
-		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-            self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 768, 650) style:style];
-        else
-            self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 320, 385) style:style];
+		self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 320, 385) style:style];
 		self.tableView.delegate = self;
 		self.tableView.dataSource = self;
-		[self.view addSubview:tableView];
+		[self.tableView setBackgroundColor:[UIColor clearColor]];
+		[self addSubview:tableView];
 		[tableView release];
 		[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 		messages = [[NSMutableArray alloc] init];
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-            _bar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 820, 44)];
-        else
-            _bar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 372, 44)];
+		_bar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 340, 372, 44)];
 		[_bar setTintColor:UIColorFromRGB(0x38475C)];
-		field = [[UITextField alloc] initWithFrame:CGRectMake(0, 5, 755, 31)];
+		field = [[UITextField alloc] initWithFrame:CGRectMake(0, 5, 307, 31)];
 		[field setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
 		[field setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
 		[field setBorderStyle:UITextBorderStyleRoundedRect];
@@ -45,23 +40,21 @@
 		[_bar setItems:[NSArray arrayWithObject:_field]];
 		[_field release];
 		[field release];
-		[self.view addSubview:_bar];
+		[self addSubview:_bar];
 		[_bar release];
+
     }
     return self;
-}
-
-- (void)didReceiveMemoryWarning {
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc that aren't in use.
 }
 
 - (BOOL)becomeFirstResponder {
 	[self repositionKeyboardForUse:YES];
 	[field becomeFirstResponder];
 	return YES;
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+	[self repositionKeyboardForUse:NO];
 }
 
 - (BOOL)resignFirstResponder {
@@ -81,37 +74,17 @@
 	[self repositionKeyboardForUse:YES];
 }
 
-- (void)textFieldDidEndEditing:(UITextField *)textField {
-    [self repositionKeyboardForUse:NO];
-}
-
 - (void)repositionKeyboardForUse:(BOOL)key {
 	[UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationDuration:0.25];
 	if (key) {
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-            [_bar setFrame:CGRectMake(0, 652, 768, 44)];
-        else
-            [_bar setFrame:CGRectMake(0, 156, 320, 44)];
+		[_bar setFrame:CGRectMake(0, 124, 320, 44)];
 	}
 	else {
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-            [_bar setFrame:CGRectMake(0, 916, 768, 44)];
-        else
-            [_bar setFrame:CGRectMake(0, 386, 320, 44)];
+		[_bar setFrame:CGRectMake(0, 340, 320, 44)];
 	}
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-        [self.tableView setFrame:CGRectMake(0, 0, 768, _bar.frame.origin.y)];
-    else
-        [self.tableView setFrame:CGRectMake(0, 0, 320, _bar.frame.origin.y)];
+	[self.tableView setFrame:CGRectMake(0, 0,  320, _bar.frame.origin.y)];
 	[UIView commitAnimations];
-}
-
-#pragma mark - View lifecycle
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-	
 }
 
 - (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor {
@@ -139,44 +112,12 @@
 	return 0.0;
 }
 
-- (void)viewDidUnload {
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-	[self setTitle:[channel channelName]];
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-//	[super viewDidAppear:animated];
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-}
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Return YES for supported orientations
 	return ((interfaceOrientation == UIInterfaceOrientationPortrait) || (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown));
 }
-/*
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-	[UIView beginAnimations:nil context:NULL];
-	[UIView setAnimationDuration:duration];
-	if (UIInterfaceOrientationIsLandscape(toInterfaceOrientation)) {
-		[self.tableView setFrame:CGRectMake(0, 0, <#CGFloat width#>, <#CGFloat height#>)
-	}
-	else {
-		
-	}
-}*/
+
 
 #pragma mark - Table view data source
 
@@ -202,6 +143,7 @@
 	RCMessage *_message = [messages objectAtIndex:indexPath.row];
 	cell.textLabel.text = [_message message];
 	[cell _textHasBeenSet:(RCMessageFlavor)_message.flavor];
+	cell.contentView.backgroundColor = [UIColor whiteColor];
 //	NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
 //	dateFormatter.dateStyle = NSDateFormatterNoStyle;
 //	dateFormatter.timeStyle = NSDateFormatterShortStyle;
@@ -210,27 +152,18 @@
     return cell;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-	return channel.topic;
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+	
 }
 
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)_tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     [detailViewController release];
-     */
 }
 
 - (void)dealloc {
 	[messages release];
-	// don't release table view, will be done automatically.
 	[super dealloc];
 }
 

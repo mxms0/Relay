@@ -6,12 +6,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "RCNetworkManager.h"
-#import "RCTableCell.h"
-#import "RCTableHeaderView.h"
+#import "RCChannel.h"
 
-@interface RCViewController : UITableViewController {
-	
+@interface RCViewController : UIViewController {
+	RCChannel *currentChannel;
 }
-
+@property (nonatomic, readonly) RCChannel *currentChannel;
 @end

@@ -6,6 +6,7 @@
 //
 
 #import "RCNetworkManager.h"
+#import "RCNavigator.h"
 
 @implementation RCNetworkManager
 
@@ -31,7 +32,10 @@ static NSMutableArray *networks = nil;
 			return;
 		}
 	}
-	[network setupRooms:[info objectForKey:CHANNELS_KEY]];
+	NSMutableArray *rooms = [[info objectForKey:CHANNELS_KEY] mutableCopy];
+	if (!rooms) rooms = [[NSMutableArray alloc] init];
+	[rooms addObject:@"IRC"];
+	[network setupRooms:rooms];
 	[networks addObject:network];
 	[self saveNetworks];
 }
@@ -59,9 +63,19 @@ static NSMutableArray *networks = nil;
 	}
 	[nets release];
 	[dict release];
-	for (RCNetwork *net in [[RCNetworkManager sharedNetworkManager] networks])
+	for (RCNetwork *net in [[RCNetworkManager sharedNetworkManager] networks]) {
+		[[RCNavigator sharedNavigator] addNetwork:net];
 		if ([net COL]) [net connect];
+	}
+	[[RCNavigator sharedNavigator] scrollViewDidEndDecelerating:nil];
 	[[NSNotificationCenter defaultCenter] postNotificationName:RELOAD_KEY object:NULL];
+}
+
+- (RCNetwork *)networkWithDescription:(NSString *)_desc {
+	for (RCNetwork *net in [self networks]) {
+		if ([[net _description] isEqualToString:_desc]) return net;
+	}
+	return nil;
 }
 
 - (void)saveNetworks {

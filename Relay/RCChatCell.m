@@ -22,6 +22,9 @@ CTFontRef CTFontCreateFromUIFont(UIFont *font) {
 		self.textLabel = [[OHAttributedLabel alloc] init];
 		[self setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
 		self.textLabel.font = [UIFont boldSystemFontOfSize:12];
+		self.textLabel.backgroundColor = [UIColor clearColor];
+		self.backgroundColor = [UIColor whiteColor];
+		[self.textLabel setAutomaticallyAddLinksForType:NSTextCheckingAllTypes];
 		[self addSubview:self.textLabel];
 		[self.textLabel release];
 	}
@@ -36,6 +39,7 @@ CTFontRef CTFontCreateFromUIFont(UIFont *font) {
 	self.backgroundColor = [UIColor whiteColor];
 	switch (flavor) {
 		case RCMessageFlavorAction:
+			[attr setTextIsUnderlined:NO range:NSMakeRange(0, self.textLabel.text.length)];
 			[attr setTextBold:YES range:NSMakeRange(0, self.textLabel.text.length)];
 			[attr setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeClip)];
 			break;
@@ -43,8 +47,7 @@ CTFontRef CTFontCreateFromUIFont(UIFont *font) {
 			[attr setTextBold:YES range:NSMakeRange(0, [self.textLabel.text rangeOfString:@":"].location)];
 			break;
 		case RCMessageFlavorNotice:
-            NSLog(@"%@ - %i", attr.string, attr.length);
-			[attr setTextIsUnderlined:YES];
+	//		[attr setTextIsUnderlined:YES];
 			[attr setTextBold:YES range:NSMakeRange(0, self.textLabel.text.length)];
 			self.backgroundColor = [UIColor redColor];
 			break;
@@ -74,10 +77,7 @@ CTFontRef CTFontCreateFromUIFont(UIFont *font) {
 
 - (void)layoutSubviews {
 	[super layoutSubviews];
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-        [self.textLabel setFrame:CGRectMake(2,2, 768, [self calculateHeightForLabel])];
-    else
-        [self.textLabel setFrame:CGRectMake(2,2, 320, [self calculateHeightForLabel])];
+	[self.textLabel setFrame:CGRectMake(2,2, ((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ? 764 : 316), [self calculateHeightForLabel])];
 	[self.textLabel setNeedsDisplay];
 }
 

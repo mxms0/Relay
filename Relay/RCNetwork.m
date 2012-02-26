@@ -10,7 +10,7 @@
 
 @implementation RCNetwork
 
-@synthesize sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, channels, _channels;
+@synthesize sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, channels, _channels, index;
 
 - (id)init {
 	if ((self = [super init])) {
@@ -54,6 +54,13 @@
 	[super dealloc];
 }
 
+- (NSString *)_description {
+	if (!sDescription) {
+		return server;
+	}
+	return sDescription;
+}
+
 - (NSString *)description {
 	return [NSString stringWithFormat:@"<%@: %p; %@;>", NSStringFromClass([self class]), self, [self infoDictionary]];
 }
@@ -77,8 +84,9 @@
 		if (![[self channels] containsObject:_chan])
 			[[self channels] addObject:_chan];
 		if (join) [chan setJoined:YES withArgument:nil];
-		[[NSNotificationCenter defaultCenter] postNotificationName:RELOAD_KEY object:nil];
-		if (isRegistered) shouldSave = YES; // if we aren't registered.. it's _likely_ just setup.
+		if (isRegistered) {
+			shouldSave = YES; // if we aren't registered.. it's _likely_ just setup.
+		}
 	}
 	else return;
  
@@ -87,6 +95,9 @@
 #pragma mark - SOCKET STUFF
 
 - (BOOL)connect {
+	useNick = nick;
+	RCChannel *chan = [_channels objectForKey:@"IRC"];
+	if (chan) [chan recievedMessage:[NSString stringWithFormat:@"Connecting to %@ on port %d", server, port] from:@"" type:RCMessageTypeNormal];
 	if (kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iPhoneOS_4_0) {
 		task = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
 			[[UIApplication sharedApplication] endBackgroundTask:task];
@@ -119,6 +130,7 @@
 	}
 	[self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
 	[self sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
+	[self addChannel:@"IRC" join:NO];
 	return YES;
 }
 
@@ -127,12 +139,12 @@
 	switch (eventCode) {
 		case NSStreamEventEndEncountered: // 16 - Called on ping timeout/closing link
 			status = RCSocketStatusClosed;
-			NSLog(@"NSStreamEventEndEncountered:%d", NSStreamEventEndEncountered);
+		//	NSLog(@"NSStreamEventEndEncountered:%d", NSStreamEventEndEncountered);
 			[[NSNotificationCenter defaultCenter] postNotificationName:RELOAD_KEY object:nil];
 			return;
 		case NSStreamEventErrorOccurred: /// 8 - Unknowns/bad interwebz
 			status = RCSocketStatusError;
-			NSLog(@"NSStreamEventErrorOccurred:%d", NSStreamEventErrorOccurred);
+		//	NSLog(@"NSStreamEventErrorOccurred:%d", NSStreamEventErrorOccurred);
 			[[NSNotificationCenter defaultCenter] postNotificationName:RELOAD_KEY object:nil];
 			return;
 		case NSStreamEventHasBytesAvailable: // 2
@@ -158,21 +170,21 @@
 				sendQueue = nil;
 			}
 			canSend = YES;
-			NSLog(@"NSStreamEventHasSpaceAvailable:%d", NSStreamEventHasSpaceAvailable);
+		//	NSLog(@"NSStreamEventHasSpaceAvailable:%d", NSStreamEventHasSpaceAvailable);
 			return;
 		case NSStreamEventNone:
-			NSLog(@"NSStreamEventNone:%d", NSStreamEventNone);
+	//		NSLog(@"NSStreamEventNone:%d", NSStreamEventNone);
 			return;
 		case NSStreamEventOpenCompleted: // 1
 			status = RCSocketStatusConnected;
-			NSLog(@"NSStreamEventOpenCompleted:%d", NSStreamEventOpenCompleted);
+	//		NSLog(@"NSStreamEventOpenCompleted:%d", NSStreamEventOpenCompleted);
 			[[NSNotificationCenter defaultCenter] postNotificationName:RELOAD_KEY object:nil];
 			return;
 	}
 }
 
 - (BOOL)sendMessage:(NSString *)msg {
-	NSLog(@"Sending.. %@", msg);
+
 	return [self sendMessage:msg canWait:YES];
 }
 
@@ -181,7 +193,6 @@
 		NSData *messageData = [[msg stringByAppendingString:@"\r\n"] dataUsingEncoding:NSASCIIStringEncoding];
 		if (canSend) {
 			if ([oStream write:[messageData bytes] maxLength:[messageData length]] != -1) {
-				NSLog(@"hai. sent: %@", msg);
 					return YES;
 			}
 			else {
@@ -254,9 +265,8 @@
 - (void)networkDidRegister:(BOOL)reg {
 	// do jOC (join on connect) rooms
 	isRegistered = YES;
-//	[self sendMessage:@"JOIN #chat"];
-//	[self sendMessage:@"PRIVMSG #chat :ohai Hackintech! :D"];
-//	[self sendMessage:@"PRIVMSG #chat :hai ac3xx! ;D"];
+	RCChannel *chan = [_channels objectForKey:@"IRC"];
+	if (chan) [chan recievedMessage:@"Connected to host." from:@"" type:RCMessageTypeNormal];
 	for (NSString *chan in channels) {
 		if ([[_channels objectForKey:chan] joinOnConnect]) [[_channels objectForKey:chan] setJoined:YES withArgument:nil];
 	}
@@ -286,17 +296,36 @@
 
 - (void)handle001:(NSString *)welcome {
 	[self networkDidRegister:YES];
+	[self recievedBasicMessage:welcome];
+}
+
+- (void)recievedBasicMessage:(NSString *)basic {
+	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+	NSScanner *scanner = [[NSScanner alloc] initWithString:basic];
+	NSString *crap;
+	[scanner scanUpToString:@" " intoString:&crap];
+	[scanner scanUpToString:@" " intoString:&crap];
+	[scanner scanUpToString:@" " intoString:&crap];
+	[scanner setScanLocation:[scanner scanLocation]+1];
+	[scanner scanUpToString:@"\r\n" intoString:&crap];
+	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
+	RCChannel *chan = [_channels objectForKey:@"IRC"];
+	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
+	[p drain];
 }
 
 - (void)handle002:(NSString *)infos {
+	[self recievedBasicMessage:infos];
 	// Relay[2626:f803] MSG: :fr.ac3xx.com 002 _m :Your host is fr.ac3xx.com, running version Unreal3.2.9
 }
 
 - (void)handle003:(NSString *)servInfos {
+	[self recievedBasicMessage:servInfos];
 	// Relay[2626:f803] MSG: :fr.ac3xx.com 003 _m :This server was created Fri Dec 23 2011 at 01:21:01 CET
 }
 
 - (void)handle004:(NSString *)othrInfo {
+	[self recievedBasicMessage:othrInfo];
 	// Relay[2626:f803] MSG: :fr.ac3xx.com 004 _m fr.ac3xx.com Unreal3.2.9 iowghraAsORTVSxNCWqBzvdHtGp 
 }
 
@@ -305,10 +334,12 @@
 }
 
 - (void)handle251:(NSString *)infos {
+	[self recievedBasicMessage:infos];
 	// Relay[3067:f803] MSG: :fr.ac3xx.com 251 _m :There are 1 users and 4 invisible on 1 servers
 }
 
 - (void)handle252:(NSString *)opsOnline {
+	[self recievedBasicMessage:opsOnline];
 	// :irc.saurik.com 252 _m 2 :operator(s) online
 }
 
@@ -348,6 +379,10 @@
 	// Relay[2794:f803] MSG: :fr.ac3xx.com 266 _m :Current Global Users: 5  Max: 6
 }
 
+- (void)handle331:(NSString *)noTopic {
+	// Relay[18195:707] MSG: :irc.saurik.com 331 _m #kk :No topic is set.
+}
+
 - (void)handle333:(NSString *)numbers {
 	// :irc.saurik.com 333 _m #bacon Bacon!~S_S@adsl-184-33-54-96.mia.bellsouth.net 1329680840
 }
@@ -360,14 +395,17 @@
 }
 
 - (void)handle375:(NSString *)motd {
+//	[self recievedBasicMessage:motd];
 	// :irc.saurik.com 375 _m :irc.saurik.com message of the day
 }
 
 - (void)handle372:(NSString *)noMotd {
+	[self recievedBasicMessage:noMotd];
 	// :irc.saurik.com 372 _m :- Please edit /etc/inspircd/motd
 }
 
 - (void)handle376:(NSString *)endOfMotd {
+	[self recievedBasicMessage:endOfMotd];
 	// :irc.saurik.com 376 _m :End of message of the day.
 }
 
@@ -384,19 +422,31 @@
 }
 
 - (void)handle422:(NSString *)motd {
-	// motd.
+	NSLog(@"Ohai. %@", motd);
 }
 
 - (void)handle433:(NSString *)use {
 	// nick is in use.
-	_scores++;
-	NSString *format = @"%@";
-	for (int i = 0; i < _scores; i++) format = [format stringByAppendingString:@"_"];
-	[self sendMessage:[@"NICK " stringByAppendingFormat:format, nick]];
+	useNick = [useNick stringByAppendingString:@"_"];
+	[self sendMessage:[@"NICK " stringByAppendingString:useNick]];
 }
 
 - (void)handleNOTICE:(NSString *)notice {
-	NSLog(@"NOTICE: %@", notice);
+	NSScanner *_scans = [[NSScanner alloc] initWithString:notice];
+	NSString *from = @"_";
+	NSString *cmd = from;
+	NSString *to = cmd;
+	NSString *msg = to;
+	[_scans scanUpToString:@" " intoString:&from];
+	[_scans scanUpToString:@" " intoString:&cmd];
+	[_scans scanUpToString:@" " intoString:&to];
+	[_scans scanUpToString:@"\r\n" intoString:&msg];
+	if ([nick isEqualToString:useNick]) {
+		msg = [msg substringFromIndex:1];
+		
+	}
+	
+	//:Hackintech!Hackintech@2FD03E27.3D6CB32E.E0E5D6BD.IP NOTICE __m__ :HI
 }
 
 - (void)handlePRIVMSG:(NSString *)privmsg {	
@@ -429,13 +479,12 @@
 		else if ([msg hasPrefix:@"ACTION"]) {
 			msg = [msg substringWithRange:NSMakeRange(7, msg.length-8)];
 			[((RCChannel *)[_channels objectForKey:room]) recievedMessage:msg from:from type:RCMessageTypeAction];
-			[[NSNotificationCenter defaultCenter] postNotificationName:RELOAD_KEY object:nil];
 			[_scanner release];
 			return;
 		}
 	}
 	else {
-		if ([room isEqualToString:nick]) {
+		if ([room isEqualToString:useNick]) {
 			// privmsg or some other mechanical contraptiona.. :(
 			room = from;
 		}
@@ -449,7 +498,6 @@
 			[self addChannel:room join:YES];
 		}
 		[((RCChannel *)[_channels objectForKey:room]) recievedMessage:msg from:from type:RCMessageTypeNormal];
-		[[NSNotificationCenter defaultCenter] postNotificationName:RELOAD_KEY object:nil];
 		// tell the channel a message was recieved. P:
 	}
 	[_scanner release];
@@ -460,17 +508,7 @@
 }
 
 - (void)handleNICK:(NSString *)nickChange {
-    NSScanner *_scanner = [[NSScanner alloc] initWithString:nickChange];
-	NSString *from = @"";
-	NSString *cmd = from; // will be unused.
-	NSString *to = from;
-	[_scanner scanUpToString:@" " intoString:&from];
-	[_scanner scanUpToString:@" " intoString:&cmd];
-	[_scanner scanUpToString:@" " intoString:&to];
-    from = [from substringFromIndex:1];
-    to = [to substringFromIndex:1];
-    [self parseUsermask:from nick:&from user:nil hostmask:nil];
-	[((RCChannel *)[_channels objectForKey:@"#chat"]) recievedMessage:[NSString stringWithFormat:@"changed their nick to %@", to] from:from type:RCMessageTypeAction];
+	
 }
 
 - (void)handleCTCPRequest:(NSString *)_request {
@@ -518,11 +556,12 @@
 	[_scanner scanUpToString:@" :" intoString:&room];
 	user = [user substringFromIndex:1];
 	room = [room substringFromIndex:1];
-	NSString *__nick = nick;
+	NSString *__nick = useNick;
 	[self parseUsermask:user nick:&_nick user:nil hostmask:nil];
 	for (int i = 0; i < _scores; i++) __nick = [__nick stringByAppendingString:@"_"];
 	if ([_nick isEqualToString:__nick]) {
 		[self addChannel:[room stringByReplacingOccurrencesOfString:@"\r\n" withString:@""] join:NO];
+		[self sendMessage:[NSString stringWithFormat:@"NAMES %@\r\nTOPIC %@", room, room]];
 		[_scanner release];
 		return;
 	}

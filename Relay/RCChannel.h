@@ -7,7 +7,9 @@
 
 #import <Foundation/Foundation.h>
 #import "RCChatPanel.h"
+#import "RCAppDelegate.h"
 #import "NSString+Comparing.h"
+#import "RCChannelBubble.h"
 
 typedef enum RCMessageType {
 	RCMessageTypeAction,
@@ -32,7 +34,9 @@ typedef enum RCEventType {
 	RCChatPanel *panel;
 	BOOL joined;
 	BOOL joinOnConnect;
+	BOOL shouldUpdate;
 	RCNetwork *delegate;
+	RCChannelBubble *bubble;
 }
 @property (nonatomic, retain) NSString *channelName;
 @property (nonatomic, retain) NSString *lastMessage;
@@ -40,6 +44,7 @@ typedef enum RCEventType {
 @property (nonatomic, retain) RCNetwork *delegate;
 @property (nonatomic, readonly) RCChatPanel *panel;
 @property (nonatomic, readonly) NSString *topic;
+@property (nonatomic, retain) RCChannelBubble *bubble;
 - (id)initWithChannelName:(NSString *)_name;
 - (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type;
 - (void)recievedEvent:(RCEventType)type from:(NSString *)from message:(NSString *)msg;
@@ -50,4 +55,6 @@ typedef enum RCEventType {
 - (void)userWouldLikeToPartakeInThisConversation:(NSString *)message;
 // yes, seriously. :P spent like 15 minutes and felt this was best suited. 
 - (void)setTopic:(NSString *)_topic fromUser:(NSString *)usr;
+- (void)setSuccessfullyJoined:(BOOL)success;
+- (void)updateMainTableIfNeccessary;
 @end

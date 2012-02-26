@@ -10,7 +10,7 @@
 
 @implementation RCChannel
 
-@synthesize channelName, lastMessage, joinOnConnect, delegate, panel, topic;
+@synthesize channelName, lastMessage, joinOnConnect, delegate, panel, topic, bubble;
 
 - (id)initWithChannelName:(NSString *)_chan {
 	if ((self = [super init])) {
@@ -18,6 +18,7 @@
 		lastMessage = @"";
 		joinOnConnect = YES;
 		joined = NO;
+		shouldUpdate = YES;
 		users = [[NSMutableDictionary alloc] init];
 		panel = [[RCChatPanel alloc] initWithStyle:UITableViewStylePlain andChannel:self];
 	}
@@ -42,8 +43,8 @@
 	RCMessageFlavor flavor;
 	switch (type) {
 		case RCMessageTypeAction:
-			lastMessage = [[NSString stringWithFormat:@"\u2022 %@: %@", from, message] copy];
-			flavor = RCMessageFlavorNormal;
+			lastMessage = [[NSString stringWithFormat:@"\u2022 %@ %@", from, message] copy];
+			flavor = RCMessageTypeAction;
 			break;
 		case RCMessageTypeNormal:
 			lastMessage = [[NSString stringWithFormat:@"%@: %@", from, message] copy];
@@ -54,8 +55,24 @@
 			break;
 	}
 	[panel postMessage:lastMessage withFlavor:flavor];
+	[self updateMainTableIfNeccessary];
 	[p drain];
 	return;
+}
+
+- (void)updateMainTableIfNeccessary {
+	if (!shouldUpdate) return;
+	if (![NSThread isMainThread]) {
+		[self performSelectorInBackground:_cmd withObject:NULL];
+		return;
+	}
+	return;
+	shouldUpdate = NO;
+	return;
+//	UIViewController *controller = [(RCAppDelegate *)[[UIApplication sharedApplication] delegate] navigationController];
+//	NSLog(@"Meh. %@", controller.topViewController);
+	
+	shouldUpdate = YES;
 }
 
 - (void)setUserJoined:(NSString *)_joined {
@@ -66,15 +83,13 @@
 }
 
 - (void)setMode:(NSString *)modes forUser:(NSString *)user {
-	
 	[users setObject:[[users objectForKey:user] stringByAppendingString:modes] forKey:user];
 }
 
 - (void)setJoined:(BOOL)joind withArgument:(NSString *)arg1 {
 	if (joined == joind) return;
-	joined = joind;
 	if ([[self channelName] hasPrefix:@"#"]) {
-		if (joined) {
+		if (joind) {
 			NSLog(@"Joining..%@", channelName);
 			[delegate sendMessage:[@"JOIN " stringByAppendingString:channelName]];
 		}
@@ -83,6 +98,10 @@
 			[delegate sendMessage:[@"PART " stringByAppendingString:(arg1 ? arg1 : @"Leaving...")]];
 		}
 	}
+}
+
+- (void)setSuccessfullyJoined:(BOOL)success {
+	joined = success;
 }
 
 - (BOOL)joined {

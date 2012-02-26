@@ -11,11 +11,11 @@
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
-		RCGradientView *_gradient = [[RCGradientView alloc] initWithFrame:self.frame];
-		self.backgroundView = _gradient;
-		[_gradient release];
+//		RCGradientView *_gradient = [[RCGradientView alloc] initWithFrame:self.frame];
+//		self.backgroundView = _gradient;
+//		[_gradient release];
 		self.textLabel.backgroundColor = [UIColor clearColor];
-		self.textLabel.textColor = [UIColor whiteColor];
+		self.textLabel.textColor = [UIColor blackColor];
 		self.detailTextLabel.numberOfLines = 2;
 		self.detailTextLabel.backgroundColor = [UIColor clearColor];
 	}

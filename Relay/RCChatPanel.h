@@ -11,7 +11,7 @@
 #import "RCMessage.h"
 
 @class RCChannel;
-@interface RCChatPanel : UIViewController <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate> {
+@interface RCChatPanel : UIView <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate> {
 	NSMutableArray *messages;
 	RCChannel *channel;
 	UITableView *tableView;

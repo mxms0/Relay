@@ -6,7 +6,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "RCGradientView.h"
+
 
 @interface RCTableCell : UITableViewCell {
 	
