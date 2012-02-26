@@ -10,6 +10,12 @@
 		50221B9614EF458200C7AF58 /* RCChatPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 50221B9514EF458200C7AF58 /* RCChatPanel.m */; };
 		50221B9A14EF534300C7AF58 /* RCChatCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 50221B9914EF534200C7AF58 /* RCChatCell.m */; };
 		50221BA414EF6CB800C7AF58 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50221BA314EF6CB800C7AF58 /* CoreText.framework */; };
+		502F94E714FA164900CC7490 /* RCChannelBubble.m in Sources */ = {isa = PBXBuildFile; fileRef = 502F94DC14FA159500CC7490 /* RCChannelBubble.m */; };
+		502F94E814FA164900CC7490 /* RCChannelScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 502F94DE14FA159500CC7490 /* RCChannelScrollView.m */; };
+		502F94E914FA164900CC7490 /* RCNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 502F94E014FA159500CC7490 /* RCNavigationBar.m */; };
+		502F94EA14FA164900CC7490 /* RCNavigator.m in Sources */ = {isa = PBXBuildFile; fileRef = 502F94E214FA159500CC7490 /* RCNavigator.m */; };
+		502F94EE14FA168600CC7490 /* RCTitleLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 502F94ED14FA167B00CC7490 /* RCTitleLabel.m */; };
+		502F94F114FA176900CC7490 /* RCConsoleChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 502F94F014FA176900CC7490 /* RCConsoleChannel.m */; };
 		503D4E8014F1849E002E5E38 /* NSAttributedString+Attributes.m in Sources */ = {isa = PBXBuildFile; fileRef = 503D4E7D14F1849E002E5E38 /* NSAttributedString+Attributes.m */; };
 		503D4E8114F1849E002E5E38 /* OHAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 503D4E7F14F1849E002E5E38 /* OHAttributedLabel.m */; };
 		503D4E9314F1DFA8002E5E38 /* NSString+Comparing.m in Sources */ = {isa = PBXBuildFile; fileRef = 503D4E9214F1DFA8002E5E38 /* NSString+Comparing.m */; };
@@ -28,7 +34,6 @@
 		50A7FBA214C0F2C700ABADEA /* RCNetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 50A7FBA114C0F2C700ABADEA /* RCNetworkManager.m */; };
 		50A7FBA514C0F2DA00ABADEA /* RCNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 50A7FBA414C0F2DA00ABADEA /* RCNetwork.m */; };
 		50A7FBA814C0F7D800ABADEA /* RCTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 50A7FBA714C0F7D800ABADEA /* RCTableCell.m */; };
-		50A7FBAD14C0FA8100ABADEA /* RCGradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50A7FBAC14C0FA8100ABADEA /* RCGradientView.m */; };
 		50A7FBB314C0FAB800ABADEA /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A7FBB214C0FAB700ABADEA /* QuartzCore.framework */; };
 		50A7FBB614C0FCB800ABADEA /* RCTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50A7FBB514C0FCB800ABADEA /* RCTableHeaderView.m */; };
 /* End PBXBuildFile section */
@@ -39,6 +44,18 @@
 		50221B9814EF534200C7AF58 /* RCChatCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCChatCell.h; sourceTree = "<group>"; };
 		50221B9914EF534200C7AF58 /* RCChatCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCChatCell.m; sourceTree = "<group>"; };
 		50221BA314EF6CB800C7AF58 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		502F94DB14FA159500CC7490 /* RCChannelBubble.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCChannelBubble.h; sourceTree = "<group>"; };
+		502F94DC14FA159500CC7490 /* RCChannelBubble.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCChannelBubble.m; sourceTree = "<group>"; };
+		502F94DD14FA159500CC7490 /* RCChannelScrollView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCChannelScrollView.h; sourceTree = "<group>"; };
+		502F94DE14FA159500CC7490 /* RCChannelScrollView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCChannelScrollView.m; sourceTree = "<group>"; };
+		502F94DF14FA159500CC7490 /* RCNavigationBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCNavigationBar.h; sourceTree = "<group>"; };
+		502F94E014FA159500CC7490 /* RCNavigationBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCNavigationBar.m; sourceTree = "<group>"; };
+		502F94E114FA159500CC7490 /* RCNavigator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCNavigator.h; sourceTree = "<group>"; };
+		502F94E214FA159500CC7490 /* RCNavigator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCNavigator.m; sourceTree = "<group>"; };
+		502F94EC14FA167B00CC7490 /* RCTitleLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTitleLabel.h; sourceTree = "<group>"; };
+		502F94ED14FA167B00CC7490 /* RCTitleLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTitleLabel.m; sourceTree = "<group>"; };
+		502F94EF14FA176900CC7490 /* RCConsoleChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCConsoleChannel.h; sourceTree = "<group>"; };
+		502F94F014FA176900CC7490 /* RCConsoleChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCConsoleChannel.m; sourceTree = "<group>"; };
 		503D4E7C14F1849E002E5E38 /* NSAttributedString+Attributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+Attributes.h"; sourceTree = "<group>"; };
 		503D4E7D14F1849E002E5E38 /* NSAttributedString+Attributes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSAttributedString+Attributes.m"; sourceTree = "<group>"; };
 		503D4E7E14F1849E002E5E38 /* OHAttributedLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OHAttributedLabel.h; sourceTree = "<group>"; };
@@ -71,8 +88,6 @@
 		50A7FBA414C0F2DA00ABADEA /* RCNetwork.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCNetwork.m; sourceTree = "<group>"; };
 		50A7FBA614C0F7D800ABADEA /* RCTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTableCell.h; sourceTree = "<group>"; };
 		50A7FBA714C0F7D800ABADEA /* RCTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTableCell.m; sourceTree = "<group>"; };
-		50A7FBAB14C0FA8100ABADEA /* RCGradientView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCGradientView.h; sourceTree = "<group>"; };
-		50A7FBAC14C0FA8100ABADEA /* RCGradientView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCGradientView.m; sourceTree = "<group>"; };
 		50A7FBB214C0FAB700ABADEA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		50A7FBB414C0FCB800ABADEA /* RCTableHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTableHeaderView.h; sourceTree = "<group>"; };
 		50A7FBB514C0FCB800ABADEA /* RCTableHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTableHeaderView.m; sourceTree = "<group>"; };
@@ -164,8 +179,6 @@
 		50A7FBA914C0F7DC00ABADEA /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				50A7FBAB14C0FA8100ABADEA /* RCGradientView.h */,
-				50A7FBAC14C0FA8100ABADEA /* RCGradientView.m */,
 				50A7FBA614C0F7D800ABADEA /* RCTableCell.h */,
 				50A7FBA714C0F7D800ABADEA /* RCTableCell.m */,
 				50A7FB9214C0F0A800ABADEA /* RCViewController.h */,
@@ -178,6 +191,16 @@
 				50221B9914EF534200C7AF58 /* RCChatCell.m */,
 				503D4E9414F22A20002E5E38 /* RCMessage.h */,
 				503D4E9514F22A20002E5E38 /* RCMessage.m */,
+				502F94DB14FA159500CC7490 /* RCChannelBubble.h */,
+				502F94DC14FA159500CC7490 /* RCChannelBubble.m */,
+				502F94DD14FA159500CC7490 /* RCChannelScrollView.h */,
+				502F94DE14FA159500CC7490 /* RCChannelScrollView.m */,
+				502F94DF14FA159500CC7490 /* RCNavigationBar.h */,
+				502F94E014FA159500CC7490 /* RCNavigationBar.m */,
+				502F94E114FA159500CC7490 /* RCNavigator.h */,
+				502F94E214FA159500CC7490 /* RCNavigator.m */,
+				502F94EC14FA167B00CC7490 /* RCTitleLabel.h */,
+				502F94ED14FA167B00CC7490 /* RCTitleLabel.m */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -195,6 +218,8 @@
 				508BBF4A14CE420D00027FFC /* RCChannel.m */,
 				503D4E9114F1DFA8002E5E38 /* NSString+Comparing.h */,
 				503D4E9214F1DFA8002E5E38 /* NSString+Comparing.m */,
+				502F94EF14FA176900CC7490 /* RCConsoleChannel.h */,
+				502F94F014FA176900CC7490 /* RCConsoleChannel.m */,
 			);
 			name = Backend;
 			sourceTree = "<group>";
@@ -225,7 +250,7 @@
 		50A7FB7314C0F0A800ABADEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0430;
 				ORGANIZATIONNAME = "American Heritage School";
 			};
 			buildConfigurationList = 50A7FB7614C0F0A800ABADEA /* Build configuration list for PBXProject "Relay" */;
@@ -263,13 +288,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				502F94EE14FA168600CC7490 /* RCTitleLabel.m in Sources */,
+				502F94E714FA164900CC7490 /* RCChannelBubble.m in Sources */,
+				502F94E814FA164900CC7490 /* RCChannelScrollView.m in Sources */,
+				502F94E914FA164900CC7490 /* RCNavigationBar.m in Sources */,
+				502F94EA14FA164900CC7490 /* RCNavigator.m in Sources */,
 				50A7FB8D14C0F0A800ABADEA /* main.m in Sources */,
 				50A7FB9114C0F0A800ABADEA /* RCAppDelegate.m in Sources */,
 				50A7FB9414C0F0A800ABADEA /* RCViewController.m in Sources */,
 				50A7FBA214C0F2C700ABADEA /* RCNetworkManager.m in Sources */,
 				50A7FBA514C0F2DA00ABADEA /* RCNetwork.m in Sources */,
 				50A7FBA814C0F7D800ABADEA /* RCTableCell.m in Sources */,
-				50A7FBAD14C0FA8100ABADEA /* RCGradientView.m in Sources */,
 				50A7FBB614C0FCB800ABADEA /* RCTableHeaderView.m in Sources */,
 				508BBF4B14CE420D00027FFC /* RCChannel.m in Sources */,
 				50221B9614EF458200C7AF58 /* RCChatPanel.m in Sources */,
@@ -278,6 +307,7 @@
 				503D4E8114F1849E002E5E38 /* OHAttributedLabel.m in Sources */,
 				503D4E9314F1DFA8002E5E38 /* NSString+Comparing.m in Sources */,
 				503D4E9614F22A20002E5E38 /* RCMessage.m in Sources */,
+				502F94F114FA176900CC7490 /* RCConsoleChannel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

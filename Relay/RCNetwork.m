@@ -76,8 +76,9 @@
 }
 - (void)addChannel:(NSString *)_chan join:(BOOL)join {
 	if (![[_channels allKeys] containsObject:_chan]) {
-		NSLog(@"Adding.. [%@]", _chan);
-		RCChannel *chan = [[RCChannel alloc] initWithChannelName:_chan];
+		RCChannel *chan;
+		if ([_chan isEqualToString:@"IRC"]) chan = [[RCCoomnsoleChannel alloc] initWithChannelName:_chan];
+			else chan = [[RCChannel alloc] initWithChannelName:_chan];
 		[chan setDelegate:self];
 		[[self _channels] setObject:chan forKey:_chan];
 		[chan release];
