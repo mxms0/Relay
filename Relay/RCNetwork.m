@@ -77,7 +77,7 @@
 - (void)addChannel:(NSString *)_chan join:(BOOL)join {
 	if (![[_channels allKeys] containsObject:_chan]) {
 		RCChannel *chan;
-		if ([_chan isEqualToString:@"IRC"]) chan = [[RCCoomnsoleChannel alloc] initWithChannelName:_chan];
+		if ([_chan isEqualToString:@"IRC"]) chan = [[RCConsoleChannel alloc] initWithChannelName:_chan];
 			else chan = [[RCChannel alloc] initWithChannelName:_chan];
 		[chan setDelegate:self];
 		[[self _channels] setObject:chan forKey:_chan];
@@ -428,8 +428,9 @@
 
 - (void)handle433:(NSString *)use {
 	// nick is in use.
-	useNick = [useNick stringByAppendingString:@"_"];
-	[self sendMessage:[@"NICK " stringByAppendingString:useNick]];
+	NSLog(@"Changing nick.. %@", useNick);
+	useNick = [[useNick stringByAppendingString:@"_"] retain]; // set to autorelease, so retain'd copy will be released, and it will be set back to normal. :D
+	[self sendMessage:[@"NICK " stringByAppendingString:useNick] canWait:NO];
 }
 
 - (void)handleNOTICE:(NSString *)notice {
@@ -557,10 +558,11 @@
 	[_scanner scanUpToString:@" :" intoString:&room];
 	user = [user substringFromIndex:1];
 	room = [room substringFromIndex:1];
-	NSString *__nick = useNick;
+
 	[self parseUsermask:user nick:&_nick user:nil hostmask:nil];
-	for (int i = 0; i < _scores; i++) __nick = [__nick stringByAppendingString:@"_"];
-	if ([_nick isEqualToString:__nick]) {
+		NSLog(@"neh. %@ : %@", _nick, nick);
+	
+	if ([_nick isEqualToString:useNick]) {
 		[self addChannel:[room stringByReplacingOccurrencesOfString:@"\r\n" withString:@""] join:NO];
 		[self sendMessage:[NSString stringWithFormat:@"NAMES %@\r\nTOPIC %@", room, room]];
 		[_scanner release];

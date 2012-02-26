@@ -143,7 +143,7 @@
 	RCMessage *_message = [messages objectAtIndex:indexPath.row];
 	cell.textLabel.text = [_message message];
 	[cell _textHasBeenSet:(RCMessageFlavor)_message.flavor];
-	cell.contentView.backgroundColor = [UIColor whiteColor];
+
 //	NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
 //	dateFormatter.dateStyle = NSDateFormatterNoStyle;
 //	dateFormatter.timeStyle = NSDateFormatterShortStyle;

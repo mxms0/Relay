@@ -19,6 +19,11 @@ CTFontRef CTFontCreateFromUIFont(UIFont *font) {
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
+		@autoreleasepool {
+			UIImage *bg = [UIImage imageNamed:@"0_chatcell"];
+			bg = [bg stretchableImageWithLeftCapWidth:0 topCapHeight:3];
+			[self.contentView setBackgroundColor:[UIColor colorWithPatternImage:bg]];
+		}
 		self.textLabel = [[OHAttributedLabel alloc] init];
 		[self setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
 		self.textLabel.font = [UIFont boldSystemFontOfSize:12];
