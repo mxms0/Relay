@@ -54,7 +54,6 @@ typedef enum RCEventType {
 - (void)setJoined:(BOOL)joind withArgument:(NSString *)arg1;
 - (void)userWouldLikeToPartakeInThisConversation:(NSString *)message;
 // yes, seriously. :P spent like 15 minutes and felt this was best suited. 
-- (void)setTopic:(NSString *)_topic fromUser:(NSString *)usr;
 - (void)setSuccessfullyJoined:(BOOL)success;
 - (void)updateMainTableIfNeccessary;
 @end

@@ -25,7 +25,7 @@
 		[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 		messages = [[NSMutableArray alloc] init];
 		_bar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 340, 372, 44)];
-		[_bar setTintColor:UIColorFromRGB(0x38475C)];
+		[_bar setTintColor:UIColorFromRGB(0x1E1F28)];
 		field = [[UITextField alloc] initWithFrame:CGRectMake(0, 5, 307, 31)];
 		[field setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
 		[field setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
@@ -64,6 +64,7 @@
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
+	if ([textField.text isEqualToString:@""] || textField.text == nil) return NO;
 	[channel userWouldLikeToPartakeInThisConversation:textField.text];
 	[textField setText:@""];
 	return NO;
@@ -142,7 +143,7 @@
     // Configure the cell...
 	RCMessage *_message = [messages objectAtIndex:indexPath.row];
 	cell.textLabel.text = [_message message];
-	[cell _textHasBeenSet:(RCMessageFlavor)_message.flavor];
+	[cell _textHasBeenSet:(RCMessageFlavor)_message.flavor isHighlight:NO];
 
 //	NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
 //	dateFormatter.dateStyle = NSDateFormatterNoStyle;

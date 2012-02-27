@@ -134,14 +134,6 @@
 	
 }
 
-- (void)setTopic:(NSString *)_topic fromUser:(NSString *)usr {
-	topic = [_topic retain];
-	if (usr) {
-		[self recievedEvent:RCEventTypeTopic from:usr message:_topic];
-		return;
-	}
-	[self.panel.tableView reloadData];
-}
 
 - (void)recievedEvent:(RCEventType)type from:(NSString *)from message:(NSString *)msg {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -150,16 +142,24 @@
 			// ooOoOOOooo!!!!!
 			break;
 		case RCEventTypeJoin:
+			[self setUserJoined:from];
+			[panel postMessage:[NSString stringWithFormat:@"%@ joined the room", from] withFlavor:RCMessageFlavorJoin];
 			// haider!
 			break;
 		case RCEventTypeKick:
 			// sux.
 			break;
 		case RCEventTypePart:
+			[self setUserLeft:from];
+			[panel postMessage:[NSString stringWithFormat:@"%@ left", from] withFlavor:RCMessageFlavorPart];
 			// baibai || cyah.
 			break;
 		case RCEventTypeTopic:
-			[panel postMessage:[NSString stringWithFormat:@"%@ changed the topic to %@", from, msg] withFlavor:RCMessageFlavorAction];
+			if (topic) if ([topic isEqualToString:msg]) return;
+			if (!from || [from isEqualToString:@""]) 
+				[panel postMessage:msg withFlavor:RCMessageFlavorTopic];
+			else [panel postMessage:[NSString stringWithFormat:@"%@ changed the topic to %@", from, msg] withFlavor:RCMessageFlavorTopic];
+			topic = [msg retain];
 			break;
 	}
 	[pool drain];

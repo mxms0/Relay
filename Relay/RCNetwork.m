@@ -86,6 +86,7 @@
 			[[self channels] addObject:_chan];
 		if (join) [chan setJoined:YES withArgument:nil];
 		if (isRegistered) {
+			[[RCNavigator sharedNavigator] addRoom:_chan toServerAtIndex:index];
 			shouldSave = YES; // if we aren't registered.. it's _likely_ just setup.
 		}
 	}
@@ -301,14 +302,20 @@
 }
 
 - (void)recievedBasicMessage:(NSString *)basic {
+
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSScanner *scanner = [[NSScanner alloc] initWithString:basic];
 	NSString *crap;
-	[scanner scanUpToString:@" " intoString:&crap];
-	[scanner scanUpToString:@" " intoString:&crap];
-	[scanner scanUpToString:@" " intoString:&crap];
-	[scanner setScanLocation:[scanner scanLocation]+1];
-	[scanner scanUpToString:@"\r\n" intoString:&crap];
+	@try {
+		[scanner scanUpToString:@" " intoString:&crap];
+		[scanner scanUpToString:@" " intoString:&crap];
+		[scanner scanUpToString:@" " intoString:&crap];
+		[scanner setScanLocation:[scanner scanLocation]+1];
+		[scanner scanUpToString:@"\r\n" intoString:&crap];
+	}
+	@catch (NSException *exception) {
+		NSLog(@"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+	}
 	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
 	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
@@ -358,7 +365,7 @@
 	[_scanner scanUpToString:@"\r\n" intoString:&_topic];
 	_topic = [_topic substringFromIndex:1];
 	NSLog(@"Haid. %@ ",_topic);
-	[[_channels objectForKey:room] setTopic:_topic fromUser:nil];
+	[[_channels objectForKey:room] recievedEvent:RCEventTypeTopic from:nil message:_topic];
 	// :irc.saurik.com 332 _m #bacon :Bacon | where2start? kitchen | Canadian Bacon? get out. | WE SPEAK: BACON, ENGLISH, PORTUGUESE, DEUTSCH. | http://blog.craftzine.com/bacon-starry-night.jpg THIS IS YOU ¬†
 	[_scanner release];
 	[pool drain];
@@ -428,7 +435,6 @@
 
 - (void)handle433:(NSString *)use {
 	// nick is in use.
-	NSLog(@"Changing nick.. %@", useNick);
 	useNick = [[useNick stringByAppendingString:@"_"] retain]; // set to autorelease, so retain'd copy will be released, and it will be set back to normal. :D
 	[self sendMessage:[@"NICK " stringByAppendingString:useNick] canWait:NO];
 }
@@ -452,8 +458,6 @@
 }
 
 - (void)handlePRIVMSG:(NSString *)privmsg {	
-	NSLog(@"MSG: %@ BYTES: %@", privmsg, [privmsg dataUsingEncoding:NSASCIIStringEncoding]);
-	NSLog(@"HAS COLOR: %d", (BOOL)([privmsg rangeOfString:@"\x03"].location != NSNotFound));
 	NSScanner *_scanner = [[NSScanner alloc] initWithString:privmsg];
 	NSString *from = @"";
 	NSString *cmd = from; // will be unused.
@@ -462,13 +466,13 @@
 	[_scanner scanUpToString:@" " intoString:&from];
 	[_scanner scanUpToString:@" " intoString:&cmd];
 	[_scanner scanUpToString:@" " intoString:&room];
-	[_scanner scanUpToString:@" :" intoString:&msg];
+	NSLog(@"Meh . %@ %@ %@ %@ %@", from, cmd, room, privmsg, [privmsg dataUsingEncoding:NSUTF8StringEncoding]);
+	[_scanner scanUpToString:@"\r\n" intoString:&msg];
 	msg = [msg substringFromIndex:1];
 	from = [from substringFromIndex:1];
 	[self parseUsermask:from nick:&from user:nil hostmask:nil];
 	if ([msg hasPrefix:@"\x01"]) {
 		msg = [msg substringFromIndex:1];
-		NSLog(@"HAI. %@:%@", msg, [msg dataUsingEncoding:NSUTF8StringEncoding]);
 		if ([msg hasPrefix:@"PING"]) {
 			[self handlePING:privmsg];
 		}
@@ -545,6 +549,33 @@
 
 }
 
+- (void)handlePART:(NSString *)parted {
+	
+	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+	NSScanner *_scanner = [[NSScanner alloc] initWithString:parted];
+	NSString *user = @"_";
+	NSString *cmd = user;
+	NSString *room = cmd;
+	NSString *_nick = room;
+	[_scanner scanUpToString:@" " intoString:&user];
+	[_scanner scanUpToString:@" " intoString:&cmd];
+	[_scanner scanUpToString:@" " intoString:&room];
+	user = [user substringFromIndex:1];
+	room = [room stringByReplacingOccurrencesOfString:@"\r\n" withString:@""];
+	[self parseUsermask:user nick:&_nick user:nil hostmask:nil];
+	NSLog(@"meh %@ %@", _nick, room);
+	if ([_nick isEqualToString:useNick]) {
+		NSLog(@"I went byebye. Notify the police");
+		[_scanner release];
+		return;
+	}
+	else {
+		[[_channels objectForKey:room] recievedEvent:RCEventTypePart from:_nick message:nil];
+	}
+	[_scanner release];
+	[p drain];
+}
+
 - (void)handleJOIN:(NSString *)join {
 	// add user unless self
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
@@ -555,18 +586,20 @@
 	NSString *_nick = room;
 	[_scanner scanUpToString:@" " intoString:&user];
 	[_scanner scanUpToString:@" " intoString:&cmd];
-	[_scanner scanUpToString:@" :" intoString:&room];
+	[_scanner scanUpToString:@" " intoString:&room];
 	user = [user substringFromIndex:1];
 	room = [room substringFromIndex:1];
-
+	room = [room stringByReplacingOccurrencesOfString:@"\r\n" withString:@""];
 	[self parseUsermask:user nick:&_nick user:nil hostmask:nil];
-		NSLog(@"neh. %@ : %@", _nick, nick);
 	
 	if ([_nick isEqualToString:useNick]) {
-		[self addChannel:[room stringByReplacingOccurrencesOfString:@"\r\n" withString:@""] join:NO];
+		[self addChannel:room join:NO];
 		[self sendMessage:[NSString stringWithFormat:@"NAMES %@\r\nTOPIC %@", room, room]];
 		[_scanner release];
 		return;
+	}
+	else {
+		[[_channels objectForKey:room] recievedEvent:RCEventTypeJoin from:_nick message:nil];
 	}
 	[_scanner release];
 	[p drain];
@@ -603,6 +636,10 @@
 }
 
 - (void)handlehost:(NSString *)hostInfo {
+	RCChannel *chan = [_channels objectForKey:@"IRC"];
+	if (chan) {
+		[chan recievedMessage:[hostInfo substringFromIndex:1] from:@"" type:RCMessageTypeNormal];
+	}
 	// :Your host is irc.saurik.com, running version InspIRCd-1.1.18+Gudbrandsdalsost
 	// .. ... . .. .. only at irc.saurik.comm
 }
@@ -621,7 +658,7 @@
 	newTopic = [newTopic substringFromIndex:1];
 	from = [from substringFromIndex:1];
 	[self parseUsermask:from nick:&from user:nil hostmask:nil];
-	[[_channels objectForKey:room] setTopic:newTopic fromUser:from];
+	[[_channels objectForKey:room] recievedEvent:RCEventTypeTopic from:from message:newTopic];
 	[p drain];
 }
 

@@ -42,7 +42,7 @@ static id _sharedNavigator = nil;
 - (void)addNetwork:(RCNetwork *)net	{
 	if (!net) return;
 	netCount++;
-	[net setIndex:netCount];
+	[net setIndex:netCount-1];
 	RCTitleLabel *_label = [[RCTitleLabel alloc] initWithFrame:CGRectMake(netCount*260-bar.frame.size.width, 0, bar.frame.size.width, bar.frame.size.height)];
 	[_label setBackgroundColor:[UIColor clearColor]];
 	[_label setHidden:NO];

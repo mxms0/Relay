@@ -7,6 +7,7 @@
 //
 
 #import "RCConsoleChannel.h"
+#import "RCNetwork.h"
 
 @implementation RCConsoleChannel
 

@@ -20,6 +20,6 @@
 }
 @property (nonatomic, retain) OHAttributedLabel *textLabel;
 CTFontRef CTFontCreateFromUIFont(UIFont *font);
-- (void)_textHasBeenSet:(RCMessageFlavor)flavor;
+- (void)_textHasBeenSet:(RCMessageFlavor)flavor isHighlight:(BOOL)high;
 - (float)calculateHeightForLabel;
 @end
