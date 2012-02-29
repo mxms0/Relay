@@ -22,7 +22,10 @@
 	int netCount;
 	int currentIndex;
 }
+@property (nonatomic, readonly) RCChatPanel *currentPanel;
 + (id)sharedNavigator;
 - (void)addNetwork:(RCNetwork *)net;
 - (void)addRoom:(NSString *)room toServerAtIndex:(int)index;
+- (void)channelSelected:(RCChannelBubble *)bubble;
+- (RCChannelBubble *)channelBubbleWithChannelName:(NSString *)name;
 @end

@@ -7,7 +7,6 @@
 
 #import <Foundation/Foundation.h>
 #import "RCChannel.h"
-#import "RCConsoleChannel.h"
 #import "RCNavigator.h"
 
 typedef enum RCSocketStatus {
@@ -19,6 +18,7 @@ typedef enum RCSocketStatus {
 } RCSocketStatus;
 
 @interface RCNetwork : NSObject <NSStreamDelegate> {
+	NSOperationQueue *mainQueue;
 	NSMutableArray *channels;
 	NSMutableDictionary *_channels;
 	NSString *sDescription;
@@ -36,7 +36,8 @@ typedef enum RCSocketStatus {
 	int task;
 	int port;
 	int index;
-	int _scores; // ha. funny. jokes. get it. under_scores. ><
+	int _scores; // ha. funny. jokes. get it. under_scores. >< 
+	/* _scores isn't actually used anymore.. */
 	BOOL isRegistered;
 	BOOL useSSL;
 	BOOL COL;
@@ -52,6 +53,7 @@ typedef enum RCSocketStatus {
 @property (nonatomic, retain) NSString *realname;
 @property (nonatomic, retain) NSString *spass;
 @property (nonatomic, retain) NSString *npass;
+@property (nonatomic, readonly) NSString *useNick;
 @property (nonatomic, assign) int port;
 @property (nonatomic, assign) BOOL isRegistered;
 @property (nonatomic, assign) BOOL useSSL;

@@ -37,6 +37,7 @@ static NSMutableArray *networks = nil;
 	[rooms addObject:@"IRC"];
 	[network setupRooms:rooms];
 	[networks addObject:network];
+	[network release];
 	[self saveNetworks];
 }
 
@@ -67,8 +68,23 @@ static NSMutableArray *networks = nil;
 		[[RCNavigator sharedNavigator] addNetwork:net];
 		if ([net COL]) [net connect];
 	}
+	if ([networks count] == 0) {
+		NSLog(@"Shutup NSKeyedUnarchiver.");
+		RCWelcomeNetwork *net = [[RCWelcomeNetwork alloc] init];
+		[net setSDescription:@"Welcome!"];
+		[net setServer:@"irc.nightcoast.net"];
+		[net addChannel:@"#Relay" join:YES];
+		RCChannel *chan = [[net _channels] objectForKey:@"#Relay"];
+		[chan recievedEvent:RCEventTypeTopic from:@"" message:@"Welcome to Relay!"];
+		[[chan panel] setHidesEntryField:YES];
+		[chan recievedMessage:@"Try out some cool features! :D" from:@"" type:RCMessageTypeAction];
+		[chan recievedMessage:@"Blah, Blah, more blah!" from:@"Me" type:RCMessageTypeNormal];
+		[[self networks] addObject:net];
+		[net release];
+		[[RCNavigator sharedNavigator] addNetwork:net];
+		[[RCNavigator sharedNavigator] channelSelected:[chan bubble]];
+	}
 	[[RCNavigator sharedNavigator] scrollViewDidEndDecelerating:nil];
-	[[NSNotificationCenter defaultCenter] postNotificationName:RELOAD_KEY object:NULL];
 }
 
 - (RCNetwork *)networkWithDescription:(NSString *)_desc {

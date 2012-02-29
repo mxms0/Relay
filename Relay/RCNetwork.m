@@ -10,7 +10,7 @@
 
 @implementation RCNetwork
 
-@synthesize sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, channels, _channels, index;
+@synthesize sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, channels, _channels, index, useNick;
 
 - (id)init {
 	if ((self = [super init])) {
@@ -20,6 +20,7 @@
 		canSend = YES;
 		channels = [[NSMutableArray alloc] init];
 		_channels = [[NSMutableDictionary alloc] init];
+		mainQueue = [[NSOperationQueue alloc] init];
 	}
 	return self;
 }
@@ -42,6 +43,7 @@
 
 - (void)dealloc {
 	NSLog(@"cya.");
+	[mainQueue release];
 	[channels release];
 	[_channels release];
 	[server release];
@@ -76,9 +78,7 @@
 }
 - (void)addChannel:(NSString *)_chan join:(BOOL)join {
 	if (![[_channels allKeys] containsObject:_chan]) {
-		RCChannel *chan;
-		if ([_chan isEqualToString:@"IRC"]) chan = [[RCConsoleChannel alloc] initWithChannelName:_chan];
-			else chan = [[RCChannel alloc] initWithChannelName:_chan];
+		RCChannel *chan = [[RCChannel alloc] initWithChannelName:_chan];
 		[chan setDelegate:self];
 		[[self _channels] setObject:chan forKey:_chan];
 		[chan release];
@@ -87,11 +87,11 @@
 		if (join) [chan setJoined:YES withArgument:nil];
 		if (isRegistered) {
 			[[RCNavigator sharedNavigator] addRoom:_chan toServerAtIndex:index];
+			[[RCNetworkManager sharedNetworkManager] saveNetworks];
 			shouldSave = YES; // if we aren't registered.. it's _likely_ just setup.
 		}
 	}
 	else return;
- 
 }
 
 #pragma mark - SOCKET STUFF
@@ -141,13 +141,11 @@
 	switch (eventCode) {
 		case NSStreamEventEndEncountered: // 16 - Called on ping timeout/closing link
 			status = RCSocketStatusClosed;
-		//	NSLog(@"NSStreamEventEndEncountered:%d", NSStreamEventEndEncountered);
-			[[NSNotificationCenter defaultCenter] postNotificationName:RELOAD_KEY object:nil];
+			[[_channels objectForKey:@"IRC"] recievedMessage:@"Disconnected." from:@"" type:RCMessageTypeNormal];
 			return;
 		case NSStreamEventErrorOccurred: /// 8 - Unknowns/bad interwebz
+			[[_channels objectForKey:@"IRC"] recievedMessage:@"Disconnected." from:@"" type:RCMessageTypeNormal];
 			status = RCSocketStatusError;
-		//	NSLog(@"NSStreamEventErrorOccurred:%d", NSStreamEventErrorOccurred);
-			[[NSNotificationCenter defaultCenter] postNotificationName:RELOAD_KEY object:nil];
 			return;
 		case NSStreamEventHasBytesAvailable: // 2
 			if (!data) data = [NSMutableString new];
@@ -172,21 +170,16 @@
 				sendQueue = nil;
 			}
 			canSend = YES;
-		//	NSLog(@"NSStreamEventHasSpaceAvailable:%d", NSStreamEventHasSpaceAvailable);
 			return;
 		case NSStreamEventNone:
-	//		NSLog(@"NSStreamEventNone:%d", NSStreamEventNone);
 			return;
 		case NSStreamEventOpenCompleted: // 1
 			status = RCSocketStatusConnected;
-	//		NSLog(@"NSStreamEventOpenCompleted:%d", NSStreamEventOpenCompleted);
-			[[NSNotificationCenter defaultCenter] postNotificationName:RELOAD_KEY object:nil];
 			return;
 	}
 }
 
 - (BOOL)sendMessage:(NSString *)msg {
-
 	return [self sendMessage:msg canWait:YES];
 }
 
@@ -214,6 +207,7 @@
 }
 
 - (void)recievedMessage:(NSString *)msg {
+	if ([msg isEqualToString:@""] || msg == nil) return;
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	if ([msg hasPrefix:@"PING"]) {
 		[self handlePING:msg];
@@ -248,11 +242,11 @@
 
 - (BOOL)disconnect {
 	if ((status == RCSocketStatusConnected) || (status == RCSocketStatusConnecting)) {
+		[mainQueue cancelAllOperations];
 		[self sendMessage:@"QUIT :Relay 1.0"];
 		status = RCSocketStatusClosed;
 		[[UIApplication sharedApplication] endBackgroundTask:task];
 		task = UIBackgroundTaskInvalid;
-		[[NSNotificationCenter defaultCenter] postNotificationName:RELOAD_KEY object:nil];
 		[oStream close];
 		[iStream close];
 		[oStream release];
@@ -606,7 +600,7 @@
 }
 
 - (void)handleQUIT:(NSString *)quitter {
-	 
+
 }
 
 - (void)handleMODE:(NSString *)modes {

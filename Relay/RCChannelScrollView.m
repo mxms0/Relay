@@ -43,7 +43,9 @@
 	for (RCChannelBubble *bb in channels) {
 		UIView *sub = nil;
 		if ([[self subviews] count] != 0) sub = [[self subviews] objectAtIndex:[[self subviews] count]-1];
-		[bb setFrame:CGRectMake((sub ? sub.frame.size.width+sub.frame.origin.x+10 : 10), 7, bb.frame.size.width, 18)];
+		[bb setFrame:CGRectMake((sub ? sub.frame.size.width+sub.frame.origin.x+10 : 10), 5, bb.frame.size.width, 20)];
+		[[bb titleLabel] setTextColor:[UIColor blackColor]];
+		[[bb titleLabel] setShadowColor:[UIColor whiteColor]];
 		[self addSubview:bb];
 	}
 	UIView *sub = nil;

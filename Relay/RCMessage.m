@@ -9,7 +9,7 @@
 #import "RCMessage.h"
 
 @implementation RCMessage
-@synthesize flavor, message;
+@synthesize flavor, message, isHighlight;
 
 - (void)dealloc {
 	[message release];

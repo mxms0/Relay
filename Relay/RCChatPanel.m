@@ -24,6 +24,7 @@
 		[tableView release];
 		[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 		messages = [[NSMutableArray alloc] init];
+
 		_bar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 340, 372, 44)];
 		[_bar setTintColor:UIColorFromRGB(0x1E1F28)];
 		field = [[UITextField alloc] initWithFrame:CGRectMake(0, 5, 307, 31)];
@@ -63,6 +64,12 @@
 	return YES;
 }
 
+- (void)setHidesEntryField:(BOOL)entry {
+	[_bar setHidden:entry];
+	if (entry) [tableView setFrame:CGRectMake(0, 0, 320, 384)];
+	else [tableView setFrame:CGRectMake(0, 0, 320, 340)];	
+}
+
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
 	if ([textField.text isEqualToString:@""] || textField.text == nil) return NO;
 	[channel userWouldLikeToPartakeInThisConversation:textField.text];
@@ -88,10 +95,11 @@
 	[UIView commitAnimations];
 }
 
-- (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor {
+- (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor isHighlight:(BOOL)high {
 	RCMessage *message = [[RCMessage alloc] init];
 	[message setMessage:_message];
 	[message setFlavor:flavor];
+	[message setIsHighlight:high];
 	[messages addObject:message];
 	[message release];
 	

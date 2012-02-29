@@ -10,7 +10,7 @@
 #import "RCNetworkManager.h"
 
 @implementation RCNavigator
-
+@synthesize currentPanel;
 static id _sharedNavigator = nil;
 
 - (id)init {
@@ -60,6 +60,7 @@ static id _sharedNavigator = nil;
 		[bubble release];
 	}
 	[rooms addObject:tmp];
+	if (netCount == 1) [self channelSelected:[[[net _channels] objectForKey:@"IRC"] bubble]];
 	[tmp release];
 }
 
@@ -73,7 +74,6 @@ static id _sharedNavigator = nil;
 	}
 	if (!useNet) return;
 	RCChannelBubble *bubble = [self channelBubbleWithChannelName:room];
-	NSLog(@"Meh. %@ %@", useNet, bubble);
 	[[[useNet _channels] objectForKey:room] setBubble:bubble];
 	[[rooms objectAtIndex:index] addObject:bubble];
 	[bubble release];
@@ -85,10 +85,13 @@ static id _sharedNavigator = nil;
 	RCChannelBubble *bubble = [[RCChannelBubble alloc] initWithFrame:CGRectMake(0, 0, size.width+=20, 18)];
 	[bubble addTarget:self action:@selector(channelSelected:) forControlEvents:UIControlEventTouchUpInside];
 	[bubble setTitle:name forState:UIControlStateNormal];
+	[bubble _setSelected:NO];
 	return bubble;
 }
 
 - (void)channelSelected:(RCChannelBubble *)bubble {
+	[[[currentPanel channel] bubble] _setSelected:NO];
+	[bubble _setSelected:YES];
 	RCNetwork *net = [[RCNetworkManager sharedNetworkManager] networkWithDescription:[[[bar subviews] objectAtIndex:currentIndex] text]];
 	RCChannel *chan = [[net _channels] objectForKey:bubble.titleLabel.text];
 	if (chan) {

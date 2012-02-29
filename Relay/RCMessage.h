@@ -19,7 +19,10 @@ typedef enum RCMessageFlavor {
 
 @interface RCMessage : NSObject {
 	NSString *message;
+	RCMessageFlavor flavor;
+	BOOL isHighlight;
 }
 @property (nonatomic, retain) NSString *message;
 @property (nonatomic, assign) RCMessageFlavor flavor;
+@property (nonatomic, assign) BOOL isHighlight;
 @end

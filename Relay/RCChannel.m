@@ -37,8 +37,8 @@
 }
 
 - (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type {
-	NSLog(@"%@:%@", from, message);
-	NSLog(@"%@:%@", [from dataUsingEncoding:NSUTF8StringEncoding], [message dataUsingEncoding:NSUTF8StringEncoding]);
+//	NSLog(@"%@:%@", from, message);
+//	NSLog(@"%@:%@", [from dataUsingEncoding:NSUTF8StringEncoding], [message dataUsingEncoding:NSUTF8StringEncoding]);
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	RCMessageFlavor flavor;
 	switch (type) {
@@ -54,10 +54,24 @@
 			flavor = RCMessageFlavorNotice;
 			break;
 	}
-	[panel postMessage:lastMessage withFlavor:flavor];
+	BOOL isHighlight =  ([message rangeOfString:[NSString stringWithFormat:@" %@ ", [delegate useNick]]].location != NSNotFound);
+	[panel postMessage:lastMessage withFlavor:flavor isHighlight:isHighlight];
+	[self shouldPost:isHighlight];
 	[self updateMainTableIfNeccessary];
 	[p drain];
 	return;
+}
+
+- (void)shouldPost:(BOOL)isHighlight {
+	if (![[[[RCNavigator sharedNavigator] currentPanel] channel] isEqual:self]) {
+		if (isHighlight) {
+			[bubble setMentioned:YES];
+			return;
+		}
+		else {
+			[bubble setHasNewMessage:YES];
+		}
+	}
 }
 
 - (void)updateMainTableIfNeccessary {
@@ -122,6 +136,9 @@
 			if ([command isEqualToStringNoCase:@"privmsg"] || [command isEqualToStringNoCase:@"query"] || [command isEqualToStringNoCase:@"msg"]) {
 				[delegate addChannel:argument1 join:YES];
 			}
+			if ([command isEqualToStringNoCase:@"topic"]) {
+				NSLog(@"HANDLE LOCAL TOPIC SETT");
+			}
 			NSLog(@"Hai. %@ %@ %@", command, argument1, argument2);
 			[delegate sendMessage:[message substringFromIndex:1]];
 		}
@@ -143,7 +160,7 @@
 			break;
 		case RCEventTypeJoin:
 			[self setUserJoined:from];
-			[panel postMessage:[NSString stringWithFormat:@"%@ joined the room", from] withFlavor:RCMessageFlavorJoin];
+			[panel postMessage:[NSString stringWithFormat:@"%@ joined the room", from] withFlavor:RCMessageFlavorJoin isHighlight:NO];
 			// haider!
 			break;
 		case RCEventTypeKick:
@@ -151,14 +168,14 @@
 			break;
 		case RCEventTypePart:
 			[self setUserLeft:from];
-			[panel postMessage:[NSString stringWithFormat:@"%@ left", from] withFlavor:RCMessageFlavorPart];
+			[panel postMessage:[NSString stringWithFormat:@"%@ left", from] withFlavor:RCMessageFlavorPart isHighlight:NO];
 			// baibai || cyah.
 			break;
 		case RCEventTypeTopic:
 			if (topic) if ([topic isEqualToString:msg]) return;
 			if (!from || [from isEqualToString:@""]) 
-				[panel postMessage:msg withFlavor:RCMessageFlavorTopic];
-			else [panel postMessage:[NSString stringWithFormat:@"%@ changed the topic to %@", from, msg] withFlavor:RCMessageFlavorTopic];
+				[panel postMessage:msg withFlavor:RCMessageFlavorTopic isHighlight:NO];
+			else [panel postMessage:[NSString stringWithFormat:@"%@ changed the topic to %@", from, msg] withFlavor:RCMessageFlavorTopic isHighlight:NO];
 			topic = [msg retain];
 			break;
 	}

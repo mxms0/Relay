@@ -51,8 +51,9 @@
 										@"6667", PORT_KEY,
 										[NSNumber numberWithBool:0], SSL_KEY,
 										[NSNumber numberWithBool:1], COL_KEY,
-										[NSArray arrayWithObjects:/*@"#bacon", @"#kk",*/nil], CHANNELS_KEY,
+										[NSArray arrayWithObjects:@"#bacon", @"#kk",nil], CHANNELS_KEY,
 										nil]];
+	
 	
 }
 

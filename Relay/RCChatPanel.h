@@ -21,6 +21,7 @@
 @property (nonatomic, retain) RCChannel *channel;
 @property (nonatomic, retain) UITableView *tableView;
 - (id)initWithStyle:(UITableViewStyle)style andChannel:(RCChannel *)chan;
-- (void)postMessage:(NSString *)message withFlavor:(RCMessageFlavor)flavor;
+- (void)postMessage:(NSString *)message withFlavor:(RCMessageFlavor)flavor isHighlight:(BOOL)high;
 - (void)repositionKeyboardForUse:(BOOL)key;
+- (void)setHidesEntryField:(BOOL)entry;
 @end

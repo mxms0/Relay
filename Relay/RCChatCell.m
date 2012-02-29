@@ -43,7 +43,6 @@ CTFontRef CTFontCreateFromUIFont(UIFont *font) {
 	self.backgroundColor = [UIColor whiteColor];
 	@autoreleasepool {
 		UIImage *bg = [UIImage imageNamed:@"0_chatcell"];
-		bg = [bg resizableImageWithCapInsets:UIEdgeInsetsMake(2, 0, 3, 0)];
 		[self.contentView setBackgroundColor:[UIColor colorWithPatternImage:bg]];
 		[self setNeedsDisplay];
 	}
@@ -58,14 +57,14 @@ CTFontRef CTFontCreateFromUIFont(UIFont *font) {
 				[attr setTextColor:UIColorFromRGB(0xE3445A)];
 			}
 			[attr setTextBold:YES range:NSMakeRange(0, [self.textLabel.text rangeOfString:@":"].location)];
+		//	[attr setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentLeft) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeClip)];
 			break;
 		case RCMessageFlavorNotice:
-	//		[attr setTextIsUnderlined:YES];
 			[attr setTextBold:YES range:NSMakeRange(0, self.textLabel.text.length)];
 			self.backgroundColor = [UIColor redColor];
 			break;
 		case RCMessageFlavorTopic:
-			[attr setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeWordWrap)];
+			[attr setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeClip)];
 			break;
 		case RCMessageFlavorJoin:
 			[attr setFont:[UIFont fontWithName:@"Helvetica" size:11]];
@@ -95,12 +94,20 @@ CTFontRef CTFontCreateFromUIFont(UIFont *font) {
 	
 	else {
 		lengthOfMsg = [self.textLabel.text sizeWithFont:[UIFont fontWithName:@"Helvetica-Bold" size:12]].width;
-		if (maxWidth >= lengthOfMsg) return 15;
+		if (maxWidth+5 >= lengthOfMsg) return 15;
 		else {
 			heightToUse = (((lengthOfMsg + maxWidth) - (lengthOfMsg % maxWidth))/maxWidth);
 		}
 	}
-	return (heightToUse <= 1 ? 1 : heightToUse) * 15;
+	int retur = (heightToUse <= 1 ? 1 : heightToUse) * 15;
+	if (retur > 15) {
+		@autoreleasepool {
+			UIImage *bg = [UIImage imageNamed:@"0_chatcell_2"];
+			[self.contentView setBackgroundColor:[UIColor colorWithPatternImage:bg]];
+			[self setNeedsDisplay];
+		}
+	}
+	return retur;
 	
 }
 
