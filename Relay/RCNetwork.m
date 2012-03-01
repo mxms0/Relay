@@ -138,6 +138,7 @@
 
 - (void)stream:(NSStream *)aStream handleEvent:(NSStreamEvent)eventCode {
 	static NSMutableString *data = nil;
+
 	switch (eventCode) {
 		case NSStreamEventEndEncountered: // 16 - Called on ping timeout/closing link
 			status = RCSocketStatusClosed;
@@ -148,11 +149,12 @@
 			status = RCSocketStatusError;
 			return;
 		case NSStreamEventHasBytesAvailable: // 2
-			if (!data) data = [NSMutableString new];
+
+			if (!data) data = [[NSMutableString alloc] init];
 			uint8_t buffer;
 			NSUInteger bytesRead = [(NSInputStream *)aStream read:&buffer maxLength:1];
 			if (bytesRead)
-				[data appendFormat:@"%c", buffer];
+				[data appendFormat:@"%C", buffer];
 			if ([data hasSuffix:@"\r\n"]) {
 				[self recievedMessage:data];
 				[data release];
@@ -185,7 +187,7 @@
 
 - (BOOL)sendMessage:(NSString *)msg canWait:(BOOL)canWait {
 	if ((!canWait) || isRegistered) {
-		NSData *messageData = [[msg stringByAppendingString:@"\r\n"] dataUsingEncoding:NSASCIIStringEncoding];
+		NSData *messageData = [[msg stringByAppendingString:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding];
 		if (canSend) {
 			if ([oStream write:[messageData bytes] maxLength:[messageData length]] != -1) {
 					return YES;
@@ -207,6 +209,9 @@
 }
 
 - (void)recievedMessage:(NSString *)msg {
+	if (![msg canBeConvertedToEncoding:NSUTF8StringEncoding]) {
+		NSLog(@"Meh!! %@", msg);
+	}
 	if ([msg isEqualToString:@""] || msg == nil) return;
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	if ([msg hasPrefix:@"PING"]) {

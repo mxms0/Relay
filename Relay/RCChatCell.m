@@ -64,7 +64,7 @@ CTFontRef CTFontCreateFromUIFont(UIFont *font) {
 			self.backgroundColor = [UIColor redColor];
 			break;
 		case RCMessageFlavorTopic:
-			[attr setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeClip)];
+			[attr setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeWordWrap)];
 			break;
 		case RCMessageFlavorJoin:
 			[attr setFont:[UIFont fontWithName:@"Helvetica" size:11]];
@@ -94,12 +94,18 @@ CTFontRef CTFontCreateFromUIFont(UIFont *font) {
 	
 	else {
 		lengthOfMsg = [self.textLabel.text sizeWithFont:[UIFont fontWithName:@"Helvetica-Bold" size:12]].width;
-		if (maxWidth+5 >= lengthOfMsg) return 15;
+		if (maxWidth >= lengthOfMsg) return 15;
 		else {
 			heightToUse = (((lengthOfMsg + maxWidth) - (lengthOfMsg % maxWidth))/maxWidth);
 		}
 	}
-	int retur = (heightToUse <= 1 ? 1 : heightToUse) * 15;
+	return (heightToUse <= 1 ? 1 : heightToUse) * 15;;
+	
+}
+
+- (void)layoutSubviews {
+	[super layoutSubviews];
+	float retur = [self calculateHeightForLabel];
 	if (retur > 15) {
 		@autoreleasepool {
 			UIImage *bg = [UIImage imageNamed:@"0_chatcell_2"];
@@ -107,13 +113,7 @@ CTFontRef CTFontCreateFromUIFont(UIFont *font) {
 			[self setNeedsDisplay];
 		}
 	}
-	return retur;
-	
-}
-
-- (void)layoutSubviews {
-	[super layoutSubviews];
-	[self.textLabel setFrame:CGRectMake(2,2, ((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ? 764 : 316), [self calculateHeightForLabel])];
+	[self.textLabel setFrame:CGRectMake(2, 2, 316, retur)];
 	[self.textLabel setNeedsDisplay];
 }
 
