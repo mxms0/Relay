@@ -24,9 +24,8 @@ static id _sharedNavigator = nil;
 		rooms = [[NSMutableArray alloc] init];
 		bar = [[RCNavigationBar alloc] initWithFrame:CGRectMake(30, 0, frame.size.width-60, 45)];
 		scrollBar = [[RCChannelScrollView alloc] initWithFrame:CGRectMake(0, 45, 320, 32)];
-		[scrollBar setScrollEnabled:YES];
 		[self addSubview:scrollBar];
-	//	[scrollBar release];
+		[scrollBar release];
 		[bar setContentSize:CGSizeMake(bar.frame.size.width, 45)];
 		[bar setPagingEnabled:YES];
 		[bar setShowsVerticalScrollIndicator:NO];
@@ -121,7 +120,7 @@ static id _sharedNavigator = nil;
 	else netLoc = 0;
 	if (netLoc != currentIndex) currentIndex = netLoc;
 	else return;
-	[scrollBar layoutChannels:[rooms objectAtIndex:(unsigned int)netLoc]];
+	[scrollBar layoutChannels:[rooms objectAtIndex:netLoc]];
 	
 }
 

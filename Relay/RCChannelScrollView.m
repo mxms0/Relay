@@ -61,7 +61,7 @@
 	if ([[self subviews] count] == 0) return;
 
 	UIView *sub = nil;
-	if ([[self subviews] count] >= 1) sub = [[self subviews] objectAtIndex:0];
+	sub = [[self subviews] objectAtIndex:0];
 	for (UIView *subv in [self subviews]) {
 		if ([subv frame].origin.x > sub.frame.origin.x) sub = subv;
 	}
