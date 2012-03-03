@@ -78,7 +78,9 @@
 }
 - (void)addChannel:(NSString *)_chan join:(BOOL)join {
 	if (![[_channels allKeys] containsObject:_chan]) {
-		RCChannel *chan = [[RCChannel alloc] initWithChannelName:_chan];
+		RCChannel *chan;
+		if ([_chan isEqualToString:@"IRC"]) chan = [[RCConsoleChannel alloc] initWithChannelName:_chan];
+		else chan = [[RCChannel alloc] initWithChannelName:_chan];
 		[chan setDelegate:self];
 		[[self _channels] setObject:chan forKey:_chan];
 		[chan release];
@@ -151,14 +153,16 @@
 		case NSStreamEventHasBytesAvailable: // 2
 
 			if (!data) data = [[NSMutableString alloc] init];
-			uint8_t buffer;
-			NSUInteger bytesRead = [(NSInputStream *)aStream read:&buffer maxLength:1];
+			uint8_t buffer[512];
+			NSUInteger bytesRead = [(NSInputStream *)aStream read:buffer maxLength:512]; 
 			if (bytesRead)
-				[data appendFormat:@"%C", buffer];
-			if ([data hasSuffix:@"\r\n"]) {
-				[self recievedMessage:data];
-				[data release];
-				data = nil;
+				[data appendString:[[[NSString alloc] initWithBytesNoCopy:buffer length:bytesRead encoding:NSUTF8StringEncoding freeWhenDone:NO] autorelease]];
+			while ([data rangeOfString:@"\r\n"].location != NSNotFound) {
+				NSString *send = [[NSString alloc] initWithString:[data substringWithRange:NSMakeRange(0, [data rangeOfString:@"\r\n"].location+2)]];
+				[data deleteCharactersInRange:NSMakeRange(0, [data rangeOfString:@"\r\n"].location+2)];
+				[self recievedMessage:send];
+				[send release];
+				send = nil;
 			}
 			return;
 		case NSStreamEventHasSpaceAvailable: // 4
@@ -209,9 +213,6 @@
 }
 
 - (void)recievedMessage:(NSString *)msg {
-	if (![msg canBeConvertedToEncoding:NSUTF8StringEncoding]) {
-		NSLog(@"Meh!! %@", msg);
-	}
 	if ([msg isEqualToString:@""] || msg == nil) return;
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	if ([msg hasPrefix:@"PING"]) {
@@ -224,11 +225,17 @@
 		[p drain];
 		return;
 	}
+
 	NSScanner *_scanr = [[NSScanner alloc] initWithString:msg];
 	NSString *from = @"_"; // what is wrong with you
 	NSString *cmd = @"_"; // i agree with him ^
 	[_scanr scanUpToString:@" " intoString:&from];
+	@try {
 	[_scanr setScanLocation:[_scanr scanLocation]+1];
+	}
+	@catch (id e) {
+		NSLog(@"meh. %@", e);
+	}
 	[_scanr scanUpToString:@" " intoString:&cmd];
 	NSString *selName = [NSString stringWithFormat:@"handle%@:", cmd];
 	SEL pSEL = NSSelectorFromString(selName);
@@ -297,13 +304,9 @@
 
 - (void)handle001:(NSString *)welcome {
 	[self networkDidRegister:YES];
-	[self recievedBasicMessage:welcome];
-}
-
-- (void)recievedBasicMessage:(NSString *)basic {
-
+	
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
-	NSScanner *scanner = [[NSScanner alloc] initWithString:basic];
+	NSScanner *scanner = [[NSScanner alloc] initWithString:welcome];
 	NSString *crap;
 	@try {
 		[scanner scanUpToString:@" " intoString:&crap];
@@ -313,7 +316,7 @@
 		[scanner scanUpToString:@"\r\n" intoString:&crap];
 	}
 	@catch (NSException *exception) {
-		NSLog(@"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+		NSLog(@"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF %s", (char *)_cmd);
 	}
 	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
@@ -321,18 +324,67 @@
 	[p drain];
 }
 
+
 - (void)handle002:(NSString *)infos {
-	[self recievedBasicMessage:infos];
+	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+	NSScanner *scanner = [[NSScanner alloc] initWithString:infos];
+	NSString *crap;
+	@try {
+		[scanner scanUpToString:@" " intoString:&crap];
+		[scanner scanUpToString:@" " intoString:&crap];
+		[scanner scanUpToString:@" " intoString:&crap];
+		[scanner setScanLocation:[scanner scanLocation]+1];
+		[scanner scanUpToString:@"\r\n" intoString:&crap];
+	}
+	@catch (NSException *exception) {
+		NSLog(@"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF %s", (char *)_cmd);
+	}
+	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
+	RCChannel *chan = [_channels objectForKey:@"IRC"];
+	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
+	[p drain];
 	// Relay[2626:f803] MSG: :fr.ac3xx.com 002 _m :Your host is fr.ac3xx.com, running version Unreal3.2.9
 }
 
 - (void)handle003:(NSString *)servInfos {
-	[self recievedBasicMessage:servInfos];
+	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+	NSScanner *scanner = [[NSScanner alloc] initWithString:servInfos];
+	NSString *crap;
+	@try {
+		[scanner scanUpToString:@" " intoString:&crap];
+		[scanner scanUpToString:@" " intoString:&crap];
+		[scanner scanUpToString:@" " intoString:&crap];
+		[scanner setScanLocation:[scanner scanLocation]+1];
+		[scanner scanUpToString:@"\r\n" intoString:&crap];
+	}
+	@catch (NSException *exception) {
+		NSLog(@"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF %s", (char *)_cmd);
+	}
+	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
+	RCChannel *chan = [_channels objectForKey:@"IRC"];
+	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
+	[p drain];
 	// Relay[2626:f803] MSG: :fr.ac3xx.com 003 _m :This server was created Fri Dec 23 2011 at 01:21:01 CET
 }
 
 - (void)handle004:(NSString *)othrInfo {
-	[self recievedBasicMessage:othrInfo];
+	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+	NSScanner *scanner = [[NSScanner alloc] initWithString:othrInfo];
+	NSString *crap;
+	@try {
+		[scanner scanUpToString:@" " intoString:&crap];
+		[scanner scanUpToString:@" " intoString:&crap];
+		[scanner scanUpToString:@" " intoString:&crap];
+		[scanner setScanLocation:[scanner scanLocation]+1];
+		[scanner scanUpToString:@"\r\n" intoString:&crap];
+	}
+	@catch (NSException *exception) {
+		NSLog(@"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF %s", (char *)_cmd);
+	}
+	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
+	RCChannel *chan = [_channels objectForKey:@"IRC"];
+	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
+	[p drain];
 	// Relay[2626:f803] MSG: :fr.ac3xx.com 004 _m fr.ac3xx.com Unreal3.2.9 iowghraAsORTVSxNCWqBzvdHtGp 
 }
 
@@ -341,12 +393,44 @@
 }
 
 - (void)handle251:(NSString *)infos {
-	[self recievedBasicMessage:infos];
+	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+	NSScanner *scanner = [[NSScanner alloc] initWithString:infos];
+	NSString *crap;
+	@try {
+		[scanner scanUpToString:@" " intoString:&crap];
+		[scanner scanUpToString:@" " intoString:&crap];
+		[scanner scanUpToString:@" " intoString:&crap];
+		[scanner setScanLocation:[scanner scanLocation]+1];
+		[scanner scanUpToString:@"\r\n" intoString:&crap];
+	}
+	@catch (NSException *exception) {
+		NSLog(@"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF %s", (char *)_cmd);
+	}
+	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
+	RCChannel *chan = [_channels objectForKey:@"IRC"];
+	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
+	[p drain];
 	// Relay[3067:f803] MSG: :fr.ac3xx.com 251 _m :There are 1 users and 4 invisible on 1 servers
 }
 
 - (void)handle252:(NSString *)opsOnline {
-	[self recievedBasicMessage:opsOnline];
+	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+	NSScanner *scanner = [[NSScanner alloc] initWithString:opsOnline];
+	NSString *crap;
+	@try {
+		[scanner scanUpToString:@" " intoString:&crap];
+		[scanner scanUpToString:@" " intoString:&crap];
+		[scanner scanUpToString:@" " intoString:&crap];
+		[scanner setScanLocation:[scanner scanLocation]+1];
+		[scanner scanUpToString:@"\r\n" intoString:&crap];
+	}
+	@catch (NSException *exception) {
+		NSLog(@"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF %s", (char *)_cmd);
+	}
+	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
+	RCChannel *chan = [_channels objectForKey:@"IRC"];
+	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
+	[p drain];
 	// :irc.saurik.com 252 _m 2 :operator(s) online
 }
 
@@ -402,17 +486,65 @@
 }
 
 - (void)handle375:(NSString *)motd {
-//	[self recievedBasicMessage:motd];
+	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+	NSScanner *scanner = [[NSScanner alloc] initWithString:motd];
+	NSString *crap;
+	@try {
+		[scanner scanUpToString:@" " intoString:&crap];
+		[scanner scanUpToString:@" " intoString:&crap];
+		[scanner scanUpToString:@" " intoString:&crap];
+		[scanner setScanLocation:[scanner scanLocation]+1];
+		[scanner scanUpToString:@"\r\n" intoString:&crap];
+	}
+	@catch (NSException *exception) {
+		NSLog(@"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF %s", (char *)_cmd);
+	}
+	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
+	RCChannel *chan = [_channels objectForKey:@"IRC"];
+	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
+	[p drain];
 	// :irc.saurik.com 375 _m :irc.saurik.com message of the day
 }
 
 - (void)handle372:(NSString *)noMotd {
-	[self recievedBasicMessage:noMotd];
+	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+	NSScanner *scanner = [[NSScanner alloc] initWithString:noMotd];
+	NSString *crap;
+	@try {
+		[scanner scanUpToString:@" " intoString:&crap];
+		[scanner scanUpToString:@" " intoString:&crap];
+		[scanner scanUpToString:@" " intoString:&crap];
+		[scanner setScanLocation:[scanner scanLocation]+1];
+		[scanner scanUpToString:@"\r\n" intoString:&crap];
+	}
+	@catch (NSException *exception) {
+		NSLog(@"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF %s", (char *)_cmd);
+	}
+	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
+	RCChannel *chan = [_channels objectForKey:@"IRC"];
+	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
+	[p drain];
 	// :irc.saurik.com 372 _m :- Please edit /etc/inspircd/motd
 }
 
 - (void)handle376:(NSString *)endOfMotd {
-	[self recievedBasicMessage:endOfMotd];
+	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+	NSScanner *scanner = [[NSScanner alloc] initWithString:endOfMotd];
+	NSString *crap;
+	@try {
+		[scanner scanUpToString:@" " intoString:&crap];
+		[scanner scanUpToString:@" " intoString:&crap];
+		[scanner scanUpToString:@" " intoString:&crap];
+		[scanner setScanLocation:[scanner scanLocation]+1];
+		[scanner scanUpToString:@"\r\n" intoString:&crap];
+	}
+	@catch (NSException *exception) {
+		NSLog(@"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF %s", (char *)_cmd);
+	}
+	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
+	RCChannel *chan = [_channels objectForKey:@"IRC"];
+	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
+	[p drain];
 	// :irc.saurik.com 376 _m :End of message of the day.
 }
 

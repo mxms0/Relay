@@ -9,10 +9,11 @@
 #import <UIKit/UIKit.h>
 
 @interface RCChannelBubble : UIButton {
-	BOOL selected;
+	BOOL _selected;
 	BOOL hasNew;
 	BOOL _highlighted;
 }
+@property (nonatomic, readonly) BOOL _selected;
 @property (nonatomic, assign) BOOL _highlighted;
 - (void)setMentioned:(BOOL)mentioned;
 - (void)setHasNewMessage:(BOOL)msgs;

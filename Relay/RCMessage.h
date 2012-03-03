@@ -14,7 +14,8 @@ typedef enum RCMessageFlavor {
 	RCMessageFlavorNormal,
 	RCMessageFlavorTopic,
 	RCMessageFlavorJoin,
-	RCMessageFlavorPart
+	RCMessageFlavorPart,
+	RCMessageFlavorNormalE
 } RCMessageFlavor;
 
 @interface RCMessage : NSObject {

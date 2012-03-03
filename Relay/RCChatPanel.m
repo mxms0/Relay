@@ -83,6 +83,7 @@
 }
 
 - (void)repositionKeyboardForUse:(BOOL)key {
+
 	[UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationDuration:0.25];
 	if (key) {
@@ -96,6 +97,7 @@
 }
 
 - (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor isHighlight:(BOOL)high {
+
 	RCMessage *message = [[RCMessage alloc] init];
 	[message setMessage:_message];
 	[message setFlavor:flavor];
@@ -109,6 +111,24 @@
 	if (![self.tableView indexPathForSelectedRow]) {
 		[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 	}
+	/*
+	if ([messages count] >= 199) {
+		NSMutableArray *tmp = [[NSMutableArray alloc] init];
+		NSMutableArray *ry = [[NSMutableArray alloc] init];
+		for (int i = 1; i < 10; i++) {
+			[tmp addObject:[messages objectAtIndex:[messages count]-i]];
+		}
+		for (int i = 0; i < [messages count]-10; i++) {
+			[ry addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+		}
+		[messages release];
+		messages = nil;
+		messages = tmp;
+		[self.tableView deleteRowsAtIndexPaths:ry withRowAnimation:UITableViewRowAnimationNone];
+		
+
+		[self.tableView reloadData];
+	}*/
 }
 
 - (CGFloat)tableView:(UITableView *)_tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -141,8 +161,8 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)_tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"Cell";
-    
+//	NSString *CellIdentifier = [NSString stringWithFormat:@"0_cell-%d", indexPath.row];;
+    static NSString *CellIdentifier = @"0_CELLID";
     RCChatCell *cell = (RCChatCell *)[_tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[RCChatCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];

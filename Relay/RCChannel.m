@@ -37,8 +37,7 @@
 }
 
 - (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type {
-//	NSLog(@"%@:%@", from, message);
-//	NSLog(@"%@:%@", [from dataUsingEncoding:NSUTF8StringEncoding], [message dataUsingEncoding:NSUTF8StringEncoding]);
+
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	RCMessageFlavor flavor;
 	switch (type) {
@@ -54,7 +53,7 @@
 			flavor = RCMessageFlavorNotice;
 			break;
 	}
-	BOOL isHighlight =  ([message rangeOfString:[NSString stringWithFormat:@" %@ ", [delegate useNick]]].location != NSNotFound);
+	BOOL isHighlight =  ([message rangeOfString:[NSString stringWithFormat:@"%@ ", [delegate useNick]]].location != NSNotFound);
 	[panel postMessage:lastMessage withFlavor:flavor isHighlight:isHighlight];
 	[self shouldPost:isHighlight];
 	[self updateMainTableIfNeccessary];
@@ -82,11 +81,6 @@
 	}
 	return;
 	shouldUpdate = NO;
-	return;
-//	UIViewController *controller = [(RCAppDelegate *)[[UIApplication sharedApplication] delegate] navigationController];
-//	NSLog(@"Meh. %@", controller.topViewController);
-	
-	shouldUpdate = YES;
 }
 
 - (void)setUserJoined:(NSString *)_joined {

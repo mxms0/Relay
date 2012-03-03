@@ -22,6 +22,7 @@
 		503D4E8114F1849E002E5E38 /* OHAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 503D4E7F14F1849E002E5E38 /* OHAttributedLabel.m */; };
 		503D4E9314F1DFA8002E5E38 /* NSString+Comparing.m in Sources */ = {isa = PBXBuildFile; fileRef = 503D4E9214F1DFA8002E5E38 /* NSString+Comparing.m */; };
 		503D4E9614F22A20002E5E38 /* RCMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 503D4E9514F22A20002E5E38 /* RCMessage.m */; };
+		5047FF0B1501ADB600C31D03 /* RCConsoleChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 5047FF0A1501ADB500C31D03 /* RCConsoleChannel.m */; };
 		5049385914FAAAD3003221FC /* 0_chatcell.png in Resources */ = {isa = PBXBuildFile; fileRef = 5049385714FAAAD3003221FC /* 0_chatcell.png */; };
 		5049385A14FAAAD3003221FC /* 0_chatcell@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5049385814FAAAD3003221FC /* 0_chatcell@2x.png */; };
 		5049386614FAAAE3003221FC /* 0_bble.png in Resources */ = {isa = PBXBuildFile; fileRef = 5049385C14FAAAE3003221FC /* 0_bble.png */; };
@@ -80,6 +81,8 @@
 		503D4E9214F1DFA8002E5E38 /* NSString+Comparing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Comparing.m"; sourceTree = "<group>"; };
 		503D4E9414F22A20002E5E38 /* RCMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCMessage.h; sourceTree = "<group>"; };
 		503D4E9514F22A20002E5E38 /* RCMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCMessage.m; sourceTree = "<group>"; };
+		5047FF091501ADB500C31D03 /* RCConsoleChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCConsoleChannel.h; sourceTree = "<group>"; };
+		5047FF0A1501ADB500C31D03 /* RCConsoleChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCConsoleChannel.m; sourceTree = "<group>"; };
 		5049385714FAAAD3003221FC /* 0_chatcell.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_chatcell.png; sourceTree = "<group>"; };
 		5049385814FAAAD3003221FC /* 0_chatcell@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_chatcell@2x.png"; sourceTree = "<group>"; };
 		5049385C14FAAAE3003221FC /* 0_bble.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_bble.png; sourceTree = "<group>"; };
@@ -262,6 +265,8 @@
 				503BD45214FC885A009C3CB5 /* RCWelcomeNetwork.m */,
 				508BBF4914CE420D00027FFC /* RCChannel.h */,
 				508BBF4A14CE420D00027FFC /* RCChannel.m */,
+				5047FF091501ADB500C31D03 /* RCConsoleChannel.h */,
+				5047FF0A1501ADB500C31D03 /* RCConsoleChannel.m */,
 				503D4E9414F22A20002E5E38 /* RCMessage.h */,
 				503D4E9514F22A20002E5E38 /* RCMessage.m */,
 				503D4E9114F1DFA8002E5E38 /* NSString+Comparing.h */,
@@ -368,6 +373,7 @@
 				503D4E9314F1DFA8002E5E38 /* NSString+Comparing.m in Sources */,
 				503D4E9614F22A20002E5E38 /* RCMessage.m in Sources */,
 				503BD45314FC885A009C3CB5 /* RCWelcomeNetwork.m in Sources */,
+				5047FF0B1501ADB600C31D03 /* RCConsoleChannel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

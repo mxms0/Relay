@@ -9,7 +9,7 @@
 #import "RCChannelBubble.h"
 
 @implementation RCChannelBubble
-@synthesize _highlighted;
+@synthesize _highlighted, _selected;
 
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
@@ -17,16 +17,16 @@
 		[[self titleLabel] setTextColor:[UIColor blackColor]];
 		[[self titleLabel] setShadowColor:[UIColor darkGrayColor]];
 		[[self titleLabel] setShadowOffset:CGSizeMake(0, 1)];
-		selected = NO;
+		_selected = NO;
 		hasNew = NO;
 		_highlighted = NO;
     }
     return self;
 }
 
-- (void)_setSelected:(BOOL)_selected {
-	if (selected == _selected) return;
-	selected = _selected;
+- (void)_setSelected:(BOOL)selected {
+	if (_selected == selected) return;
+	_selected = selected;
 	hasNew = NO;
 	_highlighted = NO;
 	if (selected) {
@@ -54,7 +54,7 @@
 		[[self titleLabel] setTextColor:[UIColor redColor]];
 	}
 	else {
-		if (selected) {
+		if (_selected) {
 			[[self titleLabel] setShadowColor:[UIColor whiteColor]];	
 		}
 	}
@@ -67,7 +67,7 @@
 		if (!_highlighted) [[self titleLabel] setTextColor:[UIColor blueColor]];
 	}
 	else {
-		if (selected) [[self titleLabel] setShadowColor:[UIColor whiteColor]];		
+		if (_selected) [[self titleLabel] setShadowColor:[UIColor whiteColor]];		
 	}
 }
 

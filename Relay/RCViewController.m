@@ -27,6 +27,7 @@
 	[self.view addSubview:navigator];
 	[navigator release];
 	[self.navigationController setNavigationBarHidden:YES];
+	
 	[[RCNetworkManager sharedNetworkManager] ircNetworkWithInfo:[NSDictionary dictionaryWithObjectsAndKeys:
 										  @"_m", USER_KEY, 
 										  @"_m", NICK_KEY,
@@ -53,7 +54,6 @@
 										[NSNumber numberWithBool:1], COL_KEY,
 										[NSArray arrayWithObjects:@"#bacon", @"#kk",nil], CHANNELS_KEY,
 										nil]];
-	
 	
 }
 

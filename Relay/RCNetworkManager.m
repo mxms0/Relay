@@ -59,6 +59,7 @@ static NSMutableArray *networks = nil;
 - (void)unpack {
 	NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithContentsOfFile:PREFS_ABSOLUT];
 	NSArray *nets = [[NSArray alloc] initWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:[dict objectForKey:NETS_KEY]]];
+	NSLog(@"Hai. %@", nets);
 	for (NSDictionary *dict in nets) {
 		[[RCNetworkManager sharedNetworkManager] ircNetworkWithInfo:dict];
 	}

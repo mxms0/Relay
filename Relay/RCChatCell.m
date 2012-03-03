@@ -57,7 +57,6 @@ CTFontRef CTFontCreateFromUIFont(UIFont *font) {
 				[attr setTextColor:UIColorFromRGB(0xE3445A)];
 			}
 			[attr setTextBold:YES range:NSMakeRange(0, [self.textLabel.text rangeOfString:@":"].location)];
-		//	[attr setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentLeft) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeClip)];
 			break;
 		case RCMessageFlavorNotice:
 			[attr setTextBold:YES range:NSMakeRange(0, self.textLabel.text.length)];
@@ -76,6 +75,9 @@ CTFontRef CTFontCreateFromUIFont(UIFont *font) {
 			[attr setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeWordWrap)];
 			[self.contentView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"0_joinbar"]]];
 			break;
+		case RCMessageFlavorNormalE:
+		//	[attr setTextBold:YES range:NSMakeRange(0, self.textLabel.text.length)];
+			break;
 	}
 	[self.textLabel setAttributedText:attr];
 	[attr release];
@@ -89,15 +91,12 @@ CTFontRef CTFontCreateFromUIFont(UIFont *font) {
 		lengthOfName = [[self.textLabel.text substringWithRange:NSMakeRange(0, [self.textLabel.text rangeOfString:@":"].location)] sizeWithFont:[UIFont fontWithName:@"Helvetica-Bold" size:12]].width;
 		lengthOfMsg = [[self.textLabel.text substringWithRange:NSMakeRange([self.textLabel.text rangeOfString:@":"].location, self.textLabel.text.length-[self.textLabel.text rangeOfString:@":"].location)] sizeWithFont:[UIFont fontWithName:@"Helvetica" size:12]].width;
 		finalLength = lengthOfMsg += lengthOfName;
-		heightToUse = (((finalLength += maxWidth)-(finalLength % maxWidth))/maxWidth);
+		heightToUse = (((finalLength += maxWidth) - (finalLength % maxWidth))/maxWidth);
 	}
-	
 	else {
-		lengthOfMsg = [self.textLabel.text sizeWithFont:[UIFont fontWithName:@"Helvetica-Bold" size:12]].width;
+		lengthOfMsg = [self.textLabel.text sizeWithFont:[UIFont fontWithName:@"Helvetica" size:12]].width;
 		if (maxWidth >= lengthOfMsg) return 15;
-		else {
-			heightToUse = (((lengthOfMsg + maxWidth) - (lengthOfMsg % maxWidth))/maxWidth);
-		}
+		else heightToUse = (((lengthOfMsg += maxWidth) - (lengthOfMsg % maxWidth))/maxWidth);
 	}
 	return (heightToUse <= 1 ? 1 : heightToUse) * 15;;
 	

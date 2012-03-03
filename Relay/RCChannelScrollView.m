@@ -11,9 +11,9 @@
 @implementation RCChannelScrollView
 
 - (id)initWithFrame:(CGRect)frame {
-	
 	if ((self = [super initWithFrame:frame])) {
-	
+		[self setScrollEnabled:YES];
+		[self setDirectionalLockEnabled:NO];
 	}
 	return self;
 }
@@ -21,7 +21,7 @@
 - (void)layoutChannels:(NSArray *)channels {
 	if ([[self gestureRecognizers] count] != 0) {
 		for (id recog in [self gestureRecognizers]) {
-			[self removeGestureRecognizer:recog];
+			if ([recog isKindOfClass:[UITapGestureRecognizer class]]) [self removeGestureRecognizer:recog];
 		}
 	}
 	for (id subview in [self subviews]) [subview removeFromSuperview];
@@ -43,14 +43,30 @@
 	for (RCChannelBubble *bb in channels) {
 		UIView *sub = nil;
 		if ([[self subviews] count] != 0) sub = [[self subviews] objectAtIndex:[[self subviews] count]-1];
-		[bb setFrame:CGRectMake((sub ? sub.frame.size.width+sub.frame.origin.x+10 : 10), 5, bb.frame.size.width, 20)];
-		[[bb titleLabel] setTextColor:[UIColor blackColor]];
-		[[bb titleLabel] setShadowColor:[UIColor whiteColor]];
+		[bb setFrame:CGRectMake((sub ? sub.frame.size.width+sub.frame.origin.x+10 : 10), 7, bb.frame.size.width, 20)];
+		if ([bb _selected]) {
+			[[bb titleLabel] setTextColor:[UIColor whiteColor]];
+			[[bb titleLabel] setShadowColor:[UIColor blackColor]];
+		}
+		else {
+			[[bb titleLabel] setTextColor:[UIColor blackColor]];
+			[[bb titleLabel] setShadowColor:[UIColor whiteColor]];
+		}
 		[self addSubview:bb];
 	}
+	[self fixLayout];
+}
+
+- (void)fixLayout {
+	if ([[self subviews] count] == 0) return;
+
 	UIView *sub = nil;
-	if ([[self subviews] count] != 0) sub = [[self subviews] objectAtIndex:[[self subviews] count]-1];
-	[self setContentSize:CGSizeMake((sub ? sub.frame.origin.x + sub.frame.size.width+14 : 0), self.frame.size.height)];
+	if ([[self subviews] count] >= 1) sub = [[self subviews] objectAtIndex:0];
+	for (UIView *subv in [self subviews]) {
+		if ([subv frame].origin.x > sub.frame.origin.x) sub = subv;
+	}
+	[self setContentSize:CGSizeMake((sub.frame.origin.x + sub.frame.size.width+10), self.frame.size.height)];
+	[self setScrollEnabled:YES];
 }
 
 - (void)wantsToJoinChannel:(UIGestureRecognizer *)recog {
