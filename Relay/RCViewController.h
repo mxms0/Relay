@@ -9,7 +9,6 @@
 #import "RCChannel.h"
 
 @interface RCViewController : UIViewController {
-	RCChannel *currentChannel;
+
 }
-@property (nonatomic, readonly) RCChannel *currentChannel;
 @end

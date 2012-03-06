@@ -14,6 +14,7 @@ static id snManager = nil;
 static NSMutableArray *networks = nil;
 
 - (void)ircNetworkWithInfo:(NSDictionary *)info {
+
 	RCNetwork *network = [[RCNetwork alloc] init];
 	[network setUsername:[info objectForKey:USER_KEY]];
 	[network setNick:[info objectForKey:NICK_KEY]];
@@ -34,11 +35,14 @@ static NSMutableArray *networks = nil;
 	}
 	NSMutableArray *rooms = [[info objectForKey:CHANNELS_KEY] mutableCopy];
 	if (!rooms) rooms = [[NSMutableArray alloc] init];
-	[rooms addObject:@"IRC"];
+	if (![rooms containsObject:@"IRC"]) [rooms addObject:@"IRC"];
 	[network setupRooms:rooms];
 	[networks addObject:network];
+	[[RCNavigator sharedNavigator] addNetwork:network];
+	if ([network COL]) [network connect];
 	[network release];
 	[self saveNetworks];
+
 }
 
 + (void)saveNetworks {
@@ -57,35 +61,35 @@ static NSMutableArray *networks = nil;
 }
 
 - (void)unpack {
-	NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithContentsOfFile:PREFS_ABSOLUT];
-	NSArray *nets = [[NSArray alloc] initWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:[dict objectForKey:NETS_KEY]]];
-	NSLog(@"Hai. %@", nets);
-	for (NSDictionary *dict in nets) {
-		[[RCNetworkManager sharedNetworkManager] ircNetworkWithInfo:dict];
-	}
-	[nets release];
-	[dict release];
-	for (RCNetwork *net in [[RCNetworkManager sharedNetworkManager] networks]) {
-		[[RCNavigator sharedNavigator] addNetwork:net];
-		if ([net COL]) [net connect];
-	}
-	if ([networks count] == 0) {
+	@autoreleasepool {
+		NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithContentsOfFile:PREFS_ABSOLUT];
+		if (!dict) return;
+		if ([dict objectForKey:NETS_KEY]) {
+			NSArray *nets = [[NSArray alloc] initWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:[dict objectForKey:NETS_KEY]]];
+			for (NSDictionary *dict in nets) {
+				[[RCNetworkManager sharedNetworkManager] ircNetworkWithInfo:dict];
+			}
+			[nets release];
+			return;
+		}
+		[dict release];
 		NSLog(@"Shutup NSKeyedUnarchiver.");
 		RCWelcomeNetwork *net = [[RCWelcomeNetwork alloc] init];
-		[net setSDescription:@"Welcome!"];
+		[net setSDescription:@"Welcome!"];	
 		[net setServer:@"irc.nightcoast.net"];
 		[net addChannel:@"#Relay" join:YES];
 		RCChannel *chan = [[net _channels] objectForKey:@"#Relay"];
 		[chan recievedEvent:RCEventTypeTopic from:@"" message:@"Welcome to Relay!"];
 		[[chan panel] setHidesEntryField:YES];
-		[chan recievedMessage:@"Try out some cool features! :D" from:@"" type:RCMessageTypeAction];
-		[chan recievedMessage:@"Blah, Blah, more blah!" from:@"Me" type:RCMessageTypeNormal];
+		[chan recievedMessage:@"Try out some cool features! :D" from:@"" type:RCMessageTypeNormal];
+		[chan recievedMessage:@"Blah, Blah, more blah!" from:@"" type:RCMessageTypeNormal];
 		[[self networks] addObject:net];
 		[net release];
 		[[RCNavigator sharedNavigator] addNetwork:net];
 		[[RCNavigator sharedNavigator] channelSelected:[chan bubble]];
+		[[RCNavigator sharedNavigator] scrollViewDidEndDecelerating:nil];
 	}
-	[[RCNavigator sharedNavigator] scrollViewDidEndDecelerating:nil];
+	
 }
 
 - (RCNetwork *)networkWithDescription:(NSString *)_desc {

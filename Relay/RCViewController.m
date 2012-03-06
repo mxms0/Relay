@@ -11,7 +11,6 @@
 
 
 @implementation RCViewController
-@synthesize currentChannel;
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -28,7 +27,7 @@
 	[navigator release];
 	[self.navigationController setNavigationBarHidden:YES];
 	
-	[[RCNetworkManager sharedNetworkManager] ircNetworkWithInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+/*	[[RCNetworkManager sharedNetworkManager] ircNetworkWithInfo:[NSDictionary dictionaryWithObjectsAndKeys:
 										  @"_m", USER_KEY, 
 										  @"_m", NICK_KEY,
 										  @"0_m_hai", NAME_KEY,
@@ -53,7 +52,7 @@
 										[NSNumber numberWithBool:0], SSL_KEY,
 										[NSNumber numberWithBool:1], COL_KEY,
 										[NSArray arrayWithObjects:@"#bacon", @"#kk",nil], CHANNELS_KEY,
-										nil]];
+										nil]];*/
 	
 }
 
@@ -67,9 +66,6 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-	if (currentChannel) {
-		currentChannel = nil;
-	}
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

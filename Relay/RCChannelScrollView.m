@@ -25,6 +25,7 @@
 		}
 	}
 	for (id subview in [self subviews]) [subview removeFromSuperview];
+	if (!channels) return;
 	if ([channels count] == 0) {
 		UILabel *nothingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 7.5, 320, 16)];
 		nothingLabel.textAlignment = UITextAlignmentCenter;
@@ -44,14 +45,6 @@
 		UIView *sub = nil;
 		if ([[self subviews] count] != 0) sub = [[self subviews] objectAtIndex:[[self subviews] count]-1];
 		[bb setFrame:CGRectMake((sub ? sub.frame.size.width+sub.frame.origin.x+10 : 10), 7, bb.frame.size.width, 20)];
-		if ([bb _selected]) {
-			[[bb titleLabel] setTextColor:[UIColor whiteColor]];
-			[[bb titleLabel] setShadowColor:[UIColor blackColor]];
-		}
-		else {
-			[[bb titleLabel] setTextColor:[UIColor blackColor]];
-			[[bb titleLabel] setShadowColor:[UIColor whiteColor]];
-		}
 		[self addSubview:bb];
 	}
 	[self fixLayout];

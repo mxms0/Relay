@@ -7,22 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		50221B9614EF458200C7AF58 /* RCChatPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 50221B9514EF458200C7AF58 /* RCChatPanel.m */; };
-		50221B9A14EF534300C7AF58 /* RCChatCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 50221B9914EF534200C7AF58 /* RCChatCell.m */; };
 		50221BA414EF6CB800C7AF58 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50221BA314EF6CB800C7AF58 /* CoreText.framework */; };
-		502F94E714FA164900CC7490 /* RCChannelBubble.m in Sources */ = {isa = PBXBuildFile; fileRef = 502F94DC14FA159500CC7490 /* RCChannelBubble.m */; };
-		502F94E814FA164900CC7490 /* RCChannelScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 502F94DE14FA159500CC7490 /* RCChannelScrollView.m */; };
-		502F94E914FA164900CC7490 /* RCNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 502F94E014FA159500CC7490 /* RCNavigationBar.m */; };
-		502F94EA14FA164900CC7490 /* RCNavigator.m in Sources */ = {isa = PBXBuildFile; fileRef = 502F94E214FA159500CC7490 /* RCNavigator.m */; };
-		502F94EE14FA168600CC7490 /* RCTitleLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 502F94ED14FA167B00CC7490 /* RCTitleLabel.m */; };
 		502FBDA214FDC2D70025A275 /* 0_chatcell_2.png in Resources */ = {isa = PBXBuildFile; fileRef = 502FBDA114FDC2D70025A275 /* 0_chatcell_2.png */; };
 		502FBDA414FDC9140025A275 /* 0_chatcell_2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 502FBDA314FDC9140025A275 /* 0_chatcell_2@2x.png */; };
-		503BD45314FC885A009C3CB5 /* RCWelcomeNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 503BD45214FC885A009C3CB5 /* RCWelcomeNetwork.m */; };
-		503D4E8014F1849E002E5E38 /* NSAttributedString+Attributes.m in Sources */ = {isa = PBXBuildFile; fileRef = 503D4E7D14F1849E002E5E38 /* NSAttributedString+Attributes.m */; };
-		503D4E8114F1849E002E5E38 /* OHAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 503D4E7F14F1849E002E5E38 /* OHAttributedLabel.m */; };
-		503D4E9314F1DFA8002E5E38 /* NSString+Comparing.m in Sources */ = {isa = PBXBuildFile; fileRef = 503D4E9214F1DFA8002E5E38 /* NSString+Comparing.m */; };
-		503D4E9614F22A20002E5E38 /* RCMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 503D4E9514F22A20002E5E38 /* RCMessage.m */; };
-		5047FF0B1501ADB600C31D03 /* RCConsoleChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 5047FF0A1501ADB500C31D03 /* RCConsoleChannel.m */; };
+		503399AE150590D7004C4D28 /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 503399AC15057D0D004C4D28 /* libTestFlight.a */; };
 		5049385914FAAAD3003221FC /* 0_chatcell.png in Resources */ = {isa = PBXBuildFile; fileRef = 5049385714FAAAD3003221FC /* 0_chatcell.png */; };
 		5049385A14FAAAD3003221FC /* 0_chatcell@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5049385814FAAAD3003221FC /* 0_chatcell@2x.png */; };
 		5049386614FAAAE3003221FC /* 0_bble.png in Resources */ = {isa = PBXBuildFile; fileRef = 5049385C14FAAAE3003221FC /* 0_bble.png */; };
@@ -36,53 +24,43 @@
 		5049387A14FB187D003221FC /* 0_joinbar.png in Resources */ = {isa = PBXBuildFile; fileRef = 5049387814FB187D003221FC /* 0_joinbar.png */; };
 		5049387B14FB187D003221FC /* 0_joinbar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5049387914FB187D003221FC /* 0_joinbar@2x.png */; };
 		5088C0E014C4F89C001ADD06 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5088C0DF14C4F89C001ADD06 /* CFNetwork.framework */; };
-		508BBF4B14CE420D00027FFC /* RCChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 508BBF4A14CE420D00027FFC /* RCChannel.m */; };
 		50A7FB8114C0F0A800ABADEA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A7FB8014C0F0A800ABADEA /* UIKit.framework */; };
 		50A7FB8314C0F0A800ABADEA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A7FB8214C0F0A800ABADEA /* Foundation.framework */; };
 		50A7FB8514C0F0A800ABADEA /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A7FB8414C0F0A800ABADEA /* CoreGraphics.framework */; };
 		50A7FB8B14C0F0A800ABADEA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 50A7FB8914C0F0A800ABADEA /* InfoPlist.strings */; };
-		50A7FB8D14C0F0A800ABADEA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 50A7FB8C14C0F0A800ABADEA /* main.m */; };
-		50A7FB9114C0F0A800ABADEA /* RCAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 50A7FB9014C0F0A800ABADEA /* RCAppDelegate.m */; };
-		50A7FB9414C0F0A800ABADEA /* RCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50A7FB9314C0F0A800ABADEA /* RCViewController.m */; };
 		50A7FB9714C0F0A800ABADEA /* RCViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50A7FB9514C0F0A800ABADEA /* RCViewController_iPhone.xib */; };
 		50A7FB9A14C0F0A800ABADEA /* RCViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50A7FB9814C0F0A800ABADEA /* RCViewController_iPad.xib */; };
-		50A7FBA214C0F2C700ABADEA /* RCNetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 50A7FBA114C0F2C700ABADEA /* RCNetworkManager.m */; };
-		50A7FBA514C0F2DA00ABADEA /* RCNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 50A7FBA414C0F2DA00ABADEA /* RCNetwork.m */; };
-		50A7FBA814C0F7D800ABADEA /* RCTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 50A7FBA714C0F7D800ABADEA /* RCTableCell.m */; };
 		50A7FBB314C0FAB800ABADEA /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A7FBB214C0FAB700ABADEA /* QuartzCore.framework */; };
-		50A7FBB614C0FCB800ABADEA /* RCTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50A7FBB514C0FCB800ABADEA /* RCTableHeaderView.m */; };
+		50E77A8F1505A29100E75C64 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A8E1505A29100E75C64 /* main.m */; };
+		50E77A911505A30400E75C64 /* RCTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A621505A17100E75C64 /* RCTableCell.m */; };
+		50E77A921505A30400E75C64 /* RCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A651505A17800E75C64 /* RCViewController.m */; };
+		50E77A931505A30400E75C64 /* RCChatPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A671505A18700E75C64 /* RCChatPanel.m */; };
+		50E77A941505A30400E75C64 /* RCChatCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A691505A1AC00E75C64 /* RCChatCell.m */; };
+		50E77A951505A30400E75C64 /* RCChannelBubble.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A6B1505A1B500E75C64 /* RCChannelBubble.m */; };
+		50E77A961505A30400E75C64 /* RCChannelScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A6D1505A1BE00E75C64 /* RCChannelScrollView.m */; };
+		50E77A971505A30400E75C64 /* RCNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A6F1505A1CF00E75C64 /* RCNavigationBar.m */; };
+		50E77A981505A30400E75C64 /* RCNavigator.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A711505A1D800E75C64 /* RCNavigator.m */; };
+		50E77A991505A30400E75C64 /* RCTitleLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A731505A1E300E75C64 /* RCTitleLabel.m */; };
+		50E77A9A1505A30400E75C64 /* RCAddNetworkController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A751505A1EC00E75C64 /* RCAddNetworkController.m */; };
+		50E77A9B1505A30400E75C64 /* NSString+Comparing.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A771505A21500E75C64 /* NSString+Comparing.m */; };
+		50E77A9C1505A30400E75C64 /* RCAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A791505A21500E75C64 /* RCAppDelegate.m */; };
+		50E77A9D1505A30400E75C64 /* RCChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A7B1505A21500E75C64 /* RCChannel.m */; };
+		50E77A9E1505A30400E75C64 /* RCConsoleChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A7D1505A21500E75C64 /* RCConsoleChannel.m */; };
+		50E77A9F1505A30400E75C64 /* RCMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A7F1505A21500E75C64 /* RCMessage.m */; };
+		50E77AA01505A30400E75C64 /* RCNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A811505A21500E75C64 /* RCNetwork.m */; };
+		50E77AA11505A30400E75C64 /* RCNetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A831505A21500E75C64 /* RCNetworkManager.m */; };
+		50E77AA21505A30400E75C64 /* RCWelcomeNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A851505A21500E75C64 /* RCWelcomeNetwork.m */; };
+		50E77AA41505A30400E75C64 /* OHAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A891505A22800E75C64 /* OHAttributedLabel.m */; };
+		50E77AA51505A30400E75C64 /* NSAttributedString+Attributes.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A871505A22100E75C64 /* NSAttributedString+Attributes.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		50221B9414EF458200C7AF58 /* RCChatPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCChatPanel.h; sourceTree = "<group>"; };
-		50221B9514EF458200C7AF58 /* RCChatPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCChatPanel.m; sourceTree = "<group>"; };
-		50221B9814EF534200C7AF58 /* RCChatCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCChatCell.h; sourceTree = "<group>"; };
-		50221B9914EF534200C7AF58 /* RCChatCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCChatCell.m; sourceTree = "<group>"; };
 		50221BA314EF6CB800C7AF58 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
-		502F94DB14FA159500CC7490 /* RCChannelBubble.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCChannelBubble.h; sourceTree = "<group>"; };
-		502F94DC14FA159500CC7490 /* RCChannelBubble.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCChannelBubble.m; sourceTree = "<group>"; };
-		502F94DD14FA159500CC7490 /* RCChannelScrollView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCChannelScrollView.h; sourceTree = "<group>"; };
-		502F94DE14FA159500CC7490 /* RCChannelScrollView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCChannelScrollView.m; sourceTree = "<group>"; };
-		502F94DF14FA159500CC7490 /* RCNavigationBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCNavigationBar.h; sourceTree = "<group>"; };
-		502F94E014FA159500CC7490 /* RCNavigationBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCNavigationBar.m; sourceTree = "<group>"; };
-		502F94E114FA159500CC7490 /* RCNavigator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCNavigator.h; sourceTree = "<group>"; };
-		502F94E214FA159500CC7490 /* RCNavigator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCNavigator.m; sourceTree = "<group>"; };
-		502F94EC14FA167B00CC7490 /* RCTitleLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTitleLabel.h; sourceTree = "<group>"; };
-		502F94ED14FA167B00CC7490 /* RCTitleLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTitleLabel.m; sourceTree = "<group>"; };
 		502FBDA114FDC2D70025A275 /* 0_chatcell_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_chatcell_2.png; sourceTree = "<group>"; };
 		502FBDA314FDC9140025A275 /* 0_chatcell_2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_chatcell_2@2x.png"; sourceTree = "<group>"; };
-		503BD45114FC885A009C3CB5 /* RCWelcomeNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCWelcomeNetwork.h; sourceTree = "<group>"; };
-		503BD45214FC885A009C3CB5 /* RCWelcomeNetwork.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCWelcomeNetwork.m; sourceTree = "<group>"; };
-		503D4E7C14F1849E002E5E38 /* NSAttributedString+Attributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+Attributes.h"; sourceTree = "<group>"; };
-		503D4E7D14F1849E002E5E38 /* NSAttributedString+Attributes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSAttributedString+Attributes.m"; sourceTree = "<group>"; };
-		503D4E7E14F1849E002E5E38 /* OHAttributedLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OHAttributedLabel.h; sourceTree = "<group>"; };
-		503D4E7F14F1849E002E5E38 /* OHAttributedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OHAttributedLabel.m; sourceTree = "<group>"; };
-		503D4E9114F1DFA8002E5E38 /* NSString+Comparing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Comparing.h"; sourceTree = "<group>"; };
-		503D4E9214F1DFA8002E5E38 /* NSString+Comparing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Comparing.m"; sourceTree = "<group>"; };
-		503D4E9414F22A20002E5E38 /* RCMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCMessage.h; sourceTree = "<group>"; };
-		503D4E9514F22A20002E5E38 /* RCMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCMessage.m; sourceTree = "<group>"; };
-		5047FF091501ADB500C31D03 /* RCConsoleChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCConsoleChannel.h; sourceTree = "<group>"; };
-		5047FF0A1501ADB500C31D03 /* RCConsoleChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCConsoleChannel.m; sourceTree = "<group>"; };
+		503399AC15057D0D004C4D28 /* libTestFlight.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTestFlight.a; path = ../../Downloads/TestFlightSDK0.8.2/libTestFlight.a; sourceTree = "<group>"; };
+		503399E61505A0EC004C4D28 /* shadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shadow.png; sourceTree = "<group>"; };
+		503399E71505A0EC004C4D28 /* shadow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shadow@2x.png"; sourceTree = "<group>"; };
 		5049385714FAAAD3003221FC /* 0_chatcell.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_chatcell.png; sourceTree = "<group>"; };
 		5049385814FAAAD3003221FC /* 0_chatcell@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_chatcell@2x.png"; sourceTree = "<group>"; };
 		5049385C14FAAAE3003221FC /* 0_bble.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_bble.png; sourceTree = "<group>"; };
@@ -97,33 +75,60 @@
 		5049387114FAC487003221FC /* 0_chatcell.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_chatcell.png; sourceTree = "<group>"; };
 		5049387814FB187D003221FC /* 0_joinbar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_joinbar.png; sourceTree = "<group>"; };
 		5049387914FB187D003221FC /* 0_joinbar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_joinbar@2x.png"; sourceTree = "<group>"; };
-		5079B93914C3F0EA007A6E2E /* Relay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Relay.h; sourceTree = "<group>"; };
 		5088C0DF14C4F89C001ADD06 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
-		508BBF4914CE420D00027FFC /* RCChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCChannel.h; sourceTree = "<group>"; };
-		508BBF4A14CE420D00027FFC /* RCChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCChannel.m; sourceTree = "<group>"; };
 		50A7FB7C14C0F0A800ABADEA /* Relay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Relay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		50A7FB8014C0F0A800ABADEA /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		50A7FB8214C0F0A800ABADEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		50A7FB8414C0F0A800ABADEA /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		50A7FB8814C0F0A800ABADEA /* Relay-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Relay-Info.plist"; sourceTree = "<group>"; };
 		50A7FB8A14C0F0A800ABADEA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		50A7FB8C14C0F0A800ABADEA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		50A7FB8E14C0F0A800ABADEA /* Relay-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Relay-Prefix.pch"; sourceTree = "<group>"; };
-		50A7FB8F14C0F0A800ABADEA /* RCAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCAppDelegate.h; sourceTree = "<group>"; };
-		50A7FB9014C0F0A800ABADEA /* RCAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCAppDelegate.m; sourceTree = "<group>"; };
-		50A7FB9214C0F0A800ABADEA /* RCViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCViewController.h; sourceTree = "<group>"; };
-		50A7FB9314C0F0A800ABADEA /* RCViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCViewController.m; sourceTree = "<group>"; };
 		50A7FB9614C0F0A800ABADEA /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/RCViewController_iPhone.xib; sourceTree = "<group>"; };
 		50A7FB9914C0F0A800ABADEA /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/RCViewController_iPad.xib; sourceTree = "<group>"; };
-		50A7FBA014C0F2C700ABADEA /* RCNetworkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCNetworkManager.h; sourceTree = "<group>"; };
-		50A7FBA114C0F2C700ABADEA /* RCNetworkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCNetworkManager.m; sourceTree = "<group>"; };
-		50A7FBA314C0F2DA00ABADEA /* RCNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCNetwork.h; sourceTree = "<group>"; };
-		50A7FBA414C0F2DA00ABADEA /* RCNetwork.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCNetwork.m; sourceTree = "<group>"; };
-		50A7FBA614C0F7D800ABADEA /* RCTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTableCell.h; sourceTree = "<group>"; };
-		50A7FBA714C0F7D800ABADEA /* RCTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTableCell.m; sourceTree = "<group>"; };
 		50A7FBB214C0FAB700ABADEA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		50A7FBB414C0FCB800ABADEA /* RCTableHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTableHeaderView.h; sourceTree = "<group>"; };
-		50A7FBB514C0FCB800ABADEA /* RCTableHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTableHeaderView.m; sourceTree = "<group>"; };
+		50E77A611505A17100E75C64 /* RCTableCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTableCell.h; sourceTree = "<group>"; };
+		50E77A621505A17100E75C64 /* RCTableCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTableCell.m; sourceTree = "<group>"; };
+		50E77A641505A17800E75C64 /* RCViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCViewController.h; sourceTree = "<group>"; };
+		50E77A651505A17800E75C64 /* RCViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCViewController.m; sourceTree = "<group>"; };
+		50E77A661505A18700E75C64 /* RCChatPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCChatPanel.h; sourceTree = "<group>"; };
+		50E77A671505A18700E75C64 /* RCChatPanel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCChatPanel.m; sourceTree = "<group>"; };
+		50E77A681505A1AC00E75C64 /* RCChatCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCChatCell.h; sourceTree = "<group>"; };
+		50E77A691505A1AC00E75C64 /* RCChatCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCChatCell.m; sourceTree = "<group>"; };
+		50E77A6A1505A1B500E75C64 /* RCChannelBubble.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCChannelBubble.h; sourceTree = "<group>"; };
+		50E77A6B1505A1B500E75C64 /* RCChannelBubble.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCChannelBubble.m; sourceTree = "<group>"; };
+		50E77A6C1505A1BE00E75C64 /* RCChannelScrollView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCChannelScrollView.h; sourceTree = "<group>"; };
+		50E77A6D1505A1BE00E75C64 /* RCChannelScrollView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCChannelScrollView.m; sourceTree = "<group>"; };
+		50E77A6E1505A1CF00E75C64 /* RCNavigationBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCNavigationBar.h; sourceTree = "<group>"; };
+		50E77A6F1505A1CF00E75C64 /* RCNavigationBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCNavigationBar.m; sourceTree = "<group>"; };
+		50E77A701505A1D800E75C64 /* RCNavigator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCNavigator.h; sourceTree = "<group>"; };
+		50E77A711505A1D800E75C64 /* RCNavigator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCNavigator.m; sourceTree = "<group>"; };
+		50E77A721505A1E300E75C64 /* RCTitleLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTitleLabel.h; sourceTree = "<group>"; };
+		50E77A731505A1E300E75C64 /* RCTitleLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTitleLabel.m; sourceTree = "<group>"; };
+		50E77A741505A1EC00E75C64 /* RCAddNetworkController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCAddNetworkController.h; sourceTree = "<group>"; };
+		50E77A751505A1EC00E75C64 /* RCAddNetworkController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCAddNetworkController.m; sourceTree = "<group>"; };
+		50E77A761505A21500E75C64 /* NSString+Comparing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+Comparing.h"; sourceTree = "<group>"; };
+		50E77A771505A21500E75C64 /* NSString+Comparing.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+Comparing.m"; sourceTree = "<group>"; };
+		50E77A781505A21500E75C64 /* RCAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCAppDelegate.h; sourceTree = "<group>"; };
+		50E77A791505A21500E75C64 /* RCAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCAppDelegate.m; sourceTree = "<group>"; };
+		50E77A7A1505A21500E75C64 /* RCChannel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCChannel.h; sourceTree = "<group>"; };
+		50E77A7B1505A21500E75C64 /* RCChannel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCChannel.m; sourceTree = "<group>"; };
+		50E77A7C1505A21500E75C64 /* RCConsoleChannel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCConsoleChannel.h; sourceTree = "<group>"; };
+		50E77A7D1505A21500E75C64 /* RCConsoleChannel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCConsoleChannel.m; sourceTree = "<group>"; };
+		50E77A7E1505A21500E75C64 /* RCMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCMessage.h; sourceTree = "<group>"; };
+		50E77A7F1505A21500E75C64 /* RCMessage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCMessage.m; sourceTree = "<group>"; };
+		50E77A801505A21500E75C64 /* RCNetwork.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCNetwork.h; sourceTree = "<group>"; };
+		50E77A811505A21500E75C64 /* RCNetwork.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCNetwork.m; sourceTree = "<group>"; };
+		50E77A821505A21500E75C64 /* RCNetworkManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCNetworkManager.h; sourceTree = "<group>"; };
+		50E77A831505A21500E75C64 /* RCNetworkManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCNetworkManager.m; sourceTree = "<group>"; };
+		50E77A841505A21500E75C64 /* RCWelcomeNetwork.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCWelcomeNetwork.h; sourceTree = "<group>"; };
+		50E77A851505A21500E75C64 /* RCWelcomeNetwork.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCWelcomeNetwork.m; sourceTree = "<group>"; };
+		50E77A861505A22100E75C64 /* NSAttributedString+Attributes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+Attributes.h"; sourceTree = "<group>"; };
+		50E77A871505A22100E75C64 /* NSAttributedString+Attributes.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSAttributedString+Attributes.m"; sourceTree = "<group>"; };
+		50E77A881505A22800E75C64 /* OHAttributedLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OHAttributedLabel.h; sourceTree = "<group>"; };
+		50E77A891505A22800E75C64 /* OHAttributedLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OHAttributedLabel.m; sourceTree = "<group>"; };
+		50E77A8A1505A23700E75C64 /* TestFlight.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestFlight.h; sourceTree = "<group>"; };
+		50E77A8B1505A27800E75C64 /* Relay.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Relay.h; sourceTree = "<group>"; };
+		50E77A8C1505A28400E75C64 /* Relay-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Relay-Info.plist"; sourceTree = "<group>"; };
+		50E77A8E1505A29100E75C64 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		50E77A901505A2C300E75C64 /* Relay-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Relay-Prefix.pch"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,6 +136,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				503399AE150590D7004C4D28 /* libTestFlight.a in Frameworks */,
 				50221BA414EF6CB800C7AF58 /* CoreText.framework in Frameworks */,
 				5088C0E014C4F89C001ADD06 /* CFNetwork.framework in Frameworks */,
 				50A7FBB314C0FAB800ABADEA /* QuartzCore.framework in Frameworks */,
@@ -146,10 +152,11 @@
 		503D4E7A14F18491002E5E38 /* Imports */ = {
 			isa = PBXGroup;
 			children = (
-				503D4E7C14F1849E002E5E38 /* NSAttributedString+Attributes.h */,
-				503D4E7D14F1849E002E5E38 /* NSAttributedString+Attributes.m */,
-				503D4E7E14F1849E002E5E38 /* OHAttributedLabel.h */,
-				503D4E7F14F1849E002E5E38 /* OHAttributedLabel.m */,
+				50E77A8A1505A23700E75C64 /* TestFlight.h */,
+				50E77A881505A22800E75C64 /* OHAttributedLabel.h */,
+				50E77A891505A22800E75C64 /* OHAttributedLabel.m */,
+				50E77A861505A22100E75C64 /* NSAttributedString+Attributes.h */,
+				50E77A871505A22100E75C64 /* NSAttributedString+Attributes.m */,
 			);
 			name = Imports;
 			sourceTree = "<group>";
@@ -174,6 +181,7 @@
 		50A7FB7F14C0F0A800ABADEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				503399AC15057D0D004C4D28 /* libTestFlight.a */,
 				50221BA314EF6CB800C7AF58 /* CoreText.framework */,
 				5088C0DF14C4F89C001ADD06 /* CFNetwork.framework */,
 				50A7FBB214C0FAB700ABADEA /* QuartzCore.framework */,
@@ -187,7 +195,7 @@
 		50A7FB8614C0F0A800ABADEA /* Relay */ = {
 			isa = PBXGroup;
 			children = (
-				5079B93914C3F0EA007A6E2E /* Relay.h */,
+				50E77A8B1505A27800E75C64 /* Relay.h */,
 				50A7FBA914C0F7DC00ABADEA /* UI */,
 				50A7FBAA14C0F7E200ABADEA /* Backend */,
 				503D4E7A14F18491002E5E38 /* Imports */,
@@ -199,6 +207,8 @@
 		50A7FB8714C0F0A800ABADEA /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				503399E61505A0EC004C4D28 /* shadow.png */,
+				503399E71505A0EC004C4D28 /* shadow@2x.png */,
 				502FBDA314FDC9140025A275 /* 0_chatcell_2@2x.png */,
 				502FBDA114FDC2D70025A275 /* 0_chatcell_2.png */,
 				5049387814FB187D003221FC /* 0_joinbar.png */,
@@ -217,10 +227,10 @@
 				5049385814FAAAD3003221FC /* 0_chatcell@2x.png */,
 				50A7FB9514C0F0A800ABADEA /* RCViewController_iPhone.xib */,
 				50A7FB9814C0F0A800ABADEA /* RCViewController_iPad.xib */,
-				50A7FB8814C0F0A800ABADEA /* Relay-Info.plist */,
+				50E77A8C1505A28400E75C64 /* Relay-Info.plist */,
 				50A7FB8914C0F0A800ABADEA /* InfoPlist.strings */,
-				50A7FB8C14C0F0A800ABADEA /* main.m */,
-				50A7FB8E14C0F0A800ABADEA /* Relay-Prefix.pch */,
+				50E77A8E1505A29100E75C64 /* main.m */,
+				50E77A901505A2C300E75C64 /* Relay-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -228,26 +238,26 @@
 		50A7FBA914C0F7DC00ABADEA /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				50A7FBA614C0F7D800ABADEA /* RCTableCell.h */,
-				50A7FBA714C0F7D800ABADEA /* RCTableCell.m */,
-				50A7FB9214C0F0A800ABADEA /* RCViewController.h */,
-				50A7FB9314C0F0A800ABADEA /* RCViewController.m */,
-				50A7FBB414C0FCB800ABADEA /* RCTableHeaderView.h */,
-				50A7FBB514C0FCB800ABADEA /* RCTableHeaderView.m */,
-				50221B9414EF458200C7AF58 /* RCChatPanel.h */,
-				50221B9514EF458200C7AF58 /* RCChatPanel.m */,
-				50221B9814EF534200C7AF58 /* RCChatCell.h */,
-				50221B9914EF534200C7AF58 /* RCChatCell.m */,
-				502F94DB14FA159500CC7490 /* RCChannelBubble.h */,
-				502F94DC14FA159500CC7490 /* RCChannelBubble.m */,
-				502F94DD14FA159500CC7490 /* RCChannelScrollView.h */,
-				502F94DE14FA159500CC7490 /* RCChannelScrollView.m */,
-				502F94DF14FA159500CC7490 /* RCNavigationBar.h */,
-				502F94E014FA159500CC7490 /* RCNavigationBar.m */,
-				502F94E114FA159500CC7490 /* RCNavigator.h */,
-				502F94E214FA159500CC7490 /* RCNavigator.m */,
-				502F94EC14FA167B00CC7490 /* RCTitleLabel.h */,
-				502F94ED14FA167B00CC7490 /* RCTitleLabel.m */,
+				50E77A611505A17100E75C64 /* RCTableCell.h */,
+				50E77A621505A17100E75C64 /* RCTableCell.m */,
+				50E77A641505A17800E75C64 /* RCViewController.h */,
+				50E77A651505A17800E75C64 /* RCViewController.m */,
+				50E77A661505A18700E75C64 /* RCChatPanel.h */,
+				50E77A671505A18700E75C64 /* RCChatPanel.m */,
+				50E77A681505A1AC00E75C64 /* RCChatCell.h */,
+				50E77A691505A1AC00E75C64 /* RCChatCell.m */,
+				50E77A6A1505A1B500E75C64 /* RCChannelBubble.h */,
+				50E77A6B1505A1B500E75C64 /* RCChannelBubble.m */,
+				50E77A6C1505A1BE00E75C64 /* RCChannelScrollView.h */,
+				50E77A6D1505A1BE00E75C64 /* RCChannelScrollView.m */,
+				50E77A6E1505A1CF00E75C64 /* RCNavigationBar.h */,
+				50E77A6F1505A1CF00E75C64 /* RCNavigationBar.m */,
+				50E77A701505A1D800E75C64 /* RCNavigator.h */,
+				50E77A711505A1D800E75C64 /* RCNavigator.m */,
+				50E77A721505A1E300E75C64 /* RCTitleLabel.h */,
+				50E77A731505A1E300E75C64 /* RCTitleLabel.m */,
+				50E77A741505A1EC00E75C64 /* RCAddNetworkController.h */,
+				50E77A751505A1EC00E75C64 /* RCAddNetworkController.m */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -255,22 +265,22 @@
 		50A7FBAA14C0F7E200ABADEA /* Backend */ = {
 			isa = PBXGroup;
 			children = (
-				50A7FB8F14C0F0A800ABADEA /* RCAppDelegate.h */,
-				50A7FB9014C0F0A800ABADEA /* RCAppDelegate.m */,
-				50A7FBA014C0F2C700ABADEA /* RCNetworkManager.h */,
-				50A7FBA114C0F2C700ABADEA /* RCNetworkManager.m */,
-				50A7FBA314C0F2DA00ABADEA /* RCNetwork.h */,
-				50A7FBA414C0F2DA00ABADEA /* RCNetwork.m */,
-				503BD45114FC885A009C3CB5 /* RCWelcomeNetwork.h */,
-				503BD45214FC885A009C3CB5 /* RCWelcomeNetwork.m */,
-				508BBF4914CE420D00027FFC /* RCChannel.h */,
-				508BBF4A14CE420D00027FFC /* RCChannel.m */,
-				5047FF091501ADB500C31D03 /* RCConsoleChannel.h */,
-				5047FF0A1501ADB500C31D03 /* RCConsoleChannel.m */,
-				503D4E9414F22A20002E5E38 /* RCMessage.h */,
-				503D4E9514F22A20002E5E38 /* RCMessage.m */,
-				503D4E9114F1DFA8002E5E38 /* NSString+Comparing.h */,
-				503D4E9214F1DFA8002E5E38 /* NSString+Comparing.m */,
+				50E77A761505A21500E75C64 /* NSString+Comparing.h */,
+				50E77A771505A21500E75C64 /* NSString+Comparing.m */,
+				50E77A781505A21500E75C64 /* RCAppDelegate.h */,
+				50E77A791505A21500E75C64 /* RCAppDelegate.m */,
+				50E77A7A1505A21500E75C64 /* RCChannel.h */,
+				50E77A7B1505A21500E75C64 /* RCChannel.m */,
+				50E77A7C1505A21500E75C64 /* RCConsoleChannel.h */,
+				50E77A7D1505A21500E75C64 /* RCConsoleChannel.m */,
+				50E77A7E1505A21500E75C64 /* RCMessage.h */,
+				50E77A7F1505A21500E75C64 /* RCMessage.m */,
+				50E77A801505A21500E75C64 /* RCNetwork.h */,
+				50E77A811505A21500E75C64 /* RCNetwork.m */,
+				50E77A821505A21500E75C64 /* RCNetworkManager.h */,
+				50E77A831505A21500E75C64 /* RCNetworkManager.m */,
+				50E77A841505A21500E75C64 /* RCWelcomeNetwork.h */,
+				50E77A851505A21500E75C64 /* RCWelcomeNetwork.m */,
 			);
 			name = Backend;
 			sourceTree = "<group>";
@@ -353,27 +363,27 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				502F94EE14FA168600CC7490 /* RCTitleLabel.m in Sources */,
-				502F94E714FA164900CC7490 /* RCChannelBubble.m in Sources */,
-				502F94E814FA164900CC7490 /* RCChannelScrollView.m in Sources */,
-				502F94E914FA164900CC7490 /* RCNavigationBar.m in Sources */,
-				502F94EA14FA164900CC7490 /* RCNavigator.m in Sources */,
-				50A7FB8D14C0F0A800ABADEA /* main.m in Sources */,
-				50A7FB9114C0F0A800ABADEA /* RCAppDelegate.m in Sources */,
-				50A7FB9414C0F0A800ABADEA /* RCViewController.m in Sources */,
-				50A7FBA214C0F2C700ABADEA /* RCNetworkManager.m in Sources */,
-				50A7FBA514C0F2DA00ABADEA /* RCNetwork.m in Sources */,
-				50A7FBA814C0F7D800ABADEA /* RCTableCell.m in Sources */,
-				50A7FBB614C0FCB800ABADEA /* RCTableHeaderView.m in Sources */,
-				508BBF4B14CE420D00027FFC /* RCChannel.m in Sources */,
-				50221B9614EF458200C7AF58 /* RCChatPanel.m in Sources */,
-				50221B9A14EF534300C7AF58 /* RCChatCell.m in Sources */,
-				503D4E8014F1849E002E5E38 /* NSAttributedString+Attributes.m in Sources */,
-				503D4E8114F1849E002E5E38 /* OHAttributedLabel.m in Sources */,
-				503D4E9314F1DFA8002E5E38 /* NSString+Comparing.m in Sources */,
-				503D4E9614F22A20002E5E38 /* RCMessage.m in Sources */,
-				503BD45314FC885A009C3CB5 /* RCWelcomeNetwork.m in Sources */,
-				5047FF0B1501ADB600C31D03 /* RCConsoleChannel.m in Sources */,
+				50E77A911505A30400E75C64 /* RCTableCell.m in Sources */,
+				50E77A921505A30400E75C64 /* RCViewController.m in Sources */,
+				50E77A931505A30400E75C64 /* RCChatPanel.m in Sources */,
+				50E77A941505A30400E75C64 /* RCChatCell.m in Sources */,
+				50E77A951505A30400E75C64 /* RCChannelBubble.m in Sources */,
+				50E77A961505A30400E75C64 /* RCChannelScrollView.m in Sources */,
+				50E77A971505A30400E75C64 /* RCNavigationBar.m in Sources */,
+				50E77A981505A30400E75C64 /* RCNavigator.m in Sources */,
+				50E77A991505A30400E75C64 /* RCTitleLabel.m in Sources */,
+				50E77A9A1505A30400E75C64 /* RCAddNetworkController.m in Sources */,
+				50E77A9B1505A30400E75C64 /* NSString+Comparing.m in Sources */,
+				50E77A9C1505A30400E75C64 /* RCAppDelegate.m in Sources */,
+				50E77A9D1505A30400E75C64 /* RCChannel.m in Sources */,
+				50E77A9E1505A30400E75C64 /* RCConsoleChannel.m in Sources */,
+				50E77A9F1505A30400E75C64 /* RCMessage.m in Sources */,
+				50E77AA01505A30400E75C64 /* RCNetwork.m in Sources */,
+				50E77AA11505A30400E75C64 /* RCNetworkManager.m in Sources */,
+				50E77AA21505A30400E75C64 /* RCWelcomeNetwork.m in Sources */,
+				50E77AA41505A30400E75C64 /* OHAttributedLabel.m in Sources */,
+				50E77AA51505A30400E75C64 /* NSAttributedString+Attributes.m in Sources */,
+				50E77A8F1505A29100E75C64 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -407,6 +417,47 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		5089B89115040D9F00609381 /* Release copy */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = "Release copy";
+		};
+		5089B89215040D9F00609381 /* Release copy */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALTERNATE_MODE = Entitlements.plist;
+				CODE_SIGN_ENTITLEMENTS = Entitlements.plist;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: deanna shavrick";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Relay/Relay-Prefix.pch";
+				INFOPLIST_FILE = "Relay/Relay-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../Downloads/TestFlightSDK0.8.3\"",
+					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/../../Downloads/TestFlightSDK0.8.2\"",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "14D570E2-27AE-4D44-A273-4E35D4FAD006";
+				WRAPPER_EXTENSION = app;
+			};
+			name = "Release copy";
+		};
 		50A7FB9B14C0F0A800ABADEA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -455,10 +506,22 @@
 		50A7FB9E14C0F0A800ABADEA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALTERNATE_MODE = Entitlements.plist;
+				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: deanna shavrick";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: deanna shavrick (883972NT79)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Relay/Relay-Prefix.pch";
 				INFOPLIST_FILE = "Relay/Relay-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../Downloads/TestFlightSDK0.8.3\"",
+					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/../../Downloads/TestFlightSDK0.8.2\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "14D570E2-27AE-4D44-A273-4E35D4FAD006";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "ECDA34B2-472E-434A-90FE-AE893D4D1A2B";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -466,10 +529,20 @@
 		50A7FB9F14C0F0A800ABADEA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALTERNATE_MODE = Entitlements.plist;
+				CODE_SIGN_ENTITLEMENTS = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: deanna shavrick (883972NT79)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Relay/Relay-Prefix.pch";
 				INFOPLIST_FILE = "Relay/Relay-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../Downloads/TestFlightSDK0.8.3\"",
+					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/../../Downloads/TestFlightSDK0.8.2\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "ECDA34B2-472E-434A-90FE-AE893D4D1A2B";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -482,6 +555,7 @@
 			buildConfigurations = (
 				50A7FB9B14C0F0A800ABADEA /* Debug */,
 				50A7FB9C14C0F0A800ABADEA /* Release */,
+				5089B89115040D9F00609381 /* Release copy */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -491,6 +565,7 @@
 			buildConfigurations = (
 				50A7FB9E14C0F0A800ABADEA /* Debug */,
 				50A7FB9F14C0F0A800ABADEA /* Release */,
+				5089B89215040D9F00609381 /* Release copy */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

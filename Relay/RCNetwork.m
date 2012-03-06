@@ -161,6 +161,7 @@
 				NSString *send = [[NSString alloc] initWithString:[data substringWithRange:NSMakeRange(0, [data rangeOfString:@"\r\n"].location+2)]];
 				[data deleteCharactersInRange:NSMakeRange(0, [data rangeOfString:@"\r\n"].location+2)];
 				[self recievedMessage:send];
+				NSLog(@"Meh. %@",send);
 				[send release];
 				send = nil;
 			}
@@ -447,7 +448,6 @@
 	[_scanner scanUpToString:@" " intoString:&room];
 	[_scanner scanUpToString:@"\r\n" intoString:&_topic];
 	_topic = [_topic substringFromIndex:1];
-	NSLog(@"Haid. %@ ",_topic);
 	[[_channels objectForKey:room] recievedEvent:RCEventTypeTopic from:nil message:_topic];
 	// :irc.saurik.com 332 _m #bacon :Bacon | where2start? kitchen | Canadian Bacon? get out. | WE SPEAK: BACON, ENGLISH, PORTUGUESE, DEUTSCH. | http://blog.craftzine.com/bacon-starry-night.jpg THIS IS YOU ¬†
 	[_scanner release];
@@ -727,6 +727,7 @@
 		[self addChannel:room join:NO];
 		[self sendMessage:[NSString stringWithFormat:@"NAMES %@\r\nTOPIC %@", room, room]];
 		[_scanner release];
+		[p drain];
 		return;
 	}
 	else {

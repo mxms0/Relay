@@ -39,6 +39,7 @@
 - (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type {
 
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+	message = [message stringByReplacingOccurrencesOfString:@"\t" withString:@""];
 	RCMessageFlavor flavor;
 	switch (type) {
 		case RCMessageTypeAction:
@@ -46,14 +47,21 @@
 			flavor = RCMessageTypeAction;
 			break;
 		case RCMessageTypeNormal:
-			lastMessage = [[NSString stringWithFormat:@"%@: %@", from, message] copy];
-			flavor = RCMessageFlavorNormal;
+			if (![from isEqualToString:@""]) {
+				lastMessage = [[NSString stringWithFormat:@"%@: %@", from, message] copy];
+				flavor = RCMessageFlavorNormal;
+			}
+			else {
+				lastMessage = [message copy];
+				flavor = RCMessageFlavorNormalE;
+			}
 			break;
 		case RCMessageTypeNotice:
 			flavor = RCMessageFlavorNotice;
 			break;
 	}
-	BOOL isHighlight =  ([message rangeOfString:[NSString stringWithFormat:@"%@ ", [delegate useNick]]].location != NSNotFound);
+	BOOL isHighlight = NO;
+	if (flavor != RCMessageFlavorNormalE) isHighlight =  ([message rangeOfString:[delegate useNick]].location != NSNotFound);
 	[panel postMessage:lastMessage withFlavor:flavor isHighlight:isHighlight];
 	[self shouldPost:isHighlight];
 	[self updateMainTableIfNeccessary];
@@ -117,32 +125,33 @@
 }
 
 - (void)userWouldLikeToPartakeInThisConversation:(NSString *)message {
-	if (message) {
-		if ([message hasPrefix:@"/"]) {
-			NSString *_tmp = [message substringFromIndex:1];
-			NSScanner *scanner = [[NSScanner alloc] initWithString:_tmp];
-			NSString *command = @"_";
-			NSString *argument1 = command;
-			NSString *argument2 = argument1;
-			[scanner scanUpToString:@" " intoString:&command];
-			[scanner scanUpToString:@" " intoString:&argument1];
-			argument2 = [_tmp substringFromIndex:[scanner scanLocation]];
-			if ([command isEqualToStringNoCase:@"privmsg"] || [command isEqualToStringNoCase:@"query"] || [command isEqualToStringNoCase:@"msg"]) {
-				[delegate addChannel:argument1 join:YES];
+	@autoreleasepool {
+		if (message) {
+			if ([message hasPrefix:@"/"]) {
+				NSString *_tmp = [message substringFromIndex:1];
+				NSScanner *scanner = [[NSScanner alloc] initWithString:_tmp];
+				NSString *command = @"_";
+				NSString *argument1 = command;
+				NSString *argument2 = argument1;
+				[scanner scanUpToString:@" " intoString:&command];
+				[scanner scanUpToString:@" " intoString:&argument1];
+				argument2 = [_tmp substringFromIndex:[scanner scanLocation]];
+				if ([command isEqualToStringNoCase:@"privmsg"] || [command isEqualToStringNoCase:@"query"] || [command isEqualToStringNoCase:@"msg"]) {
+					[delegate addChannel:argument1 join:YES];
+				}
+				if ([command isEqualToStringNoCase:@"topic"]) {
+					NSLog(@"HANDLE LOCAL TOPIC SETT");
+				}
+				NSLog(@"Hai. %@ %@ %@", command, argument1, argument2);
+				[delegate sendMessage:[message substringFromIndex:1]];
 			}
-			if ([command isEqualToStringNoCase:@"topic"]) {
-				NSLog(@"HANDLE LOCAL TOPIC SETT");
-			}
-			NSLog(@"Hai. %@ %@ %@", command, argument1, argument2);
-			[delegate sendMessage:[message substringFromIndex:1]];
-		}
-		else { 
-			if ([delegate sendMessage:[@"PRIVMSG " stringByAppendingFormat:@"%@ :%@", channelName, message]]) {
-				[self recievedMessage:message from:[delegate nick] type:RCMessageTypeNormal];
+			else { 
+				if ([delegate sendMessage:[@"PRIVMSG " stringByAppendingFormat:@"%@ :%@", channelName, message]]) {
+					[self recievedMessage:message from:[delegate nick] type:RCMessageTypeNormal];
+				}
 			}
 		}
 	}
-	
 }
 
 

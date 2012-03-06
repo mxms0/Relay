@@ -18,7 +18,11 @@
 	RCNavigationBar *bar;
 	RCChannelScrollView *scrollBar;
 	RCChatPanel *currentPanel;
+	UILabel *stupidLabel;
 	NSMutableArray *rooms;
+	BOOL draggingNets;
+	BOOL draggingChans;
+	int isFirstSetup;
 	int netCount;
 	int currentIndex;
 }

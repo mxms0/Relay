@@ -31,6 +31,7 @@
 
 
 #import "OHAttributedLabel.h"
+#import <time.h>
 #import "NSAttributedString+Attributes.h"
 
 #define OHAttributedLabel_WarnAboutKnownIssues 1
@@ -223,7 +224,7 @@ BOOL CTRunContainsCharactersFromStringRange(CTRunRef run, NSRange range) {
 /////////////////////////////////////////////////////////////////////////////
 
 - (void)addCustomLink:(NSURL*)linkUrl inRange:(NSRange)range {
-	NSTextCheckingResult* link = [NSTextCheckingResult linkCheckingResultWithRange:range URL:linkUrl];
+	NSTextCheckingResult *link = [NSTextCheckingResult linkCheckingResultWithRange:range URL:linkUrl];
 	[customLinks addObject:link];
 	[self setNeedsDisplay];
 }
@@ -253,8 +254,7 @@ BOOL CTRunContainsCharactersFromStringRange(CTRunRef run, NSRange range) {
 				 [str setTextUnderlineStyle:uStyle range:[result range]];
 		 }];
 	}
-	[customLinks enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop)
-	 {
+	[customLinks enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		 NSTextCheckingResult* result = (NSTextCheckingResult*)obj;
 		 
 		 int32_t uStyle = self.underlineLinks ? kCTUnderlineStyleSingle : kCTUnderlineStyleNone;
@@ -267,28 +267,26 @@ BOOL CTRunContainsCharactersFromStringRange(CTRunRef run, NSRange range) {
 			 if (uStyle>0)
 				 [str setTextUnderlineStyle:uStyle range:[result range]];
 		 }
-		 @catch (NSException * e) {
+		 @catch (NSException *e) {
 			 // Protection against NSRangeException
 			 if ([[e name] isEqualToString:NSRangeException]) {
-				 NSLog(@"[OHAttributedLabel] exception: %@",e);
-			 } else {
-				 @throw;
+				 NSLog(@"[OHAttributedLabel] exception: %@", e);
 			 }
+			 else { @throw; }
 		 }
 	 }];
 	return [str autorelease];
 }
 
--(NSTextCheckingResult*)linkAtCharacterIndex:(CFIndex)idx {
-	__block NSTextCheckingResult* foundResult = nil;
+- (NSTextCheckingResult*)linkAtCharacterIndex:(CFIndex)idx {
+	__block NSTextCheckingResult *foundResult = nil;
 	
 	NSString* plainText = [_attributedText string];
 	if (plainText && (self.automaticallyAddLinksForType > 0)) {
 		NSError* error = nil;
 		NSDataDetector* linkDetector = [NSDataDetector dataDetectorWithTypes:self.automaticallyAddLinksForType error:&error];
 		[linkDetector enumerateMatchesInString:plainText options:0 range:NSMakeRange(0,[plainText length])
-									usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop)
-		 {
+									usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
 			 NSRange r = [result range];
 			 if (NSLocationInRange(idx, r)) {
 				 foundResult = [[result retain] autorelease];
@@ -298,8 +296,7 @@ BOOL CTRunContainsCharactersFromStringRange(CTRunRef run, NSRange range) {
 		if (foundResult) return foundResult;
 	}
 	
-	[customLinks enumerateObjectsUsingBlock:^(id obj, NSUInteger aidx, BOOL *stop)
-	 {
+	[customLinks enumerateObjectsUsingBlock:^(id obj, NSUInteger aidx, BOOL *stop) {
 		 NSRange r = [(NSTextCheckingResult*)obj range];
 		 if (NSLocationInRange(idx, r)) {
 			 foundResult = [[obj retain] autorelease];
@@ -309,7 +306,7 @@ BOOL CTRunContainsCharactersFromStringRange(CTRunRef run, NSRange range) {
 	return foundResult;
 }
 
--(NSTextCheckingResult*)linkAtPoint:(CGPoint)point {
+- (NSTextCheckingResult*)linkAtPoint:(CGPoint)point {
 	static const CGFloat kVMargin = 5.f;
 	if (!CGRectContainsPoint(CGRectInset(drawingRect, 0, -kVMargin), point)) return nil;
 	
@@ -321,7 +318,7 @@ BOOL CTRunContainsCharactersFromStringRange(CTRunRef run, NSRange range) {
 	CGPoint origins[nbLines];
 	CTFrameGetLineOrigins(textFrame, CFRangeMake(0,0), origins);
 	
-	for (int lineIndex=0 ; lineIndex<nbLines ; ++lineIndex) {
+	for (int lineIndex = 0; lineIndex < nbLines;++lineIndex) {
 		// this actually the origin of the line rect, so we need the whole rect to flip it
 		CGPoint lineOriginFlipped = origins[lineIndex];
 		
@@ -341,7 +338,7 @@ BOOL CTRunContainsCharactersFromStringRange(CTRunRef run, NSRange range) {
 	return nil;
 }
 
--(UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
 	// never return self. always return the result of [super hitTest..].
 	// this takes userInteraction state, enabled, alpha values etc. into account
 	UIView *hitResult = [super hitTest:point withEvent:event];
@@ -361,8 +358,12 @@ BOOL CTRunContainsCharactersFromStringRange(CTRunRef run, NSRange range) {
 	return hitResult;
 }
 
--(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-	UITouch* touch = [touches anyObject];
+static time_t start;
+static time_t end;
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+	time(&start);
+	UITouch *touch = [touches anyObject];
 	CGPoint pt = [touch locationInView:self];
 	
 	[activeLink release];
@@ -373,8 +374,16 @@ BOOL CTRunContainsCharactersFromStringRange(CTRunRef run, NSRange range) {
 	[self setNeedsDisplay];
 }
 
--(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-	UITouch* touch = [touches anyObject];
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+	time(&end);
+	BOOL longHold;
+	double diff = difftime(end, start);
+	longHold =  (diff != 0.00);
+	end = (time_t)NULL;
+	start = (time_t)NULL;
+	
+	UITouch *touch = [touches anyObject];
 	CGPoint pt = [touch locationInView:self];
 	
 	NSTextCheckingResult *linkAtTouchesEnded = [self linkAtPoint:pt];
@@ -385,15 +394,23 @@ BOOL CTRunContainsCharactersFromStringRange(CTRunRef run, NSRange range) {
 	if (activeLink && (NSEqualRanges(activeLink.range,linkAtTouchesEnded.range) || closeToStart)) {
 		BOOL openLink = (self.delegate && [self.delegate respondsToSelector:@selector(attributedLabel:shouldFollowLink:)])
 		? [self.delegate attributedLabel:self shouldFollowLink:activeLink] : YES;
-		if (openLink) NSLog(@"SHould be handling this link...");//[[UIApplication sharedApplication] openURL:activeLink.URL];
+		if (openLink) {
+			if (longHold) {
+				NSLog(@"Do handling for long hold..");
+			}
+			else {
+				NSLog(@"SHould be handling this link...");//[[UIApplication sharedApplication] openURL:activeLink.URL];
+			}
+		}
 	}
 	
 	[activeLink release];
 	activeLink = nil;
+	longHold = NO;
 	[self setNeedsDisplay];
 }
 
--(void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
 	[activeLink release];
 	activeLink = nil;
 	[self setNeedsDisplay];

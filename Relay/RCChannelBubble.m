@@ -13,15 +13,22 @@
 
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
-		[[self titleLabel] setFont:[UIFont boldSystemFontOfSize:13.5]];
-		[[self titleLabel] setTextColor:[UIColor blackColor]];
-		[[self titleLabel] setShadowColor:[UIColor darkGrayColor]];
+		[[self titleLabel] setFont:[UIFont boldSystemFontOfSize:13]];
 		[[self titleLabel] setShadowOffset:CGSizeMake(0, 1)];
 		_selected = NO;
 		hasNew = NO;
 		_highlighted = NO;
+		self.reversesTitleShadowWhenHighlighted = NO;
     }
     return self;
+}
+
+- (void)layoutSubviews {
+	[super layoutSubviews];
+	if (!_selected) {
+		[[self titleLabel] setTextColor:[UIColor blackColor]];
+		[[self titleLabel] setShadowColor:[UIColor whiteColor]];
+	}
 }
 
 - (void)_setSelected:(BOOL)selected {
