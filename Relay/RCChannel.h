@@ -26,11 +26,12 @@ typedef enum RCEventType {
 } RCEventType;
 
 @class RCNetwork;
-@interface RCChannel : NSObject {
+@interface RCChannel : NSObject <UITableViewDelegate, UITableViewDataSource> {
 	NSMutableDictionary *users;
 	NSString *channelName;
 	NSString *topic;
 	RCChatPanel *panel;
+	UITableView *usersPanel;
 	BOOL joined;
 	BOOL joinOnConnect;
 	BOOL shouldUpdate;
@@ -43,6 +44,7 @@ typedef enum RCEventType {
 @property (nonatomic, readonly) RCChatPanel *panel;
 @property (nonatomic, readonly) NSString *topic;
 @property (nonatomic, retain) RCChannelBubble *bubble;
+@property (nonatomic, assign) UITableView *usersPanel;
 - (id)initWithChannelName:(NSString *)_name;
 - (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type;
 - (void)recievedEvent:(RCEventType)type from:(NSString *)from message:(NSString *)msg;

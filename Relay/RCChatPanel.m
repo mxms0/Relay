@@ -16,9 +16,10 @@
 	if ((self = [super init])) {
 		[self setBackgroundColor:[UIColor clearColor]];
 		[self setChannel:chan];
-		self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 320, 385) style:style];
+		self.tableView = [[RCTableView alloc] initWithFrame:CGRectMake(0, 0, 320, 385) style:style];
 		self.tableView.delegate = self;
 		self.tableView.dataSource = self;
+		
 		[self.tableView setBackgroundColor:[UIColor clearColor]];
 		[self addSubview:tableView];
 		[tableView release];
@@ -42,7 +43,12 @@
 		[field release];
 		[self addSubview:_bar];
 		[_bar release];
-
+		id keyboardImpl = [objc_getClass("UIKeyboardImpl") sharedInstance];
+		[keyboardImpl setAlpha:0.8];
+		UIImageView *_shadow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"0_shadow_t"]];
+		[_shadow setFrame:CGRectMake(0, 0, 320, 7)];
+		[self addSubview:_shadow];
+		[_shadow release];
     }
     return self;
 }
@@ -92,7 +98,8 @@
 		[_bar setFrame:CGRectMake(0, 343, 320, 40)];
 	}
 	[UIView commitAnimations];
-		[self.tableView setFrame:CGRectMake(0, 0,  320, _bar.frame.origin.y)];
+	[self.tableView setFrame:CGRectMake(0, 0,  320, _bar.frame.origin.y)];
+	if (key) [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 }
 
 - (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor isHighlight:(BOOL)high {

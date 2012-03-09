@@ -10,7 +10,7 @@
 
 @implementation RCChannel
 
-@synthesize channelName, joinOnConnect, delegate, panel, topic, bubble;
+@synthesize channelName, joinOnConnect, delegate, panel, topic, bubble, usersPanel;
 
 - (id)initWithChannelName:(NSString *)_chan {
 	if ((self = [super init])) {

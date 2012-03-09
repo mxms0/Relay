@@ -27,7 +27,8 @@ CTFontRef CTFontCreateFromUIFont(UIFont *font) {
 		self.backgroundColor = [UIColor whiteColor];
 		[self setSelectionStyle:UITableViewCellSelectionStyleNone];
 		[self.textLabel setAutomaticallyAddLinksForType:NSTextCheckingAllTypes];
-		[self.textLabel setLinkColor:[UIColor blackColor]];
+		[self.textLabel setLinkColor:UIColorFromRGB(0x4F94EA)];
+		[self.textLabel setUnderlineLinks:NO];
 		[self.textLabel setShadowColor:[UIColor whiteColor]];
 		[self.textLabel setShadowOffset:CGSizeMake(0, 1)];
 		[self addSubview:self.textLabel];

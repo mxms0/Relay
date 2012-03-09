@@ -88,7 +88,7 @@
 	if (msgs == hasNew) return;
 	hasNew = msgs;
 	if (hasNew) {
-		if (!_highlighted) [[self titleLabel] setTextColor:[UIColor blueColor]];
+		if (!_highlighted) [[self titleLabel] setTextColor:UIColorFromRGB(0x4F94EA)];
 	}
 	else {
 		if (_selected) [[self titleLabel] setShadowColor:[UIColor whiteColor]];		

@@ -146,9 +146,8 @@
 	[self sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
 	return YES;
 }
-
+static NSMutableString *data = nil;
 - (void)stream:(NSStream *)aStream handleEvent:(NSStreamEvent)eventCode {
-	static NSMutableString *data = nil;
 
 	switch (eventCode) {
 		case NSStreamEventEndEncountered: // 16 - Called on ping timeout/closing link
@@ -163,7 +162,8 @@
 
 			if (!data) data = [[NSMutableString alloc] init];
 			uint8_t buffer[512];
-			NSUInteger bytesRead = [(NSInputStream *)aStream read:buffer maxLength:512]; 
+			NSUInteger bytesRead = [(NSInputStream *)aStream read:buffer maxLength:512];
+		//	[self recievedBytes:buffer length:bytesRead];
 			if (bytesRead) {
 				NSString *message = [[NSString alloc] initWithBytesNoCopy:buffer length:bytesRead encoding:NSUTF8StringEncoding freeWhenDone:NO];
 				if (message) {
@@ -196,6 +196,13 @@
 		case NSStreamEventOpenCompleted: // 1
 			status = RCSocketStatusConnected;
 			return;
+	}
+}
+
+- (void)recievedBytes:(uint8_t *)bytes length:(NSInteger)read {
+	if (read) {
+			
+		
 	}
 }
 

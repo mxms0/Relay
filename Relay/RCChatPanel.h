@@ -8,18 +8,19 @@
 
 #import <UIKit/UIKit.h>
 #import "RCChatCell.h"
+#import "RCTableView.h"
 #import "RCMessage.h"
 
 @class RCChannel;
 @interface RCChatPanel : UIView <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate> {
 	NSMutableArray *messages;
 	RCChannel *channel;
-	UITableView *tableView;
+	RCTableView *tableView;
 	UITextField *field;
 	UIView *_bar;
 }
 @property (nonatomic, retain) RCChannel *channel;
-@property (nonatomic, retain) UITableView *tableView;
+@property (nonatomic, retain) RCTableView *tableView;
 - (id)initWithStyle:(UITableViewStyle)style andChannel:(RCChannel *)chan;
 - (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor isHighlight:(BOOL)high;
 - (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor isHighlight:(BOOL)high isMine:(BOOL)mine;
