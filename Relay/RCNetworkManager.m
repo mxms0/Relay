@@ -9,7 +9,7 @@
 #import "RCNavigator.h"
 
 @implementation RCNetworkManager
-
+@synthesize isBG;
 static id snManager = nil;
 static NSMutableArray *networks = nil;
 
@@ -114,9 +114,15 @@ static NSMutableArray *networks = nil;
 - (RCNetworkManager *)init {
 	if ((self = [super init])) {
 		networks = [[NSMutableArray alloc] init];
+		isBG = NO;
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setIsBackgrounding:) name:BG_NOTIF object:nil];
 	}
 	snManager = self;
 	return snManager;
+}
+
+- (void)setIsBackgrounding:(BOOL)notif {
+	isBG = (BOOL)notif;
 }
 
 - (NSMutableArray *)networks {

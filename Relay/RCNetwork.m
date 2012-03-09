@@ -163,7 +163,6 @@ static NSMutableString *data = nil;
 			if (!data) data = [[NSMutableString alloc] init];
 			uint8_t buffer[512];
 			NSUInteger bytesRead = [(NSInputStream *)aStream read:buffer maxLength:512];
-		//	[self recievedBytes:buffer length:bytesRead];
 			if (bytesRead) {
 				NSString *message = [[NSString alloc] initWithBytesNoCopy:buffer length:bytesRead encoding:NSUTF8StringEncoding freeWhenDone:NO];
 				if (message) {

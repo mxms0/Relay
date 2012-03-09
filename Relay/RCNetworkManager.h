@@ -10,8 +10,9 @@
 #import "RCWelcomeNetwork.h"
 
 @interface RCNetworkManager : NSObject {
-	
+	BOOL isBG;
 }
+@property (nonatomic, assign) BOOL isBG;
 + (RCNetworkManager *)sharedNetworkManager;
 - (RCNetwork *)networkWithDescription:(NSString *)_desc;
 - (void)ircNetworkWithInfo:(NSDictionary *)info isNew:(BOOL)n;

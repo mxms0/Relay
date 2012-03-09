@@ -7,6 +7,7 @@
 
 #import "RCChannel.h"
 #import "RCNetwork.h"
+#import "RCNetworkManager.h"
 
 @implementation RCChannel
 
@@ -20,8 +21,30 @@
 		shouldUpdate = YES;
 		users = [[NSMutableDictionary alloc] init];
 		panel = [[RCChatPanel alloc] initWithStyle:UITableViewStylePlain andChannel:self];
+		usersPanel = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 320, 383) style:UITableViewStylePlain];
+		usersPanel.delegate = self;
+		usersPanel.dataSource = self;
+
 	}
 	return self;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+	return [[users allKeys] count];
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+	return 1;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+	UITableViewCell *c = [tableView dequeueReusableCellWithIdentifier:@"0_usercell"];
+	if (!c) {
+		c = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2 reuseIdentifier:@"0_usercell"];
+	}
+	c.textLabel.text = [[users allKeys] objectAtIndex:indexPath.row];
+	return c;
+	
 }
 
 - (void)dealloc {
@@ -61,18 +84,25 @@
 			break;
 	}
 	BOOL isHighlight = NO;
-	if (flavor != RCMessageFlavorNormalE) isHighlight =  ([message rangeOfString:[delegate useNick]].location != NSNotFound);
+	if (flavor != RCMessageFlavorNormalE) isHighlight =  ([message rangeOfString:[delegate useNick] options:NSCaseInsensitiveSearch].location != NSNotFound);
 	[panel postMessage:msg withFlavor:flavor isHighlight:isHighlight isMine:([from isEqualToString:[delegate useNick]])];
-	[self shouldPost:isHighlight];
+	[self shouldPost:isHighlight withMessage:msg];
 	[msg release];
 	[p drain];
 	return;
 }
 
-- (void)shouldPost:(BOOL)isHighlight {
+- (void)shouldPost:(BOOL)isHighlight withMessage:(NSString *)msg {
 	if (![[[[RCNavigator sharedNavigator] currentPanel] channel] isEqual:self]) {
 		if (isHighlight) {
 			[bubble setMentioned:YES];
+			if ([[RCNetworkManager sharedNetworkManager] isBG]) {
+				UILocalNotification *nc = [[UILocalNotification alloc] init];
+				[nc setFireDate:[NSDate date]];
+				[nc setAlertBody:msg];
+				[[UIApplication sharedApplication] scheduleLocalNotification:nc];
+				[nc release];
+			}
 			return;
 		}
 		else {
