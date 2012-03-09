@@ -25,21 +25,20 @@
 		[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 		messages = [[NSMutableArray alloc] init];
 
-		_bar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 340, 372, 44)];
-		[_bar setTintColor:UIColorFromRGB(0x1E1F28)];
-		field = [[UITextField alloc] initWithFrame:CGRectMake(0, 5, 307, 31)];
+		_bar = [[UIView alloc] initWithFrame:CGRectMake(0, 343, 320, 40)];
+		[_bar setOpaque:NO];
+		[_bar setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"0_input"]]];
+		field = [[UITextField alloc] initWithFrame:CGRectMake(15, 5, 295, 31)];
 		[field setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
 		[field setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-		[field setBorderStyle:UITextBorderStyleRoundedRect];
+		[field setBorderStyle:UITextBorderStyleNone];
+		[field setKeyboardAppearance:UIKeyboardAppearanceAlert];
 		[field setReturnKeyType:UIReturnKeySend];
 		[field setFont:[UIFont fontWithName:@"Helvetica" size:12]];
 		[field setMinimumFontSize:17];
 		[field setAdjustsFontSizeToFitWidth:YES];
 		[field setDelegate:self];
-		UIBarButtonItem *_field = [[UIBarButtonItem alloc] initWithCustomView:field];
-		[_field setStyle:UIBarButtonItemStyleBordered];
-		[_bar setItems:[NSArray arrayWithObject:_field]];
-		[_field release];
+		[_bar addSubview:field];
 		[field release];
 		[self addSubview:_bar];
 		[_bar release];
@@ -87,30 +86,37 @@
 	[UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationDuration:0.25];
 	if (key) {
-		[_bar setFrame:CGRectMake(0, 124, 320, 44)];
+		[_bar setFrame:CGRectMake(0, 129, 320, 40)];
 	}
 	else {
-		[_bar setFrame:CGRectMake(0, 340, 320, 44)];
+		[_bar setFrame:CGRectMake(0, 343, 320, 40)];
 	}
-	[self.tableView setFrame:CGRectMake(0, 0,  320, _bar.frame.origin.y)];
 	[UIView commitAnimations];
+		[self.tableView setFrame:CGRectMake(0, 0,  320, _bar.frame.origin.y)];
 }
 
 - (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor isHighlight:(BOOL)high {
+	[self postMessage:_message withFlavor:flavor isHighlight:high isMine:NO];
 
+}
+
+- (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor isHighlight:(BOOL)high isMine:(BOOL)mine {
 	RCMessage *message = [[RCMessage alloc] init];
 	[message setMessage:_message];
 	[message setFlavor:flavor];
 	[message setIsHighlight:high];
+	[message setIsMine:mine];
 	[messages addObject:message];
 	[message release];
+	[_message release];
 	
 	[self.tableView beginUpdates];
 	[self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0]] withRowAnimation:UITableViewRowAnimationMiddle];
 	[self.tableView endUpdates];
 	if (![self.tableView indexPathForSelectedRow]) {
 		[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-	}
+	}	
+	
 }
 
 - (CGFloat)tableView:(UITableView *)_tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -152,8 +158,7 @@
 //	[cell _setText:[messages objectAtIndex:indexPath.row]];
     // Configure the cell...
 	RCMessage *_message = [messages objectAtIndex:indexPath.row];
-	cell.textLabel.text = [_message message];
-	[cell _textHasBeenSet:(RCMessageFlavor)_message.flavor isHighlight:NO];
+	[cell setMessage:_message];
 
 //	NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
 //	dateFormatter.dateStyle = NSDateFormatterNoStyle;
@@ -171,6 +176,7 @@
 
 - (void)tableView:(UITableView *)_tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
+	if ([field isFirstResponder]) [field resignFirstResponder];
 }
 
 - (void)dealloc {

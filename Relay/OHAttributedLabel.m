@@ -396,6 +396,9 @@ static time_t end;
 		? [self.delegate attributedLabel:self shouldFollowLink:activeLink] : YES;
 		if (openLink) {
 			if (longHold) {
+			//	UIActionSheet *shit = [[UIActionSheet alloc] initWithTitle:activeLink.URL.absoluteString delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Open URL" otherButtonTitles:nil];
+			//	[shit showInView:[[[[UIApplication sharedApplication] delegate] navigationController] view]];
+			//	[shit release];
 				NSLog(@"Do handling for long hold..");
 			}
 			else {

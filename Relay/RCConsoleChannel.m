@@ -14,21 +14,21 @@
 	
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	RCMessageFlavor flavor;
+	NSString *msg;
 	switch (type) {
 		case RCMessageTypeAction:
-			lastMessage = [[NSString stringWithFormat:@"\u2022 %@ %@", from, message] copy];
+			msg = [[NSString stringWithFormat:@"\u2022 %@ %@", from, message] copy];
 			flavor = RCMessageTypeAction;
 			break;
 		case RCMessageTypeNormal:
-			lastMessage = [[NSString stringWithFormat:@" %@", message] copy];
+			msg = [[NSString stringWithFormat:@" %@", message] copy];
 			flavor = RCMessageFlavorNormalE;
 			break;
 		case RCMessageTypeNotice:
 			flavor = RCMessageFlavorNotice;
 			break;
 	}
-	[panel postMessage:lastMessage withFlavor:flavor isHighlight:NO];
-	[self updateMainTableIfNeccessary];
+	[panel postMessage:msg withFlavor:flavor isHighlight:NO];
 	[p drain];
 	return;
 }

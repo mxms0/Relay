@@ -14,7 +14,7 @@
 }
 + (RCNetworkManager *)sharedNetworkManager;
 - (RCNetwork *)networkWithDescription:(NSString *)_desc;
-- (void)ircNetworkWithInfo:(NSDictionary *)info;
+- (void)ircNetworkWithInfo:(NSDictionary *)info isNew:(BOOL)n;
 - (NSMutableArray *)networks;
 + (void)saveNetworks;
 - (void)saveNetworks;

@@ -12,7 +12,6 @@
 
 @interface RCAddNetworkController : UIViewController <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UIScrollViewDelegate> {
 	RCNetwork *network;
-//	UINavigationBar *bar;
 	UITableView *tableView;
 	NSString *_user;
 	NSString *_nick;

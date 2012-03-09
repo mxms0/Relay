@@ -14,7 +14,7 @@
 #import "RCChannelBubble.h"
 #import "RCChannel.h"
 
-@interface RCNavigator : UIView <UIScrollViewDelegate> {
+@interface RCNavigator : UIView <UIScrollViewDelegate, UIAlertViewDelegate> {
 	RCNavigationBar *bar;
 	RCChannelScrollView *scrollBar;
 	RCChatPanel *currentPanel;
@@ -30,6 +30,7 @@
 + (id)sharedNavigator;
 - (void)addNetwork:(RCNetwork *)net;
 - (void)addRoom:(NSString *)room toServerAtIndex:(int)index;
+- (void)removeChannel:(RCChannel *)room toServerAtIndex:(int)index;
 - (void)channelSelected:(RCChannelBubble *)bubble;
 - (RCChannelBubble *)channelBubbleWithChannelName:(NSString *)name;
 @end

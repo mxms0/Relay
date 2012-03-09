@@ -53,14 +53,11 @@ static id _sharedNavigator = nil;
     return _sharedNavigator;
 }
 
-/* First Setup flags..
- * -1 means, no idea, first network here.
- * 1 means, yes we have a first time user
- *
- */
-
 - (void)addNetwork:(RCNetwork *)net	{
-	if (!net) return;
+	if (!net) {
+		NSLog(@"Dear haxor, an argument goes here.");
+		return;
+	}
 	if (isFirstSetup == -1) isFirstSetup = ([net isKindOfClass:[RCWelcomeNetwork class]] ? 1 : 0);
 	if (isFirstSetup == 2) {
 		netCount = 0;
@@ -121,12 +118,52 @@ static id _sharedNavigator = nil;
 	[scrollBar layoutChannels:[rooms objectAtIndex:index]];
 }
 
+- (void)removeChannel:(RCChannel *)room toServerAtIndex:(int)index {
+	NSMutableArray *currentBubbles = [rooms objectAtIndex:index];
+	for (RCChannelBubble *chan in currentBubbles) {
+		if ([[chan titleLabel].text isEqual:[room channelName]]) {
+			[currentBubbles removeObject:chan];
+			break;
+		}
+	}
+	[scrollBar layoutChannels:currentBubbles];
+}
+
 - (RCChannelBubble *)channelBubbleWithChannelName:(NSString *)name {
 	CGSize size = [name sizeWithFont:[UIFont boldSystemFontOfSize:14]];
 	RCChannelBubble *bubble = [[RCChannelBubble alloc] initWithFrame:CGRectMake(0, 0, size.width+=20, 18)];
 	[bubble addTarget:self action:@selector(channelSelected:) forControlEvents:UIControlEventTouchUpInside];
 	[bubble setTitle:name forState:UIControlStateNormal];
 	return bubble;
+}
+
+static RCChannelBubble *questionabubble = nil;
+
+- (void)channelWantsSuicide:(RCChannelBubble *)bubble {
+	questionabubble = bubble;
+	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Are you sure?" message:[NSString stringWithFormat:@"Are you sure you want to delete %@", [bubble titleLabel].text] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Delete", nil];
+	[alert show];
+	[alert release];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+	switch (buttonIndex) {
+		case 1: {
+			RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:currentIndex];
+			RCChannel *chan = [[net _channels] objectForKey:[[questionabubble titleLabel] text]];
+			if ([[chan panel] isEqual:currentPanel]) {
+				[currentPanel removeFromSuperview];
+			}
+			[net removeChannel:chan];
+			break;
+		}
+		case 0:
+			break;
+	}
+}
+
+- (void)_channelWantsSuicide:(RCChannelBubble *)bubble {
+	
 }
 
 - (void)channelSelected:(RCChannelBubble *)bubble {

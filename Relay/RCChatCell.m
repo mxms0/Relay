@@ -27,13 +27,22 @@ CTFontRef CTFontCreateFromUIFont(UIFont *font) {
 		self.backgroundColor = [UIColor whiteColor];
 		[self setSelectionStyle:UITableViewCellSelectionStyleNone];
 		[self.textLabel setAutomaticallyAddLinksForType:NSTextCheckingAllTypes];
+		[self.textLabel setLinkColor:[UIColor blackColor]];
+		[self.textLabel setShadowColor:[UIColor whiteColor]];
+		[self.textLabel setShadowOffset:CGSizeMake(0, 1)];
 		[self addSubview:self.textLabel];
 		[self.textLabel release];
 	}
 	return self;
 }
 
-- (void)_textHasBeenSet:(RCMessageFlavor)flavor isHighlight:(BOOL)high {
+- (void)setMessage:(RCMessage *)message {
+	self.textLabel.text = [message message];
+	[self _textHasBeenSet:[message flavor] isHighlight:NO mine:[message isMine]];
+	
+}
+
+- (void)_textHasBeenSet:(RCMessageFlavor)flavor isHighlight:(BOOL)high mine:(BOOL)isMine {
 	
 	currentFlavor = flavor;
 	NSMutableAttributedString *attr = [[NSMutableAttributedString alloc] initWithString:self.textLabel.text];
@@ -78,6 +87,9 @@ CTFontRef CTFontCreateFromUIFont(UIFont *font) {
 		case RCMessageFlavorNormalE:
 		//	[attr setTextBold:YES range:NSMakeRange(0, self.textLabel.text.length)];
 			break;
+	}
+	if (isMine) {
+		[attr setTextColor:UIColorFromRGB(0xA1B1BC)];
 	}
 	[self.textLabel setAttributedText:attr];
 	[attr release];

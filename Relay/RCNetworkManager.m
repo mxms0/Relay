@@ -13,8 +13,8 @@
 static id snManager = nil;
 static NSMutableArray *networks = nil;
 
-- (void)ircNetworkWithInfo:(NSDictionary *)info {
-
+- (void)ircNetworkWithInfo:(NSDictionary *)info isNew:(BOOL)n {
+	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	RCNetwork *network = [[RCNetwork alloc] init];
 	[network setUsername:[info objectForKey:USER_KEY]];
 	[network setNick:[info objectForKey:NICK_KEY]];
@@ -37,11 +37,12 @@ static NSMutableArray *networks = nil;
 	if (!rooms) rooms = [[NSMutableArray alloc] init];
 	if (![rooms containsObject:@"IRC"]) [rooms addObject:@"IRC"];
 	[network setupRooms:rooms];
+	[p drain];
 	[networks addObject:network];
 	[[RCNavigator sharedNavigator] addNetwork:network];
 	if ([network COL]) [network connect];
 	[network release];
-	[self saveNetworks];
+	if (n) [self saveNetworks];
 
 }
 
@@ -67,7 +68,7 @@ static NSMutableArray *networks = nil;
 		if ([dict objectForKey:NETS_KEY]) {
 			NSArray *nets = [[NSArray alloc] initWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:[dict objectForKey:NETS_KEY]]];
 			for (NSDictionary *dict in nets) {
-				[[RCNetworkManager sharedNetworkManager] ircNetworkWithInfo:dict];
+				[[RCNetworkManager sharedNetworkManager] ircNetworkWithInfo:dict isNew:NO];
 			}
 			[nets release];
 			return;
@@ -89,7 +90,7 @@ static NSMutableArray *networks = nil;
 		[[RCNavigator sharedNavigator] channelSelected:[chan bubble]];
 		[[RCNavigator sharedNavigator] scrollViewDidEndDecelerating:nil];
 	}
-	
+
 }
 
 - (RCNetwork *)networkWithDescription:(NSString *)_desc {

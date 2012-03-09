@@ -72,9 +72,11 @@
 }
 
 - (void)setupRooms:(NSArray *)rooms {
+	[rooms retain];
 	for (NSString *_chan in rooms) {
 		[self addChannel:_chan join:NO];
 	}
+	[rooms release];
 }
 - (void)addChannel:(NSString *)_chan join:(BOOL)join {
 	if (![[_channels allKeys] containsObject:_chan]) {
@@ -94,6 +96,14 @@
 		}
 	}
 	else return;
+}
+
+- (void)removeChannel:(RCChannel *)chan {
+	[chan setJoined:NO withArgument:@"Relay Chat."];
+	[channels removeObject:[chan channelName]];
+	[_channels removeObjectForKey:[chan channelName]];
+	[[RCNavigator sharedNavigator] removeChannel:chan toServerAtIndex:index];
+	[[RCNetworkManager sharedNetworkManager] saveNetworks];
 }
 
 #pragma mark - SOCKET STUFF
@@ -134,7 +144,6 @@
 	}
 	[self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
 	[self sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
-	[self addChannel:@"IRC" join:NO];
 	return YES;
 }
 
@@ -155,20 +164,24 @@
 			if (!data) data = [[NSMutableString alloc] init];
 			uint8_t buffer[512];
 			NSUInteger bytesRead = [(NSInputStream *)aStream read:buffer maxLength:512]; 
-			if (bytesRead)
-				[data appendString:[[[NSString alloc] initWithBytesNoCopy:buffer length:bytesRead encoding:NSUTF8StringEncoding freeWhenDone:NO] autorelease]];
-			while ([data rangeOfString:@"\r\n"].location != NSNotFound) {
-				NSString *send = [[NSString alloc] initWithString:[data substringWithRange:NSMakeRange(0, [data rangeOfString:@"\r\n"].location+2)]];
-				[data deleteCharactersInRange:NSMakeRange(0, [data rangeOfString:@"\r\n"].location+2)];
-				[self recievedMessage:send];
-				NSLog(@"Meh. %@",send);
-				[send release];
-				send = nil;
+			if (bytesRead) {
+				NSString *message = [[NSString alloc] initWithBytesNoCopy:buffer length:bytesRead encoding:NSUTF8StringEncoding freeWhenDone:NO];
+				if (message) {
+					[data appendString:message];
+					[message release];
+				}
+				while ([data rangeOfString:@"\r\n"].location != NSNotFound) {
+					NSString *send = [[NSString alloc] initWithString:[data substringWithRange:NSMakeRange(0, [data rangeOfString:@"\r\n"].location+2)]];
+					[data deleteCharactersInRange:NSMakeRange(0, [data rangeOfString:@"\r\n"].location+2)];
+					[self recievedMessage:send];
+					NSLog(@"Meh. %@",send);
+					[send release];
+					send = nil;
+				}			
 			}
 			return;
 		case NSStreamEventHasSpaceAvailable: // 4
 			if (status == RCSocketStatusConnecting) status = RCSocketStatusConnected;
-			
 			if (sendQueue) {
 				canSend = NO;
 				[oStream write:(uint8_t *)[sendQueue UTF8String] maxLength:[sendQueue length]];
@@ -528,23 +541,6 @@
 }
 
 - (void)handle376:(NSString *)endOfMotd {
-	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
-	NSScanner *scanner = [[NSScanner alloc] initWithString:endOfMotd];
-	NSString *crap;
-	@try {
-		[scanner scanUpToString:@" " intoString:&crap];
-		[scanner scanUpToString:@" " intoString:&crap];
-		[scanner scanUpToString:@" " intoString:&crap];
-		[scanner setScanLocation:[scanner scanLocation]+1];
-		[scanner scanUpToString:@"\r\n" intoString:&crap];
-	}
-	@catch (NSException *exception) {
-		NSLog(@"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF %s", (char *)_cmd);
-	}
-	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
-	RCChannel *chan = [_channels objectForKey:@"IRC"];
-	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
-	[p drain];
 	// :irc.saurik.com 376 _m :End of message of the day.
 }
 
@@ -571,6 +567,7 @@
 }
 
 - (void)handleNOTICE:(NSString *)notice {
+	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSScanner *_scans = [[NSScanner alloc] initWithString:notice];
 	NSString *from = @"_";
 	NSString *cmd = from;
@@ -584,7 +581,8 @@
 		msg = [msg substringFromIndex:1];
 		
 	}
-	
+	[_scans release];
+	[p drain];
 	//:Hackintech!Hackintech@2FD03E27.3D6CB32E.E0E5D6BD.IP NOTICE __m__ :HI
 }
 
@@ -726,6 +724,7 @@
 	if ([_nick isEqualToString:useNick]) {
 		[self addChannel:room join:NO];
 		[self sendMessage:[NSString stringWithFormat:@"NAMES %@\r\nTOPIC %@", room, room]];
+		[[_channels objectForKey:room] setSuccessfullyJoined:YES];
 		[_scanner release];
 		[p drain];
 		return;

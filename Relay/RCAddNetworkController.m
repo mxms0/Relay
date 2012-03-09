@@ -124,7 +124,7 @@
 }
 
 - (void)doneConnection {
-//	if (_server != nil) {
+	if (_server != nil) {
 		[[RCNetworkManager sharedNetworkManager] ircNetworkWithInfo:[NSDictionary dictionaryWithObjectsAndKeys:
 																	 (_user ? _user : @"Guest"), USER_KEY, 
 																	 (_nick ? _nick : @"Guest01"), NICK_KEY,
@@ -137,8 +137,8 @@
 																	 [NSNumber numberWithBool:hasSSL], SSL_KEY,
 																	 [NSNumber numberWithBool:connectAtLaunching], COL_KEY,
 																	 [NSArray arrayWithObject:@"IRC"], CHANNELS_KEY,
-																	 nil]];
-//	}
+																	 nil] isNew:YES];
+	}
 	[self doneWithJoin];
 }
 
@@ -387,8 +387,8 @@
 	if (_description) [_description release];
 	if (_server) [_server release];
 	if (_port) [_port release];
-//	[tableView release];
 	[super dealloc];
+	// RELEASE TABLE VIEW.
 }
 
 

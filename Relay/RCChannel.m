@@ -10,12 +10,11 @@
 
 @implementation RCChannel
 
-@synthesize channelName, lastMessage, joinOnConnect, delegate, panel, topic, bubble;
+@synthesize channelName, joinOnConnect, delegate, panel, topic, bubble;
 
 - (id)initWithChannelName:(NSString *)_chan {
 	if ((self = [super init])) {
 		channelName = [_chan retain];
-		lastMessage = @"";
 		joinOnConnect = YES;
 		joined = NO;
 		shouldUpdate = YES;
@@ -27,8 +26,8 @@
 
 - (void)dealloc {
 	[channelName release];
-	[lastMessage release];
 	[users release];
+	[panel release];
 	[super dealloc];
 }
 
@@ -41,18 +40,19 @@
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	message = [message stringByReplacingOccurrencesOfString:@"\t" withString:@""];
 	RCMessageFlavor flavor;
+	NSString *msg = @"";
 	switch (type) {
 		case RCMessageTypeAction:
-			lastMessage = [[NSString stringWithFormat:@"\u2022 %@ %@", from, message] copy];
+			msg = [[NSString stringWithFormat:@"\u2022 %@ %@", from, message] copy];
 			flavor = RCMessageTypeAction;
 			break;
 		case RCMessageTypeNormal:
 			if (![from isEqualToString:@""]) {
-				lastMessage = [[NSString stringWithFormat:@"%@: %@", from, message] copy];
+				msg = [[NSString stringWithFormat:@"%@: %@", from, message] copy];
 				flavor = RCMessageFlavorNormal;
 			}
 			else {
-				lastMessage = [message copy];
+				msg = [message copy];
 				flavor = RCMessageFlavorNormalE;
 			}
 			break;
@@ -62,9 +62,9 @@
 	}
 	BOOL isHighlight = NO;
 	if (flavor != RCMessageFlavorNormalE) isHighlight =  ([message rangeOfString:[delegate useNick]].location != NSNotFound);
-	[panel postMessage:lastMessage withFlavor:flavor isHighlight:isHighlight];
+	[panel postMessage:msg withFlavor:flavor isHighlight:isHighlight isMine:([from isEqualToString:[delegate useNick]])];
 	[self shouldPost:isHighlight];
-	[self updateMainTableIfNeccessary];
+	[msg release];
 	[p drain];
 	return;
 }
@@ -81,16 +81,6 @@
 	}
 }
 
-- (void)updateMainTableIfNeccessary {
-	if (!shouldUpdate) return;
-	if (![NSThread isMainThread]) {
-		[self performSelectorInBackground:_cmd withObject:NULL];
-		return;
-	}
-	return;
-	shouldUpdate = NO;
-}
-
 - (void)setUserJoined:(NSString *)_joined {
 	[users setObject:@"" forKey:_joined];
 }
@@ -103,7 +93,10 @@
 }
 
 - (void)setJoined:(BOOL)joind withArgument:(NSString *)arg1 {
-	if (joined == joind) return;
+	if (joined == joind) {
+		NSLog(@"State the same. Canceling request..");
+		return;
+	}
 	if ([[self channelName] hasPrefix:@"#"]) {
 		if (joind) {
 			NSLog(@"Joining..%@", channelName);
@@ -111,7 +104,7 @@
 		}
 		else {
 			NSLog(@"Parting.. %@", channelName);
-			[delegate sendMessage:[@"PART " stringByAppendingString:(arg1 ? arg1 : @"Leaving...")]];
+			[delegate sendMessage:[NSString stringWithFormat:@"PART %@ %@", channelName, (arg1 ? arg1 : @"Leaving...")]];
 		}
 	}
 }
@@ -140,14 +133,16 @@
 					[delegate addChannel:argument1 join:YES];
 				}
 				if ([command isEqualToStringNoCase:@"topic"]) {
-					NSLog(@"HANDLE LOCAL TOPIC SETT");
+					if ([message isEqualToStringNoCase:@"/topic"]) {
+						[panel postMessage:topic withFlavor:RCMessageFlavorTopic isHighlight:NO];
+						return;
+					}
 				}
-				NSLog(@"Hai. %@ %@ %@", command, argument1, argument2);
 				[delegate sendMessage:[message substringFromIndex:1]];
 			}
 			else { 
 				if ([delegate sendMessage:[@"PRIVMSG " stringByAppendingFormat:@"%@ :%@", channelName, message]]) {
-					[self recievedMessage:message from:[delegate nick] type:RCMessageTypeNormal];
+					[self recievedMessage:message from:[delegate useNick] type:RCMessageTypeNormal];
 				}
 			}
 		}

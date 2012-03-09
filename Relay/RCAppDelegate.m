@@ -8,7 +8,7 @@
 #import "RCAppDelegate.h"
 #import "RCViewController.h"
 #import "RCNetworkManager.h"
-
+#import "TestFlight.h"
 
 @implementation RCAppDelegate
 
@@ -22,6 +22,7 @@
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+	[TestFlight takeOff:TEAM_TOKEN];
 	[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
 	NSString *xib = ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ? @"RCViewController_iPhone" : @"RCViewController_iPad");

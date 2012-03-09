@@ -29,7 +29,6 @@ typedef enum RCEventType {
 @interface RCChannel : NSObject {
 	NSMutableDictionary *users;
 	NSString *channelName;
-	NSString *lastMessage;
 	NSString *topic;
 	RCChatPanel *panel;
 	BOOL joined;
@@ -39,7 +38,6 @@ typedef enum RCEventType {
 	RCChannelBubble *bubble;
 }
 @property (nonatomic, retain) NSString *channelName;
-@property (nonatomic, retain) NSString *lastMessage;
 @property (nonatomic, assign) BOOL joinOnConnect;
 @property (nonatomic, retain) RCNetwork *delegate;
 @property (nonatomic, readonly) RCChatPanel *panel;
@@ -55,5 +53,4 @@ typedef enum RCEventType {
 - (void)userWouldLikeToPartakeInThisConversation:(NSString *)message;
 // yes, seriously. :P spent like 15 minutes and felt this was best suited. 
 - (void)setSuccessfullyJoined:(BOOL)success;
-- (void)updateMainTableIfNeccessary;
 @end
