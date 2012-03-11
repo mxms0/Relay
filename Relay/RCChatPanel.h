@@ -11,6 +11,10 @@
 #import "RCTableView.h"
 #import "RCMessage.h"
 
+@interface UIKeyboardImpl : UIView 
++ (id)sharedInstance;
+@end
+
 @class RCChannel;
 @interface RCChatPanel : UIView <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate> {
 	NSMutableArray *messages;

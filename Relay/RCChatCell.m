@@ -58,7 +58,6 @@ CTFontRef CTFontCreateFromUIFont(UIFont *font) {
 			break;
 		case RCMessageFlavorNormal:
 			if ([message highlight]) {
-				NSLog(@"Hai. %@", [message highlight]);
 				[attr setTextColor:UIColorFromRGB(0x4F94EA) range:[[self.textLabel.text lowercaseString] rangeOfString:[[message highlight] lowercaseString]]];
 			}
 			[attr setTextBold:YES range:NSMakeRange(0, [self.textLabel.text rangeOfString:@":"].location)];
@@ -114,8 +113,7 @@ CTFontRef CTFontCreateFromUIFont(UIFont *font) {
 		if (maxWidth >= lengthOfMsg) return 15;
 		else heightToUse = (((lengthOfMsg += maxWidth) - (lengthOfMsg % maxWidth))/maxWidth);
 	}
-	return (heightToUse <= 1 ? 1 : heightToUse) * 15;;
-	
+	return (heightToUse <= 1 ? 1 : heightToUse) * 15;;	
 }
 
 - (void)layoutSubviews {

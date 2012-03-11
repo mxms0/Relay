@@ -43,7 +43,7 @@
 		[field release];
 		[self addSubview:_bar];
 		[_bar release];
-		id keyboardImpl = [objc_getClass("UIKeyboardImpl") sharedInstance];
+		id keyboardImpl = [NSClassFromString(@"UIKeyboardImpl") sharedInstance];
 		[keyboardImpl setAlpha:0.8];
 		UIImageView *_shadow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"0_shadow_t"]];
 		[_shadow setFrame:CGRectMake(0, 0, 320, 7)];
@@ -140,7 +140,6 @@
 	return ((interfaceOrientation == UIInterfaceOrientationPortrait) || (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown));
 }
 
-
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)_tableView {
@@ -154,13 +153,11 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)_tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-//	NSString *CellIdentifier = [NSString stringWithFormat:@"0_cell-%d", indexPath.row];;
     static NSString *CellIdentifier = @"0_CELLID";
     RCChatCell *cell = (RCChatCell *)[_tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[RCChatCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
-//	[cell _setText:[messages objectAtIndex:indexPath.row]];
     // Configure the cell...
 	RCMessage *_message = [messages objectAtIndex:indexPath.row];
 	[cell setMessage:_message];

@@ -7,6 +7,7 @@
 
 #import "RCNetwork.h"
 #import "RCNetworkManager.h"
+#import "RCSocket.h"
 
 @implementation RCNetwork
 
@@ -116,6 +117,7 @@
 			task = UIBackgroundTaskInvalid;
 		}];
 	}
+	NSLog(@"Meh. %@", [NSThread currentThread]);
 	CFStreamCreatePairWithSocketToHost(NULL, (CFStringRef)server, port ? port : 6667, (CFReadStreamRef *)&iStream, (CFWriteStreamRef *)&oStream);
 	[iStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 	[oStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
@@ -163,6 +165,12 @@ static NSMutableString *data = nil;
 			if (bytesRead) {
 				NSString *message = [[NSString alloc] initWithBytesNoCopy:buffer length:bytesRead encoding:NSUTF8StringEncoding freeWhenDone:NO];
 				if (message) {
+					if ([message hasPrefix:@"PING :"]) {
+						[self handlePING:message];
+						[message release];
+						return;
+					}
+					
 					[data appendString:message];
 					[message release];
 					while ([data rangeOfString:@"\r\n"].location != NSNotFound) {
@@ -171,7 +179,7 @@ static NSMutableString *data = nil;
 						[send release];
 						send = nil;
 						[data deleteCharactersInRange:NSMakeRange(0, [data rangeOfString:@"\r\n"].location+2)];
-						if ([data rangeOfString:@"\r\n"].location == NSNotFound) break;
+					
 					}
 				}
 			}
@@ -222,9 +230,15 @@ static NSMutableString *data = nil;
 	NSLog(@"Error: %@", [error localizedDescription]);
 }
 
+- (NSStream *)iStream {
+	return iStream;
+}
+- (NSStream *)oStream {
+	return oStream;
+}
+
 - (void)recievedMessage:(NSString *)msg {
 	if ([msg isEqualToString:@""] || msg == nil || [msg isEqualToString:@"\r\n"]) return;
-
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	if ([msg hasPrefix:@"PING"]) {
 		[self handlePING:msg];
@@ -233,6 +247,15 @@ static NSMutableString *data = nil;
 	}
 	else if ([msg hasPrefix:@"ERROR"]) {
 		//handle..
+		NSLog(@"Errorz. %@", msg);
+		NSString *error = [msg substringWithRange:NSMakeRange(5, [msg length]-5)];
+		if ([error hasPrefix:@" :"]) error = [error substringFromIndex:2];
+		RCChannel *chan = [_channels objectForKey:@"IRC"];
+		[chan recievedMessage:error from:@"" type:RCMessageTypeNormal];
+		[p drain];
+		return;
+	}
+	if (![msg hasPrefix:@":"]) {
 		[p drain];
 		return;
 	}
