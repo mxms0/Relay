@@ -102,20 +102,18 @@
 	if (key) if ([messages count] != 0) [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 }
 
-- (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor isHighlight:(BOOL)high {
-	[self postMessage:_message withFlavor:flavor isHighlight:high isMine:NO];
-
+- (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor highlight:(NSString *)high {
+	[self postMessage:_message withFlavor:flavor highlight:high isMine:NO];
 }
 
-- (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor isHighlight:(BOOL)high isMine:(BOOL)mine {
+- (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor highlight:(NSString *)high isMine:(BOOL)mine {
 	RCMessage *message = [[RCMessage alloc] init];
 	[message setMessage:_message];
 	[message setFlavor:flavor];
-	[message setIsHighlight:high];
+	[message setHighlight:high];
 	[message setIsMine:mine];
 	[messages addObject:message];
 	[message release];
-	[_message release];
 	
 	[self.tableView beginUpdates];
 	[self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0]] withRowAnimation:UITableViewRowAnimationMiddle];
@@ -166,7 +164,7 @@
     // Configure the cell...
 	RCMessage *_message = [messages objectAtIndex:indexPath.row];
 	[cell setMessage:_message];
-
+	[cell _textHasBeenSet];
 //	NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
 //	dateFormatter.dateStyle = NSDateFormatterNoStyle;
 //	dateFormatter.timeStyle = NSDateFormatterShortStyle;

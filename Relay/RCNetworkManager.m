@@ -90,7 +90,6 @@ static NSMutableArray *networks = nil;
 		[[RCNavigator sharedNavigator] channelSelected:[chan bubble]];
 		[[RCNavigator sharedNavigator] scrollViewDidEndDecelerating:nil];
 	}
-
 }
 
 - (RCNetwork *)networkWithDescription:(NSString *)_desc {

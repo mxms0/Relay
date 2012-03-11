@@ -17,10 +17,12 @@
 @interface RCChatCell : UITableViewCell {
 	OHAttributedLabel *textLabel;
 	RCMessageFlavor currentFlavor;
+	RCMessage *message;
+	float height;
 }
 @property (nonatomic, retain) OHAttributedLabel *textLabel;
+@property (nonatomic, retain) RCMessage *message;
 CTFontRef CTFontCreateFromUIFont(UIFont *font);
-- (void)setMessage:(RCMessage *)message;
-- (void)_textHasBeenSet:(RCMessageFlavor)flavor isHighlight:(BOOL)high mine:(BOOL)isMine;
+- (void)_textHasBeenSet;
 - (float)calculateHeightForLabel;
 @end

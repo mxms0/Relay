@@ -20,7 +20,6 @@
 		canSend = YES;
 		channels = [[NSMutableArray alloc] init];
 		_channels = [[NSMutableDictionary alloc] init];
-		mainQueue = [[NSOperationQueue alloc] init];
 	}
 	return self;
 }
@@ -43,7 +42,6 @@
 
 - (void)dealloc {
 	NSLog(@"cya.");
-	[mainQueue release];
 	[channels release];
 	[_channels release];
 	[server release];
@@ -159,24 +157,23 @@ static NSMutableString *data = nil;
 			status = RCSocketStatusError;
 			return;
 		case NSStreamEventHasBytesAvailable: // 2
-
 			if (!data) data = [[NSMutableString alloc] init];
 			uint8_t buffer[512];
-			NSUInteger bytesRead = [(NSInputStream *)aStream read:buffer maxLength:512];
+			NSUInteger bytesRead = [iStream read:buffer maxLength:512];
 			if (bytesRead) {
 				NSString *message = [[NSString alloc] initWithBytesNoCopy:buffer length:bytesRead encoding:NSUTF8StringEncoding freeWhenDone:NO];
 				if (message) {
 					[data appendString:message];
 					[message release];
+					while ([data rangeOfString:@"\r\n"].location != NSNotFound) {
+						NSString *send = [[NSString alloc] initWithString:[data substringWithRange:NSMakeRange(0, [data rangeOfString:@"\r\n"].location+2)]];
+						[self recievedMessage:send];
+						[send release];
+						send = nil;
+						[data deleteCharactersInRange:NSMakeRange(0, [data rangeOfString:@"\r\n"].location+2)];
+						if ([data rangeOfString:@"\r\n"].location == NSNotFound) break;
+					}
 				}
-				while ([data rangeOfString:@"\r\n"].location != NSNotFound) {
-					NSString *send = [[NSString alloc] initWithString:[data substringWithRange:NSMakeRange(0, [data rangeOfString:@"\r\n"].location+2)]];
-					[data deleteCharactersInRange:NSMakeRange(0, [data rangeOfString:@"\r\n"].location+2)];
-					[self recievedMessage:send];
-					NSLog(@"Meh. %@",send);
-					[send release];
-					send = nil;
-				}			
 			}
 			return;
 		case NSStreamEventHasSpaceAvailable: // 4
@@ -195,13 +192,6 @@ static NSMutableString *data = nil;
 		case NSStreamEventOpenCompleted: // 1
 			status = RCSocketStatusConnected;
 			return;
-	}
-}
-
-- (void)recievedBytes:(uint8_t *)bytes length:(NSInteger)read {
-	if (read) {
-			
-		
 	}
 }
 
@@ -233,7 +223,8 @@ static NSMutableString *data = nil;
 }
 
 - (void)recievedMessage:(NSString *)msg {
-	if ([msg isEqualToString:@""] || msg == nil) return;
+	if ([msg isEqualToString:@""] || msg == nil || [msg isEqualToString:@"\r\n"]) return;
+
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	if ([msg hasPrefix:@"PING"]) {
 		[self handlePING:msg];
@@ -245,16 +236,33 @@ static NSMutableString *data = nil;
 		[p drain];
 		return;
 	}
-
+	NSScanner *scanner = [[NSScanner alloc] initWithString:msg];
+	NSString *crap = @"";
+	NSString *cmd = crap;
+	NSString *rest = cmd;
+	[scanner scanUpToString:@" " intoString:&crap];
+	[scanner scanUpToString:@" " intoString:&cmd];
+	[scanner scanUpToString:@"\r\n" intoString:&rest];
+	NSString *selName = [NSString stringWithFormat:@"handle%@:", cmd];
+	SEL pSEL = NSSelectorFromString(selName);
+	if ([self respondsToSelector:pSEL]) [self performSelector:pSEL withObject:msg];
+	else {
+		NSLog(@"PLZ IMPLEMENT %s %@", (char *)pSEL, msg);
+		NSLog(@"Meh. %@\r\n%@", cmd, rest);	
+	}
+	[scanner release];
+	/*
 	NSScanner *_scanr = [[NSScanner alloc] initWithString:msg];
 	NSString *from = @"_"; // what is wrong with you
 	NSString *cmd = @"_"; // i agree with him ^
 	[_scanr scanUpToString:@" " intoString:&from];
+
 	@try {
 	[_scanr setScanLocation:[_scanr scanLocation]+1];
 	}
 	@catch (id e) {
-		NSLog(@"meh. %@", e);
+	NSLog(@"ARGS. %@ %@ %@ %@", msg, from, cmd, e);
+		[_scanr setScanLocation:[_scanr scanLocation]];
 	}
 	[_scanr scanUpToString:@" " intoString:&cmd];
 	NSString *selName = [NSString stringWithFormat:@"handle%@:", cmd];
@@ -268,13 +276,13 @@ static NSMutableString *data = nil;
 	[_scanr release];
 	// some messages begin with \x01
 	// i think all messages end of \x0D\x0A
-	// \x0D\x0A = \r\n :D	
+	// \x0D\x0A = \r\n :D
+	 */
 	[p drain];
 }
 
 - (BOOL)disconnect {
 	if ((status == RCSocketStatusConnected) || (status == RCSocketStatusConnecting)) {
-		[mainQueue cancelAllOperations];
 		[self sendMessage:@"QUIT :Relay 1.0"];
 		status = RCSocketStatusClosed;
 		[[UIApplication sharedApplication] endBackgroundTask:task];
@@ -473,6 +481,14 @@ static NSMutableString *data = nil;
 	[pool drain];
 }
 
+- (void)handle250:(NSString *)countr {
+	// :hubbard.freenode.net 250 Guest01 :Highest connection count: 3549 (3548 clients) (177981 connections received)	
+}
+
+- (void)handle253:(NSString *)unknown {
+	//:hubbard.freenode.net 253 Guest01 3 :unknown connection(s)	
+}
+
 - (void)handle254:(NSString *)rooms {
 	// number of channels active
 }
@@ -601,7 +617,6 @@ static NSMutableString *data = nil;
 	[_scanner scanUpToString:@" " intoString:&from];
 	[_scanner scanUpToString:@" " intoString:&cmd];
 	[_scanner scanUpToString:@" " intoString:&room];
-	NSLog(@"Meh . %@ %@ %@ %@ %@", from, cmd, room, privmsg, [privmsg dataUsingEncoding:NSUTF8StringEncoding]);
 	[_scanner scanUpToString:@"\r\n" intoString:&msg];
 	msg = [msg substringFromIndex:1];
 	from = [from substringFromIndex:1];
@@ -698,7 +713,6 @@ static NSMutableString *data = nil;
 	user = [user substringFromIndex:1];
 	room = [room stringByReplacingOccurrencesOfString:@"\r\n" withString:@""];
 	[self parseUsermask:user nick:&_nick user:nil hostmask:nil];
-	NSLog(@"meh %@ %@", _nick, room);
 	if ([_nick isEqualToString:useNick]) {
 		NSLog(@"I went byebye. Notify the police");
 		[_scanner release];

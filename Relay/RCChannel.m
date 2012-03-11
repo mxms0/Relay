@@ -24,7 +24,6 @@
 		usersPanel = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 320, 383) style:UITableViewStylePlain];
 		usersPanel.delegate = self;
 		usersPanel.dataSource = self;
-
 	}
 	return self;
 }
@@ -85,7 +84,7 @@
 	}
 	BOOL isHighlight = NO;
 	if (flavor != RCMessageFlavorNormalE) isHighlight =  ([message rangeOfString:[delegate useNick] options:NSCaseInsensitiveSearch].location != NSNotFound);
-	[panel postMessage:msg withFlavor:flavor isHighlight:isHighlight isMine:([from isEqualToString:[delegate useNick]])];
+	[panel postMessage:msg withFlavor:flavor highlight:(isHighlight ? [delegate useNick] : nil) isMine:([from isEqualToString:[delegate useNick]])];
 	[self shouldPost:isHighlight withMessage:msg];
 	[msg release];
 	[p drain];
@@ -93,21 +92,19 @@
 }
 
 - (void)shouldPost:(BOOL)isHighlight withMessage:(NSString *)msg {
-	if (![[[[RCNavigator sharedNavigator] currentPanel] channel] isEqual:self]) {
-		if (isHighlight) {
-			[bubble setMentioned:YES];
-			if ([[RCNetworkManager sharedNetworkManager] isBG]) {
-				UILocalNotification *nc = [[UILocalNotification alloc] init];
-				[nc setFireDate:[NSDate date]];
-				[nc setAlertBody:msg];
-				[[UIApplication sharedApplication] scheduleLocalNotification:nc];
-				[nc release];
-			}
-			return;
+	BOOL iAmCurrent = [[[[RCNavigator sharedNavigator] currentPanel] channel] isEqual:self];
+	if (isHighlight) {
+		if (!iAmCurrent) [bubble setMentioned:YES];
+		if ([[RCNetworkManager sharedNetworkManager] isBG]) {
+			UILocalNotification *nc = [[UILocalNotification alloc] init];
+			[nc setFireDate:[NSDate date]];
+			[nc setAlertBody:msg];
+			[[UIApplication sharedApplication] scheduleLocalNotification:nc];
+			[nc release];
 		}
-		else {
-			[bubble setHasNewMessage:YES];
-		}
+	}
+	else {
+		if (!iAmCurrent) [bubble setHasNewMessage:YES];
 	}
 }
 
@@ -161,10 +158,14 @@
 				argument2 = [_tmp substringFromIndex:[scanner scanLocation]];
 				if ([command isEqualToStringNoCase:@"privmsg"] || [command isEqualToStringNoCase:@"query"] || [command isEqualToStringNoCase:@"msg"]) {
 					[delegate addChannel:argument1 join:YES];
+					if ([command isEqualToStringNoCase:@"query"] || [command isEqualToStringNoCase:@"msg"]) {
+						command = @"privmsg";
+					}
+				NSLog(@"Haidata. %@ %@ %@ %@", message, command, argument1, argument2);
 				}
-				if ([command isEqualToStringNoCase:@"topic"]) {
+				else if ([command isEqualToStringNoCase:@"topic"]) {
 					if ([message isEqualToStringNoCase:@"/topic"]) {
-						[panel postMessage:topic withFlavor:RCMessageFlavorTopic isHighlight:NO];
+						[panel postMessage:topic withFlavor:RCMessageFlavorTopic highlight:nil];
 						return;
 					}
 				}
@@ -188,7 +189,7 @@
 			break;
 		case RCEventTypeJoin:
 			[self setUserJoined:from];
-			[panel postMessage:[NSString stringWithFormat:@"%@ joined the room", from] withFlavor:RCMessageFlavorJoin isHighlight:NO];
+			[panel postMessage:[NSString stringWithFormat:@"%@ joined the room", from] withFlavor:RCMessageFlavorJoin highlight:nil];
 			// haider!
 			break;
 		case RCEventTypeKick:
@@ -196,14 +197,14 @@
 			break;
 		case RCEventTypePart:
 			[self setUserLeft:from];
-			[panel postMessage:[NSString stringWithFormat:@"%@ left", from] withFlavor:RCMessageFlavorPart isHighlight:NO];
+			[panel postMessage:[NSString stringWithFormat:@"%@ left", from] withFlavor:RCMessageFlavorPart highlight:nil];
 			// baibai || cyah.
 			break;
 		case RCEventTypeTopic:
 			if (topic) if ([topic isEqualToString:msg]) return;
 			if (!from || [from isEqualToString:@""]) 
-				[panel postMessage:msg withFlavor:RCMessageFlavorTopic isHighlight:NO];
-			else [panel postMessage:[NSString stringWithFormat:@"%@ changed the topic to %@", from, msg] withFlavor:RCMessageFlavorTopic isHighlight:NO];
+				[panel postMessage:msg withFlavor:RCMessageFlavorTopic highlight:nil];
+			else [panel postMessage:[NSString stringWithFormat:@"%@ changed the topic to %@", from, msg] withFlavor:RCMessageFlavorTopic highlight:nil];
 			topic = [msg retain];
 			break;
 	}

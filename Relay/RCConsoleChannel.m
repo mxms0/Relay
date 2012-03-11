@@ -28,7 +28,7 @@
 			flavor = RCMessageFlavorNotice;
 			break;
 	}
-	[panel postMessage:msg withFlavor:flavor isHighlight:NO];
+	[panel postMessage:msg withFlavor:flavor highlight:nil];
 	[p drain];
 	return;
 }

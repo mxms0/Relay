@@ -22,38 +22,12 @@
     [super viewDidLoad];
 	CGSize screenWidth = [[UIScreen mainScreen] applicationFrame].size;
 	RCNavigator *navigator = [RCNavigator sharedNavigator];
+	
 	[navigator setFrame:CGRectMake(0, 0, screenWidth.width, screenWidth.height)];
 	[self.view addSubview:navigator];
 	[navigator release];
 	[self.navigationController setNavigationBarHidden:YES];
-	
-/*	[[RCNetworkManager sharedNetworkManager] ircNetworkWithInfo:[NSDictionary dictionaryWithObjectsAndKeys:
-										  @"_m", USER_KEY, 
-										  @"_m", NICK_KEY,
-										  @"0_m_hai", NAME_KEY,
-										  @"privateircftw", S_PASS_KEY,
-										  @"", N_PASS_KEY,
-										  @"feer", DESCRIPTION_KEY,
-										  @"fr.ac3xx.com", SERVR_ADDR_KEY,
-										  @"6667", PORT_KEY,
-										  [NSNumber numberWithBool:0], SSL_KEY,
-										  [NSNumber numberWithBool:1], COL_KEY,
-										  [NSArray arrayWithObjects:@"#chat", @"#tttt", nil], CHANNELS_KEY,
-										  nil]];
-	[[RCNetworkManager sharedNetworkManager] ircNetworkWithInfo:[NSDictionary dictionaryWithObjectsAndKeys:
-										@"_m", USER_KEY,
-										@"_m", NICK_KEY,
-										@"0_m_hai", NAME_KEY,
-										@"", S_PASS_KEY,
-										@"", N_PASS_KEY,
-										@"SK", DESCRIPTION_KEY,
-										@"irc.saurik.com", SERVR_ADDR_KEY,
-										@"6667", PORT_KEY,
-										[NSNumber numberWithBool:0], SSL_KEY,
-										[NSNumber numberWithBool:1], COL_KEY,
-										[NSArray arrayWithObjects:@"#bacon", @"#kk",nil], CHANNELS_KEY,
-										nil]];*/
-	
+
 }
 
 - (void)viewDidUnload {

@@ -10,7 +10,7 @@
 
 
 @implementation RCChatCell
-@synthesize textLabel;
+@synthesize textLabel, message;
 
 CTFontRef CTFontCreateFromUIFont(UIFont *font) {
 	CTFontRef ctFont = CTFontCreateWithName((CFStringRef)font.fontName, font.pointSize, NULL);
@@ -37,15 +37,9 @@ CTFontRef CTFontCreateFromUIFont(UIFont *font) {
 	return self;
 }
 
-- (void)setMessage:(RCMessage *)message {
+- (void)_textHasBeenSet {
 	self.textLabel.text = [message message];
-	[self _textHasBeenSet:[message flavor] isHighlight:NO mine:[message isMine]];
-	
-}
-
-- (void)_textHasBeenSet:(RCMessageFlavor)flavor isHighlight:(BOOL)high mine:(BOOL)isMine {
-	
-	currentFlavor = flavor;
+	RCMessageFlavor flavor = [message flavor];
 	NSMutableAttributedString *attr = [[NSMutableAttributedString alloc] initWithString:self.textLabel.text];
 	[attr setTextColor:[UIColor blackColor]];
 	[attr setFont:[UIFont fontWithName:@"Helvetica" size:12]];
@@ -63,8 +57,9 @@ CTFontRef CTFontCreateFromUIFont(UIFont *font) {
 			[attr setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeClip)];
 			break;
 		case RCMessageFlavorNormal:
-			if (high) {
-				[attr setTextColor:UIColorFromRGB(0xE3445A)];
+			if ([message highlight]) {
+				NSLog(@"Hai. %@", [message highlight]);
+				[attr setTextColor:UIColorFromRGB(0x4F94EA) range:[[self.textLabel.text lowercaseString] rangeOfString:[[message highlight] lowercaseString]]];
 			}
 			[attr setTextBold:YES range:NSMakeRange(0, [self.textLabel.text rangeOfString:@":"].location)];
 			break;
@@ -89,11 +84,19 @@ CTFontRef CTFontCreateFromUIFont(UIFont *font) {
 		//	[attr setTextBold:YES range:NSMakeRange(0, self.textLabel.text.length)];
 			break;
 	}
-	if (isMine) {
+	if ([message isMine]) {
 		[attr setTextColor:UIColorFromRGB(0xA1B1BC)];
 	}
 	[self.textLabel setAttributedText:attr];
 	[attr release];
+	height = [self calculateHeightForLabel];
+	if (height > 15) {
+		@autoreleasepool {
+			UIImage *bg = [UIImage imageNamed:@"0_chatcell_2"];
+			[self.contentView setBackgroundColor:[UIColor colorWithPatternImage:bg]];
+			[self setNeedsDisplay];
+		}
+	}
 }
 
 - (float)calculateHeightForLabel {
@@ -117,15 +120,7 @@ CTFontRef CTFontCreateFromUIFont(UIFont *font) {
 
 - (void)layoutSubviews {
 	[super layoutSubviews];
-	float retur = [self calculateHeightForLabel];
-	if (retur > 15) {
-		@autoreleasepool {
-			UIImage *bg = [UIImage imageNamed:@"0_chatcell_2"];
-			[self.contentView setBackgroundColor:[UIColor colorWithPatternImage:bg]];
-			[self setNeedsDisplay];
-		}
-	}
-	[self.textLabel setFrame:CGRectMake(2, 2, 316, retur)];
+	[self.textLabel setFrame:CGRectMake(2, 2, 316, height)];
 	[self.textLabel setNeedsDisplay];
 }
 
