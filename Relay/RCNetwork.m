@@ -108,6 +108,7 @@
 #pragma mark - SOCKET STUFF
 
 - (BOOL)connect {
+	
 	useNick = nick;
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
 	if (chan) [chan recievedMessage:[NSString stringWithFormat:@"Connecting to %@ on port %d", server, port] from:@"" type:RCMessageTypeNormal];
@@ -117,7 +118,6 @@
 			task = UIBackgroundTaskInvalid;
 		}];
 	}
-	NSLog(@"Meh. %@", [NSThread currentThread]);
 	CFStreamCreatePairWithSocketToHost(NULL, (CFStringRef)server, port ? port : 6667, (CFReadStreamRef *)&iStream, (CFWriteStreamRef *)&oStream);
 	[iStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 	[oStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
@@ -164,14 +164,9 @@ static NSMutableString *data = nil;
 			NSUInteger bytesRead = [iStream read:buffer maxLength:512];
 			if (bytesRead) {
 				NSString *message = [[NSString alloc] initWithBytesNoCopy:buffer length:bytesRead encoding:NSUTF8StringEncoding freeWhenDone:NO];
-				if (message) {
-					if ([message hasPrefix:@"PING :"]) {
-						[self handlePING:message];
-						[message release];
-						return;
-					}
-					
+				if (message) {					
 					[data appendString:message];
+					NSLog(@"HEH. %@", message);
 					[message release];
 					while ([data rangeOfString:@"\r\n"].location != NSNotFound) {
 						NSString *send = [[NSString alloc] initWithString:[data substringWithRange:NSMakeRange(0, [data rangeOfString:@"\r\n"].location+2)]];
@@ -230,13 +225,6 @@ static NSMutableString *data = nil;
 	NSLog(@"Error: %@", [error localizedDescription]);
 }
 
-- (NSStream *)iStream {
-	return iStream;
-}
-- (NSStream *)oStream {
-	return oStream;
-}
-
 - (void)recievedMessage:(NSString *)msg {
 	if ([msg isEqualToString:@""] || msg == nil || [msg isEqualToString:@"\r\n"]) return;
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
@@ -247,7 +235,7 @@ static NSMutableString *data = nil;
 	}
 	else if ([msg hasPrefix:@"ERROR"]) {
 		//handle..
-		NSLog(@"Errorz. %@", msg);
+		NSLog(@"Errorz. %@:%@", msg, server);
 		NSString *error = [msg substringWithRange:NSMakeRange(5, [msg length]-5)];
 		if ([error hasPrefix:@" :"]) error = [error substringFromIndex:2];
 		RCChannel *chan = [_channels objectForKey:@"IRC"];
@@ -274,33 +262,6 @@ static NSMutableString *data = nil;
 		NSLog(@"Meh. %@\r\n%@", cmd, rest);	
 	}
 	[scanner release];
-	/*
-	NSScanner *_scanr = [[NSScanner alloc] initWithString:msg];
-	NSString *from = @"_"; // what is wrong with you
-	NSString *cmd = @"_"; // i agree with him ^
-	[_scanr scanUpToString:@" " intoString:&from];
-
-	@try {
-	[_scanr setScanLocation:[_scanr scanLocation]+1];
-	}
-	@catch (id e) {
-	NSLog(@"ARGS. %@ %@ %@ %@", msg, from, cmd, e);
-		[_scanr setScanLocation:[_scanr scanLocation]];
-	}
-	[_scanr scanUpToString:@" " intoString:&cmd];
-	NSString *selName = [NSString stringWithFormat:@"handle%@:", cmd];
-	SEL pSEL = NSSelectorFromString(selName);
-	if ([self respondsToSelector:pSEL]) 
-		[self performSelector:pSEL withObject:msg];
-	else NSLog(@"PLZ IMPLEMENT: %s MSG: %@", (char *)pSEL, msg);
-	
-	if (![msg hasSuffix:@"\x0A"]) NSLog(@"HAXHAXHAXHAXHAXHAHAX000101010");
-	// told not to always trust server. 
-	[_scanr release];
-	// some messages begin with \x01
-	// i think all messages end of \x0D\x0A
-	// \x0D\x0A = \r\n :D
-	 */
 	[p drain];
 }
 
@@ -372,6 +333,7 @@ static NSMutableString *data = nil;
 	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
 	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
+	[scanner release];
 	[p drain];
 }
 
@@ -393,6 +355,7 @@ static NSMutableString *data = nil;
 	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
 	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
+	[scanner release];
 	[p drain];
 	// Relay[2626:f803] MSG: :fr.ac3xx.com 002 _m :Your host is fr.ac3xx.com, running version Unreal3.2.9
 }
@@ -414,6 +377,7 @@ static NSMutableString *data = nil;
 	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
 	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
+	[scanner release];
 	[p drain];
 	// Relay[2626:f803] MSG: :fr.ac3xx.com 003 _m :This server was created Fri Dec 23 2011 at 01:21:01 CET
 }
@@ -435,6 +399,7 @@ static NSMutableString *data = nil;
 	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
 	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
+	[scanner release];
 	[p drain];
 	// Relay[2626:f803] MSG: :fr.ac3xx.com 004 _m fr.ac3xx.com Unreal3.2.9 iowghraAsORTVSxNCWqBzvdHtGp 
 }
@@ -460,6 +425,7 @@ static NSMutableString *data = nil;
 	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
 	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
+	[scanner release];
 	[p drain];
 	// Relay[3067:f803] MSG: :fr.ac3xx.com 251 _m :There are 1 users and 4 invisible on 1 servers
 }
@@ -481,6 +447,7 @@ static NSMutableString *data = nil;
 	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
 	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
+	[scanner release];
 	[p drain];
 	// :irc.saurik.com 252 _m 2 :operator(s) online
 }
@@ -528,6 +495,32 @@ static NSMutableString *data = nil;
 	// Relay[2794:f803] MSG: :fr.ac3xx.com 266 _m :Current Global Users: 5  Max: 6
 }
 
+- (void)handle305:(NSString *)athreeofive {
+	NSLog(@"Implying this is a znc.");
+	NSLog(@"YAY I'M NO LONGER AWAY.");
+	if ([[[[[RCNavigator sharedNavigator] currentPanel] channel] delegate] isEqual:self]) {
+		[[[RCNavigator sharedNavigator] currentPanel] postMessage:@"You are no longer being marked as away" withFlavor:RCMessageFlavorTopic highlight:nil];
+		
+	}
+}
+
+- (void)handle306:(NSString *)znc {
+	NSLog(@"Implying this is a znc.");
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	NSScanner *scanner = [[NSScanner alloc] initWithString:znc];
+	NSString *crap;
+	NSString *cmd;
+	NSString *me;
+	[scanner scanUpToString:@" " intoString:&crap];
+	[scanner scanUpToString:@" " intoString:&cmd];
+	[scanner scanUpToString:@" " intoString:&me];
+	useNick = [me retain];
+	[scanner release];
+	
+	[pool drain];
+	// :fr.ac3xx.com 305 MaxZNC :You are no longer marked as being away
+}
+
 - (void)handle331:(NSString *)noTopic {
 	// Relay[18195:707] MSG: :irc.saurik.com 331 _m #kk :No topic is set.
 }
@@ -560,6 +553,7 @@ static NSMutableString *data = nil;
 	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
 	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
+	[scanner release];
 	[p drain];
 	// :irc.saurik.com 375 _m :irc.saurik.com message of the day
 }
@@ -581,6 +575,7 @@ static NSMutableString *data = nil;
 	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
 	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
+	[scanner release];
 	[p drain];
 	// :irc.saurik.com 372 _m :- Please edit /etc/inspircd/motd
 }
@@ -750,7 +745,7 @@ static NSMutableString *data = nil;
 
 - (void)handleJOIN:(NSString *)join {
 	// add user unless self
-	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSScanner *_scanner = [[NSScanner alloc] initWithString:join];
 	NSString *user = @"_";
 	NSString *cmd = user;
@@ -768,15 +763,12 @@ static NSMutableString *data = nil;
 		[self addChannel:room join:NO];
 		[self sendMessage:[NSString stringWithFormat:@"NAMES %@\r\nTOPIC %@", room, room]];
 		[[_channels objectForKey:room] setSuccessfullyJoined:YES];
-		[_scanner release];
-		[p drain];
-		return;
 	}
 	else {
 		[[_channels objectForKey:room] recievedEvent:RCEventTypeJoin from:_nick message:nil];
 	}
 	[_scanner release];
-	[p drain];
+	[pool drain];
 }
 
 - (void)handleQUIT:(NSString *)quitter {
@@ -806,6 +798,7 @@ static NSMutableString *data = nil;
 		[scannr scanUpToString:@" :" intoString:&msg];
 		[self parseUsermask:from nick:&user user:nil hostmask:nil];
 		[self sendMessage:[@"PRIVMSG " stringByAppendingFormat:@"%@ \x01%@ %@\x01", user, @"PING", [msg substringWithRange:NSMakeRange(8, msg.length-9)]]];
+		[scannr release];
 	}
 }
 
@@ -833,6 +826,7 @@ static NSMutableString *data = nil;
 	from = [from substringFromIndex:1];
 	[self parseUsermask:from nick:&from user:nil hostmask:nil];
 	[[_channels objectForKey:room] recievedEvent:RCEventTypeTopic from:from message:newTopic];
+	[_scan release];
 	[p drain];
 }
 

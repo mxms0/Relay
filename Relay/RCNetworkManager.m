@@ -40,6 +40,7 @@ static NSMutableArray *networks = nil;
 	[p drain];
 	[networks addObject:network];
 	[[RCNavigator sharedNavigator] addNetwork:network];
+	if ([network COL]) [network connect];
 	[network release];
 	if (n) [self saveNetworks];
 

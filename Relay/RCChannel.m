@@ -166,9 +166,11 @@
 				else if ([command isEqualToStringNoCase:@"topic"]) {
 					if ([message isEqualToStringNoCase:@"/topic"]) {
 						[panel postMessage:topic withFlavor:RCMessageFlavorTopic highlight:nil];
+						[scanner release];
 						return;
 					}
 				}
+				[scanner release];
 				[delegate sendMessage:[message substringFromIndex:1]];
 			}
 			else { 

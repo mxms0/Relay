@@ -99,7 +99,6 @@ static id _sharedNavigator = nil;
 		[self scrollViewDidEndDecelerating:nil];
 	}
 	[tmp release];
-	if ([net COL]) [net connect];
 }
 
 - (void)addRoom:(NSString *)room toServerAtIndex:(int)index {
