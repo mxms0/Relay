@@ -7,6 +7,7 @@
 
 #import <UIKit/UIKit.h>
 #import "RCChannel.h"
+#import "TestFlight.h"
 
 @interface RCViewController : UIViewController {
 

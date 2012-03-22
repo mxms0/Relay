@@ -13,7 +13,6 @@
 
 - (void)dealloc {
 	[message release];
-	[highlight release];
 	[super dealloc];
 }
 @end

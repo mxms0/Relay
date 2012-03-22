@@ -10,6 +10,8 @@
 #import "RCAppDelegate.h"
 #import "NSString+Comparing.h"
 #import "RCChannelBubble.h"
+#import "RCUserListPanel.h"
+#import "RCUserTableCell.h"
 
 typedef enum RCMessageType {
 	RCMessageTypeAction,
@@ -22,16 +24,19 @@ typedef enum RCEventType {
 	RCEventTypeBan,
 	RCEventTypePart,
 	RCEventTypeJoin,
-	RCEventTypeTopic
+	RCEventTypeTopic,
+	RCEventTypeQuit,
+	RCEventTypeMode
 } RCEventType;
 
 @class RCNetwork;
+@class RCNavigator;
 @interface RCChannel : NSObject <UITableViewDelegate, UITableViewDataSource> {
 	NSMutableDictionary *users;
 	NSString *channelName;
 	NSString *topic;
 	RCChatPanel *panel;
-	UITableView *usersPanel;
+	RCUserListPanel *usersPanel;
 	BOOL joined;
 	BOOL joinOnConnect;
 	BOOL shouldUpdate;
@@ -44,7 +49,7 @@ typedef enum RCEventType {
 @property (nonatomic, readonly) RCChatPanel *panel;
 @property (nonatomic, readonly) NSString *topic;
 @property (nonatomic, retain) RCChannelBubble *bubble;
-@property (nonatomic, assign) UITableView *usersPanel;
+@property (nonatomic, assign) RCUserListPanel *usersPanel;
 - (id)initWithChannelName:(NSString *)_name;
 - (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type;
 - (void)recievedEvent:(RCEventType)type from:(NSString *)from message:(NSString *)msg;
@@ -53,6 +58,13 @@ typedef enum RCEventType {
 - (void)setMode:(NSString *)modes forUser:(NSString *)user;
 - (void)setJoined:(BOOL)joind withArgument:(NSString *)arg1;
 - (void)userWouldLikeToPartakeInThisConversation:(NSString *)message;
+- (NSString *)userWithPrefix:(NSString *)prefix pastUser:(NSString *)user;
 // yes, seriously. :P spent like 15 minutes and felt this was best suited. 
 - (void)setSuccessfullyJoined:(BOOL)success;
+NSString *RCUserRank(NSString *user);
+UIImage *RCImageForRank(NSString *rank);
+UIImage *RCImageForRanks(NSString *ranks, NSString *possible);
+NSString *RCMergeModes(NSString *arg1, NSString *arg2);
+NSString *RCSymbolRepresentationForModes(NSString *modes);
+BOOL RCIsRankHigher(NSString *rank, NSString *rank2);
 @end

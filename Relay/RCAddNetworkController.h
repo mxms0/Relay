@@ -9,33 +9,15 @@
 #import <UIKit/UIKit.h>
 #import "RCNetwork.h"
 #import "RCNetworkManager.h"
+#import "RCSwitch.h"
+#import "RCTextField.h"
+#import "RCAddCell.h"
 
-@interface RCAddNetworkController : UIViewController <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UIScrollViewDelegate> {
+@interface RCAddNetworkController : UITableViewController <UITextFieldDelegate, UIScrollViewDelegate> {
 	RCNetwork *network;
-	UITableView *tableView;
-	NSString *_user;
-	NSString *_nick;
-	NSString *_name;
-	NSString *_sPass;
-	NSString *_nPass;
-	NSString *_description;
-	NSString *_server;
-	NSString *_port;
-    BOOL hasSSL;
-	BOOL existingConnection;
-	BOOL connectAtLaunching;
+	BOOL isNew;
+
 }
-@property (nonatomic, retain) NSString *_user;
-@property (nonatomic, retain) NSString *_nick;
-@property (nonatomic, retain) NSString *_name;
-@property (nonatomic, retain) NSString *_sPass;
-@property (nonatomic, retain) NSString *_nPass;
-@property (nonatomic, retain) NSString *_description;
-@property (nonatomic, retain) NSString *_server;
-@property (nonatomic, retain) NSString *_port;
-@property (nonatomic, assign) BOOL hasSSL;
-@property (nonatomic, assign) BOOL connectAtLaunch;
-@property (nonatomic, readonly) UITableView *tableView;
 
 - (id)initWithNetwork:(RCNetwork *)net;
 

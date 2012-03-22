@@ -16,7 +16,9 @@
 + (RCNetworkManager *)sharedNetworkManager;
 - (RCNetwork *)networkWithDescription:(NSString *)_desc;
 - (void)ircNetworkWithInfo:(NSDictionary *)info isNew:(BOOL)n;
+- (void)addNetwork:(RCNetwork *)net;
 - (NSMutableArray *)networks;
+- (void)removeNet:(RCNetwork *)net;
 + (void)saveNetworks;
 - (void)saveNetworks;
 - (void)unpack;

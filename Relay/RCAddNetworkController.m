@@ -8,6 +8,9 @@
 
 #import "RCAddNetworkController.h"
 
+#define FONT_SIZE 12
+#define FONT_COLOR 0x56595A
+
 @implementation UIView (FindAndResignFirstResponder)
 - (BOOL)findAndResignFirstResponder {
     if (self.isFirstResponder) {
@@ -23,29 +26,18 @@
 @end
 
 @implementation RCAddNetworkController
-@synthesize _user, _nick, _name, _sPass, _nPass, _description, _server, _port, hasSSL, connectAtLaunch, tableView;
 
 - (id)initWithNetwork:(RCNetwork *)net {
-	if ((self = [super init])) {
+	if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
 		network = net;
-		hasSSL = NO;
-		connectAtLaunching = YES;
-		if (network) {
-			[self set_user:[network username]];
-			[self set_nick:[network nick]];
-			[self set_name:[network realname]];
-			[self set_port:[NSString stringWithFormat:@"%d", [network port]]];
-			[self set_nPass:[network npass]];
-			[self set_sPass:[network spass]];
-			[self set_description:[network sDescription]];
-			[self setHasSSL:[network useSSL]];
-			[self setConnectAtLaunch:[network COL]];
-			[self set_server:[network server]];
-			 
+		isNew = NO;
+		if (!net) {
+			network = [[RCNetwork alloc] init];
+			isNew = YES;
 		}
-		tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 320, 416)]; // guess.
-		tableView.delegate = self;
-		tableView.dataSource = self;
+		else {
+			[self.navigationItem.rightBarButtonItem setEnabled:YES];	
+		}
 	}
 	return self;
 }
@@ -56,13 +48,45 @@
 
 - (void)loadView {
 	[super loadView];
-	[self.view addSubview:tableView];
-	[tableView release];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+	[self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"0_addnav"] forBarMetrics:UIBarMetricsDefault];
+	UILabel *titleView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 40)];
+	titleView.text = @"Add A Network";
+	titleView.backgroundColor = [UIColor clearColor];
+	titleView.textAlignment = UITextAlignmentCenter;
+	titleView.font = [UIFont boldSystemFontOfSize:22];
+	titleView.shadowColor = [UIColor whiteColor];
+	titleView.textColor = UIColorFromRGB(0x424343);
+	titleView.shadowOffset = CGSizeMake(0, 1);
+	self.navigationItem.titleView = titleView;
+	[titleView release];
+	self.tableView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"0_bg"]];
+	UIImageView *r_shadow = [[UIImageView alloc] initWithFrame:CGRectMake(0, 44, 320, 10)];
+	[r_shadow setImage:[UIImage imageNamed:@"0_r_shadow"]];
+	r_shadow.alpha = 0.5;
+	[self.navigationController.navigationBar addSubview:r_shadow];
+	[r_shadow release];
 	// Do any additional setup after loading the view, typically from a nib.
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+	UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, 240, 20)];
+	label.text = [self tableView:tableView titleForHeaderInSection:section];
+	label.backgroundColor = [UIColor clearColor];
+	label.textColor = [UIColor whiteColor];
+	label.shadowColor = [UIColor blackColor];
+	label.shadowOffset = CGSizeMake(0, 1);
+	label.font = [UIFont boldSystemFontOfSize:14];
+	return [label autorelease];
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+	if (section == 0) return 35.0;
+	return 25.0;
 }
 
 - (void)viewDidUnload {
@@ -80,43 +104,52 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-	UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(doneWithJoin)];
-	[self.navigationItem setLeftBarButtonItem:cancel];
-	[cancel release];
-	UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneConnection)];
-	done.enabled = NO;
+	UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 65, 40)];
+	[btn setImage:[UIImage imageNamed:@"0_donebutton_normal"] forState:UIControlStateNormal];
+	[btn setImage:[UIImage imageNamed:@"0_donebutton_pressed"] forState:UIControlStateHighlighted];
+	[btn setImage:[UIImage imageNamed:@"0_donebutton_disabled"] forState:UIControlStateDisabled];
+	btn.enabled = ([network server] != nil);
+	[btn addTarget:self action:@selector(doneConnection) forControlEvents:UIControlEventTouchUpInside];
+	UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithCustomView:btn];
+	[btn release];
 	[self.navigationItem setRightBarButtonItem:done];
 	[done release];
+	
+	UIButton *cBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 65, 40)];
+	[cBtn setImage:[UIImage imageNamed:@"0_cancelbutton_normal"] forState:UIControlStateNormal];
+	[cBtn setImage:[UIImage imageNamed:@"0_cancelbutton_pressed"] forState:UIControlStateHighlighted];
+	[cBtn addTarget:self action:@selector(doneWithJoin) forControlEvents:UIControlEventTouchUpInside];
+	UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithCustomView:cBtn];
+	[cBtn release];
+	[self.navigationItem setLeftBarButtonItem:cancel];
+	[cancel release];
 }
 
-- (void)textFieldDidEndEditing:(UITextField *)textField {
-	NSLog(@"FF %@",textField);
+- (void)textFieldDidEndEditing:(RCTextField *)textField {
 	switch ([textField tag]) {
 		case 1:
-			[self set_description:[textField text]];
-			NSLog(@"Hai. %@", _description);
+			[network setSDescription:[textField text]];
 			break;
 		case 2:
-			[self set_server:[textField text]];
+			[network setServer:[textField text]];
 			[self.navigationItem.rightBarButtonItem setEnabled:([textField text].length > 0)];
-						NSLog(@"Hai. %@", _server);
 			break;
 		case 3:
-			[self set_port:[textField text]];
+			[network setPort:[[textField text] intValue]];
 			break;
 		case 4:
-			[self set_user:[textField text]];
+			[network setUsername:[textField text]];
 			break;
 		case 5:
-			[self set_nick:[textField text]];
+			[network setNick:[textField text]];
 			break;
 		case 6:
-			[self set_name:[textField text]];
+			[network setRealname:[textField text]];
 			break;
 		case 7:
 			break;
 		case 8:
-			[self set_sPass:[textField text]];
+			[network setSpass:[textField text]];
 			break;
 		default:
 			break;
@@ -124,21 +157,24 @@
 }
 
 - (void)doneConnection {
-	if (_server != nil) {
-		[[RCNetworkManager sharedNetworkManager] ircNetworkWithInfo:[NSDictionary dictionaryWithObjectsAndKeys:
-																	 (_user ? _user : @"Guest"), USER_KEY, 
-																	 (_nick ? _nick : @"Guest01"), NICK_KEY,
-																	 (_name ? _name : @"Dave"), NAME_KEY,
-																	 (_sPass ? _sPass : @""), S_PASS_KEY,
-																	 (_nPass ? _nPass : @""), N_PASS_KEY,
-																	 (_description ? _description : _server), DESCRIPTION_KEY,
-																	 _server, SERVR_ADDR_KEY,
-																	 (_port ? _port : @"6667"), PORT_KEY,
-																	 [NSNumber numberWithBool:hasSSL], SSL_KEY,
-																	 [NSNumber numberWithBool:connectAtLaunching], COL_KEY,
-																	 [NSArray arrayWithObject:@"IRC"], CHANNELS_KEY,
-																	 nil] isNew:YES];
+	if (![network server]) return;
+	if (![network spass]) [network setSpass:@""];
+	if (![network npass]) [network setNpass:@""];
+	if (![network realname]) [network setRealname:@""];
+	if (![network nick]) [network setNick:@"Guest01"];
+	if (![network username]) [network setUsername:[network nick]];
+	if (![network port]) [network setPort:6667];
+	if (![network sDescription]) [network setSDescription:[network server]];
+	if (isNew) {
+		[network setupRooms:[NSArray arrayWithObject:@"IRC"]];
+		[[RCNetworkManager sharedNetworkManager] addNetwork:network];
+		[network release];
 	}
+	else {
+		if ([network isConnected])	[network disconnect];
+	}
+	[network connect];
+	[[RCNetworkManager sharedNetworkManager] saveNetworks];
 	[self doneWithJoin];
 }
 
@@ -146,6 +182,9 @@
     [super viewDidAppear:animated];
 }
 
+- (NSInteger)tableView:(UITableView *)tableView indentationLevelForRowAtIndexPath:(NSIndexPath *)indexPath {
+	return 1;
+}
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // Return the number of sections.
@@ -169,20 +208,20 @@
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
 	switch (section) {
 		case 0:
-			return @"Connection Information";
+			return @"   CONNECT INFORMATION";
 		case 1:
-			return @"User Information";
+			return @"   USER INFORMATION";
 		case 2:
-			return @"Authentication";
+			return @"   AUTHENTICATION";
 		case 3:
-			return @"Advanced";
+			return @"   ADVANCED";
 		default:
 			break;
 	}
 	return @"  HAXXX !!! ";
 }
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+- (BOOL)textFieldShouldReturn:(RCTextField *)textField {
 	//	[textField resignFirstResponder];
 	if ([textField tag] == 2) 
 		if ([[textField text] length] > 2)
@@ -193,7 +232,7 @@
 	return NO;
 }
 
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+- (BOOL)textField:(RCTextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     if ([textField tag] == 2 || [textField tag] == 3/* || [textField tag] == 12343*/) {
         if ([string isEqualToString:@" "]) {
             return NO;
@@ -205,63 +244,73 @@
 - (UITableViewCell *)tableView:(UITableView *)_tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString *CellIdentifier = [NSString stringWithFormat:@"CELL_%d_%d", indexPath.section, indexPath.row];
     
-    UITableViewCell *cell = [_tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    RCAddCell *cell = (RCAddCell *)[_tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[[RCAddCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
 		cell.selectionStyle = UITableViewCellSelectionStyleNone;
-		cell.textLabel.font = [UIFont boldSystemFontOfSize:15.5];
-    }
+		cell.textLabel.font = [UIFont boldSystemFontOfSize:14];
+		cell.textLabel.textColor = UIColorFromRGB(0x545758);
+	}
     switch (indexPath.section) {
 		case 0:
 			switch (indexPath.row) {
 				case 0:
 					cell.textLabel.text = @"Description";
-					cell.textLabel.font = [UIFont boldSystemFontOfSize:16];
-					UITextField *dField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 170, 22)];
+					cell.textLabel.font = [UIFont boldSystemFontOfSize:14];
+					RCTextField *dField = [[RCTextField alloc] initWithFrame:CGRectMake(0, 0, 170, 16)];
 					[dField setAdjustsFontSizeToFitWidth:YES];
 					[dField setPlaceholder:@"Enter a description"];
 					[dField setTag:1];
-					[dField setText:_description];
+					[dField setText:[network sDescription]];
 					[dField setDelegate:self];
 					[dField setKeyboardAppearance:UIKeyboardAppearanceAlert];
 					[dField setReturnKeyType:UIReturnKeyNext];
+					[dField setTextColor:UIColorFromRGB(FONT_COLOR)];
+					[dField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
 					[cell setAccessoryView:dField];
 					[dField release];
 					break;
 				case 1:
 					cell.textLabel.text = @"Address";
-                    UITextField *address = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 170, 22)];
+                    RCTextField *address = [[RCTextField alloc] initWithFrame:CGRectMake(0, 0, 170, 16)];
                     address.adjustsFontSizeToFitWidth = YES;
                     address.placeholder = @"irc.network.tld";
                     address.keyboardType = UIKeyboardTypeURL;
-					address.text = _server;
+					address.text = [network server];
 					address.autocorrectionType = UITextAutocorrectionTypeNo;
 					address.autocapitalizationType = UITextAutocapitalizationTypeNone;
                     address.returnKeyType = UIReturnKeyNext;
                     address.tag = 2;
                     address.keyboardAppearance = UIKeyboardAppearanceAlert;
                     [address setDelegate:self];
+					[address setTextColor:UIColorFromRGB(FONT_COLOR)];
+					[address setFont:[UIFont systemFontOfSize:FONT_SIZE]];
                     [cell setAccessoryView:address];
                     [address release];
 					break;
 				case 2:
 					cell.textLabel.text = @"Port";
-					UITextField *pField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 170, 22)];
+					RCTextField *pField = [[RCTextField alloc] initWithFrame:CGRectMake(0, 0, 170, 16)];
 					[pField setAdjustsFontSizeToFitWidth:YES];
 					[pField setPlaceholder:@"6667"];
 					[pField setKeyboardType:UIKeyboardTypeNumberPad];
 					[pField setReturnKeyType:UIReturnKeyNext];
 					[pField setTag:3];
-					[pField setText:_port];
+					[pField setText:([network port] ? [NSString stringWithFormat:@"%d", [network port]] : nil)];
 					[pField setKeyboardAppearance:UIKeyboardAppearanceAlert];
 					[pField setDelegate:self];
+					[pField setTextColor:UIColorFromRGB(FONT_COLOR)];
+					[pField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
                     [cell setAccessoryView:pField];
                     [pField release];
 					break;
 				case 3:
 					cell.textLabel.text = @"Use SSL";
+				//	RCSwitch *cnt = [[RCSwitch alloc] initWithFrame:CGRectMake(0, 0, 57, 29)];
+				//	[cell setAccessoryView:cnt];
+				//	[cnt release];
 					UISwitch *cnt = [[UISwitch alloc] init];
-					[cnt setOn:hasSSL];
+					[cnt setOn:[network useSSL]];
 					[cnt addTarget:self action:@selector(sslSwitched:) forControlEvents:UIControlEventValueChanged];
 					[cell setAccessoryView:cnt];
 					[cnt release];
@@ -272,44 +321,49 @@
 			switch (indexPath.row) {
 				case 0:
 					cell.textLabel.text = @"Username";
-					UITextField *uField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 170, 22)];
+					RCTextField *uField = [[RCTextField alloc] initWithFrame:CGRectMake(0, 0, 170, 16)];
 					[uField setAdjustsFontSizeToFitWidth:YES];
 					[uField setPlaceholder:@"John"];
 					[uField setTag:4];
-					[uField setText:_user];
+					[uField setText:[network username]];
 					[uField setDelegate:self];
 					[uField setKeyboardAppearance:UIKeyboardAppearanceAlert];
 					[uField setReturnKeyType:UIReturnKeyNext];
+					[uField setTextColor:UIColorFromRGB(FONT_COLOR)];
+					[uField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
 					[cell setAccessoryView:uField];
 					[uField release];
 					break;
 				case 1:
 					cell.textLabel.text = @"Nickname";
-					UITextField *nField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 170, 22)];
+					RCTextField *nField = [[RCTextField alloc] initWithFrame:CGRectMake(0, 0, 170, 16)];
 					[nField setAdjustsFontSizeToFitWidth:YES];
 					@try {
 						[nField setPlaceholder:[[UIDevice currentDevice] name]];
 					}
 					@catch (id bs) {
-						NSLog(@"BS!");
 						[nField setPlaceholder:@"John_iPhone"];	
 					}
 					[nField setTag:5];
-					[nField setText:_nick];
+					[nField setText:[network nick]];
 					[nField setDelegate:self];
 					[nField setKeyboardAppearance:UIKeyboardAppearanceAlert];
 					[nField setReturnKeyType:UIReturnKeyNext];
+					[nField setTextColor:UIColorFromRGB(FONT_COLOR)];
+					[nField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
 					[cell setAccessoryView:nField];
 					[nField release];
 					break;
 				case 2:
 					cell.textLabel.text = @"Real Name";
-					UITextField *rField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 170, 22)];
+					RCTextField *rField = [[RCTextField alloc] initWithFrame:CGRectMake(0, 0, 170, 16)];
 					[rField setAdjustsFontSizeToFitWidth:YES];
 					[rField setPlaceholder:@"Johnathan"];
 					[rField setTag:6];
-					[rField setText:_name];
+					[rField setText:[network realname]];
 					[rField setDelegate:self];
+					[rField setTextColor:UIColorFromRGB(FONT_COLOR)];
+					[rField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
 					[rField setKeyboardAppearance:UIKeyboardAppearanceAlert];
 					[rField setReturnKeyType:UIReturnKeyNext];
 					[cell setAccessoryView:rField];
@@ -324,13 +378,15 @@
 					break;
 				case 1:
 					cell.textLabel.text = @"Server";
-					UITextField *seField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 170, 22)];
+					RCTextField *seField = [[RCTextField alloc] initWithFrame:CGRectMake(0, 0, 170, 16)];
 					[seField setAdjustsFontSizeToFitWidth:YES];
 					[seField setPlaceholder:@"privateircftw"];
 					[seField setTag:8];
 					[seField setSecureTextEntry:YES];
-					[seField setText:_name];
+					[seField setText:[network spass]];
 					[seField setDelegate:self];
+					[seField setTextColor:UIColorFromRGB(FONT_COLOR)];
+					[seField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
 					[seField setKeyboardAppearance:UIKeyboardAppearanceAlert];
 					[seField setReturnKeyType:UIReturnKeyNext];
 					[cell setAccessoryView:seField];
@@ -343,7 +399,7 @@
 				case 0:
 					cell.textLabel.text = @"Connect At Launch";
 					UISwitch *cnt = [[UISwitch alloc] init];
-					[cnt setOn:connectAtLaunch];
+					[cnt setOn:[network COL]];
 					[cnt addTarget:self action:@selector(launchSwitched:) forControlEvents:UIControlEventValueChanged];
 					[cell setAccessoryView:cnt];
 					[cnt release];
@@ -371,22 +427,14 @@
 }
 
 - (void)sslSwitched:(UISwitch *)s {
-	hasSSL = s.on;
+	[network setUseSSL:s.on];
 }
 
 - (void)launchSwitched:(UISwitch *)s {
-	connectAtLaunch = s.on;
+	[network setCOL:s.on];
 }
 
 - (void)dealloc {
-	if (_sPass) [_sPass release];
-	if (_nPass) [_nPass release];
-	if (_name) [_name release];
-	if (_nick) [_nick release];
-	if (_user) [_user release];
-	if (_description) [_description release];
-	if (_server) [_server release];
-	if (_port) [_port release];
 	[super dealloc];
 	// RELEASE TABLE VIEW.
 }

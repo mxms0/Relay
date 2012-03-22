@@ -13,11 +13,13 @@
 #import "RCChannelScrollView.h"
 #import "RCChannelBubble.h"
 #import "RCChannel.h"
+#import "RCUserListPanel.h"
 
-@interface RCNavigator : UIView <UIScrollViewDelegate, UIAlertViewDelegate> {
+@interface RCNavigator : UIView <UIScrollViewDelegate, UIAlertViewDelegate, UIActionSheetDelegate> {
 	RCNavigationBar *bar;
 	RCChannelScrollView *scrollBar;
 	RCChatPanel *currentPanel;
+	RCUserListPanel *memberPanel;
 	UILabel *stupidLabel;
 	NSMutableArray *rooms;
 	BOOL draggingNets;
@@ -27,10 +29,12 @@
 	int currentIndex;
 }
 @property (nonatomic, readonly) RCChatPanel *currentPanel;
+@property (nonatomic, readonly) RCUserListPanel *memberPanel;
 + (id)sharedNavigator;
 - (void)addNetwork:(RCNetwork *)net;
 - (void)addRoom:(NSString *)room toServerAtIndex:(int)index;
 - (void)removeChannel:(RCChannel *)room toServerAtIndex:(int)index;
 - (void)channelSelected:(RCChannelBubble *)bubble;
+- (void)tearDownForChannelList:(RCChannelBubble *)bubble;
 - (RCChannelBubble *)channelBubbleWithChannelName:(NSString *)name;
 @end

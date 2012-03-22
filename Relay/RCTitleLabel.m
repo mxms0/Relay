@@ -17,9 +17,11 @@
 		self.shadowOffset = CGSizeMake(0,1);
 		self.textColor = UIColorFromRGB(0x3e3f3f);
 		self.font = [UIFont systemFontOfSize:30];
+		[self setUserInteractionEnabled:YES];
     }
     return self;
 }
+
 
 /*
 // Only override drawRect: if you perform custom drawing.

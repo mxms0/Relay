@@ -33,17 +33,39 @@ static NSMutableArray *networks = nil;
 			return;
 		}
 	}
-	NSMutableArray *rooms = [[info objectForKey:CHANNELS_KEY] mutableCopy];
+	NSMutableArray *rooms = [[[info objectForKey:CHANNELS_KEY] mutableCopy] autorelease];
 	if (!rooms) rooms = [[NSMutableArray alloc] init];
 	if (![rooms containsObject:@"IRC"]) [rooms addObject:@"IRC"];
 	[network setupRooms:rooms];
 	[p drain];
 	[networks addObject:network];
 	[[RCNavigator sharedNavigator] addNetwork:network];
-	if ([network COL]) [network connect];
+	[self performSelectorInBackground:@selector(finishSetupForNetwork:) withObject:network];
 	[network release];
-	if (n) [self saveNetworks];
+	if (n) [self performSelectorInBackground:@selector(saveNetworks) withObject:nil];
+}
 
+- (void)addNetwork:(RCNetwork *)_net isChange:(BOOL)c {
+	
+	for (RCNetwork *net in networks) {
+		if ([[net descriptionForComparing] isEqualToString:[_net descriptionForComparing]]) {
+			return;
+		}
+	}
+	if (![[_net channels] containsObject:@"IRC"]) [[_net channels] addObject:@"IRC"];
+	[networks addObject:_net];
+	[[RCNavigator sharedNavigator] addNetwork:_net];
+	if ([_net COL]) [_net connect];
+	[_net release];
+	[self saveNetworks];
+}
+
+- (void)addNetwork:(RCNetwork *)_net {
+	[self addNetwork:_net isChange:NO];
+}
+
+- (void)finishSetupForNetwork:(RCNetwork *)net {
+	if ([net COL]) [net performSelectorOnMainThread:@selector(connect) withObject:nil waitUntilDone:NO];
 }
 
 + (void)saveNetworks {
@@ -61,35 +83,53 @@ static NSMutableArray *networks = nil;
 	[dict release];
 }
 
+- (void)removeNet:(RCNetwork *)net {
+	[networks removeObject:net];
+	if ([networks count] == 0) {
+		[self setupWelcomeView];
+	}
+}
+
 - (void)unpack {
 	@autoreleasepool {
 		NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithContentsOfFile:PREFS_ABSOLUT];
 		if (!dict) return;
 		if ([dict objectForKey:NETS_KEY]) {
 			NSArray *nets = [[NSArray alloc] initWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:[dict objectForKey:NETS_KEY]]];
+			if ([nets count] == 0) {
+				[self setupWelcomeView];
+				[nets release];
+				[dict release];
+				return;
+			}
 			for (NSDictionary *dict in nets) {
 				[[RCNetworkManager sharedNetworkManager] ircNetworkWithInfo:dict isNew:NO];
 			}
 			[nets release];
+			[dict release];
 			return;
 		}
 		[dict release];
 		NSLog(@"Shutup NSKeyedUnarchiver.");
-		RCWelcomeNetwork *net = [[RCWelcomeNetwork alloc] init];
-		[net setSDescription:@"Welcome!"];	
-		[net setServer:@"irc.nightcoast.net"];
-		[net addChannel:@"#Relay" join:YES];
-		RCChannel *chan = [[net _channels] objectForKey:@"#Relay"];
-		[chan recievedEvent:RCEventTypeTopic from:@"" message:@"Welcome to Relay!"];
-		[[chan panel] setHidesEntryField:YES];
-		[chan recievedMessage:@"Try out some cool features! :D" from:@"" type:RCMessageTypeNormal];
-		[chan recievedMessage:@"Blah, Blah, more blah!" from:@"" type:RCMessageTypeNormal];
-		[[self networks] addObject:net];
-		[net release];
-		[[RCNavigator sharedNavigator] addNetwork:net];
-		[[RCNavigator sharedNavigator] channelSelected:[chan bubble]];
-		[[RCNavigator sharedNavigator] scrollViewDidEndDecelerating:nil];
+		[self setupWelcomeView];
 	}
+}
+
+- (void)setupWelcomeView {
+	RCWelcomeNetwork *net = [[RCWelcomeNetwork alloc] init];
+	[net setSDescription:@"Welcome!"];	
+	[net setServer:@"irc.nightcoast.net"];
+	[net addChannel:@"#Relay" join:YES];
+	RCChannel *chan = [[net _channels] objectForKey:@"#Relay"];
+	[chan recievedEvent:RCEventTypeTopic from:@"" message:@"Welcome to Relay!"];
+	[[chan panel] setHidesEntryField:YES];
+	[chan recievedMessage:@"Try out some cool features! :D" from:@"" type:RCMessageTypeNormal];
+	[chan recievedMessage:@"Blah, Blah, more blah!" from:@"" type:RCMessageTypeNormal];
+	[[self networks] addObject:net];
+	[net release];
+	[[RCNavigator sharedNavigator] addNetwork:net];
+	[[RCNavigator sharedNavigator] channelSelected:[chan bubble]];
+	[[RCNavigator sharedNavigator] scrollViewDidEndDecelerating:nil];
 }
 
 - (RCNetwork *)networkWithDescription:(NSString *)_desc {
@@ -114,14 +154,9 @@ static NSMutableArray *networks = nil;
 	if ((self = [super init])) {
 		networks = [[NSMutableArray alloc] init];
 		isBG = NO;
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setIsBackgrounding:) name:BG_NOTIF object:nil];
 	}
 	snManager = self;
 	return snManager;
-}
-
-- (void)setIsBackgrounding:(BOOL)notif {
-	isBG = (BOOL)notif;
 }
 
 - (NSMutableArray *)networks {

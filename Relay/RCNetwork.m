@@ -7,14 +7,15 @@
 
 #import "RCNetwork.h"
 #import "RCNetworkManager.h"
-#import "RCSocket.h"
+#import "TestFlight.h"
 
 @implementation RCNetwork
 
-@synthesize sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, channels, _channels, index, useNick;
+@synthesize sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, channels, _channels, index, useNick, userModes;
 
 - (id)init {
 	if ((self = [super init])) {
+		status = RCSocketStatusNotOpen;
 		shouldSave = NO;
 		_scores = 0;
 		isRegistered = NO;
@@ -63,7 +64,7 @@
 }
 
 - (NSString *)description {
-	return [NSString stringWithFormat:@"<%@: %p; %@;>", NSStringFromClass([self class]), self, [self infoDictionary]];
+	return [NSString stringWithFormat:@"<%@: %p; %@; Index = %d;>", NSStringFromClass([self class]), self, [self infoDictionary], index];
 }
 
 - (NSString *)descriptionForComparing {
@@ -108,8 +109,10 @@
 #pragma mark - SOCKET STUFF
 
 - (BOOL)connect {
-	
+	if (status == RCSocketStatusConnecting) return NO;
+	if (status == RCSocketStatusConnected) return NO;
 	useNick = nick;
+	self.userModes = @"@%+";
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
 	if (chan) [chan recievedMessage:[NSString stringWithFormat:@"Connecting to %@ on port %d", server, port] from:@"" type:RCMessageTypeNormal];
 	if (kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iPhoneOS_4_0) {
@@ -118,15 +121,14 @@
 			task = UIBackgroundTaskInvalid;
 		}];
 	}
+
 	CFStreamCreatePairWithSocketToHost(NULL, (CFStringRef)server, port ? port : 6667, (CFReadStreamRef *)&iStream, (CFWriteStreamRef *)&oStream);
 	[iStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 	[oStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 	[iStream setDelegate:self];
 	[oStream setDelegate:self];
-	if ([iStream streamStatus] == NSStreamStatusNotOpen)
-		[iStream open];
-	if ([oStream streamError] == NSStreamStatusNotOpen)
-		[oStream open];
+	if ([iStream streamStatus] == NSStreamStatusNotOpen) [iStream open];
+	if ([oStream streamStatus] == NSStreamStatusNotOpen) [oStream open];
 	
 	if (useSSL) {
 		[iStream setProperty:NSStreamSocketSecurityLevelNegotiatedSSL forKey:NSStreamSocketSecurityLevelKey];
@@ -152,31 +154,32 @@ static NSMutableString *data = nil;
 	switch (eventCode) {
 		case NSStreamEventEndEncountered: // 16 - Called on ping timeout/closing link
 			status = RCSocketStatusClosed;
-			[[_channels objectForKey:@"IRC"] recievedMessage:@"Disconnected." from:@"" type:RCMessageTypeNormal];
+			[self disconnect];
 			return;
 		case NSStreamEventErrorOccurred: /// 8 - Unknowns/bad interwebz
-			[[_channels objectForKey:@"IRC"] recievedMessage:@"Disconnected." from:@"" type:RCMessageTypeNormal];
+			[self disconnect];
 			status = RCSocketStatusError;
 			return;
 		case NSStreamEventHasBytesAvailable: // 2
 			if (!data) data = [[NSMutableString alloc] init];
-			uint8_t buffer[512];
-			NSUInteger bytesRead = [iStream read:buffer maxLength:512];
-			if (bytesRead) {
-				NSString *message = [[NSString alloc] initWithBytesNoCopy:buffer length:bytesRead encoding:NSUTF8StringEncoding freeWhenDone:NO];
-				if (message) {					
-					[data appendString:message];
-					NSLog(@"HEH. %@", message);
-					[message release];
-					while ([data rangeOfString:@"\r\n"].location != NSNotFound) {
-						NSString *send = [[NSString alloc] initWithString:[data substringWithRange:NSMakeRange(0, [data rangeOfString:@"\r\n"].location+2)]];
-						[self recievedMessage:send];
-						[send release];
-						send = nil;
-						[data deleteCharactersInRange:NSMakeRange(0, [data rangeOfString:@"\r\n"].location+2)];
-					
+			while ([(NSInputStream *)aStream hasBytesAvailable]) {
+				uint8_t buffer[512];
+				NSUInteger bytesRead = [iStream read:buffer maxLength:512];
+				if (bytesRead) {
+					NSString *message = [[NSString alloc] initWithBytesNoCopy:buffer length:bytesRead encoding:NSUTF8StringEncoding freeWhenDone:NO];
+					if (message) {					
+						[data appendString:message];
+						[message release];
 					}
-				}
+				}			
+			}
+			while ([data rangeOfString:@"\r\n"].location != NSNotFound) {
+				NSString *send = [[NSString alloc] initWithString:[data substringWithRange:NSMakeRange(0, [data rangeOfString:@"\r\n"].location+2)]];
+				[self recievedMessage:send];
+				[send release];
+				send = nil;
+				[data deleteCharactersInRange:NSMakeRange(0, [data rangeOfString:@"\r\n"].location+2)];
+				
 			}
 			return;
 		case NSStreamEventHasSpaceAvailable: // 4
@@ -202,7 +205,8 @@ static NSMutableString *data = nil;
 	return [self sendMessage:msg canWait:YES];
 }
 
-- (BOOL)sendMessage:(NSString *)msg canWait:(BOOL)canWait {
+- (BOOL)sendMessage:(NSString *)msg canWait:(BOOL)canWait {	
+
 	if ((!canWait) || isRegistered) {
 		NSData *messageData = [[msg stringByAppendingString:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding];
 		if (canSend) {
@@ -223,9 +227,11 @@ static NSMutableString *data = nil;
 
 - (void)errorOccured:(NSError *)error {
 	NSLog(@"Error: %@", [error localizedDescription]);
+	[TestFlight submitFeedback:[error localizedDescription]];
 }
 
 - (void)recievedMessage:(NSString *)msg {
+
 	if ([msg isEqualToString:@""] || msg == nil || [msg isEqualToString:@"\r\n"]) return;
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	if ([msg hasPrefix:@"PING"]) {
@@ -263,11 +269,31 @@ static NSMutableString *data = nil;
 	}
 	[scanner release];
 	[p drain];
+	/*{
+	"░░░░░▄▄▄▄▀▀▀▀▀▀▀▀▄▄▄▄▄▄░░░░░░░\
+	░░░░░█░░░░▒▒▒▒▒▒▒▒▒▒▒▒░░▀▀▄░░░░\
+	░░░░█░░░▒▒▒▒▒▒░░░░░░░░▒▒▒░░█░░░\
+	░░░█░░░░░░▄██▀▄▄░░░░░▄▄▄░░░░█░░\
+	░▄▀▒▄▄▄▒░█▀▀▀▀▄▄█░░░██▄▄█░░░░█░\
+	█░▒█▒▄░▀▄▄▄▀░░░░░░░░█░░░▒▒▒▒▒░█\
+	█░▒█░█▀▄▄░░░░░█▀░░░░▀▄░░▄▀▀▀▄▒█\
+	░█░▀▄░█▄░█▀▄▄░▀░▀▀░▄▄▀░░░░█░░█░\
+	░░█░░░▀▄▀█▄▄░█▀▀▀▄▄▄▄▀▀█▀██░█░░\
+	░░░█░░░░██░░▀█▄▄▄█▄▄█▄████░█░░░\
+	░░░░█░░░░▀▀▄░█░░░█░█▀██████░█░░\
+	░░░░░▀▄░░░░░▀▀▄▄▄█▄█▄█▄█▄▀░░█░░\
+	░░░░░░░▀▄▄░▒▒▒▒░░░░░░░░░░▒░░░█░\
+	░░░░░░░░░░▀▀▄▄░▒▒▒▒▒▒▒▒▒▒░░░░█░\
+	░░░░░░░░░░░░░░▀▄▄▄▄▄░░░░░░░░█░░";
+	};*/
 }
 
 - (BOOL)disconnect {
 	if ((status == RCSocketStatusConnected) || (status == RCSocketStatusConnecting)) {
 		[self sendMessage:@"QUIT :Relay 1.0"];
+		[[_channels objectForKey:@"IRC"] recievedMessage:@"Disconnected." from:@"" type:RCMessageTypeNormal];
+	}	
+	if (!(status == RCSocketStatusClosed) && !(status == RCSocketStatusNotOpen)) {
 		status = RCSocketStatusClosed;
 		[[UIApplication sharedApplication] endBackgroundTask:task];
 		task = UIBackgroundTaskInvalid;
@@ -342,16 +368,11 @@ static NSMutableString *data = nil;
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSScanner *scanner = [[NSScanner alloc] initWithString:infos];
 	NSString *crap;
-	@try {
-		[scanner scanUpToString:@" " intoString:&crap];
-		[scanner scanUpToString:@" " intoString:&crap];
-		[scanner scanUpToString:@" " intoString:&crap];
-		[scanner setScanLocation:[scanner scanLocation]+1];
-		[scanner scanUpToString:@"\r\n" intoString:&crap];
-	}
-	@catch (NSException *exception) {
-		NSLog(@"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF %s", (char *)_cmd);
-	}
+	[scanner scanUpToString:@" " intoString:&crap];
+	[scanner scanUpToString:@" " intoString:&crap];
+	[scanner scanUpToString:@" " intoString:&crap];
+	[scanner setScanLocation:[scanner scanLocation]+1];
+	[scanner scanUpToString:@"\r\n" intoString:&crap];
 	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
 	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
@@ -364,16 +385,12 @@ static NSMutableString *data = nil;
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSScanner *scanner = [[NSScanner alloc] initWithString:servInfos];
 	NSString *crap;
-	@try {
-		[scanner scanUpToString:@" " intoString:&crap];
-		[scanner scanUpToString:@" " intoString:&crap];
-		[scanner scanUpToString:@" " intoString:&crap];
-		[scanner setScanLocation:[scanner scanLocation]+1];
-		[scanner scanUpToString:@"\r\n" intoString:&crap];
-	}
-	@catch (NSException *exception) {
-		NSLog(@"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF %s", (char *)_cmd);
-	}
+	[scanner scanUpToString:@" " intoString:&crap];
+	[scanner scanUpToString:@" " intoString:&crap];
+	[scanner scanUpToString:@" " intoString:&crap];
+	[scanner setScanLocation:[scanner scanLocation]+1];
+	[scanner scanUpToString:@"\r\n" intoString:&crap];
+
 	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
 	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
@@ -386,16 +403,11 @@ static NSMutableString *data = nil;
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSScanner *scanner = [[NSScanner alloc] initWithString:othrInfo];
 	NSString *crap;
-	@try {
-		[scanner scanUpToString:@" " intoString:&crap];
-		[scanner scanUpToString:@" " intoString:&crap];
-		[scanner scanUpToString:@" " intoString:&crap];
-		[scanner setScanLocation:[scanner scanLocation]+1];
-		[scanner scanUpToString:@"\r\n" intoString:&crap];
-	}
-	@catch (NSException *exception) {
-		NSLog(@"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF %s", (char *)_cmd);
-	}
+	[scanner scanUpToString:@" " intoString:&crap];
+	[scanner scanUpToString:@" " intoString:&crap];
+	[scanner scanUpToString:@" " intoString:&crap];
+	[scanner setScanLocation:[scanner scanLocation]+1];
+	[scanner scanUpToString:@"\r\n" intoString:&crap];
 	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
 	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
@@ -405,6 +417,38 @@ static NSMutableString *data = nil;
 }
 
 - (void)handle005:(NSString *)useInfo {
+	NSScanner *scanr = [[NSScanner alloc] initWithString:useInfo];
+	NSString *crap;
+	NSString *args;
+	[scanr scanUpToString:@" " intoString:&crap];
+	[scanr scanUpToString:@" " intoString:&crap];
+	[scanr scanUpToString:@" " intoString:&crap];
+	[scanr scanUpToString:@" " intoString:&args];
+	NSArray *argsArray = [args componentsSeparatedByString:@" "];
+	NSLog(@"Meh. %@", argsArray);
+	for (NSString *arg in argsArray) {
+		if ([arg hasPrefix:@"TOPICLEN"]) {
+		}
+		else if ([arg hasPrefix:@"STATUSMSG"]) {
+			maxStatusLength = [[arg substringFromIndex:[@"STATUSMSG" length]] intValue];
+		}
+		else if ([arg hasPrefix:@"CHANTYPES"]) {
+			
+		}
+		else if ([arg hasPrefix:@"PREFIX"]) {
+			NSScanner *scanr = [[NSScanner alloc] initWithString:arg];
+			NSString *crap;
+			NSString *mds;
+			[scanr scanUpToString:@")" intoString:&crap];
+			[scanr scanUpToString:@"" intoString:&mds];
+			[scanr release];
+			self.userModes = mds;
+		}
+		else {
+			NSLog(@"NO SUPPORT FOR %@ YET. :/", arg);
+		}	
+	}
+	[scanr release];
 	// Relay[2794:f803] MSG: :fr.ac3xx.com 005 _m WALLCHOPS WATCH=128 WATCHOPTS=A SILENCE=15 MODES=12 CHANTYPES=# PREFIX=(qaohv)~&@%+ CHANMODES=beI,kfL,lj,psmntirRcOAQKVCuzNSMTGZ NETWORK=ROXnet CASEMAPPING=ascii EXTBAN=~,qjncrR ELIST=MNUCT STATUSMSG=~&@%+ :are supported by this server
 }
 
@@ -499,9 +543,9 @@ static NSMutableString *data = nil;
 	NSLog(@"Implying this is a znc.");
 	NSLog(@"YAY I'M NO LONGER AWAY.");
 	if ([[[[[RCNavigator sharedNavigator] currentPanel] channel] delegate] isEqual:self]) {
-		[[[RCNavigator sharedNavigator] currentPanel] postMessage:@"You are no longer being marked as away" withFlavor:RCMessageFlavorTopic highlight:nil];
-		
+		[[[RCNavigator sharedNavigator] currentPanel] postMessage:@"You are no longer being marked as away" withFlavor:RCMessageFlavorTopic	highlight:NO];
 	}
+
 }
 
 - (void)handle306:(NSString *)znc {
@@ -529,8 +573,31 @@ static NSMutableString *data = nil;
 	// :irc.saurik.com 333 _m #bacon Bacon!~S_S@adsl-184-33-54-96.mia.bellsouth.net 1329680840
 }
 
-- (void)handle353:(NSString *)users {
-	// add users to room listing..
+- (void)handle353:(NSString *)_users {
+
+	NSScanner *scanner = [[NSScanner alloc] initWithString:_users];
+	NSString *crap;
+	NSString *me;
+	NSString *room;
+	NSString *users;
+	[scanner scanUpToString:@" " intoString:&crap];
+	[scanner scanUpToString:@" " intoString:&crap];
+	[scanner scanUpToString:@" " intoString:&me];
+	[scanner scanUpToString:@" " intoString:&crap];
+	[scanner scanUpToString:@" " intoString:&room];
+	[scanner scanUpToString:@"\r\n" intoString:&users];
+	if ([users length] > 1) {
+		users = [users substringFromIndex:1];
+		NSArray *_someUsers = [users componentsSeparatedByString:@" "];
+		RCChannel *chan = [_channels objectForKey:room];
+		if (chan) {
+			for (NSString *user in _someUsers) {
+				[chan setUserJoined:user];
+			}
+		}
+	}
+	[scanner release];
+//	add users to room listing..
 }
 - (void)handle366:(NSString *)end {
 	// end of /NAMES list
@@ -616,11 +683,32 @@ static NSMutableString *data = nil;
 	[_scans scanUpToString:@" " intoString:&from];
 	[_scans scanUpToString:@" " intoString:&cmd];
 	[_scans scanUpToString:@" " intoString:&to];
+	if ([to isEqualToStringNoCase:@"Auth"]) {
+		[_scans release];
+		[p drain];
+		return;
+	}
+	[self parseUsermask:from nick:&from user:nil hostmask:nil];
 	[_scans scanUpToString:@"\r\n" intoString:&msg];
 	if ([nick isEqualToString:useNick]) {
 		msg = [msg substringFromIndex:1];
-		
 	}
+	from = [from substringFromIndex:1];
+	if ([[RCNavigator sharedNavigator] currentPanel]) {
+		if ([[[[[RCNavigator sharedNavigator] currentPanel] channel] delegate] isEqual:self]) {
+			[[[[RCNavigator sharedNavigator] currentPanel] channel] recievedMessage:msg from:from type:RCMessageTypeNotice];
+		}
+		else {
+			goto end;
+		}
+	}
+	else {
+	end:{
+		RCChannel *chan = [_channels objectForKey:@"IRC"];
+		[chan recievedMessage:msg from:from type:RCMessageTypeNotice];
+	}
+	}
+	
 	[_scans release];
 	[p drain];
 	//:Hackintech!Hackintech@2FD03E27.3D6CB32E.E0E5D6BD.IP NOTICE __m__ :HI
@@ -678,7 +766,9 @@ static NSMutableString *data = nil;
 }
 
 - (void)handleKICK:(NSString *)aKick {
-	
+	// [NSString stringWithFormat:@"%@ %@", from, msg]
+	// sending the from, must be User kicked user, and msg must be the reason, 
+	// so [chann recievedEvent:RCEventTypeKickBlah from:[NSString stringWithFormat:@"user kicked user", arg1, arg1] message:reason];
 }
 
 - (void)handleNICK:(NSString *)nickChange {
@@ -772,11 +862,47 @@ static NSMutableString *data = nil;
 }
 
 - (void)handleQUIT:(NSString *)quitter {
-
+	NSScanner *scannr = [[NSScanner alloc] initWithString:quitter];
+	NSString *fullHost;
+	NSString *user;
+	NSString *cmd;
+	NSString *msg;
+	[scannr scanUpToString:@" " intoString:&fullHost];
+	[scannr scanUpToString:@" " intoString:&cmd];
+	[scannr scanUpToString:@"\r\n" intoString:&msg];
+	fullHost = [fullHost substringFromIndex:1];
+	if ([msg length] > 1) {
+		msg = [msg substringFromIndex:1];
+	}
+	[self parseUsermask:fullHost nick:&user user:nil hostmask:nil];
+	for (NSString *channel in channels) {
+		RCChannel *chan = [_channels objectForKey:channel];
+		[chan recievedEvent:RCEventTypeQuit from:user message:msg];
+	}
+	[scannr release];
 }
 
-- (void)handleMODE:(NSString *)modes {
-	NSLog(@"MODE : %@", modes);
+- (void)handleMODE:(NSString *)_modes {
+	_modes = [_modes substringFromIndex:1];
+	NSScanner *scanr = [[NSScanner alloc] initWithString:_modes];
+	NSString *settr;
+	NSString *cmd;
+	NSString *room;
+	NSString *modes;
+	NSString *user;
+	[scanr scanUpToString:@" " intoString:&settr];
+	[scanr scanUpToString:@" " intoString:&cmd];
+	[scanr scanUpToString:@" " intoString:&room];
+	[scanr scanUpToString:@" " intoString:&modes];
+	[scanr scanUpToString:@"\r\n" intoString:&user];
+	[self parseUsermask:settr nick:&settr user:nil hostmask:nil];
+	RCChannel *chan = [_channels objectForKey:room];
+	if (chan) {
+		[chan recievedEvent:RCEventTypeMode from:settr message:[NSString stringWithFormat:@"sets mode %@ %@", modes, user]];
+		[chan setMode:modes forUser:user];
+		
+	}
+	[_modes release];
 	// Relay[2626:f803] MSG: :ac3xx!ac3xx@rox-103C7229.ac3xx.com MODE #chat +o _m
 }
 

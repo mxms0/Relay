@@ -135,8 +135,9 @@
 			[self removeAttribute:(NSString *)kCTFontAttributeName range:fontRange]; // Work around for Apple leak
 			[self addAttribute:(NSString *)kCTFontAttributeName value:(id)newFont range:fontRange];
 			CFRelease(newFont);
-		} else {
-			NSString* fontName = [(NSString *)CTFontCopyFullName(currentFont) autorelease];
+		}
+		else {
+			NSString *fontName = [(NSString *)CTFontCopyFullName(currentFont) autorelease];
 			NSLog(@"[OHAttributedLabel] Warning: can't find a bold font variant for font %@. Try another font family (like Helvetica) instead.",fontName);
 		}
 		////[self removeAttribute:(NSString *)kCTFontWeightTrait range:fontRange]; // Work around for Apple leak
@@ -144,7 +145,7 @@
 		
 		// If the fontRange was not covering the whole range, continue with next run
 		startPoint = NSMaxRange(effectiveRange);
-	} while(startPoint<NSMaxRange(range));
+	} while (startPoint < NSMaxRange(range));
 }
 
 - (void)setTextAlignment:(CTTextAlignment)alignment lineBreakMode:(CTLineBreakMode)lineBreakMode {

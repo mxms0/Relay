@@ -12,6 +12,7 @@
 	BOOL _selected;
 	BOOL hasNew;
 	BOOL _highlighted;
+	id delegate;
 }
 @property (nonatomic, readonly) BOOL _selected;
 @property (nonatomic, assign) BOOL _highlighted;

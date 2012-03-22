@@ -12,23 +12,18 @@
 @implementation RCChatCell
 @synthesize textLabel, message;
 
-CTFontRef CTFontCreateFromUIFont(UIFont *font) {
-	CTFontRef ctFont = CTFontCreateWithName((CFStringRef)font.fontName, font.pointSize, NULL);
-	return ctFont;
-}
-
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
 		self.textLabel = [[OHAttributedLabel alloc] init];
 		[self setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
 		self.textLabel.font = [UIFont boldSystemFontOfSize:12];
-		self.textLabel.extendBottomToFit = YES;
 		self.textLabel.backgroundColor = [UIColor clearColor];
-		self.backgroundColor = [UIColor whiteColor];
+	//	self.backgroundColor = [UIColor whiteColor];
 		[self setSelectionStyle:UITableViewCellSelectionStyleNone];
 		[self.textLabel setAutomaticallyAddLinksForType:NSTextCheckingAllTypes];
 		[self.textLabel setLinkColor:UIColorFromRGB(0x4F94EA)];
 		[self.textLabel setUnderlineLinks:NO];
+		[self.textLabel setExtendBottomToFit:YES];
 		[self.textLabel setShadowColor:[UIColor whiteColor]];
 		[self.textLabel setShadowOffset:CGSizeMake(0, 1)];
 		[self addSubview:self.textLabel];
@@ -39,18 +34,16 @@ CTFontRef CTFontCreateFromUIFont(UIFont *font) {
 
 - (void)_textHasBeenSet {
 	self.textLabel.text = [message message];
-	RCMessageFlavor flavor = [message flavor];
+	currentFlavor = [message flavor];
 	NSMutableAttributedString *attr = [[NSMutableAttributedString alloc] initWithString:self.textLabel.text];
-	[attr setTextColor:[UIColor blackColor]];
 	[attr setFont:[UIFont fontWithName:@"Helvetica" size:12]];
 	[attr setTextColor:UIColorFromRGB(0x3F4040)];
-	self.backgroundColor = [UIColor whiteColor];
 	@autoreleasepool {
 		UIImage *bg = [UIImage imageNamed:@"0_chatcell"];
 		[self.contentView setBackgroundColor:[UIColor colorWithPatternImage:bg]];
 		[self setNeedsDisplay];
 	}
-	switch (flavor) {
+	switch (currentFlavor) {
 		case RCMessageFlavorAction:
 			[attr setTextIsUnderlined:NO range:NSMakeRange(0, self.textLabel.text.length)];
 			[attr setTextBold:YES range:NSMakeRange(0, self.textLabel.text.length)];
@@ -58,13 +51,13 @@ CTFontRef CTFontCreateFromUIFont(UIFont *font) {
 			break;
 		case RCMessageFlavorNormal:
 			if ([message highlight]) {
-				[attr setTextColor:UIColorFromRGB(0x4F94EA) range:[[self.textLabel.text lowercaseString] rangeOfString:[[message highlight] lowercaseString]]];
+				[attr setTextColor:[UIColor redColor]];
 			}
 			[attr setTextBold:YES range:NSMakeRange(0, [self.textLabel.text rangeOfString:@":"].location)];
 			break;
 		case RCMessageFlavorNotice:
 			[attr setTextBold:YES range:NSMakeRange(0, self.textLabel.text.length)];
-			self.backgroundColor = [UIColor redColor];
+			// do something.
 			break;
 		case RCMessageFlavorTopic:
 			[attr setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeWordWrap)];
@@ -90,8 +83,9 @@ CTFontRef CTFontCreateFromUIFont(UIFont *font) {
 	[attr release];
 	height = [self calculateHeightForLabel];
 	if (height > 15) {
+		int layr = height/15;
 		@autoreleasepool {
-			UIImage *bg = [UIImage imageNamed:@"0_chatcell_2"];
+			UIImage *bg = [UIImage imageNamed:[NSString stringWithFormat:@"0_chatcell_%d", (int)layr]];
 			[self.contentView setBackgroundColor:[UIColor colorWithPatternImage:bg]];
 			[self setNeedsDisplay];
 		}

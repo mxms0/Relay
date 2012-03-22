@@ -7,6 +7,7 @@
 //
 
 #import "RCChannelBubble.h"
+#import "RCNavigator.h"
 
 @implementation RCChannelBubble
 @synthesize _highlighted, _selected;
@@ -26,17 +27,33 @@
 - (void)setTitle:(NSString *)title forState:(UIControlState)state {
 	[super setTitle:title forState:state];
 	if (![title isEqualToString:@"IRC"]) {
+		delegate = [[self allTargets] anyObject];
 		UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(suicide:)];
 		[longPress setNumberOfTapsRequired:1];
 		[longPress setMinimumPressDuration:0.5];
 		[self addGestureRecognizer:longPress];
 		[longPress release];
+		if ([title hasPrefix:@"#"]) {
+			UILongPressGestureRecognizer *longHold = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(showUserList:)];
+			[longHold setNumberOfTapsRequired:0];
+			[longHold setMinimumPressDuration:0.5];
+			[self addGestureRecognizer:longHold];
+			[longHold release];
+		}
+	}
+}
+
+- (void)showUserList:(UIGestureRecognizer *)longHold {
+	if (delegate) {
+		[delegate tearDownForChannelList:self];
 	}
 }
 
 - (void)suicide:(UIGestureRecognizer *)suicidee {
-	if (suicidee.state == UIGestureRecognizerStateBegan) {
-		[[[self allTargets] anyObject] channelWantsSuicide:[suicidee view]];
+	if (delegate) {
+		if (suicidee.state == UIGestureRecognizerStateBegan) {
+			[[[self allTargets] anyObject] channelWantsSuicide:self];
+		}
 	}
 }
 

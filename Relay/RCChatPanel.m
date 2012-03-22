@@ -25,7 +25,8 @@
 		[tableView release];
 		[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 		messages = [[NSMutableArray alloc] init];
-
+		currentWord = [[NSMutableString alloc] init];
+		prev = @"";
 		_bar = [[UIView alloc] initWithFrame:CGRectMake(0, 343, 320, 40)];
 		[_bar setOpaque:NO];
 		[_bar setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"0_input"]]];
@@ -43,6 +44,9 @@
 		[field release];
 		[self addSubview:_bar];
 		[_bar release];
+		UISwipeGestureRecognizer *gesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(suggestNick:)];
+		[field addGestureRecognizer:gesture];
+		[gesture release];
 		id keyboardImpl = [NSClassFromString(@"UIKeyboardImpl") sharedInstance];
 		[keyboardImpl setAlpha:0.8];
 		UIImageView *_shadow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"0_shadow_t"]];
@@ -51,6 +55,28 @@
 		[_shadow release];
     }
     return self;
+}
+
+- (void)suggestNick:(UIGestureRecognizer *)gestr {
+	prev = [channel userWithPrefix:currentWord pastUser:prev];
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+	NSLog(@"Replacement.  [%@] [%@]", [textField.text substringWithRange:range], string);
+	NSLog(@"Bleh. %@", NSStringFromRange(range));	
+	if ([[textField.text substringWithRange:range] isEqualToString:@" "]) {
+		// currentWord = previous Word in sentance?!?!?! D:DSofhdsdgisufdsk
+		//	UITextRange *randr = [textField selectedTextRange];
+		//	NSRange rangeOfLastWord = [textField.text rangeOfString:@" " options:NSBackwardsSearch range:NSMakeRange(randr.end, textField.text.length-randr.end)];
+	}
+	if (![string isEqualToString:@" "] && ([string length] == 1)) {
+		if (range.length == 0) [currentWord appendString:string];
+		else [currentWord deleteCharactersInRange:range];
+	}
+	else {
+		[currentWord setString:@""];
+	}
+	return YES;
 }
 
 - (BOOL)becomeFirstResponder {
@@ -77,7 +103,7 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
 	if ([textField.text isEqualToString:@""] || textField.text == nil) return NO;
-	[channel userWouldLikeToPartakeInThisConversation:textField.text];
+	[channel performSelector:@selector(userWouldLikeToPartakeInThisConversation:) withObject:textField.text];
 	[textField setText:@""];
 	return NO;
 }
@@ -98,15 +124,23 @@
 		[_bar setFrame:CGRectMake(0, 343, 320, 40)];
 	}
 	[UIView commitAnimations];
-	[self.tableView setFrame:CGRectMake(0, 0,  320, _bar.frame.origin.y)];
+//	[self.tableView setFrame:CGRectMake(0, 0,  320, (key ? 383 : 343))];
+	[self.tableView setFrame:CGRectMake(0, 0, 320, (key ? 131 : 343))];
 	if (key) if ([messages count] != 0) [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+	if (key) {
+		if (self.tableView.contentSize.height > 129) {
+
+		}
+	}
+	else {
+	}
 }
 
-- (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor highlight:(NSString *)high {
+- (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor highlight:(BOOL)high {
 	[self postMessage:_message withFlavor:flavor highlight:high isMine:NO];
 }
 
-- (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor highlight:(NSString *)high isMine:(BOOL)mine {
+- (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor highlight:(BOOL)high isMine:(BOOL)mine {
 	RCMessage *message = [[RCMessage alloc] init];
 	[message setMessage:_message];
 	[message setFlavor:flavor];
@@ -182,6 +216,7 @@
 }
 
 - (void)dealloc {
+	[currentWord release];
 	[messages release];
 	[super dealloc];
 }

@@ -44,7 +44,7 @@
 	for (RCChannelBubble *bb in channels) {
 		UIView *sub = nil;
 		if ([[self subviews] count] != 0) sub = [[self subviews] objectAtIndex:[[self subviews] count]-1];
-		[bb setFrame:CGRectMake((sub ? sub.frame.size.width+sub.frame.origin.x+10 : 10), 7, bb.frame.size.width, 20)];
+		[bb setFrame:CGRectMake((sub ? sub.frame.size.width+sub.frame.origin.x+2 : 10), 7, bb.frame.size.width, 20)];
 		[self addSubview:bb];
 	}
 	[self fixLayout];

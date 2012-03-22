@@ -8,8 +8,13 @@
 	<string>${PRODUCT_NAME}</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
-	<key>CFBundleIconFiles</key>
-	<array/>
+	<key>UIPrerenderedIcon</key>
+	<true/>
+	<key>Icon files</key>
+	<array>
+		<string>Icon.png</string>
+		<string>Icon@2x.png</string>
+	</array>
 	<key>CFBundleIdentifier</key>
 	<string>us.mxms.${PRODUCT_NAME:rfc1034identifier}</string>
 	<key>CFBundleInfoDictionaryVersion</key>
