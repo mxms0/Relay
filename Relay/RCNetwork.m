@@ -178,8 +178,7 @@ static NSMutableString *data = nil;
 				[self recievedMessage:send];
 				[send release];
 				send = nil;
-				[data deleteCharactersInRange:NSMakeRange(0, [data rangeOfString:@"\r\n"].location+2)];
-				
+				[data deleteCharactersInRange:NSMakeRange(0, [data rangeOfString:@"\r\n"].location+2)];	
 			}
 			return;
 		case NSStreamEventHasSpaceAvailable: // 4

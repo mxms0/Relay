@@ -224,7 +224,7 @@
 - (BOOL)textFieldShouldReturn:(RCTextField *)textField {
 	//	[textField resignFirstResponder];
 	if ([textField tag] == 2) 
-		if ([[textField text] length] > 2)
+		if ([[textField text] length] > 0)
 			self.navigationItem.rightBarButtonItem.enabled = YES;
 	[[[self tableView] viewWithTag:textField.tag+1] becomeFirstResponder];
 	[[self tableView] scrollToRowAtIndexPath:[self.tableView indexPathForCell:(UITableViewCell *)[textField superview]] atScrollPosition:UITableViewScrollPositionTop animated:YES];
