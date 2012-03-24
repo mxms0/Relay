@@ -13,10 +13,12 @@
 	BOOL hasNew;
 	BOOL _highlighted;
 	id delegate;
+	int _index;
 }
 @property (nonatomic, readonly) BOOL _selected;
 @property (nonatomic, assign) BOOL _highlighted;
 - (void)setMentioned:(BOOL)mentioned;
 - (void)setHasNewMessage:(BOOL)msgs;
 - (void)_setSelected:(BOOL)_selected;
+- (void)_classify:(int)f;
 @end

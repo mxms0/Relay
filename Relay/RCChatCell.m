@@ -53,7 +53,9 @@
 			if ([message highlight]) {
 				[attr setTextColor:[UIColor redColor]];
 			}
-			[attr setTextBold:YES range:NSMakeRange(0, [self.textLabel.text rangeOfString:@":"].location)];
+			NSRange p = [self.textLabel.text rangeOfString:@"]"];
+			NSRange r = [self.textLabel.text rangeOfString:@":" options:0 range:NSMakeRange(p.location, self.textLabel.text.length-p.location)];
+			[attr setTextBold:YES range:NSMakeRange(0, r.location)];
 			break;
 		case RCMessageFlavorNotice:
 			[attr setTextBold:YES range:NSMakeRange(0, self.textLabel.text.length)];
@@ -77,7 +79,7 @@
 			break;
 	}
 	if ([message isMine]) {
-		[attr setTextColor:UIColorFromRGB(0xA1B1BC)];
+		[attr setTextColor:UIColorFromRGB(0x84929B)];
 	}
 	[self.textLabel setAttributedText:attr];
 	[attr release];

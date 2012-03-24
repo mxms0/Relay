@@ -129,7 +129,7 @@
 	[oStream setDelegate:self];
 	if ([iStream streamStatus] == NSStreamStatusNotOpen) [iStream open];
 	if ([oStream streamStatus] == NSStreamStatusNotOpen) [oStream open];
-	
+	_thread = [NSThread currentThread];
 	if (useSSL) {
 		[iStream setProperty:NSStreamSocketSecurityLevelNegotiatedSSL forKey:NSStreamSocketSecurityLevelKey];
 		[oStream setProperty:NSStreamSocketSecurityLevelNegotiatedSSL forKey:NSStreamSocketSecurityLevelKey];
@@ -226,7 +226,7 @@ static NSMutableString *data = nil;
 
 - (void)errorOccured:(NSError *)error {
 	NSLog(@"Error: %@", [error localizedDescription]);
-	[TestFlight submitFeedback:[error localizedDescription]];
+//	[TestFlight submitFeedback:[error localizedDescription]];
 }
 
 - (void)recievedMessage:(NSString *)msg {

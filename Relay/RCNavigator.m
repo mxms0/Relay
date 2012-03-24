@@ -19,15 +19,35 @@ static id _sharedNavigator = nil;
 	return [self initWithFrame:CGRectMake(0, 0, screenWidth.width, screenWidth.height)];
 }
 
+- (void)setMentioned:(BOOL)m forIndex:(int)_index {
+	if (m) {
+		NSLog(@"Meh. %d:%d", _index, currentIndex);
+	}	
+}
+
+- (void)setHasNewMessagesYay:(BOOL)yay forIndex:(int)_index {
+	if (yay) {
+		NSLog(@"Meh. %d:%d", _index, currentIndex);
+	}	
+}
+
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
 		isFirstSetup = -1;
-
+		manager = [[RCBarManager alloc] init];
+		RCBarGroup *group = [manager leftGroup];
+		[group setFrame:CGRectMake(10, 7, 15, 29)];
+		[self addSubview:group];
+		[group release];
+		group = [manager rightGroup];
+		[group setFrame:CGRectMake(290, 7, 15, 29)];
+		[self addSubview:group];
+		[group release];
 		netCount = 0;
 		draggingNets = NO;
 		draggingChans = NO;
 		rooms = [[NSMutableArray alloc] init];
-		bar = [[RCNavigationBar alloc] initWithFrame:CGRectMake(30, 0, frame.size.width-60, 45)];
+		bar = [[RCNavigationBar alloc] initWithFrame:CGRectMake(60, 0, 200, 45)];
 		bar.tag = 100;
 		stupidLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, -50, bar.frame.size.width, bar.frame.size.height)];
 		stupidLabel.font = [UIFont systemFontOfSize:11];
@@ -81,7 +101,7 @@ static id _sharedNavigator = nil;
 
 	netCount++;
 	[net setIndex:netCount-1];
-	RCTitleLabel *_label = [[RCTitleLabel alloc] initWithFrame:CGRectMake(netCount*260-bar.frame.size.width, 0, bar.frame.size.width, bar.frame.size.height)];
+	RCTitleLabel *_label = [[RCTitleLabel alloc] initWithFrame:CGRectMake(netCount*200-bar.frame.size.width, 0, bar.frame.size.width, bar.frame.size.height)];
 	[_label setBackgroundColor:[UIColor clearColor]];
 	[_label setHidden:NO];
 	[_label setText:[net _description]];
@@ -92,15 +112,21 @@ static id _sharedNavigator = nil;
 		[gesture setNumberOfTapsRequired:0];
 		[_label addGestureRecognizer:gesture];
 		[gesture release];
+		UITapGestureRecognizer *dble = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showNetworkPopover:)];
+		[dble setNumberOfTapsRequired:2];
+		[dble setNumberOfTouchesRequired:1];
+		[_label addGestureRecognizer:dble];
+		[dble release];
 	}
 	[bar addSubview:_label];
 	[_label release];
-	[bar setContentSize:CGSizeMake((netCount*260) + 0.5, 50)];
+	[bar setContentSize:CGSizeMake((netCount * 200) + 0.5, 50)];
 	
 	NSMutableArray *tmp = [[NSMutableArray alloc] init];
 	for (NSString *chan in [net channels]) {
 		RCChannelBubble *bubble = [self channelBubbleWithChannelName:chan];
 		[[[net _channels] objectForKey:chan] setBubble:bubble];
+		[bubble _classify:net.index];
 		[tmp addObject:bubble];
 		[bubble release];
 	}
@@ -110,6 +136,10 @@ static id _sharedNavigator = nil;
 		[self scrollViewDidEndDecelerating:nil];
 	}
 	[tmp release];
+}
+
+- (void)showNetworkPopover:(UIGestureRecognizer *)gerk {
+	
 }
 
 static UILabel *active = nil;
@@ -130,12 +160,12 @@ static UILabel *active = nil;
 		[rooms removeObjectAtIndex:currentIndex];
 		for (RCTitleLabel *label in [bar subviews]) {
 			if (label.frame.origin.x > active.frame.origin.x) {
-				[label setFrame:CGRectMake(label.frame.origin.x-260, label.frame.origin.y, label.frame.size.width, label.frame.size.height)];
+				[label setFrame:CGRectMake(label.frame.origin.x-200, label.frame.origin.y, label.frame.size.width, label.frame.size.height)];
 			}
 		}
 		netCount--;
 		currentIndex--;
-		[bar setContentSize:CGSizeMake((netCount * 260) + 0.5, 50)];
+		[bar setContentSize:CGSizeMake((netCount * 200) + 0.5, 50)];
 		RCNetwork *removr = [[RCNetworkManager sharedNetworkManager] networkWithDescription:active.text];
 		[[RCNetworkManager sharedNetworkManager] removeNet:removr];
 		[[RCNetworkManager sharedNetworkManager] saveNetworks];
@@ -186,6 +216,7 @@ static UILabel *active = nil;
 	RCChannelBubble *bubble = [self channelBubbleWithChannelName:room];
 	[[[useNet _channels] objectForKey:room] setBubble:bubble];
 	[[rooms objectAtIndex:index] addObject:bubble];
+	[bubble _classify:useNet.index];
 	[bubble release];
 	[scrollBar layoutChannels:[rooms objectAtIndex:index]];
 }
@@ -299,12 +330,12 @@ static BOOL isShowing = NO;
 	if (scrollView.tag == 100) {
 		if ([[scrollView subviews] count] > 1) {
 			unsigned int netLoc;
-			if (scrollView.contentOffset.x != 0) netLoc = scrollView.contentOffset.x/260;
+			if (scrollView.contentOffset.x != 0) netLoc = scrollView.contentOffset.x/200;
 			else netLoc = 0;
 			if (netLoc != currentIndex) currentIndex = netLoc;
 			else return;
 			[scrollBar layoutChannels:[rooms objectAtIndex:netLoc]];
-			[stupidLabel setFrame:CGRectMake(currentIndex*260, stupidLabel.frame.origin.y, stupidLabel.frame.size.width, stupidLabel.frame.size.height)];
+			[stupidLabel setFrame:CGRectMake(currentIndex*200, stupidLabel.frame.origin.y, stupidLabel.frame.size.width, stupidLabel.frame.size.height)];
 		}
 	}
 	else {

@@ -13,6 +13,7 @@
 #import "RCChannelScrollView.h"
 #import "RCChannelBubble.h"
 #import "RCChannel.h"
+#import "RCBarManager.h"
 #import "RCUserListPanel.h"
 
 @interface RCNavigator : UIView <UIScrollViewDelegate, UIAlertViewDelegate, UIActionSheetDelegate> {
@@ -20,6 +21,7 @@
 	RCChannelScrollView *scrollBar;
 	RCChatPanel *currentPanel;
 	RCUserListPanel *memberPanel;
+	RCBarManager *manager;
 	UILabel *stupidLabel;
 	NSMutableArray *rooms;
 	BOOL draggingNets;
@@ -36,5 +38,7 @@
 - (void)removeChannel:(RCChannel *)room toServerAtIndex:(int)index;
 - (void)channelSelected:(RCChannelBubble *)bubble;
 - (void)tearDownForChannelList:(RCChannelBubble *)bubble;
+- (void)setMentioned:(BOOL)m forIndex:(int)_index;
+- (void)setHasNewMessagesYay:(BOOL)yay forIndex:(int)_index;
 - (RCChannelBubble *)channelBubbleWithChannelName:(NSString *)name;
 @end

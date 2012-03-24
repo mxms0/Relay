@@ -19,7 +19,8 @@
 		self.tableView = [[RCTableView alloc] initWithFrame:CGRectMake(0, 0, 320, 385) style:style];
 		self.tableView.delegate = self;
 		self.tableView.dataSource = self;
-		
+		sendThread = [[NSThread alloc] init];
+		[sendThread start];
 		[self.tableView setBackgroundColor:[UIColor clearColor]];
 		[self addSubview:tableView];
 		[tableView release];
@@ -34,7 +35,10 @@
 		[field setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
 		[field setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
 		[field setBorderStyle:UITextBorderStyleNone];
-		[field setKeyboardAppearance:UIKeyboardAppearanceAlert];
+#if USE_PRIVATE
+		[field setInsertionPointColor:UIColorFromRGB(0x4F94EA)];
+#endif
+		[field setKeyboardAppearance:UIKeyboardAppearanceDefault];
 		[field setReturnKeyType:UIReturnKeySend];
 		[field setFont:[UIFont fontWithName:@"Helvetica" size:12]];
 		[field setMinimumFontSize:17];
@@ -47,8 +51,6 @@
 		UISwipeGestureRecognizer *gesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(suggestNick:)];
 		[field addGestureRecognizer:gesture];
 		[gesture release];
-		id keyboardImpl = [NSClassFromString(@"UIKeyboardImpl") sharedInstance];
-		[keyboardImpl setAlpha:0.8];
 		UIImageView *_shadow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"0_shadow_t"]];
 		[_shadow setFrame:CGRectMake(0, 0, 320, 7)];
 		[self addSubview:_shadow];
@@ -62,20 +64,20 @@
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-	NSLog(@"Replacement.  [%@] [%@]", [textField.text substringWithRange:range], string);
-	NSLog(@"Bleh. %@", NSStringFromRange(range));	
-	if ([[textField.text substringWithRange:range] isEqualToString:@" "]) {
+//	NSLog(@"Replacement.  [%@] [%@]", [textField.text substringWithRange:range], string);
+//	NSLog(@"Bleh. %@", NSStringFromRange(range));	
+//	if ([[textField.text substringWithRange:range] isEqualToString:@" "]) {
 		// currentWord = previous Word in sentance?!?!?! D:DSofhdsdgisufdsk
 		//	UITextRange *randr = [textField selectedTextRange];
 		//	NSRange rangeOfLastWord = [textField.text rangeOfString:@" " options:NSBackwardsSearch range:NSMakeRange(randr.end, textField.text.length-randr.end)];
-	}
-	if (![string isEqualToString:@" "] && ([string length] == 1)) {
-		if (range.length == 0) [currentWord appendString:string];
-		else [currentWord deleteCharactersInRange:range];
-	}
-	else {
-		[currentWord setString:@""];
-	}
+//	}
+//	if (![string isEqualToString:@" "] && ([string length] == 1)) {
+//		if (range.length == 0) [currentWord appendString:string];
+//		else [currentWord deleteCharactersInRange:range];
+//	}
+//	else {
+//		[currentWord setString:@""];
+//	}
 	return YES;
 }
 
@@ -103,9 +105,13 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
 	if ([textField.text isEqualToString:@""] || textField.text == nil) return NO;
-	[channel performSelector:@selector(userWouldLikeToPartakeInThisConversation:) withObject:textField.text];
+	[self performSelectorInBackground:@selector(__reallySend:) withObject:textField.text];
 	[textField setText:@""];
 	return NO;
+}
+
+- (void)__reallySend:(NSString *)msg {
+	[channel performSelectorOnMainThread:@selector(userWouldLikeToPartakeInThisConversation:) withObject:msg waitUntilDone:NO];
 }
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
@@ -124,8 +130,7 @@
 		[_bar setFrame:CGRectMake(0, 343, 320, 40)];
 	}
 	[UIView commitAnimations];
-//	[self.tableView setFrame:CGRectMake(0, 0,  320, (key ? 383 : 343))];
-	[self.tableView setFrame:CGRectMake(0, 0, 320, (key ? 131 : 343))];
+	[self.tableView setFrame:CGRectMake(0, 0, 320, (key ? 129 : 343))];
 	if (key) if ([messages count] != 0) [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 	if (key) {
 		if (self.tableView.contentSize.height > 129) {
@@ -196,11 +201,6 @@
 	RCMessage *_message = [messages objectAtIndex:indexPath.row];
 	[cell setMessage:_message];
 	[cell _textHasBeenSet];
-//	NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-//	dateFormatter.dateStyle = NSDateFormatterNoStyle;
-//	dateFormatter.timeStyle = NSDateFormatterShortStyle;
-//	NSString *timestamp = [dateFormatter stringFromDate:[NSDate date]];
-//	NSLog(@"Hai. %@", timestamp);
     return cell;
 }
 

@@ -167,14 +167,22 @@ UIImage *RCImageForRank(NSString *rank) {
 	message = [message stringByReplacingOccurrencesOfString:@"\t" withString:@""];
 	RCMessageFlavor flavor;
 	NSString *msg = @"";
+	NSString *time = @"";
+	NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+	dateFormatter.dateStyle = NSDateFormatterNoStyle;
+	dateFormatter.PMSymbol = @"";
+	dateFormatter.AMSymbol = @"";
+	dateFormatter.timeStyle = NSDateFormatterShortStyle;
+	time = [dateFormatter stringFromDate:[NSDate date]];
+	time = [time substringToIndex:time.length-1];
 	switch (type) {
 		case RCMessageTypeAction:
-			msg = [[NSString stringWithFormat:@"\u2022 %@ %@", from, message] copy];
+			msg = [[NSString stringWithFormat:@"[%@] \u2022 %@ %@", time, from, message] copy];
 			flavor = RCMessageTypeAction;
 			break;
 		case RCMessageTypeNormal:
 			if (![from isEqualToString:@""]) {
-				msg = [[NSString stringWithFormat:@"%@: %@", from, message] copy];
+				msg = [[NSString stringWithFormat:@"[%@] %@: %@", time, from, message] copy];
 				flavor = RCMessageFlavorNormal;
 			}
 			else {
@@ -184,7 +192,6 @@ UIImage *RCImageForRank(NSString *rank) {
 			break;
 		case RCMessageTypeNotice:
 			flavor = RCMessageFlavorNotice;
-			NSLog(@"ARGS. %@ %@", from, message);
 			msg = [[NSString stringWithFormat:@"-%@- %@", from, message] copy];
 			break;
 	}
@@ -192,6 +199,7 @@ UIImage *RCImageForRank(NSString *rank) {
 	if (flavor != RCMessageFlavorNormalE && flavor != RCMessageFlavorNotice) isHighlight =  ([message rangeOfString:[delegate useNick] options:NSCaseInsensitiveSearch].location != NSNotFound);
 	[panel postMessage:msg withFlavor:flavor highlight:isHighlight isMine:([from isEqualToString:[delegate useNick]])];
 	[self shouldPost:isHighlight withMessage:msg];
+	[dateFormatter release];
 	[msg release];
 	[p drain];
 	return;
@@ -245,7 +253,7 @@ UIImage *RCImageForRank(NSString *rank) {
 - (void)setMode:(NSString *)modes forUser:(NSString *)user {
 	// clean this up. :P
 	if (([user rangeOfString:@"+"].location != NSNotFound) && ([user rangeOfString:@"-"].location != NSNotFound)) {
-		[TestFlight submitFeedback:[NSString stringWithFormat:@"Meh. %@ %@", user, modes]];
+	//	[TestFlight submitFeedback:[NSString stringWithFormat:@"Meh. %@ %@", user, modes]];
 	//	NSRange plus = [user rangeOfString:@"+"];
 	//	NSRange minus = [user rangeOfString:@"-"];
 	//	if (plus.location > minus.location) {
@@ -309,29 +317,8 @@ UIImage *RCImageForRank(NSString *rank) {
 	@autoreleasepool {
 		if (message) {
 			if ([message hasPrefix:@"/"]) {
-				NSString *_tmp = [message substringFromIndex:1];
-				NSScanner *scanner = [[NSScanner alloc] initWithString:_tmp];
-				NSString *command = @"_";
-				NSString *argument1 = command;
-				NSString *argument2 = argument1;
-				[scanner scanUpToString:@" " intoString:&command];
-				[scanner scanUpToString:@" " intoString:&argument1];
-				argument2 = [_tmp substringFromIndex:[scanner scanLocation]];
-				if ([command isEqualToStringNoCase:@"privmsg"] || [command isEqualToStringNoCase:@"query"] || [command isEqualToStringNoCase:@"msg"]) {
-					[delegate addChannel:argument1 join:YES];
-					if ([command isEqualToStringNoCase:@"query"] || [command isEqualToStringNoCase:@"msg"]) {
-						command = @"privmsg";
-					}
-				}
-				else if ([command isEqualToStringNoCase:@"topic"]) {
-					if ([message isEqualToStringNoCase:@"/topic"]) {
-						[panel postMessage:topic withFlavor:RCMessageFlavorTopic highlight:NO];
-						[scanner release];
-						return;
-					}
-				}
-				[scanner release];
-				[delegate sendMessage:[message substringFromIndex:1]];
+				[self parseAndHandleSlashCommand:[message substringFromIndex:1]];
+				return;
 			}
 			else {
 				NSString *send = [NSString stringWithFormat:@"PRIVMSG %@ :%@", channelName, message];
@@ -356,6 +343,40 @@ UIImage *RCImageForRank(NSString *rank) {
 			}
 		}
 	}
+}
+
+- (void)parseAndHandleSlashCommand:(NSString *)msg {
+	if ([msg hasPrefix:@"/"]) {
+		if ([delegate sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", channelName, msg]])
+			[self recievedMessage:msg from:[delegate useNick] type:RCMessageTypeNormal];
+		return;
+	}
+	NSScanner *scanr = [[NSScanner alloc] initWithString:msg];
+	NSString *cmd = @"";
+	NSString *args = cmd;
+	[scanr scanUpToString:@" " intoString:&cmd];
+	args = [msg substringWithRange:NSMakeRange([scanr scanLocation], msg.length-[scanr scanLocation])];
+	NSString *realCmd = [NSString stringWithFormat:@"handleSlash%@:", [cmd uppercaseString]];
+	SEL _pSEL = NSSelectorFromString(realCmd);
+	if ([self respondsToSelector:_pSEL]) [self performSelector:_pSEL withObject:args];
+	else {
+		NSLog(@"PRINT TO CONSOLE NO HANDLER");
+	}
+	
+	[scanr release];
+}
+
+- (void)handleSlashJOIN:(NSString *)join {
+	NSString *msg = [NSString stringWithFormat:@"JOIN %@", join];
+	[delegate sendMessage:msg];
+	
+}
+
+- (void)handleSlashME:(NSString *)cmd {
+	if ([cmd hasPrefix:@" "]) cmd = [cmd substringFromIndex:1];
+	NSString *msg = [NSString stringWithFormat:@"PRIVMSG %@ :%c%@ %@%c", channelName, 0x01, @"ACTION", cmd, 0x01];
+	[delegate sendMessage:msg];
+	[self recievedMessage:cmd from:[delegate useNick] type:RCMessageTypeAction];
 }
 
 - (void)recievedEvent:(RCEventType)type from:(NSString *)from message:(NSString *)msg {

@@ -16,7 +16,7 @@
 @interface RCTableView : UITableView {
 	CAGradientLayer *originShadow;
 	CAGradientLayer *topShadow;
-	CAGradientLayer *bottomShadow;
+	UIImageView *bottomShadow;
 }
 
 - (id)initWithFrame:(CGRect)frame style:(UITableViewStyle)style;

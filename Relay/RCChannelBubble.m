@@ -52,7 +52,9 @@
 - (void)suicide:(UIGestureRecognizer *)suicidee {
 	if (delegate) {
 		if (suicidee.state == UIGestureRecognizerStateBegan) {
-			[[[self allTargets] anyObject] channelWantsSuicide:self];
+			if (delegate) 
+				[delegate channelWantsSuicide:self];
+		//	[[[self allTargets] anyObject] channelWantsSuicide:self];
 		}
 	}
 }
@@ -88,15 +90,20 @@
 	}
 }
 
+- (void)_classify:(int)f {
+	_index = f;
+}
+
 - (void)setMentioned:(BOOL)mentioned {
 	if (_highlighted == mentioned) return;
 	_highlighted = mentioned;
 	if (mentioned) {
 		[[self titleLabel] setTextColor:[UIColor redColor]];
+		[[RCNavigator sharedNavigator] setMentioned:YES forIndex:_index];
 	}
 	else {
 		if (_selected) {
-			[[self titleLabel] setShadowColor:[UIColor whiteColor]];	
+			[[self titleLabel] setShadowColor:[UIColor whiteColor]];
 		}
 	}
 }
@@ -105,7 +112,15 @@
 	if (msgs == hasNew) return;
 	hasNew = msgs;
 	if (hasNew) {
-		if (!_highlighted) [[self titleLabel] setTextColor:UIColorFromRGB(0x4F94EA)];
+		if (!_highlighted) {
+			if ([[[self titleLabel] text] hasPrefix:@"#"]) {
+				[[self titleLabel] setTextColor:UIColorFromRGB(0x4F94EA)];
+				[[RCNavigator sharedNavigator] setHasNewMessagesYay:YES forIndex:_index];
+			}
+			else {
+				[self setMentioned:YES];
+			}
+		}
 	}
 	else {
 		if (_selected) [[self titleLabel] setShadowColor:[UIColor whiteColor]];		

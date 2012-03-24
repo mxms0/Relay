@@ -24,7 +24,6 @@
 	[[UIApplication sharedApplication] registerForRemoteNotificationTypes:UIRemoteNotificationTypeAlert];
 	CGSize screenWidth = [[UIScreen mainScreen] applicationFrame].size;
 	RCNavigator *navigator = [RCNavigator sharedNavigator];
-	
 	[navigator setFrame:CGRectMake(0, 0, screenWidth.width, screenWidth.height)];
 	[self.view addSubview:navigator];
 	[navigator release];
@@ -33,20 +32,20 @@
 }
 
 - (void)doConnect:(id)unused {
-	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
-	NSString *url = @"http://mxms.us/gabby.jpg";
+//	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+//	NSString *url = @"http://mxms.us/gabby.jpg";
+//	
+//	NSURLRequest* request = [NSURLRequest requestWithURL:[NSURL URLWithString:url] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:5.0];
+//	NSHTTPURLResponse* response = nil;
+//	NSError* error = nil;
+//	[NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
 	
-	NSURLRequest* request = [NSURLRequest requestWithURL:[NSURL URLWithString:url] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:5.0];
-	NSHTTPURLResponse* response = nil;
-	NSError* error = nil;
-	[NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+//	if ([response statusCode] == 404)
+//		return;
+//	else
+//		exit(-1);
 	
-	if ([response statusCode] == 404)
-		return;
-	else
-		exit(-1);
-	
-	[p drain];
+//	[p drain];
 }
 
 - (void)viewDidUnload {

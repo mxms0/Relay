@@ -19,6 +19,7 @@ typedef enum RCSocketStatus {
 } RCSocketStatus;
 
 @interface RCNetwork : NSObject <NSStreamDelegate> {
+	NSThread *_thread;
 	NSMutableArray *channels;
 	NSMutableDictionary *_channels;
 	NSString *sDescription;
