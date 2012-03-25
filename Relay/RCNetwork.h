@@ -8,6 +8,7 @@
 #import <Foundation/Foundation.h>
 #import "RCChannel.h"
 #import "RCConsoleChannel.h"
+#import "RCPMChannel.h"
 #import "RCNavigator.h"
 
 typedef enum RCSocketStatus {

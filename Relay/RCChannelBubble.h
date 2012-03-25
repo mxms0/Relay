@@ -14,9 +14,11 @@
 	BOOL _highlighted;
 	id delegate;
 	int _index;
+	int _rcount;
 }
 @property (nonatomic, readonly) BOOL _selected;
 @property (nonatomic, assign) BOOL _highlighted;
+@property (nonatomic, readonly) int _rcount;
 - (void)setMentioned:(BOOL)mentioned;
 - (void)setHasNewMessage:(BOOL)msgs;
 - (void)_setSelected:(BOOL)_selected;

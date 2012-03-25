@@ -10,7 +10,7 @@
 #import "RCNavigator.h"
 
 @implementation RCChannelBubble
-@synthesize _highlighted, _selected;
+@synthesize _highlighted, _selected, _rcount;
 
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
@@ -19,6 +19,7 @@
 		_selected = NO;
 		hasNew = NO;
 		_highlighted = NO;
+		_rcount = 0;
 		self.reversesTitleShadowWhenHighlighted = NO;
     }
     return self;
@@ -61,17 +62,26 @@
 
 - (void)layoutSubviews {
 	[super layoutSubviews];
+	if (_highlighted) {
+		[[self titleLabel] setTextColor:[UIColor redColor]];
+		[[self titleLabel] setShadowColor:[UIColor whiteColor]];
+		return;
+	}
 	if (!_selected) {
-		[[self titleLabel] setTextColor:[UIColor blackColor]];
+		[[self titleLabel] setTextColor:UIColorFromRGB(0x3e3f3f)];
 		[[self titleLabel] setShadowColor:[UIColor whiteColor]];
 	}
 }
 
 - (void)_setSelected:(BOOL)selected {
+
+	[[RCNavigator sharedNavigator] removeCount:_rcount forIndex:_index];
+	_rcount = 0;
 	if (_selected == selected) return;
 	_selected = selected;
 	hasNew = NO;
 	_highlighted = NO;
+	
 	if (selected) {
 		@autoreleasepool {
 			UIImage *image = [[UIImage imageNamed:@"0_bble"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 9, 0, 9)];
@@ -85,7 +95,7 @@
 		[self setBackgroundImage:nil forState:UIControlStateNormal];
 		[self setBackgroundImage:nil forState:UIControlStateHighlighted];
 		[self setBackgroundImage:nil forState:UIControlStateSelected];
-		[[self titleLabel] setTextColor:[UIColor blackColor]];
+		[[self titleLabel] setTextColor:UIColorFromRGB(0x3e3f3f)];
 		[[self titleLabel] setShadowColor:[UIColor whiteColor]];
 	}
 }
@@ -95,11 +105,13 @@
 }
 
 - (void)setMentioned:(BOOL)mentioned {
+	_rcount++;
+	[[RCNavigator sharedNavigator] addCount:1 forIndex:_index];
 	if (_highlighted == mentioned) return;
 	_highlighted = mentioned;
-	if (mentioned) {
+	if (_highlighted) {
 		[[self titleLabel] setTextColor:[UIColor redColor]];
-		[[RCNavigator sharedNavigator] setMentioned:YES forIndex:_index];
+//		[[RCNavigator sharedNavigator] addCount:1 forIndex:_index];
 	}
 	else {
 		if (_selected) {
@@ -115,7 +127,6 @@
 		if (!_highlighted) {
 			if ([[[self titleLabel] text] hasPrefix:@"#"]) {
 				[[self titleLabel] setTextColor:UIColorFromRGB(0x4F94EA)];
-				[[RCNavigator sharedNavigator] setHasNewMessagesYay:YES forIndex:_index];
 			}
 			else {
 				[self setMentioned:YES];

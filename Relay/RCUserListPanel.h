@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "RCTableView.h"
 
-@interface RCUserListPanel : UITableView {
+@interface RCUserListPanel : RCTableView {
+	
 }
 @end

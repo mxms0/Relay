@@ -15,6 +15,7 @@
 #import "RCChannel.h"
 #import "RCBarManager.h"
 #import "RCUserListPanel.h"
+#import "RCNewMessagesBubble.h"
 
 @interface RCNavigator : UIView <UIScrollViewDelegate, UIAlertViewDelegate, UIActionSheetDelegate> {
 	RCNavigationBar *bar;
@@ -22,6 +23,9 @@
 	RCChatPanel *currentPanel;
 	RCUserListPanel *memberPanel;
 	RCBarManager *manager;
+	RCNewMessagesBubble *leftBubble;
+	RCNewMessagesBubble *rightBubble;
+	NSMutableDictionary *_notifications;
 	UILabel *stupidLabel;
 	NSMutableArray *rooms;
 	BOOL draggingNets;
@@ -39,6 +43,6 @@
 - (void)channelSelected:(RCChannelBubble *)bubble;
 - (void)tearDownForChannelList:(RCChannelBubble *)bubble;
 - (void)setMentioned:(BOOL)m forIndex:(int)_index;
-- (void)setHasNewMessagesYay:(BOOL)yay forIndex:(int)_index;
+- (void)channelWantsSuicide:(RCChannelBubble *)bubble;
 - (RCChannelBubble *)channelBubbleWithChannelName:(NSString *)name;
 @end

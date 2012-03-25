@@ -82,7 +82,8 @@
 	if (![[_channels allKeys] containsObject:_chan]) {
 		RCChannel *chan;
 		if ([_chan isEqualToString:@"IRC"]) chan = [[RCConsoleChannel alloc] initWithChannelName:_chan];
-		else chan = [[RCChannel alloc] initWithChannelName:_chan];
+		else if ([_chan hasPrefix:@"#"]) chan = [[RCChannel alloc] initWithChannelName:_chan];
+		else chan = [[RCPMChannel alloc] initWithChannelName:_chan];
 		[chan setDelegate:self];
 		[[self _channels] setObject:chan forKey:_chan];
 		[chan release];
@@ -112,7 +113,7 @@
 	if (status == RCSocketStatusConnecting) return NO;
 	if (status == RCSocketStatusConnected) return NO;
 	useNick = nick;
-	self.userModes = @"@%+";
+	self.userModes = @"~&@%+";
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
 	if (chan) [chan recievedMessage:[NSString stringWithFormat:@"Connecting to %@ on port %d", server, port] from:@"" type:RCMessageTypeNormal];
 	if (kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iPhoneOS_4_0) {
@@ -167,7 +168,7 @@ static NSMutableString *data = nil;
 				NSUInteger bytesRead = [iStream read:buffer maxLength:512];
 				if (bytesRead) {
 					NSString *message = [[NSString alloc] initWithBytesNoCopy:buffer length:bytesRead encoding:NSUTF8StringEncoding freeWhenDone:NO];
-					if (message) {					
+					if (message) {
 						[data appendString:message];
 						[message release];
 					}
@@ -738,8 +739,11 @@ static NSMutableString *data = nil;
 			[self handleCTCPRequest:privmsg];
 		}
 		else if ([msg hasPrefix:@"ACTION"]) {
-			msg = [msg substringWithRange:NSMakeRange(7, msg.length-8)];
-			[((RCChannel *)[_channels objectForKey:room]) recievedMessage:msg from:from type:RCMessageTypeAction];
+			NSLog(@"Meh. %@:%@", msg, [msg dataUsingEncoding:NSUTF8StringEncoding]);
+			if ([msg length] > 7) {
+				msg = [msg substringWithRange:NSMakeRange(7, msg.length-8)];
+				[((RCChannel *)[_channels objectForKey:room]) recievedMessage:msg from:from type:RCMessageTypeAction];
+			}
 			[_scanner release];
 			return;
 		}
@@ -844,7 +848,8 @@ static NSMutableString *data = nil;
 	[_scanner scanUpToString:@" " intoString:&cmd];
 	[_scanner scanUpToString:@" " intoString:&room];
 	user = [user substringFromIndex:1];
-	room = [room substringFromIndex:1];
+	if ([room hasPrefix:@" "]) room = [room substringFromIndex:1];
+	if ([room hasPrefix:@":"]) room = [room substringFromIndex:1];
 	room = [room stringByReplacingOccurrencesOfString:@"\r\n" withString:@""];
 	[self parseUsermask:user nick:&_nick user:nil hostmask:nil];
 	
@@ -888,7 +893,7 @@ static NSMutableString *data = nil;
 	NSString *cmd;
 	NSString *room;
 	NSString *modes;
-	NSString *user;
+	NSString *user = nil;
 	[scanr scanUpToString:@" " intoString:&settr];
 	[scanr scanUpToString:@" " intoString:&cmd];
 	[scanr scanUpToString:@" " intoString:&room];
@@ -897,11 +902,20 @@ static NSMutableString *data = nil;
 	[self parseUsermask:settr nick:&settr user:nil hostmask:nil];
 	RCChannel *chan = [_channels objectForKey:room];
 	if (chan) {
+		if ([room isEqualToString:useNick]) {
+			[scanr release];
+			return;
+		}
+		if (!user) {
+			[chan recievedEvent:RCEventTypeMode from:settr message:[NSString stringWithFormat:@"sets mode %@", modes]];
+			[scanr release];
+			return;
+		}
 		[chan recievedEvent:RCEventTypeMode from:settr message:[NSString stringWithFormat:@"sets mode %@ %@", modes, user]];
 		[chan setMode:modes forUser:user];
 		
 	}
-	[_modes release];
+	[scanr release];
 	// Relay[2626:f803] MSG: :ac3xx!ac3xx@rox-103C7229.ac3xx.com MODE #chat +o _m
 }
 

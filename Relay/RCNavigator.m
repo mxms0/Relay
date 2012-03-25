@@ -19,22 +19,19 @@ static id _sharedNavigator = nil;
 	return [self initWithFrame:CGRectMake(0, 0, screenWidth.width, screenWidth.height)];
 }
 
-- (void)setMentioned:(BOOL)m forIndex:(int)_index {
-	if (m) {
-		NSLog(@"Meh. %d:%d", _index, currentIndex);
-	}	
-}
-
-- (void)setHasNewMessagesYay:(BOOL)yay forIndex:(int)_index {
-	if (yay) {
-		NSLog(@"Meh. %d:%d", _index, currentIndex);
-	}	
-}
-
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
 		isFirstSetup = -1;
 		manager = [[RCBarManager alloc] init];
+		_notifications = [[NSMutableDictionary alloc] init];
+		leftBubble = [[RCNewMessagesBubble alloc] initWithFrame:CGRectMake(30, 10, 28, 25)];
+		rightBubble = [[RCNewMessagesBubble alloc] initWithFrame:CGRectMake(320-60, 10, 30, 25)];
+		[self addSubview:leftBubble];
+		[self addSubview:rightBubble];
+		[leftBubble release];
+		[rightBubble release];
+		leftBubble.hidden = YES;
+		rightBubble.hidden = YES;
 		RCBarGroup *group = [manager leftGroup];
 		[group setFrame:CGRectMake(10, 7, 15, 29)];
 		[self addSubview:group];
@@ -71,9 +68,17 @@ static id _sharedNavigator = nil;
 		[bar setDelegate:self];
 		[self addSubview:bar];
 		[bar release];
+		[NSTimer scheduledTimerWithTimeInterval:15 target:self selector:@selector(pulseMofo:) userInfo:nil repeats:YES];
     }
 	_sharedNavigator = self;
     return _sharedNavigator;
+}
+
+- (void)pulseMofo:(NSTimer *)arg1 {
+	if ((leftBubble.hidden) && (rightBubble.hidden)) return;
+	NSLog(@"Pulse.");
+	if (!leftBubble.hidden) [leftBubble pulse];
+	if (!rightBubble.hidden) [rightBubble pulse];
 }
 
 - (void)addNetwork:(RCNetwork *)net	{
@@ -90,6 +95,7 @@ static id _sharedNavigator = nil;
 		isFirstSetup = 0;
 		[rooms removeObjectAtIndex:0];
 		[currentPanel removeFromSuperview];
+		[NSTimer scheduledTimerWithTimeInterval:120 target:[RCNetworkManager sharedNetworkManager] selector:@selector(saveChannelData:) userInfo:nil repeats:YES];
 	}
 	if (isFirstSetup == 1) {
 		// new network coming through, remove setup she-yite
@@ -98,9 +104,10 @@ static id _sharedNavigator = nil;
 		// if you do, this program will fail to compile.
 		isFirstSetup = 2;
 	}
-
+	
 	netCount++;
 	[net setIndex:netCount-1];
+	[_notifications setObject:@"0" forKey:[NSString stringWithFormat:@"%d", netCount-1]];
 	RCTitleLabel *_label = [[RCTitleLabel alloc] initWithFrame:CGRectMake(netCount*200-bar.frame.size.width, 0, bar.frame.size.width, bar.frame.size.height)];
 	[_label setBackgroundColor:[UIColor clearColor]];
 	[_label setHidden:NO];
@@ -138,6 +145,84 @@ static id _sharedNavigator = nil;
 	[tmp release];
 }
 
+- (void)addCount:(int)mentions forIndex:(int)_index {
+	int _c = [[_notifications objectForKey:[NSString stringWithFormat:@"%d", _index]] intValue];
+	_c += mentions;
+	[_notifications setObject:[NSString stringWithFormat:@"%d", _c] forKey:[NSString stringWithFormat:@"%d", _index]];
+	[self resetBubbles];
+}
+
+- (void)removeCount:(int)c forIndex:(int)_index {
+	int _c = [[_notifications objectForKey:[NSString stringWithFormat:@"%d", _index]] intValue];
+	_c-=c;
+	[_notifications setObject:[NSString stringWithFormat:@"%d", _c] forKey:[NSString stringWithFormat:@"%d", _index]];
+	[self resetBubbles];
+}
+
+- (void)resetBubbles {
+	[self performSelectorInBackground:@selector(_reallyResetBubbles) withObject:nil];
+}
+
+- (void)_reallyResetBubbles {
+	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+	int leftCount = 0;
+	int rightCount = 0;
+	if (currentIndex == 0) {
+		for (int x = [[_notifications allKeys] count]-1; x > currentIndex; x--) {
+			int z = [[_notifications objectForKey:[[_notifications allKeys] objectAtIndex:x]] intValue];
+			rightCount += z;
+		}
+	}
+	else if (currentIndex == [[_notifications allKeys] count]) {
+		for (int i = 0; i < currentIndex; i++) {
+			int z = [[_notifications objectForKey:[[_notifications allKeys] objectAtIndex:i]] intValue];
+			leftCount += z;
+		}		
+	}
+	else {
+		BOOL revert = NO;
+		for (int i = 0; i < [[_notifications allKeys] count]; i++) {
+			if (i == currentIndex) {
+				revert = YES;
+				continue;
+			}
+			int y = [[_notifications objectForKey:[[_notifications allKeys] objectAtIndex:i]] intValue];
+			if (revert)
+				rightCount += y;
+			else 
+				leftCount += y;
+		}		
+	}
+	if (leftCount != 0) {
+		[[leftBubble titleLabel] setText:[NSString stringWithFormat:@"%d", leftCount]];
+		if (leftCount > 99) {
+			[leftBubble setFrame:CGRectMake(leftBubble.frame.origin.x, leftBubble.frame.origin.y, 37, 25)];	
+		}
+		else if (leftCount > 9) {
+			[leftBubble setFrame:CGRectMake(leftBubble.frame.origin.x, leftBubble.frame.origin.y, 32, 25)];
+		}
+		else {
+			[leftBubble setFrame:CGRectMake(leftBubble.frame.origin.x, leftBubble.frame.origin.y, 30, 25)];
+		}
+		[leftBubble realignTitleLabel];
+		leftBubble.hidden = NO;
+	}
+	else {
+		leftBubble.hidden = YES;
+		leftBubble.titleLabel.text = @"";
+	}
+	if (rightCount != 0) {
+		rightBubble.hidden = NO;
+		rightBubble.titleLabel.text = [NSString stringWithFormat:@"%d", rightCount];
+	}
+	else {
+		rightBubble.hidden = YES;
+		rightBubble.titleLabel.text = @"";
+	}
+	
+	[p drain];
+}
+
 - (void)showNetworkPopover:(UIGestureRecognizer *)gerk {
 	
 }
@@ -164,8 +249,10 @@ static UILabel *active = nil;
 			}
 		}
 		netCount--;
-		currentIndex--;
+	//	currentIndex--;
 		[bar setContentSize:CGSizeMake((netCount * 200) + 0.5, 50)];
+		[currentPanel removeFromSuperview];
+		[_notifications removeObjectForKey:[NSString stringWithFormat:@"%d", currentIndex]];
 		RCNetwork *removr = [[RCNetworkManager sharedNetworkManager] networkWithDescription:active.text];
 		[[RCNetworkManager sharedNetworkManager] removeNet:removr];
 		[[RCNetworkManager sharedNetworkManager] saveNetworks];
@@ -175,7 +262,10 @@ static UILabel *active = nil;
 			[currentPanel removeFromSuperview];
 			[[RCNetworkManager sharedNetworkManager] setupWelcomeView];
 		}
-		else [self scrollViewDidEndDecelerating:bar];
+		else {
+			[self scrollViewDidEndDecelerating:bar];
+			
+		}
 		// :(
 	}
 	else if (buttonIndex == 1) {
@@ -336,6 +426,7 @@ static BOOL isShowing = NO;
 			else return;
 			[scrollBar layoutChannels:[rooms objectAtIndex:netLoc]];
 			[stupidLabel setFrame:CGRectMake(currentIndex*200, stupidLabel.frame.origin.y, stupidLabel.frame.size.width, stupidLabel.frame.size.height)];
+			[self resetBubbles];
 		}
 	}
 	else {
@@ -386,6 +477,7 @@ static BOOL isShowing = NO;
 - (void)dealloc {
 	[bar release];
 	[rooms release];
+	[_notifications release];
 	[super dealloc];
 }
 

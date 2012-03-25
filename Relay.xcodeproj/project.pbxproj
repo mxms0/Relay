@@ -103,6 +103,9 @@
 		50711B4915156C670022CA68 /* 0_chatcell_6.png in Resources */ = {isa = PBXBuildFile; fileRef = 50711B3F15156C5A0022CA68 /* 0_chatcell_6.png */; };
 		50711B4A15156C670022CA68 /* 0_chatcell_6@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50711B4015156C600022CA68 /* 0_chatcell_6@2x.png */; };
 		5088C0E014C4F89C001ADD06 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5088C0DF14C4F89C001ADD06 /* CFNetwork.framework */; };
+		50929EB6151E65F1007E23D3 /* RCPMChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 50929EB5151E65F1007E23D3 /* RCPMChannel.m */; };
+		50929EBA151E86FA007E23D3 /* RCiPadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50929EB9151E86FA007E23D3 /* RCiPadViewController.m */; };
+		50929EC9151F0D2B007E23D3 /* RCNewMessagesBubble.m in Sources */ = {isa = PBXBuildFile; fileRef = 50929EC8151F0D2B007E23D3 /* RCNewMessagesBubble.m */; };
 		50A7FB8114C0F0A800ABADEA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A7FB8014C0F0A800ABADEA /* UIKit.framework */; };
 		50A7FB8314C0F0A800ABADEA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A7FB8214C0F0A800ABADEA /* Foundation.framework */; };
 		50A7FB8514C0F0A800ABADEA /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A7FB8414C0F0A800ABADEA /* CoreGraphics.framework */; };
@@ -250,6 +253,12 @@
 		50711B3F15156C5A0022CA68 /* 0_chatcell_6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_chatcell_6.png; sourceTree = "<group>"; };
 		50711B4015156C600022CA68 /* 0_chatcell_6@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_chatcell_6@2x.png"; sourceTree = "<group>"; };
 		5088C0DF14C4F89C001ADD06 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		50929EB4151E65F1007E23D3 /* RCPMChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCPMChannel.h; sourceTree = "<group>"; };
+		50929EB5151E65F1007E23D3 /* RCPMChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCPMChannel.m; sourceTree = "<group>"; };
+		50929EB8151E86FA007E23D3 /* RCiPadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCiPadViewController.h; sourceTree = "<group>"; };
+		50929EB9151E86FA007E23D3 /* RCiPadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCiPadViewController.m; sourceTree = "<group>"; };
+		50929EC7151F0D2A007E23D3 /* RCNewMessagesBubble.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCNewMessagesBubble.h; sourceTree = "<group>"; };
+		50929EC8151F0D2B007E23D3 /* RCNewMessagesBubble.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCNewMessagesBubble.m; sourceTree = "<group>"; };
 		50A7FB7C14C0F0A800ABADEA /* Relay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Relay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		50A7FB8014C0F0A800ABADEA /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		50A7FB8214C0F0A800ABADEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -502,6 +511,8 @@
 		50A7FBA914C0F7DC00ABADEA /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				50929EB8151E86FA007E23D3 /* RCiPadViewController.h */,
+				50929EB9151E86FA007E23D3 /* RCiPadViewController.m */,
 				50E77A641505A17800E75C64 /* RCViewController.h */,
 				50E77A651505A17800E75C64 /* RCViewController.m */,
 				50E77A661505A18700E75C64 /* RCChatPanel.h */,
@@ -536,6 +547,8 @@
 				504CC33D151C457D00605706 /* RCBarGroup.m */,
 				504CC353151C50C100605706 /* RCBar.h */,
 				504CC354151C50C100605706 /* RCBar.m */,
+				50929EC7151F0D2A007E23D3 /* RCNewMessagesBubble.h */,
+				50929EC8151F0D2B007E23D3 /* RCNewMessagesBubble.m */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -549,6 +562,8 @@
 				50E77A791505A21500E75C64 /* RCAppDelegate.m */,
 				50E77A7A1505A21500E75C64 /* RCChannel.h */,
 				50E77A7B1505A21500E75C64 /* RCChannel.m */,
+				50929EB4151E65F1007E23D3 /* RCPMChannel.h */,
+				50929EB5151E65F1007E23D3 /* RCPMChannel.m */,
 				50E77A7C1505A21500E75C64 /* RCConsoleChannel.h */,
 				50E77A7D1505A21500E75C64 /* RCConsoleChannel.m */,
 				50E77A7E1505A21500E75C64 /* RCMessage.h */,
@@ -752,6 +767,9 @@
 				504CC33B151C454800605706 /* RCBarManager.m in Sources */,
 				504CC33E151C457E00605706 /* RCBarGroup.m in Sources */,
 				504CC355151C50C200605706 /* RCBar.m in Sources */,
+				50929EB6151E65F1007E23D3 /* RCPMChannel.m in Sources */,
+				50929EBA151E86FA007E23D3 /* RCiPadViewController.m in Sources */,
+				50929EC9151F0D2B007E23D3 /* RCNewMessagesBubble.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -428,6 +428,7 @@
 					cell.textLabel.text = @"Connect At Launch";
 					UISwitch *cnt = [[UISwitch alloc] init];
 					[cnt setOn:[network COL]];
+					[cnt setOnTintColor:UIColorFromRGB(0x5296ea)];
 					[cnt addTarget:self action:@selector(launchSwitched:) forControlEvents:UIControlEventValueChanged];
 					[cell setAccessoryView:cnt];
 					[cnt release];

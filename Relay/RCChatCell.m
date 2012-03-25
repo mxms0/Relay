@@ -37,7 +37,11 @@
 	currentFlavor = [message flavor];
 	NSMutableAttributedString *attr = [[NSMutableAttributedString alloc] initWithString:self.textLabel.text];
 	[attr setFont:[UIFont fontWithName:@"Helvetica" size:12]];
-	[attr setTextColor:UIColorFromRGB(0x3F4040)];
+	UIColor *normalColor = UIColorFromRGB(0x3F4040);
+	if ([message isOld])
+		normalColor = UIColorFromRGB(0xB6BCCC);
+	[attr setTextColor:normalColor];
+	
 	@autoreleasepool {
 		UIImage *bg = [UIImage imageNamed:@"0_chatcell"];
 		[self.contentView setBackgroundColor:[UIColor colorWithPatternImage:bg]];
@@ -51,7 +55,9 @@
 			break;
 		case RCMessageFlavorNormal:
 			if ([message highlight]) {
-				[attr setTextColor:[UIColor redColor]];
+				if (![message isOld])
+					[attr setTextColor:[UIColor redColor]];
+				else [attr setTextColor:UIColorFromRGB(0xB6BCCC)];
 			}
 			NSRange p = [self.textLabel.text rangeOfString:@"]"];
 			NSRange r = [self.textLabel.text rangeOfString:@":" options:0 range:NSMakeRange(p.location, self.textLabel.text.length-p.location)];
@@ -79,7 +85,8 @@
 			break;
 	}
 	if ([message isMine]) {
-		[attr setTextColor:UIColorFromRGB(0x84929B)];
+		if (![message isOld])
+			[attr setTextColor:UIColorFromRGB(0x697797)];
 	}
 	[self.textLabel setAttributedText:attr];
 	[attr release];

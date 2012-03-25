@@ -26,7 +26,7 @@ typedef enum RCEventType {
 	RCEventTypeJoin,
 	RCEventTypeTopic,
 	RCEventTypeQuit,
-	RCEventTypeMode
+	RCEventTypeMode,
 } RCEventType;
 
 @class RCNetwork;
@@ -68,5 +68,6 @@ UIImage *RCImageForRank(NSString *rank);
 UIImage *RCImageForRanks(NSString *ranks, NSString *possible);
 NSString *RCMergeModes(NSString *arg1, NSString *arg2);
 NSString *RCSymbolRepresentationForModes(NSString *modes);
+NSString *RCSterilizeModes(NSString *modes);
 BOOL RCIsRankHigher(NSString *rank, NSString *rank2);
 @end

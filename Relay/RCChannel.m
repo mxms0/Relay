@@ -83,6 +83,10 @@ NSString *RCSymbolRepresentationForModes(NSString *modes) {
 	return [[[[[modes stringByReplacingOccurrencesOfString:@"o" withString:@"@"] stringByReplacingOccurrencesOfString:@"h" withString:@"%"] stringByReplacingOccurrencesOfString:@"v" withString:@"+"] stringByReplacingOccurrencesOfString:@"a" withString:@"&"] stringByReplacingOccurrencesOfString:@"q" withString:@"~"];
 }
 
+NSString *RCSterilizeModes(NSString *modes) {
+	return [[[modes stringByReplacingOccurrencesOfString:@"i" withString:@""] stringByReplacingOccurrencesOfString:@"w" withString:@""] stringByReplacingOccurrencesOfString:@"s" withString:@""];
+}
+
 UIImage *RCImageForRank(NSString *rank) {
 	if (rank == nil || [rank isEqualToString:@""]) return [UIImage imageNamed:@"0_regulares"];
 	if ([rank isEqualToString:@"@"] 
@@ -263,6 +267,7 @@ UIImage *RCImageForRank(NSString *rank) {
 	//	}
 	}
 	// what you see above is crap. ignore it.
+	modes = RCSterilizeModes(modes);
 	if ([modes hasPrefix:@"+"]) {
 		modes = [modes substringFromIndex:1];
 		modes = RCSymbolRepresentationForModes(modes);

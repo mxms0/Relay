@@ -11,6 +11,7 @@
 
 @interface RCNetworkManager : NSObject {
 	BOOL isBG;
+	BOOL saving;
 }
 @property (nonatomic, assign) BOOL isBG;
 + (RCNetworkManager *)sharedNetworkManager;
@@ -22,5 +23,6 @@
 + (void)saveNetworks;
 - (void)saveNetworks;
 - (void)unpack;
-
+- (void)setupWelcomeView;
+- (void)_reallySaveChannelData:(id)unused;
 @end

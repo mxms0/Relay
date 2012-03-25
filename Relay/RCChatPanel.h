@@ -28,6 +28,7 @@
 }
 @property (nonatomic, retain) RCChannel *channel;
 @property (nonatomic, retain) RCTableView *tableView;
+@property (nonatomic, readonly) NSMutableArray *messages;
 - (id)initWithStyle:(UITableViewStyle)style andChannel:(RCChannel *)chan;
 - (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor highlight:(BOOL)high;
 - (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor highlight:(BOOL)high isMine:(BOOL)mine;

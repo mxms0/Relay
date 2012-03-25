@@ -8,6 +8,7 @@
 #import "RCAppDelegate.h"
 #import "RCViewController.h"
 #import "RCNetworkManager.h"
+#import "RCiPadViewController.h"
 
 @implementation RCAppDelegate
 
@@ -27,8 +28,14 @@ static BOOL isSetup = NO;
 		[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
 	}
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
-	NSString *xib = ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ? @"RCViewController_iPhone" : @"RCViewController_iPad");
-	RCViewController *rcv = [[RCViewController alloc] initWithNibName:xib bundle:nil];
+	UIViewController *rcv;
+	Class rcvClass = [RCiPadViewController class];
+	NSString *xib = @"RCViewController_iPad";
+	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+		xib = @"RCViewController_iPhone";
+		rcvClass = [RCViewController class];
+	}
+	rcv = [[rcvClass alloc] initWithNibName:xib bundle:nil];
 	self.navigationController = [[[UINavigationController alloc] initWithRootViewController:rcv] autorelease];
 	[rcv release];
 	self.window.rootViewController = self.navigationController;
@@ -78,6 +85,8 @@ static BOOL isSetup = NO;
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
+	NSLog(@"Terminating..");
+	[[RCNetworkManager sharedNetworkManager] _reallySaveChannelData:nil];
 	/*
 	 Called when the application is about to terminate.
 	 Save data if appropriate.
