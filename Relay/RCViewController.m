@@ -28,7 +28,7 @@
 	[self.view addSubview:navigator];
 	[navigator release];
 	[self.navigationController setNavigationBarHidden:YES];
-	[self performSelectorInBackground:@selector(doConnect:) withObject:nil];
+//	[self performSelectorInBackground:@selector(doConnect:) withObject:nil];
 }
 
 - (void)doConnect:(id)unused {
@@ -55,14 +55,9 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 }
-static BOOL tookOff = NO;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-	if (!tookOff) {
-	//	[TestFlight takeOff:TEAM_TOKEN];
-		tookOff = YES;
-	}
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -74,7 +69,7 @@ static BOOL tookOff = NO;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-	return ((interfaceOrientation == UIInterfaceOrientationPortrait) || (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown));
+	return YES;
 }
 
 @end

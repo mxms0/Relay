@@ -178,7 +178,8 @@ UIImage *RCImageForRank(NSString *rank) {
 	dateFormatter.AMSymbol = @"";
 	dateFormatter.timeStyle = NSDateFormatterShortStyle;
 	time = [dateFormatter stringFromDate:[NSDate date]];
-	time = [time substringToIndex:time.length-1];
+	if ([time hasSuffix:@" "])
+		time = [time substringToIndex:time.length-1];
 	switch (type) {
 		case RCMessageTypeAction:
 			msg = [[NSString stringWithFormat:@"[%@] \u2022 %@ %@", time, from, message] copy];

@@ -172,6 +172,7 @@ static NSMutableArray *networks = nil;
 		[pool drain];
 		return;
 	}
+	NSLog(@"Unarchiving messages..");
 	for (NSString *key in [dataz allKeys]) {
 		RCNetwork *net = [self networkWithQuickDescription:key];
 		if (net) {
@@ -191,6 +192,7 @@ static NSMutableArray *networks = nil;
 			}
 		}
 	}
+	NSLog(@"Archived Messages..");
 	[dataz release];
 	[pool drain];
 }

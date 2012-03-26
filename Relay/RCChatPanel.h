@@ -20,7 +20,6 @@
 	NSMutableArray *messages;
 	RCChannel *channel;
 	RCTableView *tableView;
-	NSThread *sendThread;
 	NSMutableString *currentWord;
 	NSString *prev;
 	UITextField *field;

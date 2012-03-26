@@ -19,8 +19,6 @@
 		self.tableView = [[RCTableView alloc] initWithFrame:CGRectMake(0, 0, 320, 343) style:style];
 		self.tableView.delegate = self;
 		self.tableView.dataSource = self;
-		sendThread = [[NSThread alloc] init];
-		[sendThread start];
 		[self.tableView setBackgroundColor:[UIColor clearColor]];
 		[self addSubview:tableView];
 		[tableView release];
@@ -228,8 +226,16 @@
     }
     // Configure the cell...
 	RCMessage *_message = [messages objectAtIndex:indexPath.row];
-	[cell setMessage:_message];
-	[cell _textHasBeenSet];
+	if ([cell message]) {
+		if (![[cell message] isEqual:_message]) {
+			[cell setMessage:_message];
+			[cell _textHasBeenSet];
+		}
+	}
+	else {
+		[cell setMessage:_message];
+		[cell _textHasBeenSet];
+	}
     return cell;
 }
 

@@ -343,7 +343,6 @@ static NSMutableString *data = nil;
 - (void)handle001:(NSString *)welcome {
 	[self networkDidRegister:YES];
 	
-	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSScanner *scanner = [[NSScanner alloc] initWithString:welcome];
 	NSString *crap;
 	@try {
@@ -360,12 +359,10 @@ static NSMutableString *data = nil;
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
 	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
 	[scanner release];
-	[p drain];
 }
 
 
 - (void)handle002:(NSString *)infos {
-	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSScanner *scanner = [[NSScanner alloc] initWithString:infos];
 	NSString *crap;
 	[scanner scanUpToString:@" " intoString:&crap];
@@ -377,12 +374,10 @@ static NSMutableString *data = nil;
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
 	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
 	[scanner release];
-	[p drain];
 	// Relay[2626:f803] MSG: :fr.ac3xx.com 002 _m :Your host is fr.ac3xx.com, running version Unreal3.2.9
 }
 
 - (void)handle003:(NSString *)servInfos {
-	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSScanner *scanner = [[NSScanner alloc] initWithString:servInfos];
 	NSString *crap;
 	[scanner scanUpToString:@" " intoString:&crap];
@@ -395,12 +390,10 @@ static NSMutableString *data = nil;
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
 	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
 	[scanner release];
-	[p drain];
 	// Relay[2626:f803] MSG: :fr.ac3xx.com 003 _m :This server was created Fri Dec 23 2011 at 01:21:01 CET
 }
 
 - (void)handle004:(NSString *)othrInfo {
-	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSScanner *scanner = [[NSScanner alloc] initWithString:othrInfo];
 	NSString *crap;
 	[scanner scanUpToString:@" " intoString:&crap];
@@ -412,7 +405,6 @@ static NSMutableString *data = nil;
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
 	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
 	[scanner release];
-	[p drain];
 	// Relay[2626:f803] MSG: :fr.ac3xx.com 004 _m fr.ac3xx.com Unreal3.2.9 iowghraAsORTVSxNCWqBzvdHtGp 
 }
 
@@ -453,7 +445,6 @@ static NSMutableString *data = nil;
 }
 
 - (void)handle251:(NSString *)infos {
-	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSScanner *scanner = [[NSScanner alloc] initWithString:infos];
 	NSString *crap;
 	@try {
@@ -470,12 +461,10 @@ static NSMutableString *data = nil;
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
 	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
 	[scanner release];
-	[p drain];
 	// Relay[3067:f803] MSG: :fr.ac3xx.com 251 _m :There are 1 users and 4 invisible on 1 servers
 }
 
 - (void)handle252:(NSString *)opsOnline {
-	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSScanner *scanner = [[NSScanner alloc] initWithString:opsOnline];
 	NSString *crap;
 	@try {
@@ -492,12 +481,10 @@ static NSMutableString *data = nil;
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
 	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
 	[scanner release];
-	[p drain];
 	// :irc.saurik.com 252 _m 2 :operator(s) online
 }
 
 - (void)handle332:(NSString *)topic {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSScanner *_scanner = [[NSScanner alloc] initWithString:topic];
 	NSString *crap = @"_";
 	NSString *to = crap;
@@ -512,7 +499,6 @@ static NSMutableString *data = nil;
 	[[_channels objectForKey:room] recievedEvent:RCEventTypeTopic from:nil message:_topic];
 	// :irc.saurik.com 332 _m #bacon :Bacon | where2start? kitchen | Canadian Bacon? get out. | WE SPEAK: BACON, ENGLISH, PORTUGUESE, DEUTSCH. | http://blog.craftzine.com/bacon-starry-night.jpg THIS IS YOU ¬†
 	[_scanner release];
-	[pool drain];
 }
 
 - (void)handle250:(NSString *)countr {
@@ -550,7 +536,6 @@ static NSMutableString *data = nil;
 
 - (void)handle306:(NSString *)znc {
 	NSLog(@"Implying this is a znc.");
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSScanner *scanner = [[NSScanner alloc] initWithString:znc];
 	NSString *crap;
 	NSString *cmd;
@@ -561,7 +546,6 @@ static NSMutableString *data = nil;
 	useNick = [me retain];
 	[scanner release];
 	
-	[pool drain];
 	// :fr.ac3xx.com 305 MaxZNC :You are no longer marked as being away
 }
 
@@ -604,7 +588,6 @@ static NSMutableString *data = nil;
 }
 
 - (void)handle375:(NSString *)motd {
-	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSScanner *scanner = [[NSScanner alloc] initWithString:motd];
 	NSString *crap;
 	@try {
@@ -621,12 +604,10 @@ static NSMutableString *data = nil;
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
 	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
 	[scanner release];
-	[p drain];
 	// :irc.saurik.com 375 _m :irc.saurik.com message of the day
 }
 
 - (void)handle372:(NSString *)noMotd {
-	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSScanner *scanner = [[NSScanner alloc] initWithString:noMotd];
 	NSString *crap;
 	@try {
@@ -643,7 +624,6 @@ static NSMutableString *data = nil;
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
 	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
 	[scanner release];
-	[p drain];
 	// :irc.saurik.com 372 _m :- Please edit /etc/inspircd/motd
 }
 
@@ -674,7 +654,6 @@ static NSMutableString *data = nil;
 }
 
 - (void)handleNOTICE:(NSString *)notice {
-	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSScanner *_scans = [[NSScanner alloc] initWithString:notice];
 	NSString *from = @"_";
 	NSString *cmd = from;
@@ -685,7 +664,6 @@ static NSMutableString *data = nil;
 	[_scans scanUpToString:@" " intoString:&to];
 	if ([to isEqualToStringNoCase:@"Auth"]) {
 		[_scans release];
-		[p drain];
 		return;
 	}
 	[self parseUsermask:from nick:&from user:nil hostmask:nil];
@@ -710,7 +688,6 @@ static NSMutableString *data = nil;
 	}
 	
 	[_scans release];
-	[p drain];
 	//:Hackintech!Hackintech@2FD03E27.3D6CB32E.E0E5D6BD.IP NOTICE __m__ :HI
 }
 
@@ -779,7 +756,6 @@ static NSMutableString *data = nil;
 }
 
 - (void)handleCTCPRequest:(NSString *)_request {
-	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSScanner *_sc = [[NSScanner alloc] initWithString:_request];
 	NSString *_from = @"_";
 	NSString *cmd = _from;
@@ -806,13 +782,9 @@ static NSMutableString *data = nil;
 		NSLog(@"WTF?!?!! %@", request);
 	[self sendMessage:[@"NOTICE " stringByAppendingFormat:@"%@ \x01%@ %@\x01", _from, request, extra]];
 	[_sc release];
-	[p drain];
-
 }
 
 - (void)handlePART:(NSString *)parted {
-	
-	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSScanner *_scanner = [[NSScanner alloc] initWithString:parted];
 	NSString *user = @"_";
 	NSString *cmd = user;
@@ -833,12 +805,10 @@ static NSMutableString *data = nil;
 		[[_channels objectForKey:room] recievedEvent:RCEventTypePart from:_nick message:nil];
 	}
 	[_scanner release];
-	[p drain];
 }
 
 - (void)handleJOIN:(NSString *)join {
 	// add user unless self
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSScanner *_scanner = [[NSScanner alloc] initWithString:join];
 	NSString *user = @"_";
 	NSString *cmd = user;
@@ -862,7 +832,6 @@ static NSMutableString *data = nil;
 		[[_channels objectForKey:room] recievedEvent:RCEventTypeJoin from:_nick message:nil];
 	}
 	[_scanner release];
-	[pool drain];
 }
 
 - (void)handleQUIT:(NSString *)quitter {
@@ -951,7 +920,6 @@ static NSMutableString *data = nil;
 }
 
 - (void)handleTOPIC:(NSString *)topic {
-	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSScanner *_scan = [[NSScanner alloc] initWithString:topic];
 	NSString *from = @"_";
 	NSString *cmd = from;
@@ -966,7 +934,6 @@ static NSMutableString *data = nil;
 	[self parseUsermask:from nick:&from user:nil hostmask:nil];
 	[[_channels objectForKey:room] recievedEvent:RCEventTypeTopic from:from message:newTopic];
 	[_scan release];
-	[p drain];
 }
 
 // PRIVMSG victim :\001CLIENTINFO\001/////
