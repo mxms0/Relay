@@ -13,18 +13,19 @@
 #import "RCChannelScrollView.h"
 #import "RCChannelBubble.h"
 #import "RCChannel.h"
-#import "RCBarManager.h"
 #import "RCUserListPanel.h"
 #import "RCNewMessagesBubble.h"
+#import "RCBarGroup.h"
 
 @interface RCNavigator : UIView <UIScrollViewDelegate, UIAlertViewDelegate, UIActionSheetDelegate> {
 	RCNavigationBar *bar;
 	RCChannelScrollView *scrollBar;
 	RCChatPanel *currentPanel;
 	RCUserListPanel *memberPanel;
-	RCBarManager *manager;
 	RCNewMessagesBubble *leftBubble;
 	RCNewMessagesBubble *rightBubble;
+	RCBarGroup *leftGroup;
+	RCBarGroup *rightGroup;
 	NSMutableDictionary *_notifications;
 	UILabel *stupidLabel;
 	NSMutableArray *rooms;

@@ -106,11 +106,6 @@ UIImage *RCImageForRank(NSString *rank) {
 		shouldUpdate = YES;
 		users = [[NSMutableDictionary alloc] init];
 		panel = [[RCChatPanel alloc] initWithStyle:UITableViewStylePlain andChannel:self];
-		usersPanel = [[RCUserListPanel alloc] initWithFrame:CGRectMake(0, 77, 320, 383) style:UITableViewStylePlain];
-		usersPanel.delegate = self;
-		usersPanel.dataSource = self;
-		usersPanel.separatorStyle = UITableViewCellSelectionStyleNone;
-		usersPanel.backgroundColor = [UIColor clearColor];
 	}
 	return self;
 }
@@ -247,12 +242,12 @@ UIImage *RCImageForRank(NSString *rank) {
 			_joined = [_joined substringFromIndex:1];
 		}
 		[users setObject:rank forKey:_joined];
-		[usersPanel reloadData];
+
 	}
 }
 - (void)setUserLeft:(NSString *)left {
 	[users removeObjectForKey:left];
-	[usersPanel reloadData];
+	if (usersPanel)	[usersPanel reloadData];
 }
 
 - (void)setMode:(NSString *)modes forUser:(NSString *)user {
@@ -291,7 +286,7 @@ UIImage *RCImageForRank(NSString *rank) {
 		}
 		[users setObject:uModes forKey:user];
 	}
-	[usersPanel reloadData];
+	if (usersPanel)	[usersPanel reloadData];
 }
 
 - (void)setJoined:(BOOL)joind withArgument:(NSString *)arg1 {

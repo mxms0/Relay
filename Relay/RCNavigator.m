@@ -22,7 +22,9 @@ static id _sharedNavigator = nil;
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
 		isFirstSetup = -1;
-		manager = [[RCBarManager alloc] init];
+		memberPanel = [[RCUserListPanel alloc] initWithFrame:CGRectMake(0, 77, 320, 383)];
+		memberPanel.backgroundColor = [UIColor clearColor];
+		memberPanel.separatorStyle = UITableViewCellSeparatorStyleNone;
 		_notifications = [[NSMutableDictionary alloc] init];
 		leftBubble = [[RCNewMessagesBubble alloc] initWithFrame:CGRectMake(30, 10, 28, 25)];
 		rightBubble = [[RCNewMessagesBubble alloc] initWithFrame:CGRectMake(320-60, 10, 30, 25)];
@@ -32,14 +34,12 @@ static id _sharedNavigator = nil;
 		[rightBubble release];
 		leftBubble.hidden = YES;
 		rightBubble.hidden = YES;
-		RCBarGroup *group = [manager leftGroup];
-		[group setFrame:CGRectMake(10, 7, 15, 29)];
-		[self addSubview:group];
-		[group release];
-		group = [manager rightGroup];
-		[group setFrame:CGRectMake(290, 7, 15, 29)];
-		[self addSubview:group];
-		[group release];
+		leftGroup = [[RCBarGroup alloc] initWithFrame:CGRectMake(10, 7, 15, 29)];
+		[self addSubview:leftGroup];
+		[leftGroup release];
+		rightGroup = [[RCBarGroup alloc] initWithFrame:CGRectMake(290, 7, 15, 29)];
+		[self addSubview:rightGroup];
+		[rightGroup release];
 		netCount = 0;
 		draggingNets = NO;
 		draggingChans = NO;
@@ -336,10 +336,11 @@ static UILabel *active = nil;
 	}
 	RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:currentIndex];	
 	RCChannel *chan = [[net _channels] objectForKey:[[bubble titleLabel] text]];
-	RCUserListPanel *usersTable = [chan usersPanel];
+	memberPanel.delegate = chan;
+	memberPanel.dataSource = chan;
+	chan.usersPanel = memberPanel;
 	[currentPanel removeFromSuperview];
-	[self addSubview:usersTable];
-	memberPanel = usersTable;
+	[self addSubview:memberPanel];
 }
 
 static RCChannelBubble *questionabubble = nil;
@@ -383,10 +384,11 @@ static BOOL isShowing = NO;
 }
 
 - (void)channelSelected:(RCChannelBubble *)bubble {
-	if (memberPanel) {
+	if (memberPanel.delegate) {
 		[[[currentPanel channel] bubble] _setSelected:NO];
 		[memberPanel removeFromSuperview];
-		memberPanel = nil;
+		memberPanel.delegate = nil;
+		memberPanel.dataSource = nil;
 		currentPanel = nil;
 	}
 	if (currentPanel) if ([[[currentPanel channel] bubble] isEqual:bubble]) return;

@@ -46,10 +46,10 @@ typedef enum RCEventType {
 @property (nonatomic, retain) NSString *channelName;
 @property (nonatomic, assign) BOOL joinOnConnect;
 @property (nonatomic, retain) RCNetwork *delegate;
-@property (nonatomic, readonly) RCChatPanel *panel;
+@property (nonatomic, assign) RCChatPanel *panel;
 @property (nonatomic, readonly) NSString *topic;
 @property (nonatomic, retain) RCChannelBubble *bubble;
-@property (nonatomic, assign) RCUserListPanel *usersPanel;
+@property (nonatomic, retain) RCUserListPanel *usersPanel;
 - (id)initWithChannelName:(NSString *)_name;
 - (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type;
 - (void)recievedEvent:(RCEventType)type from:(NSString *)from message:(NSString *)msg;

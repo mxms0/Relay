@@ -9,13 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 
-#define SHADOW_HEIGHT 20.0
-#define SHADOW_INVERSE_HEIGHT 10.0
-#define SHADOW_RATIO (SHADOW_INVERSE_HEIGHT / SHADOW_HEIGHT)
-
 @interface RCTableView : UITableView {
-	CAGradientLayer *originShadow;
-	CAGradientLayer *topShadow;
 	UIImageView *bottomShadow;
 }
 

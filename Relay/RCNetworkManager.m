@@ -164,6 +164,7 @@ static NSMutableArray *networks = nil;
 }
 
 - (void)setupChannelData:(NSString *)nilOrNull {
+	return;
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSString *path = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingString:NETS_PLIST];
 	NSDictionary *dataz = [[NSDictionary alloc] initWithContentsOfFile:path];

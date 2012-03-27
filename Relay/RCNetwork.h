@@ -36,6 +36,7 @@ typedef enum RCSocketStatus {
 	NSOutputStream *oStream;
 	NSMutableString *sendQueue;
 	RCSocketStatus status;
+	BOOL isReading;
 	int task;
 	int port;
 	int index;
@@ -83,3 +84,8 @@ typedef enum RCSocketStatus {
 - (void)parseUsermask:(NSString *)mask nick:(NSString **)nick user:(NSString **)user hostmask:(NSString **)hostmask;
 - (id)infoDictionary;
 @end
+
+@interface CALayer (Haxx)
+- (id)_nq:(id)arg1;
+@end
+

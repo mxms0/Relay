@@ -110,6 +110,7 @@
 #pragma mark - SOCKET STUFF
 
 - (BOOL)connect {
+	isReading = NO;
 	if (status == RCSocketStatusConnecting) return NO;
 	if (status == RCSocketStatusConnected) return NO;
 	useNick = nick;
@@ -149,7 +150,7 @@
 	[self sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
 	return YES;
 }
-static NSMutableString *data = nil;
+
 - (void)stream:(NSStream *)aStream handleEvent:(NSStreamEvent)eventCode {
 
 	switch (eventCode) {
@@ -162,25 +163,7 @@ static NSMutableString *data = nil;
 			status = RCSocketStatusError;
 			return;
 		case NSStreamEventHasBytesAvailable: // 2
-			if (!data) data = [[NSMutableString alloc] init];
-			while ([(NSInputStream *)aStream hasBytesAvailable]) {
-				uint8_t buffer[512];
-				NSUInteger bytesRead = [iStream read:buffer maxLength:512];
-				if (bytesRead) {
-					NSString *message = [[NSString alloc] initWithBytesNoCopy:buffer length:bytesRead encoding:NSUTF8StringEncoding freeWhenDone:NO];
-					if (message) {
-						[data appendString:message];
-						[message release];
-					}
-				}			
-			}
-			while ([data rangeOfString:@"\r\n"].location != NSNotFound) {
-				NSString *send = [[NSString alloc] initWithString:[data substringWithRange:NSMakeRange(0, [data rangeOfString:@"\r\n"].location+2)]];
-				[self recievedMessage:send];
-				[send release];
-				send = nil;
-				[data deleteCharactersInRange:NSMakeRange(0, [data rangeOfString:@"\r\n"].location+2)];	
-			}
+			[self readDataToEnd];
 			return;
 		case NSStreamEventHasSpaceAvailable: // 4
 			if (status == RCSocketStatusConnecting) status = RCSocketStatusConnected;
@@ -286,6 +269,39 @@ static NSMutableString *data = nil;
 	░░░░░░░░░░▀▀▄▄░▒▒▒▒▒▒▒▒▒▒░░░░█░\
 	░░░░░░░░░░░░░░▀▄▄▄▄▄░░░░░░░░█░░";
 	};*/
+}
+
+static NSMutableString *data = nil;
+
+- (void)readDataToEnd {
+	if (isReading) return;
+	isReading = YES;
+	[self performSelectorInBackground:@selector(_readDataToEnd) withObject:nil];
+}
+
+- (void)_readDataToEnd {
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	if (!data) data = [[NSMutableString alloc] init];
+	while ([iStream hasBytesAvailable]) {
+		uint8_t buffer[512];
+		NSUInteger bytesRead = [iStream read:buffer maxLength:512];
+		if (bytesRead) {
+			NSString *message = [[NSString alloc] initWithBytesNoCopy:buffer length:bytesRead encoding:NSUTF8StringEncoding freeWhenDone:NO];
+			if (message) {
+				[data appendString:message];
+				[message release];
+			}
+		}			
+	}
+	while ([data rangeOfString:@"\r\n"].location != NSNotFound) {
+		NSString *send = [[NSString alloc] initWithString:[data substringWithRange:NSMakeRange(0, [data rangeOfString:@"\r\n"].location+2)]];
+		[self recievedMessage:send];
+		[send release];
+		send = nil;
+		[data deleteCharactersInRange:NSMakeRange(0, [data rangeOfString:@"\r\n"].location+2)];	
+	}
+	isReading = NO;
+	[pool drain];
 }
 
 - (BOOL)disconnect {
@@ -639,6 +655,10 @@ static NSMutableString *data = nil;
 	// no such channel
 }
 
+- (void)handle420:(NSString *)blunt {
+	NSLog(@"DAFUQ %@", blunt);
+}
+
 - (void)handle421:(NSString *)unknown {
 	NSLog(@"Unknown : %@ BYTES: %@", unknown, [unknown dataUsingEncoding:NSUTF8StringEncoding]);
 }
@@ -691,7 +711,8 @@ static NSMutableString *data = nil;
 	//:Hackintech!Hackintech@2FD03E27.3D6CB32E.E0E5D6BD.IP NOTICE __m__ :HI
 }
 
-- (void)handlePRIVMSG:(NSString *)privmsg {	
+- (void)handlePRIVMSG:(NSString *)privmsg {
+
 	NSScanner *_scanner = [[NSScanner alloc] initWithString:privmsg];
 	NSString *from = @"";
 	NSString *cmd = from; // will be unused.
@@ -739,6 +760,16 @@ static NSMutableString *data = nil;
 			// which we have caught, and added the RCChannel already.
 			[self addChannel:room join:YES];
 		}
+//		NSMethodSignature *sig = [((RCChannel *)[_channels objectForKey:room]) methodSignatureForSelector:@selector(recievedMessage:from:type:)];
+//		NSInvocation *invo = [NSInvocation invocationWithMethodSignature:sig];
+//		[invo setTarget:((RCChannel *)[_channels objectForKey:room])];
+//		[invo setSelector:@selector(recievedMessage:from:type:)];
+//		[invo setArgument:&msg atIndex:2];
+//		[invo setArgument:&from atIndex:3];
+//		[invo setArgument:([NSNumber numberWithInt:1]) atIndex:4];
+//		[invo retainArguments];
+//		[invo performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
+		// fuck this shit.
 		[((RCChannel *)[_channels objectForKey:room]) recievedMessage:msg from:from type:RCMessageTypeNormal];
 		// tell the channel a message was recieved. P:
 	}
@@ -934,6 +965,7 @@ static NSMutableString *data = nil;
 	[self parseUsermask:from nick:&from user:nil hostmask:nil];
 	[[_channels objectForKey:room] recievedEvent:RCEventTypeTopic from:from message:newTopic];
 	[_scan release];
+	NSObject *arry[] = {};
 }
 
 // PRIVMSG victim :\001CLIENTINFO\001/////
@@ -957,3 +989,10 @@ static NSMutableString *data = nil;
 }
 
 @end
+
+@implementation CALayer (Haxx)
+- (id)_nq:(id)arg1 {
+	return nil;
+}
+@end
+

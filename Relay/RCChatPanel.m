@@ -9,6 +9,35 @@
 #import "RCChatPanel.h"
 #import "RCChannel.h"
 
+@implementation NSObject (Stuff)
+
+- (id)performSelector:(SEL)selector onThread:(NSThread *)aThread withObject:(id)p1 withObject:(id)p2 withObject:(id)p3 withObject:(id)p4 {
+    NSMethodSignature *sig = [self methodSignatureForSelector:selector];
+    if (sig) {
+        NSInvocation* invo = [NSInvocation invocationWithMethodSignature:sig];
+        [invo setTarget:self];
+        [invo setSelector:selector];
+        [invo setArgument:&p1 atIndex:2];
+        [invo setArgument:&p2 atIndex:3];
+        [invo setArgument:&p3 atIndex:4];
+        [invo setArgument:&p4 atIndex:5];
+        [invo performSelector:@selector(invoke) onThread:aThread withObject:nil waitUntilDone:NO];
+        if (sig.methodReturnLength) {
+            id anObject;
+            [invo getReturnValue:&anObject];
+            return anObject;
+            
+        } else {
+            return nil;
+        }
+	}
+	else {
+        return nil;
+    }
+}
+
+@end
+
 @implementation RCChatPanel
 @synthesize channel, tableView, messages;
 
@@ -75,6 +104,7 @@
 		[field release];
 		[self addSubview:_bar];
 		[_bar release];
+		postThread = [NSThread currentThread];
 		UISwipeGestureRecognizer *gesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(suggestNick:)];
 		[field addGestureRecognizer:gesture];
 		[gesture release];
@@ -161,7 +191,6 @@
 	if (key) if ([messages count] != 0) [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 	if (key) {
 		if (self.tableView.contentSize.height > 129) {
-
 		}
 	}
 	else {
@@ -173,21 +202,37 @@
 }
 
 - (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor highlight:(BOOL)high isMine:(BOOL)mine {
+
 	RCMessage *message = [[RCMessage alloc] init];
 	[message setMessage:_message];
 	[message setFlavor:flavor];
 	[message setHighlight:high];
 	[message setIsMine:mine];
+	if (![[NSThread currentThread] isEqual:postThread]) {
+		[self performSelector:@selector(_correctThreadPost:) onThread:postThread withObject:message waitUntilDone:NO];
+		return;
+	}
 	[messages addObject:message];
 	[message release];
-	
-	[self.tableView beginUpdates];
+	[self.tableView performSelectorOnMainThread:@selector(beginUpdates) withObject:nil waitUntilDone:NO];
 	[self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0]] withRowAnimation:UITableViewRowAnimationMiddle];
 	[self.tableView endUpdates];
+	return;
 	if (![self.tableView indexPathForSelectedRow]) {
 		[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 	}	
-	
+}
+
+- (void)_correctThreadPost:(RCMessage *)_m {
+	[messages addObject:_m];
+	[_m release];
+	[self.tableView beginUpdates];
+	[self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0]] withRowAnimation:UITableViewRowAnimationMiddle];
+	[self.tableView endUpdates];
+	return;
+	if (![self.tableView indexPathForSelectedRow]) {
+		[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+	}	
 }
 
 - (CGFloat)tableView:(UITableView *)_tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -226,21 +271,20 @@
     }
     // Configure the cell...
 	RCMessage *_message = [messages objectAtIndex:indexPath.row];
-	if ([cell message]) {
-		if (![[cell message] isEqual:_message]) {
+//	if ([cell message]) {
+//		if (![[cell message] isEqual:_message]) {
 			[cell setMessage:_message];
 			[cell _textHasBeenSet];
-		}
-	}
-	else {
-		[cell setMessage:_message];
-		[cell _textHasBeenSet];
-	}
-    return cell;
+//		}
+//	}
+//	else {
+//		[cell setMessage:_message];
+//		[cell _textHasBeenSet];
+//	}
+	return cell;
 }
 
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-	
+- (void)tableView:(UITableView *)tableView willDisplayCell:(RCChatCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 #pragma mark - Table view delegate

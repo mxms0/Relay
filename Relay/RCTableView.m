@@ -34,11 +34,9 @@
 		if (!bottomShadow) {
 			bottomShadow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"0_shadow_t"]];
 			[cell insertSubview:bottomShadow atIndex:0];
-//			[cell.layer insertSublayer:bottomShadow atIndex:0];
 		}
 		else if ([cell.layer.sublayers indexOfObjectIdenticalTo:bottomShadow] != 0) {
 			[cell insertSubview:bottomShadow atIndex:0];
-		//	[cell.layer insertSublayer:bottomShadow atIndex:0];
 		}
 		
 		CGRect shadowFrame = bottomShadow.frame;
