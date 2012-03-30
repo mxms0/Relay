@@ -24,7 +24,7 @@
 	[[UIApplication sharedApplication] registerForRemoteNotificationTypes:UIRemoteNotificationTypeAlert];
 	CGSize screenWidth = [[UIScreen mainScreen] applicationFrame].size;
 	RCNavigator *navigator = [RCNavigator sharedNavigator];
-	[navigator setFrame:CGRectMake(0, 0, screenWidth.width, screenWidth.height)];
+	[navigator setFrame:CGRectMake(0, 0, 480, screenWidth.height)];
 	[self.view addSubview:navigator];
 	[navigator release];
 	[self.navigationController setNavigationBarHidden:YES];
@@ -70,6 +70,13 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
 	return YES;
+}
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+	if (UIInterfaceOrientationIsLandscape(toInterfaceOrientation)) 
+		[[RCNavigator sharedNavigator] rotateToLandscape];
+	else 
+		[[RCNavigator sharedNavigator] rotateToPortrait];
 }
 
 @end

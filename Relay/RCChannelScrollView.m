@@ -7,6 +7,7 @@
 //
 
 #import "RCChannelScrollView.h"
+#import <CoreGraphics/CoreGraphics.h>
 
 @implementation RCChannelScrollView
 
@@ -14,6 +15,9 @@
 	if ((self = [super initWithFrame:frame])) {
 		[self setScrollEnabled:YES];
 		[self setDirectionalLockEnabled:NO];
+		shouldDrawBG = YES;
+		[self setOpaque:NO];
+		[self setClearsContextBeforeDrawing:YES];
 	}
 	return self;
 }
@@ -62,14 +66,31 @@
 	[self setScrollEnabled:YES];
 }
 
+- (void)clearBG {
+	[self setNeedsDisplay];
+/* no to self
+ when user rotates to landscape
+ this is brillaint
+ when they rotate back
+ it doesn't draw.
+ so derp. :P
+ */
+}
+
 - (void)wantsToJoinChannel:(UIGestureRecognizer *)recog {
 	NSLog(@"hai");
 }
 
 - (void)drawRect:(CGRect)rect {
-	@autoreleasepool {
-		UIImage *bg = [UIImage imageNamed:@"0_chanbar"];
-		[bg drawInRect:rect];
+	if (shouldDrawBG) {
+		@autoreleasepool {
+			UIImage *bg = [UIImage imageNamed:@"0_chanbar"];
+			[bg drawInRect:rect];
+		}
+		shouldDrawBG = NO;
+	}
+	else {
+		CGContextClearRect(UIGraphicsGetCurrentContext(), [self bounds]);
 	}
 }
 @end

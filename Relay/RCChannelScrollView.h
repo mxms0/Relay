@@ -10,7 +10,8 @@
 #import "RCChannelBubble.h"
 
 @interface RCChannelScrollView : UIScrollView {
-	
+	BOOL shouldDrawBG;
 }
 - (void)layoutChannels:(NSArray *)channels;
+- (void)clearBG;
 @end

@@ -31,6 +31,7 @@
 	NSMutableArray *rooms;
 	BOOL draggingNets;
 	BOOL draggingChans;
+	BOOL _isLandscape;
 	int isFirstSetup;
 	int netCount;
 	int currentIndex;
@@ -45,5 +46,7 @@
 - (void)tearDownForChannelList:(RCChannelBubble *)bubble;
 - (void)setMentioned:(BOOL)m forIndex:(int)_index;
 - (void)channelWantsSuicide:(RCChannelBubble *)bubble;
+- (void)rotateToLandscape;
+- (void)rotateToPortrait;
 - (RCChannelBubble *)channelBubbleWithChannelName:(NSString *)name;
 @end

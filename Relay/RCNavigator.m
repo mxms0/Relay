@@ -22,6 +22,7 @@ static id _sharedNavigator = nil;
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
 		isFirstSetup = -1;
+		_isLandscape = NO;
 		memberPanel = [[RCUserListPanel alloc] initWithFrame:CGRectMake(0, 77, 320, 383)];
 		memberPanel.backgroundColor = [UIColor clearColor];
 		memberPanel.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -468,13 +469,61 @@ static BOOL isShowing = NO;
 
 - (void)drawRect:(CGRect)rect {
 	@autoreleasepool {
-		UIImage *tb = [UIImage imageNamed:@"0_navbar"];
-		[tb drawInRect:CGRectMake(0, 0, 320, 45)];
-		UIImage *bg = [UIImage imageNamed:@"0_bg"];
-		[bg drawInRect:CGRectMake(0, 45, 320, 426)];
+		if (_isLandscape) {
+			UIImage *tb = [UIImage imageNamed:@"0_navbar_landscape"];
+			[tb drawInRect:CGRectMake(0, 0, 480, 33)];
+			UIImage *bg = [UIImage imageNamed:@"0_bg"];
+			[bg drawInRect:CGRectMake(0, 33, 480, 300)];
+		}
+		else {
+			UIImage *tb = [UIImage imageNamed:@"0_navbar"];
+			[tb drawInRect:CGRectMake(0, 0, 320, 45)];
+			UIImage *bg = [UIImage imageNamed:@"0_bg"];
+			[bg drawInRect:CGRectMake(0, 45, 320, 426)];
+		}
 	}
 }
 
+- (void)rotateToLandscape {
+	_isLandscape = YES;
+	if (bar.frame.size.height == 45) {
+		bar.frame = CGRectMake(bar.frame.origin.x, bar.frame.origin.y, 120, 33);
+		scrollBar.frame = CGRectMake(240, 0, 480-250, 33);
+				scrollBar.backgroundColor = [UIColor clearColor];
+		[scrollBar clearBG];
+
+	}
+	[self setNeedsDisplay];
+	[self performSelectorInBackground:@selector(reLayoutNetworkTitles) withObject:nil];
+}
+
+- (void)reLayoutNetworkTitles {
+	for (int i = 0; i < [[bar subviews] count]; i++) {
+		UILabel *subv = [[bar subviews] objectAtIndex:i];
+		if ([subv isKindOfClass:[RCTitleLabel class]]) {
+			if ([subv respondsToSelector:@selector(setFont:)])
+				[subv setFont:[UIFont boldSystemFontOfSize:15]];
+			[subv setFrame:CGRectMake((i-1)*bar.frame.size.width, 0, bar.frame.size.width, 33)];
+		}
+	}
+	/*
+		if ([lbl isKindOfClass:[RCTitleLabel class]]) {
+			if (_isLandscape) lbl.font = [UIFont boldSystemFontOfSize:16];
+			else lbl.font = [UIFont boldSystemFontOfSize:20];
+			lbl.frame = CGRectMake((lbl.frame.origin.x == 0 ? 0 : lbl.frame.origin.x + (_isLandscape ? -50 : 50)), 0, lbl.superview.frame.size.width, bar.frame.size.height);
+		}
+	}*/
+}
+
+- (void)rotateToPortrait {
+	_isLandscape = NO;
+	[self setNeedsDisplay];
+	if (bar.frame.size.height == 33) {
+		bar.frame = CGRectMake(bar.frame.origin.x, bar.frame.origin.y, 200, 45);
+	}
+	[self setNeedsDisplay];
+	[self performSelectorInBackground:@selector(reLayoutNetworkTitles) withObject:nil];
+}
 
 - (void)dealloc {
 	[bar release];

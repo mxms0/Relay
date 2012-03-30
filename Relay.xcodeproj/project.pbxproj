@@ -122,6 +122,10 @@
 		50AAE7EA151AD8B900E631FD /* RCAddCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 50AAE7E9151AD8B900E631FD /* RCAddCell.m */; };
 		50AAE7ED151ADDAB00E631FD /* 0_r_shadow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50AAE7EB151ADDAB00E631FD /* 0_r_shadow@2x.png */; };
 		50AAE7EE151ADDAB00E631FD /* 0_r_shadow.png in Resources */ = {isa = PBXBuildFile; fileRef = 50AAE7EC151ADDAB00E631FD /* 0_r_shadow.png */; };
+		50E4922D152284F600EF676B /* 0_divider.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E49229152284F300EF676B /* 0_divider.png */; };
+		50E4922E152284F600EF676B /* 0_divider@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E4922A152284F400EF676B /* 0_divider@2x.png */; };
+		50E492341522A27A00EF676B /* 0_navbar_landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E492321522A27300EF676B /* 0_navbar_landscape.png */; };
+		50E492351522A27A00EF676B /* 0_navbar_landscape@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E492331522A27500EF676B /* 0_navbar_landscape@2x.png */; };
 		50E77A8F1505A29100E75C64 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A8E1505A29100E75C64 /* main.m */; };
 		50E77A921505A30400E75C64 /* RCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A651505A17800E75C64 /* RCViewController.m */; };
 		50E77A931505A30400E75C64 /* RCChatPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A671505A18700E75C64 /* RCChatPanel.m */; };
@@ -282,6 +286,10 @@
 		50AAE7E9151AD8B900E631FD /* RCAddCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCAddCell.m; sourceTree = "<group>"; };
 		50AAE7EB151ADDAB00E631FD /* 0_r_shadow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_r_shadow@2x.png"; sourceTree = "<group>"; };
 		50AAE7EC151ADDAB00E631FD /* 0_r_shadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_r_shadow.png; sourceTree = "<group>"; };
+		50E49229152284F300EF676B /* 0_divider.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_divider.png; sourceTree = "<group>"; };
+		50E4922A152284F400EF676B /* 0_divider@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_divider@2x.png"; sourceTree = "<group>"; };
+		50E492321522A27300EF676B /* 0_navbar_landscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_navbar_landscape.png; sourceTree = "<group>"; };
+		50E492331522A27500EF676B /* 0_navbar_landscape@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_navbar_landscape@2x.png"; sourceTree = "<group>"; };
 		50E77A641505A17800E75C64 /* RCViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCViewController.h; sourceTree = "<group>"; };
 		50E77A651505A17800E75C64 /* RCViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCViewController.m; sourceTree = "<group>"; };
 		50E77A661505A18700E75C64 /* RCChatPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCChatPanel.h; sourceTree = "<group>"; };
@@ -513,6 +521,10 @@
 				504CC31A151C422400605706 /* 0_navbar_old@2x.png */,
 				5049385714FAAAD3003221FC /* 0_chatcell.png */,
 				5049385814FAAAD3003221FC /* 0_chatcell@2x.png */,
+				50E49229152284F300EF676B /* 0_divider.png */,
+				50E4922A152284F400EF676B /* 0_divider@2x.png */,
+				50E492321522A27300EF676B /* 0_navbar_landscape.png */,
+				50E492331522A27500EF676B /* 0_navbar_landscape@2x.png */,
 				50A7FB9514C0F0A800ABADEA /* RCViewController_iPhone.xib */,
 				50A7FB9814C0F0A800ABADEA /* RCViewController_iPad.xib */,
 				50E77A8C1505A28400E75C64 /* Relay-Info.plist */,
@@ -747,6 +759,10 @@
 				5030501F1521389B002AAA44 /* 0_chatcell_11@2x.png in Resources */,
 				503050201521389B002AAA44 /* 0_chatcell_12.png in Resources */,
 				503050211521389B002AAA44 /* 0_chatcell_12@2x.png in Resources */,
+				50E4922D152284F600EF676B /* 0_divider.png in Resources */,
+				50E4922E152284F600EF676B /* 0_divider@2x.png in Resources */,
+				50E492341522A27A00EF676B /* 0_navbar_landscape.png in Resources */,
+				50E492351522A27A00EF676B /* 0_navbar_landscape@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
