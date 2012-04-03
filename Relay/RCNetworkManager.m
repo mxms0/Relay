@@ -130,7 +130,7 @@ static NSMutableArray *networks = nil;
 }
 
 - (RCNetwork *)networkWithDescription:(NSString *)_desc {
-	for (RCNetwork *net in [self networks]) {
+	for (RCNetwork *net in networks) {
 		if ([[net _description] isEqualToString:_desc]) return net;
 	}
 	return nil;

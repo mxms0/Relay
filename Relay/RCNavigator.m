@@ -397,7 +397,6 @@ static BOOL isShowing = NO;
 }
 
 - (void)channelSelected:(RCChannelBubble *)bubble {
-	
 	if (memberPanel.delegate != nil) {
 		if (currentPanel != nil) 
 			 [[[currentPanel channel] bubble] _setSelected:NO];
@@ -408,9 +407,8 @@ static BOOL isShowing = NO;
 	}
 	if (currentPanel != nil) if ([[[currentPanel channel] bubble] isEqual:bubble]) return;
 	[[[currentPanel channel] bubble] _setSelected:NO];
-	NSLog(@"Meh. %@ %@", currentPanel, bubble);
 	[bubble _setSelected:YES];
-	RCNetwork *net = [[RCNetworkManager sharedNetworkManager] networkWithDescription:[[[bar subviews] objectAtIndex:currentIndex] text]];
+	RCNetwork *net = [[RCNetworkManager sharedNetworkManager] networkWithDescription:[[[bar subviews] objectAtIndex:currentIndex+1] text]];
 	RCChannel *chan = [[net _channels] objectForKey:bubble.titleLabel.text];
 	if (chan) {
 		if (currentPanel) {
