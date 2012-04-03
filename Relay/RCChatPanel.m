@@ -39,7 +39,7 @@
 @end
 
 @implementation RCChatPanel
-@synthesize channel, tableView, messages;
+@synthesize tableView, messages;
 
 - (id)initWithStyle:(UITableViewStyle)style andChannel:(RCChannel *)chan {
 	if ((self = [super init])) {
@@ -108,16 +108,19 @@
 		UISwipeGestureRecognizer *gesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(suggestNick:)];
 		[field addGestureRecognizer:gesture];
 		[gesture release];
-		UIImageView *_shadow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"0_shadow_t"]];
-		[_shadow setFrame:CGRectMake(0, 0, 320, 7)];
-		[self addSubview:_shadow];
-		[_shadow release];
     }
     return self;
 }
 
 - (void)suggestNick:(UIGestureRecognizer *)gestr {
 	prev = [channel userWithPrefix:currentWord pastUser:prev];
+}
+
+- (void)setChannel:(RCChannel *)_channel {
+	channel = _channel;
+}
+- (RCChannel *)channel {
+	return channel;
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
@@ -136,6 +139,13 @@
 //		[currentWord setString:@""];
 //	}
 	return YES;
+}
+
+- (void)setFrame:(CGRect)frame {
+	[self.tableView setFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
+	[_bar setFrame:CGRectMake(0, frame.size.height, frame.size.width, 40)];
+	[self repositionKeyboardForUse:[field isFirstResponder]];
+	[super setFrame:CGRectMake(0, frame.origin.y, frame.size.width, frame.size.height+40)];
 }
 
 - (BOOL)becomeFirstResponder {
@@ -180,14 +190,16 @@
 
 	[UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationDuration:0.25];
-	if (key) {
-		[_bar setFrame:CGRectMake(0, 129, 320, 40)];
+	[_bar setFrame:[self frameForInputField:key]];
+	field.frame = CGRectMake(15, 5, _bar.frame.size.width-30, 31);
+	[UIView commitAnimations];
+	if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
+		[_bar setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"0_input_l"]]];
 	}
 	else {
-		[_bar setFrame:CGRectMake(0, 343, 320, 40)];
+		[_bar setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"0_input"]]];	
 	}
-	[UIView commitAnimations];
-	[self.tableView setFrame:CGRectMake(0, 0, 320, (key ? 129 : 343))];
+	[self.tableView setFrame:CGRectMake(0, 0, _bar.frame.size.width, _bar.frame.origin.y)];
 	if (key) if ([messages count] != 0) [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 	if (key) {
 		if (self.tableView.contentSize.height > 129) {
@@ -197,31 +209,26 @@
 	}
 }
 
+- (CGRect)frameForInputField:(BOOL)activ {
+	if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
+		return CGRectMake(0, (activ ? 65 : 227), 480, 40);
+	}
+	return CGRectMake(0, (activ ? 127 : 345), 320, 40);
+}
+
 - (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor highlight:(BOOL)high {
 	[self postMessage:_message withFlavor:flavor highlight:high isMine:NO];
 }
 
 - (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor highlight:(BOOL)high isMine:(BOOL)mine {
-
 	RCMessage *message = [[RCMessage alloc] init];
 	[message setMessage:_message];
 	[message setFlavor:flavor];
 	[message setHighlight:high];
 	[message setIsMine:mine];
-	if (![[NSThread currentThread] isEqual:postThread]) {
-		[self performSelector:@selector(_correctThreadPost:) onThread:postThread withObject:message waitUntilDone:NO];
-		return;
-	}
-	[messages addObject:message];
-	[message release];
-	[self.tableView performSelectorOnMainThread:@selector(beginUpdates) withObject:nil waitUntilDone:NO];
-	[self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0]] withRowAnimation:UITableViewRowAnimationMiddle];
-	[self.tableView endUpdates];
-	return;
-	if (![self.tableView indexPathForSelectedRow]) {
-		[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-	}	
+	[self performSelectorOnMainThread:@selector(_correctThreadPost:) withObject:message waitUntilDone:NO];
 }
+
 
 - (void)_correctThreadPost:(RCMessage *)_m {
 	[messages addObject:_m];
@@ -229,16 +236,16 @@
 	[self.tableView beginUpdates];
 	[self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0]] withRowAnimation:UITableViewRowAnimationMiddle];
 	[self.tableView endUpdates];
-	return;
-	if (![self.tableView indexPathForSelectedRow]) {
+	if ([messages count] > 2)
 		[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-	}	
 }
 
 - (CGFloat)tableView:(UITableView *)_tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 	UITableViewCell *c = [self tableView:_tableView cellForRowAtIndexPath:indexPath];
 	[c layoutSubviews];
-	return (c.textLabel.frame.size.height + 4);
+	RCMessage *__msg = [messages objectAtIndex:indexPath.row];
+//	return (c.textLabel.frame.size.height + 4);
+	return (__msg.messageHeight + 4);
 }
 
 - (NSInteger)tableView:(UITableView *)_tableView indentationLevelForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -259,7 +266,6 @@
 }
 
 - (NSInteger)tableView:(UITableView *)_tableView numberOfRowsInSection:(NSInteger)section {
-    // Return the number of rows in the section.
     return [messages count];
 }
 

@@ -18,6 +18,8 @@
 		shouldDrawBG = YES;
 		[self setOpaque:NO];
 		[self setClearsContextBeforeDrawing:YES];
+		[self setClipsToBounds:YES];
+		[self setShowsHorizontalScrollIndicator:NO];
 	}
 	return self;
 }
@@ -77,6 +79,11 @@
  */
 }
 
+- (void)drawBG {
+	shouldDrawBG = YES;
+	[self setNeedsDisplay];
+}
+
 - (void)wantsToJoinChannel:(UIGestureRecognizer *)recog {
 	NSLog(@"hai");
 }
@@ -90,7 +97,7 @@
 		shouldDrawBG = NO;
 	}
 	else {
-		CGContextClearRect(UIGraphicsGetCurrentContext(), [self bounds]);
+		[super drawRect:rect];
 	}
 }
 @end

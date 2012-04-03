@@ -45,8 +45,7 @@ static NSMutableArray *networks = nil;
 	if (n) [self performSelectorInBackground:@selector(saveNetworks) withObject:nil];
 }
 
-- (void)addNetwork:(RCNetwork *)_net isChange:(BOOL)c {
-	
+- (void)addNetwork:(RCNetwork *)_net {
 	for (RCNetwork *net in networks) {
 		if ([[net descriptionForComparing] isEqualToString:[_net descriptionForComparing]]) {
 			return;
@@ -56,12 +55,7 @@ static NSMutableArray *networks = nil;
 	[networks addObject:_net];
 	[[RCNavigator sharedNavigator] addNetwork:_net];
 	if ([_net COL]) [_net connect];
-	[_net release];
 	[self saveNetworks];
-}
-
-- (void)addNetwork:(RCNetwork *)_net {
-	[self addNetwork:_net isChange:NO];
 }
 
 - (void)finishSetupForNetwork:(RCNetwork *)net {

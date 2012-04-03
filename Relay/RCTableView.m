@@ -19,7 +19,7 @@
 - (void)layoutSubviews {
 	[super layoutSubviews];
 	
-	NSArray *indexPathsForVisibleRows = [self indexPathsForVisibleRows];
+/*	NSArray *indexPathsForVisibleRows = [self indexPathsForVisibleRows];
 	if ([indexPathsForVisibleRows count] == 0) {
 		[bottomShadow removeFromSuperview];
 		[bottomShadow release];
@@ -48,11 +48,11 @@
 		[bottomShadow removeFromSuperview];
 		[bottomShadow release];
 		bottomShadow = nil;
-	}
+	}*/
 }
 
 - (void)dealloc {
-	[bottomShadow release];
+//	[bottomShadow release];
 	[super dealloc];
 }
 

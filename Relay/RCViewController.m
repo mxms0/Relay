@@ -28,10 +28,16 @@
 	[self.view addSubview:navigator];
 	[navigator release];
 	[self.navigationController setNavigationBarHidden:YES];
-//	[self performSelectorInBackground:@selector(doConnect:) withObject:nil];
+	[self performSelectorInBackground:@selector(doConnect:) withObject:nil];
 }
 
 - (void)doConnect:(id)unused {
+//	NSURL *file = [NSURL fileURLWithPath:PREFS_ABSOLUT];
+//	NSURL *_path = [[NSFileManager defaultManager] URLForUbiquityContainerIdentifier:nil];
+//	NSError *errro;
+//	[[NSFileManager defaultManager] setUbiquitous:YES itemAtURL:file destinationURL:_path error:&errro];
+//	if (errro) NSLog(@"Meh. %@", errro);
+
 //	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 //	NSString *url = @"http://mxms.us/gabby.jpg";
 //	
@@ -70,6 +76,10 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
 	return YES;
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+	[[RCNavigator sharedNavigator] performSelectorInBackground:@selector(reLayoutNetworkTitles) withObject:nil];
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {

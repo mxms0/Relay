@@ -17,7 +17,6 @@
 	if ((self = [super init])) {
 		status = RCSocketStatusNotOpen;
 		shouldSave = NO;
-		_scores = 0;
 		isRegistered = NO;
 		canSend = YES;
 		channels = [[NSMutableArray alloc] init];
@@ -80,11 +79,12 @@
 }
 - (void)addChannel:(NSString *)_chan join:(BOOL)join {
 	if (![[_channels allKeys] containsObject:_chan]) {
-		RCChannel *chan;
+		RCChannel *chan = nil;
 		if ([_chan isEqualToString:@"IRC"]) chan = [[RCConsoleChannel alloc] initWithChannelName:_chan];
 		else if ([_chan hasPrefix:@"#"]) chan = [[RCChannel alloc] initWithChannelName:_chan];
 		else chan = [[RCPMChannel alloc] initWithChannelName:_chan];
 		[chan setDelegate:self];
+		NSLog(@"Wee__  %@", chan);
 		[[self _channels] setObject:chan forKey:_chan];
 		[chan release];
 		if (![[self channels] containsObject:_chan])
@@ -101,9 +101,9 @@
 
 - (void)removeChannel:(RCChannel *)chan {
 	[chan setJoined:NO withArgument:@"Relay Chat."];
+	[[RCNavigator sharedNavigator] removeChannel:chan toServerAtIndex:index];
 	[channels removeObject:[chan channelName]];
 	[_channels removeObjectForKey:[chan channelName]];
-	[[RCNavigator sharedNavigator] removeChannel:chan toServerAtIndex:index];
 	[[RCNetworkManager sharedNetworkManager] saveNetworks];
 }
 
@@ -111,6 +111,8 @@
 
 - (BOOL)connect {
 	isReading = NO;
+	canSend = YES;
+	isRegistered = NO;
 	if (status == RCSocketStatusConnecting) return NO;
 	if (status == RCSocketStatusConnected) return NO;
 	useNick = nick;
@@ -302,6 +304,8 @@ static NSMutableString *data = nil;
 	}
 	isReading = NO;
 	[pool drain];
+	if ([iStream hasBytesAvailable]) [self _readDataToEnd];
+
 }
 
 - (BOOL)disconnect {
@@ -329,6 +333,7 @@ static NSMutableString *data = nil;
 	isRegistered = YES;
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
 	if (chan) [chan recievedMessage:@"Connected to host." from:@"" type:RCMessageTypeNormal];
+	if ([npass length] > 0)	[self sendMessage:[@"PRIVMSG NickServ IDENTIFY " stringByAppendingString:npass]];
 	for (NSString *chan in channels) {
 		if ([[_channels objectForKey:chan] joinOnConnect]) [[_channels objectForKey:chan] setJoined:YES withArgument:nil];
 	}

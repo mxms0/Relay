@@ -44,11 +44,7 @@
 	} completion:^(BOOL finished) {
 		if (finished) 
 			[self setBackgroundImage:noglow forState:UIControlStateNormal];
-	}];
-	//		UIImage *image = [[UIImage imageNamed:@"0_rednotification_noglow"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 15, 0, 15)];
-	//		[self setBackgroundImage:image forState:UIControlStateNormal];
-	//		[self setBackgroundImage:image forState:UIControlStateHighlighted];
-	//		[self setBackgroundImage:image forState:UIControlStateSelected];	
+	}];	
 }
 
 /*

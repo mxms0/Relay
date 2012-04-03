@@ -16,7 +16,7 @@
 @interface RCAddNetworkController : UITableViewController <UITextFieldDelegate, UIScrollViewDelegate> {
 	RCNetwork *network;
 	BOOL isNew;
-
+	UIImageView *r_shadow;
 }
 
 - (id)initWithNetwork:(RCNetwork *)net;

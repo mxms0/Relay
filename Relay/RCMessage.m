@@ -9,7 +9,7 @@
 #import "RCMessage.h"
 
 @implementation RCMessage
-@synthesize flavor, message, highlight, isMine, isOld;
+@synthesize flavor, message, highlight, isMine, isOld, messageHeight;
 
 - (void) encodeWithCoder: (NSCoder *)coder {
 	[coder encodeObject:message forKey:@"0_MSGKEY"];
@@ -19,7 +19,7 @@
 }
 
 - (id)initWithCoder:(NSCoder *)coder {
-    if (self = [super init]) {
+    if ((self = [super init])) {
         NSAutoreleasePool *poolz = [[NSAutoreleasePool alloc] init];
 		[self setMessage:[coder decodeObjectForKey:@"0_MSGKEY"]];
 		[self setFlavor:(RCMessageFlavor)[[coder decodeObjectForKey:@"0_FLVRKEY"] intValue]];
@@ -29,6 +29,10 @@
         [poolz drain];
     }
     return self;
+}
+
+- (id)description {
+	return [NSString stringWithFormat:@"<%@ :%p; Message = %@; Height = %d; Flavor = %d>", NSStringFromClass([self class]), self, message, messageHeight, (int)flavor];
 }
 
 - (id)init {

@@ -10,13 +10,6 @@
 
 @implementation RCUserListPanel
 
-- (id)initWithFrame:(CGRect)frame style:(UITableViewStyle)style {
-	if ((self = [super initWithFrame:frame style:style])) {
-		
-	}
-	return self;
-}
-
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.

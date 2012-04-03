@@ -41,8 +41,6 @@ typedef enum RCSocketStatus {
 	int port;
 	int index;
 	int maxStatusLength;
-	int _scores; // ha. funny. jokes. get it. under_scores. >< 
-	/* _scores isn't actually used anymore.. */
 	BOOL isRegistered;
 	BOOL useSSL;
 	BOOL COL;

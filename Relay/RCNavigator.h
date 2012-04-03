@@ -26,8 +26,8 @@
 	RCNewMessagesBubble *rightBubble;
 	RCBarGroup *leftGroup;
 	RCBarGroup *rightGroup;
-	NSMutableDictionary *_notifications;
 	UILabel *stupidLabel;
+	NSMutableDictionary *_notifications;
 	NSMutableArray *rooms;
 	BOOL draggingNets;
 	BOOL draggingChans;

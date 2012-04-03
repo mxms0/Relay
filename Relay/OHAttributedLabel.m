@@ -583,8 +583,7 @@ static time_t end;
 /////////////////////////////////////////////////////////////////////////////
 
 - (void)setText:(NSString *)text {
-	NSString *cleanedText = [[text stringByReplacingOccurrencesOfString:@"\r\n" withString:@"\n"]
-							 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+	NSString *cleanedText = [[text stringByReplacingOccurrencesOfString:@"\r\n" withString:@"\n"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 	[super setText:cleanedText]; // will call setNeedsDisplay too
 	[self resetAttributedText];
 	

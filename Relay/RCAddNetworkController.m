@@ -65,7 +65,12 @@
 	self.navigationItem.titleView = titleView;
 	[titleView release];
 	self.tableView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"0_bg"]];
-	UIImageView *r_shadow = [[UIImageView alloc] initWithFrame:CGRectMake(0, 44, 320, 10)];
+	float y = 44;
+	float width = 320;
+	if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
+		y = 33; width = 480;
+	}
+	r_shadow = [[UIImageView alloc] initWithFrame:CGRectMake(0, y, width, 10)];
 	[r_shadow setImage:[UIImage imageNamed:@"0_r_shadow"]];
 	r_shadow.alpha = 0.5;
 	[self.navigationController.navigationBar addSubview:r_shadow];
@@ -95,7 +100,16 @@
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-	return (interfaceOrientation == UIInterfaceOrientationPortrait);
+	return YES;
+}
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+	float y = 44;
+	float width = 320;
+	if (UIInterfaceOrientationIsLandscape(toInterfaceOrientation)) {
+		y = 33; width = 480;
+	}
+	r_shadow.frame = CGRectMake(0, y, width, 10);
 }
 
 - (void)doneWithJoin {
@@ -147,6 +161,7 @@
 			[network setRealname:[textField text]];
 			break;
 		case 7:
+			[network setNpass:[textField text]];
 			break;
 		case 8:
 			[network setSpass:[textField text]];
@@ -400,6 +415,22 @@
 			switch (indexPath.row) {
 				case 0:
 					cell.textLabel.text = @"NickServ";
+					RCTextField *nsField = [[RCTextField alloc] initWithFrame:CGRectMake(0, 0, 170, 16)];
+					[nsField setAdjustsFontSizeToFitWidth:YES];
+					[nsField setPlaceholder:@"a-password"];
+					[nsField setTag:7];
+					[nsField setSecureTextEntry:YES];
+					[nsField setText:[network npass]];
+					[nsField setDelegate:self];
+#if USE_PRIVATE 
+					[nsField setInsertionPointColor:UIColorFromRGB(0x4F94EA)];
+#endif
+					[nsField setTextColor:UIColorFromRGB(FONT_COLOR)];
+					[nsField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
+					[nsField setKeyboardAppearance:UIKeyboardAppearanceDefault];
+					[nsField setReturnKeyType:UIReturnKeyNext];
+					[cell setAccessoryView:nsField];
+					[nsField release];	
 					break;
 				case 1:
 					cell.textLabel.text = @"Server";

@@ -54,7 +54,7 @@ static BOOL isSetup = NO;
 		[[RCNetworkManager sharedNetworkManager] setIsBG:NO];
 		[[RCNetworkManager sharedNetworkManager] unpack];
 		isSetup = YES;
-}
+	}
     return YES;
 }
 

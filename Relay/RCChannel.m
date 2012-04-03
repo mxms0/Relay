@@ -13,7 +13,7 @@
 
 @implementation RCChannel
 
-@synthesize channelName, joinOnConnect, delegate, panel, topic, bubble, usersPanel;
+@synthesize channelName, joinOnConnect, panel, topic, bubble, usersPanel;
 
 NSString *RCMergeModes(NSString *arg1, NSString *arg2) {
 	if (arg1 == nil || arg2 == nil) return nil;
@@ -103,11 +103,18 @@ UIImage *RCImageForRank(NSString *rank) {
 		channelName = [_chan retain];
 		joinOnConnect = YES;
 		joined = NO;
-		shouldUpdate = YES;
 		users = [[NSMutableDictionary alloc] init];
 		panel = [[RCChatPanel alloc] initWithStyle:UITableViewStylePlain andChannel:self];
 	}
 	return self;
+}
+
+- (RCNetwork *)delegate {
+	return delegate;
+}
+
+- (void)setDelegate:(RCNetwork *)_delegate {
+	delegate = _delegate;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -210,7 +217,9 @@ UIImage *RCImageForRank(NSString *rank) {
 }
 
 - (void)shouldPost:(BOOL)isHighlight withMessage:(NSString *)msg {
-	BOOL iAmCurrent = [[[[RCNavigator sharedNavigator] currentPanel] channel] isEqual:self];
+	BOOL iAmCurrent = NO;
+	if ([[RCNavigator sharedNavigator] currentPanel]) 
+		iAmCurrent = [[[[RCNavigator sharedNavigator] currentPanel] channel] isEqual:self];
 	if (isHighlight) {
 		if (!iAmCurrent) [bubble setMentioned:YES];
 		if ([[RCNetworkManager sharedNetworkManager] isBG]) {

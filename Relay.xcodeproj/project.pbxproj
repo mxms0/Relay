@@ -52,6 +52,8 @@
 		50381AD11519803100BE93CE /* 0_toggleoff@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50381ABB1519803100BE93CE /* 0_toggleoff@2x.png */; };
 		50381AD21519803100BE93CE /* 0_toggleon.png in Resources */ = {isa = PBXBuildFile; fileRef = 50381ABC1519803100BE93CE /* 0_toggleon.png */; };
 		50381AD31519803100BE93CE /* 0_toggleon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50381ABD1519803100BE93CE /* 0_toggleon@2x.png */; };
+		50468A8D1527E46D0025F405 /* 0_input_l.png in Resources */ = {isa = PBXBuildFile; fileRef = 50468A8B1527E46D0025F405 /* 0_input_l.png */; };
+		50468A8E1527E46D0025F405 /* 0_input_l@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50468A8C1527E46D0025F405 /* 0_input_l@2x.png */; };
 		50472B77151AA6820083D691 /* RCSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 50472B76151AA6820083D691 /* RCSwitch.m */; };
 		50472B83151ABDEA0083D691 /* 0_toggle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50472B81151ABDEA0083D691 /* 0_toggle@2x.png */; };
 		50472B84151ABDEA0083D691 /* 0_toggle.png in Resources */ = {isa = PBXBuildFile; fileRef = 50472B82151ABDEA0083D691 /* 0_toggle.png */; };
@@ -205,6 +207,8 @@
 		50381ABB1519803100BE93CE /* 0_toggleoff@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_toggleoff@2x.png"; sourceTree = "<group>"; };
 		50381ABC1519803100BE93CE /* 0_toggleon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_toggleon.png; sourceTree = "<group>"; };
 		50381ABD1519803100BE93CE /* 0_toggleon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_toggleon@2x.png"; sourceTree = "<group>"; };
+		50468A8B1527E46D0025F405 /* 0_input_l.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_input_l.png; sourceTree = "<group>"; };
+		50468A8C1527E46D0025F405 /* 0_input_l@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_input_l@2x.png"; sourceTree = "<group>"; };
 		50472B75151AA6820083D691 /* RCSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCSwitch.h; sourceTree = "<group>"; };
 		50472B76151AA6820083D691 /* RCSwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCSwitch.m; sourceTree = "<group>"; };
 		50472B81151ABDEA0083D691 /* 0_toggle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_toggle@2x.png"; sourceTree = "<group>"; };
@@ -255,6 +259,7 @@
 		504CC348151C4C6A00605706 /* 0_redbar_noglow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_redbar_noglow@2x.png"; sourceTree = "<group>"; };
 		504CC353151C50C100605706 /* RCBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCBar.h; sourceTree = "<group>"; };
 		504CC354151C50C100605706 /* RCBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCBar.m; sourceTree = "<group>"; };
+		506944C6152813530096140C /* Relay.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Relay.entitlements; sourceTree = "<group>"; };
 		50711B3715156C440022CA68 /* 0_chatcell_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_chatcell_2.png; sourceTree = "<group>"; };
 		50711B3815156C440022CA68 /* 0_chatcell_2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_chatcell_2@2x.png"; sourceTree = "<group>"; };
 		50711B3915156C450022CA68 /* 0_chatcell_3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_chatcell_3.png; sourceTree = "<group>"; };
@@ -405,6 +410,7 @@
 		50A7FB8614C0F0A800ABADEA /* Relay */ = {
 			isa = PBXGroup;
 			children = (
+				506944C6152813530096140C /* Relay.entitlements */,
 				50E77A8B1505A27800E75C64 /* Relay.h */,
 				50A7FBA914C0F7DC00ABADEA /* UI */,
 				50A7FBAA14C0F7E200ABADEA /* Backend */,
@@ -509,6 +515,8 @@
 				5030501B1521389B002AAA44 /* 0_chatcell_12@2x.png */,
 				5049385C14FAAAE3003221FC /* 0_bble.png */,
 				5049385D14FAAAE3003221FC /* 0_bble@2x.png */,
+				50468A8B1527E46D0025F405 /* 0_input_l.png */,
+				50468A8C1527E46D0025F405 /* 0_input_l@2x.png */,
 				5049385E14FAAAE3003221FC /* 0_bg.png */,
 				5049385F14FAAAE3003221FC /* 0_bg@2x.png */,
 				504B4DB6151D39DD0082A44D /* 0_chanbar@2x.png */,
@@ -763,6 +771,8 @@
 				50E4922E152284F600EF676B /* 0_divider@2x.png in Resources */,
 				50E492341522A27A00EF676B /* 0_navbar_landscape.png in Resources */,
 				50E492351522A27A00EF676B /* 0_navbar_landscape@2x.png in Resources */,
+				50468A8D1527E46D0025F405 /* 0_input_l.png in Resources */,
+				50468A8E1527E46D0025F405 /* 0_input_l@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -842,6 +852,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_ENTITLEMENTS = Relay/Relay.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: deanna shavrick";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: deanna shavrick";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -852,7 +864,8 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "B140CE36-B0F1-4B5D-9C07-61EE2C6745C2";
+				PROVISIONING_PROFILE = "4C996602-A82C-48D6-9285-EA45B54B89DE";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "4C996602-A82C-48D6-9285-EA45B54B89DE";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -863,7 +876,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALTERNATE_MODE = Entitlements.plist;
-				CODE_SIGN_ENTITLEMENTS = Entitlements.plist;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: deanna shavrick";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Relay/Relay-Prefix.pch";
@@ -877,7 +889,7 @@
 					"\"$(SRCROOT)/../../Downloads/TestFlightSDK0.8.2\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "BD61170C-DF63-4C61-B743-1567986D45FD";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "4C996602-A82C-48D6-9285-EA45B54B89DE";
 				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};
@@ -888,6 +900,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_ENTITLEMENTS = Relay/Relay.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: deanna shavrick";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -915,6 +928,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_ENTITLEMENTS = Relay/Relay.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: deanna shavrick";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -936,7 +950,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALTERNATE_MODE = Entitlements.plist;
-				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: deanna shavrick";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: deanna shavrick (883972NT79)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -961,7 +974,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALTERNATE_MODE = Entitlements.plist;
-				CODE_SIGN_ENTITLEMENTS = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: deanna shavrick";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Relay/Relay-Prefix.pch";

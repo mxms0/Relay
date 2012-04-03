@@ -69,7 +69,7 @@ static id _sharedNavigator = nil;
 		[bar setDelegate:self];
 		[self addSubview:bar];
 		[bar release];
-		[NSTimer scheduledTimerWithTimeInterval:15 target:self selector:@selector(pulseMofo:) userInfo:nil repeats:YES];
+	//	[NSTimer scheduledTimerWithTimeInterval:15 target:self selector:@selector(pulseMofo:) userInfo:nil repeats:YES];
     }
 	_sharedNavigator = self;
     return _sharedNavigator;
@@ -91,12 +91,14 @@ static id _sharedNavigator = nil;
 	if (isFirstSetup == 2) {
 		netCount = 0;
 		[[[RCNetworkManager sharedNetworkManager] networks] removeObjectAtIndex:0];
-		[[[bar subviews] objectAtIndex:netCount+1] removeFromSuperview];
+		[[[bar subviews] objectAtIndex:netCount] removeFromSuperview];
 		[scrollBar layoutChannels:nil];
 		isFirstSetup = 0;
 		[rooms removeObjectAtIndex:0];
 		[currentPanel removeFromSuperview];
+		currentPanel = nil;
 		[NSTimer scheduledTimerWithTimeInterval:120 target:[RCNetworkManager sharedNetworkManager] selector:@selector(saveChannelData:) userInfo:nil repeats:YES];
+		isFirstSetup = -1;
 	}
 	if (isFirstSetup == 1) {
 		// new network coming through, remove setup she-yite
@@ -253,6 +255,7 @@ static UILabel *active = nil;
 	//	currentIndex--;
 		[bar setContentSize:CGSizeMake((netCount * 200) + 0.5, 50)];
 		[currentPanel removeFromSuperview];
+		currentPanel = nil;
 		[_notifications removeObjectForKey:[NSString stringWithFormat:@"%d", currentIndex]];
 		RCNetwork *removr = [[RCNetworkManager sharedNetworkManager] networkWithDescription:active.text];
 		[[RCNetworkManager sharedNetworkManager] removeNet:removr];
@@ -317,10 +320,31 @@ static UILabel *active = nil;
 	for (RCChannelBubble *chan in currentBubbles) {
 		if ([[chan titleLabel].text isEqual:[room channelName]]) {
 			[currentBubbles removeObject:chan];
+			[memberPanel removeFromSuperview];
+			memberPanel.delegate = nil;
+			memberPanel.dataSource = nil;
+			currentPanel = nil;
 			break;
 		}
 	}
 	[scrollBar layoutChannels:currentBubbles];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+	isShowing = NO;
+	switch (buttonIndex) {
+		case 1: {
+			RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:currentIndex];
+			RCChannel *chan = [[net _channels] objectForKey:[[questionabubble titleLabel] text]];
+			if ([[chan panel] isEqual:currentPanel]) {
+				[currentPanel removeFromSuperview];
+			}
+			[net removeChannel:chan];
+			break;
+		}
+		case 0:
+			break;
+	}
 }
 
 - (RCChannelBubble *)channelBubbleWithChannelName:(NSString *)name {
@@ -339,6 +363,7 @@ static UILabel *active = nil;
 	RCChannel *chan = [[net _channels] objectForKey:[[bubble titleLabel] text]];
 	memberPanel.delegate = chan;
 	memberPanel.dataSource = chan;
+	memberPanel.frame = [self frameForChatTable];
 	chan.usersPanel = memberPanel;
 	[currentPanel removeFromSuperview];
 	[self addSubview:memberPanel];
@@ -363,21 +388,8 @@ static BOOL isShowing = NO;
 	
 }
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-	isShowing = NO;
-	switch (buttonIndex) {
-		case 1: {
-			RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:currentIndex];
-			RCChannel *chan = [[net _channels] objectForKey:[[questionabubble titleLabel] text]];
-			if ([[chan panel] isEqual:currentPanel]) {
-				[currentPanel removeFromSuperview];
-			}
-			[net removeChannel:chan];
-			break;
-		}
-		case 0:
-			break;
-	}
+- (BOOL)canBecomeFirstResponder {
+	return YES;
 }
 
 - (void)_channelWantsSuicide:(RCChannelBubble *)bubble {
@@ -385,23 +397,26 @@ static BOOL isShowing = NO;
 }
 
 - (void)channelSelected:(RCChannelBubble *)bubble {
-	if (memberPanel.delegate) {
-		[[[currentPanel channel] bubble] _setSelected:NO];
+	
+	if (memberPanel.delegate != nil) {
+		if (currentPanel != nil) 
+			 [[[currentPanel channel] bubble] _setSelected:NO];
 		[memberPanel removeFromSuperview];
 		memberPanel.delegate = nil;
 		memberPanel.dataSource = nil;
 		currentPanel = nil;
 	}
-	if (currentPanel) if ([[[currentPanel channel] bubble] isEqual:bubble]) return;
+	if (currentPanel != nil) if ([[[currentPanel channel] bubble] isEqual:bubble]) return;
 	[[[currentPanel channel] bubble] _setSelected:NO];
+	NSLog(@"Meh. %@ %@", currentPanel, bubble);
 	[bubble _setSelected:YES];
-	RCNetwork *net = [[RCNetworkManager sharedNetworkManager] networkWithDescription:[[[bar subviews] objectAtIndex:currentIndex+1] text]];
+	RCNetwork *net = [[RCNetworkManager sharedNetworkManager] networkWithDescription:[[[bar subviews] objectAtIndex:currentIndex] text]];
 	RCChannel *chan = [[net _channels] objectForKey:bubble.titleLabel.text];
 	if (chan) {
 		if (currentPanel) {
 			[currentPanel removeFromSuperview];
 		}
-		[[chan panel] setFrame:CGRectMake(0, 77, 320, 384)];
+		[[chan panel] setFrame:[self frameForChatTable]];
 		[self addSubview:[chan panel]];
 		currentPanel = [chan panel];
 	}
@@ -423,7 +438,7 @@ static BOOL isShowing = NO;
 	if (scrollView.tag == 100) {
 		if ([[scrollView subviews] count] > 1) {
 			unsigned int netLoc;
-			if (scrollView.contentOffset.x != 0) netLoc = scrollView.contentOffset.x/200;
+			if (scrollView.contentOffset.x != 0) netLoc = scrollView.contentOffset.x/bar.frame.size.width;
 			else netLoc = 0;
 			if (netLoc != currentIndex) currentIndex = netLoc;
 			else return;
@@ -441,14 +456,13 @@ static BOOL isShowing = NO;
 	if (scrollView.tag == 100) {
 		if (scrollView.contentOffset.y <= -50.00) {
 			draggingNets = YES;
-			stupidLabel.text = @"Release for new network";
+	//		stupidLabel.text = @"Release for new network";
 		}
 		else {
 			draggingNets = NO;
-			stupidLabel.text = @"Pull for netz";
+	//		stupidLabel.text = @"Pull for netz";
 		}
-	}
-	
+	}	
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
@@ -491,38 +505,82 @@ static BOOL isShowing = NO;
 		scrollBar.frame = CGRectMake(240, 0, 480-250, 33);
 				scrollBar.backgroundColor = [UIColor clearColor];
 		[scrollBar clearBG];
-
 	}
 	[self setNeedsDisplay];
-	[self performSelectorInBackground:@selector(reLayoutNetworkTitles) withObject:nil];
+//	[self performSelectorInBackground:@selector(reLayoutNetworkTitles) withObject:nil];
+	[leftGroup setFrame:[self frameForLeftBarGroup]];
+	[rightGroup setFrame:[self frameForRightBarGroup]];
+	if (currentPanel) {
+		[currentPanel setFrame:[self frameForChatTable]];
+		[[currentPanel tableView] reloadData];
+	}
+	[memberPanel setFrame:[self frameForChatTable]];
+}
+
+- (CGRect)frameForLeftBarGroup {
+	if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
+		return CGRectMake(2, 1, 15, 29);
+	}
+	return CGRectMake(10, 7, 15, 29);
+}
+
+- (CGRect)frameForRightBarGroup {
+	if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
+		return CGRectMake(220, 1, 15, 29);
+	}
+	return CGRectMake(290, 7, 15, 29);
+}
+
+- (CGFloat)heightForNetworkBar {
+	if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation))
+		return 33;
+	return 45;
+}
+
+- (CGFloat)widthForNetworkBar {
+	if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation))
+		return 120;
+	return 200;
+}
+
+- (CGRect)frameForChatTable {
+	if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation))
+		return CGRectMake(0, 33, 480, 227);
+	return CGRectMake(0, 77, 320, 344);
 }
 
 - (void)reLayoutNetworkTitles {
-	for (int i = 0; i < [[bar subviews] count]; i++) {
-		UILabel *subv = [[bar subviews] objectAtIndex:i];
-		if ([subv isKindOfClass:[RCTitleLabel class]]) {
-			if ([subv respondsToSelector:@selector(setFont:)])
-				[subv setFont:[UIFont boldSystemFontOfSize:15]];
-			[subv setFrame:CGRectMake((i-1)*bar.frame.size.width, 0, bar.frame.size.width, 33)];
+	int i = 0;
+	int _size = 30;
+	if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation))
+		_size = 20;
+	for (i = 0; i <= [[bar subviews] count]-1; i++) {
+		RCTitleLabel *_label = [[bar subviews] objectAtIndex:i];
+		if ([_label isKindOfClass:[RCTitleLabel class]]) {
+			[_label setFrame:CGRectMake((i-1) * bar.frame.size.width, 0, [self widthForNetworkBar], [self heightForNetworkBar])];
+			[_label setFont:[UIFont boldSystemFontOfSize:_size]];
 		}
 	}
-	/*
-		if ([lbl isKindOfClass:[RCTitleLabel class]]) {
-			if (_isLandscape) lbl.font = [UIFont boldSystemFontOfSize:16];
-			else lbl.font = [UIFont boldSystemFontOfSize:20];
-			lbl.frame = CGRectMake((lbl.frame.origin.x == 0 ? 0 : lbl.frame.origin.x + (_isLandscape ? -50 : 50)), 0, lbl.superview.frame.size.width, bar.frame.size.height);
-		}
-	}*/
+	[bar setContentSize:CGSizeMake((i-1) * bar.frame.size.width, [self heightForNetworkBar] + 0.5)];
 }
 
 - (void)rotateToPortrait {
 	_isLandscape = NO;
+	[scrollBar drawBG];
+	[self setNeedsDisplay];
+	[leftGroup setFrame:[self frameForLeftBarGroup]];
+	[rightGroup setFrame:[self frameForRightBarGroup]];
+	if (currentPanel) {
+		[currentPanel setFrame:[self frameForChatTable]];
+		[[currentPanel tableView] reloadData];
+	}
 	[self setNeedsDisplay];
 	if (bar.frame.size.height == 33) {
 		bar.frame = CGRectMake(bar.frame.origin.x, bar.frame.origin.y, 200, 45);
+		scrollBar.frame = CGRectMake(0, 45, 320, 32);
 	}
-	[self setNeedsDisplay];
-	[self performSelectorInBackground:@selector(reLayoutNetworkTitles) withObject:nil];
+//	[self performSelectorInBackground:@selector(reLayoutNetworkTitles) withObject:nil];
+	[memberPanel setFrame:[self frameForChatTable]];
 }
 
 - (void)dealloc {

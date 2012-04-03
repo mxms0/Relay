@@ -11,25 +11,23 @@
 @implementation RCConsoleChannel
 
 - (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type {
-	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	RCMessageFlavor flavor = RCMessageFlavorNormal;
 	NSString *msg = @"";
 	switch (type) {
 		case RCMessageTypeAction:
-			msg = [[NSString stringWithFormat:@"\u2022 %@ %@", from, message] copy];
+			msg = [NSString stringWithFormat:@"\u2022 %@ %@", from, message];
 			flavor = RCMessageTypeAction;
 			break;
 		case RCMessageTypeNormal:
-			msg = [[NSString stringWithFormat:@" %@", message] copy];
+			msg = [NSString stringWithFormat:@" %@", message];
 			flavor = RCMessageFlavorNormalE;
 			break;
 		case RCMessageTypeNotice:
 			flavor = RCMessageFlavorNotice;
-			msg = [[NSString stringWithFormat:@"-%@- %@", from, message] copy];
+			msg = [NSString stringWithFormat:@"-%@- %@", from, message];
 			break;
 	}
 	[panel postMessage:msg withFlavor:flavor highlight:NO];
-	[p drain];
 	return;
 }
 

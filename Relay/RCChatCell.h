@@ -24,5 +24,4 @@
 @property (nonatomic, retain) RCMessage *message;
 CTFontRef CTFontCreateFromUIFont(UIFont *font);
 - (void)_textHasBeenSet;
-- (float)calculateHeightForLabel;
 @end
