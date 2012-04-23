@@ -30,8 +30,8 @@
 			username, USER_KEY,
 			nick, NICK_KEY,
 			realname, NAME_KEY,
-			spass, S_PASS_KEY,
-			npass, N_PASS_KEY,
+			([spass length] > 0 ? (id)kCFBooleanTrue : (id)kCFBooleanFalse), S_PASS_KEY,
+			([npass length] > 0 ? (id)kCFBooleanTrue : (id)kCFBooleanFalse), N_PASS_KEY,
 			sDescription, DESCRIPTION_KEY,
 			server, SERVR_ADDR_KEY,
 			[NSNumber numberWithInt:port], PORT_KEY,
@@ -77,6 +77,7 @@
 	}
 	[rooms release];
 }
+
 - (void)addChannel:(NSString *)_chan join:(BOOL)join {
 	if (![[_channels allKeys] containsObject:_chan]) {
 		RCChannel *chan = nil;
@@ -84,7 +85,6 @@
 		else if ([_chan hasPrefix:@"#"]) chan = [[RCChannel alloc] initWithChannelName:_chan];
 		else chan = [[RCPMChannel alloc] initWithChannelName:_chan];
 		[chan setDelegate:self];
-		NSLog(@"Wee__  %@", chan);
 		[[self _channels] setObject:chan forKey:_chan];
 		[chan release];
 		if (![[self channels] containsObject:_chan])
@@ -165,6 +165,7 @@
 			status = RCSocketStatusError;
 			return;
 		case NSStreamEventHasBytesAvailable: // 2
+			NSLog(@"Reading.");
 			[self readDataToEnd];
 			return;
 		case NSStreamEventHasSpaceAvailable: // 4
@@ -208,6 +209,10 @@
 	if (!sendQueue) sendQueue = [[NSMutableString alloc] init];
 	[sendQueue appendFormat:@"%@\r\n", msg];
 	return NO;
+}
+
+- (void)_sendMessage:(NSString *)msg {
+	
 }
 
 - (void)errorOccured:(NSError *)error {
@@ -300,7 +305,19 @@ static NSMutableString *data = nil;
 		[self recievedMessage:send];
 		[send release];
 		send = nil;
-		[data deleteCharactersInRange:NSMakeRange(0, [data rangeOfString:@"\r\n"].location+2)];	
+		if ([data respondsToSelector:@selector(deleteCharactersInRange:)])
+			[data deleteCharactersInRange:NSMakeRange(0, [data rangeOfString:@"\r\n"].location+2)];
+		else {
+			data = [data mutableCopy];
+			// meh. i know i'm going to regret this.
+			// so. so. so. much.
+			// for some reason, data is becoming an NSString for one reason or another,
+			// i'm honestly not sure if it's becoming the actual send var;
+			// or just some random string. 
+			// i honestly just want to bail out here, but i cannot simply trash the data unless its not existant.
+			// also tempted to send this stuff to testflight. but do not want app crashing after multitasking
+			// because testflight sucks ass.
+		}
 	}
 	isReading = NO;
 	[pool drain];
@@ -323,6 +340,10 @@ static NSMutableString *data = nil;
 		[iStream release];
 		oStream = nil;
 		iStream = nil;
+		for (NSString *chan in channels) {
+			RCChannel *_chan = [_channels objectForKey:chan];
+			[_chan clearUsers];
+		}
 		NSLog(@"Disconnected.");
 	}
 	return YES;
@@ -609,6 +630,7 @@ static NSMutableString *data = nil;
 }
 
 - (void)handle375:(NSString *)motd {
+	if (![[RCNetworkManager sharedNetworkManager] _printMotd]) return;
 	NSScanner *scanner = [[NSScanner alloc] initWithString:motd];
 	NSString *crap;
 	@try {
@@ -629,6 +651,7 @@ static NSMutableString *data = nil;
 }
 
 - (void)handle372:(NSString *)noMotd {
+	if (![[RCNetworkManager sharedNetworkManager] _printMotd]) return;
 	NSScanner *scanner = [[NSScanner alloc] initWithString:noMotd];
 	NSString *crap;
 	@try {
@@ -805,7 +828,7 @@ static NSMutableString *data = nil;
 	[_sc scanUpToString:@" " intoString:&request];
 	[self parseUsermask:_from nick:&_from user:nil hostmask:nil];
 	request = [request substringWithRange:NSMakeRange(2, request.length-5)];
-
+	NSLog(@"Meh. %@", request);
 	if ([request isEqualToString:@"TIME"]) 
 		extra = [NSString stringWithFormat:@"%@", [NSDate date]];
 	else if ([request isEqualToString:@"VERSION"]) 
@@ -816,7 +839,7 @@ static NSMutableString *data = nil;
 		extra = @"CLIENTINFO VERSION CLIENTINFO USERINFO PING TIME UPTIME";
 	else 
 		NSLog(@"WTF?!?!! %@", request);
-	[self sendMessage:[@"NOTICE " stringByAppendingFormat:@"%@ \x01%@ %@\x01", _from, request, extra]];
+	[self sendMessage:[@"NOTICE " stringByAppendingFormat:@"%@ :\x01%@ %@\x01", _from, request, extra]];
 	[_sc release];
 }
 

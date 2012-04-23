@@ -9,45 +9,55 @@
 #import "RCNavigator.h"
 
 @implementation RCNetworkManager
-@synthesize isBG;
+@synthesize isBG, _printMotd;
 static id snManager = nil;
 static NSMutableArray *networks = nil;
 
 - (void)ircNetworkWithInfo:(NSDictionary *)info isNew:(BOOL)n {
-	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	RCNetwork *network = [[RCNetwork alloc] init];
 	[network setUsername:[info objectForKey:USER_KEY]];
 	[network setNick:[info objectForKey:NICK_KEY]];
 	[network setRealname:[info objectForKey:NAME_KEY]];
-	[network setSpass:[info objectForKey:S_PASS_KEY]];
-	[network setNpass:[info objectForKey:N_PASS_KEY]];
 	[network setSDescription:[info objectForKey:DESCRIPTION_KEY]];
 	[network setServer:[info objectForKey:SERVR_ADDR_KEY]];
 	[network setPort:[[info objectForKey:PORT_KEY] intValue]];
 	[network setUseSSL:[[info objectForKey:SSL_KEY] boolValue]];
 	[network setCOL:[[info objectForKey:COL_KEY] boolValue]];
-	
 	for (RCNetwork *net in networks) {
-		if ([[net descriptionForComparing] isEqualToString:[network descriptionForComparing]]) {
+		if ([[network _description] isEqualToString:[net _description]]) {
 			[network release];
+			NSLog(@"Returning..");
 			return;
 		}
 	}
+	RCKeychainItem *wrapper = nil;
+	if ([[info objectForKey:S_PASS_KEY] boolValue]) {
+		wrapper = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@spass", [network _description]] accessGroup:@"us.mxms.relay"];
+		[network setSpass:([wrapper objectForKey:S_PASS_KEY] ?: @"")];
+		[wrapper release];
+		wrapper = nil;
+	}
+	if ([[info objectForKey:N_PASS_KEY] boolValue]) {
+		wrapper = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@npass", [network _description]]  accessGroup:@"us.mxms.relay"];
+		[network setNpass:([wrapper objectForKey:N_PASS_KEY] ?: @"")];
+		[wrapper release];
+		wrapper = nil;
+	}
+
 	NSMutableArray *rooms = [[[info objectForKey:CHANNELS_KEY] mutableCopy] autorelease];
 	if (!rooms) rooms = [[NSMutableArray alloc] init];
 	if (![rooms containsObject:@"IRC"]) [rooms addObject:@"IRC"];
 	[network setupRooms:rooms];
-	[p drain];
 	[networks addObject:network];
 	[[RCNavigator sharedNavigator] addNetwork:network];
 	[self performSelectorInBackground:@selector(finishSetupForNetwork:) withObject:network];
 	[network release];
-	if (n) [self performSelectorInBackground:@selector(saveNetworks) withObject:nil];
+	[self performSelectorInBackground:@selector(saveNetworks) withObject:nil];
 }
 
 - (void)addNetwork:(RCNetwork *)_net {
 	for (RCNetwork *net in networks) {
-		if ([[net descriptionForComparing] isEqualToString:[_net descriptionForComparing]]) {
+		if ([[net _description] isEqualToString:[_net _description]]) {
 			return;
 		}
 	}
@@ -62,21 +72,6 @@ static NSMutableArray *networks = nil;
 	if ([net COL]) [net performSelectorOnMainThread:@selector(connect) withObject:nil waitUntilDone:NO];
 }
 
-+ (void)saveNetworks {
-	NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithContentsOfFile:PREFS_ABSOLUT];
-	NSMutableArray *temp = [[NSMutableArray alloc] init];
-	for (RCNetwork *net in networks) {
-		[temp addObject:[net infoDictionary]];
-	}
-	[dict setObject:[NSKeyedArchiver archivedDataWithRootObject:temp] forKey:NETS_KEY];
-	if (![dict writeToFile:PREFS_ABSOLUT atomically:NO]) {
-		// FIX IT
-		NSLog(@"Couldn't save...:l");
-	}
-	[temp release];
-	[dict release];
-}
-
 - (void)removeNet:(RCNetwork *)net {
 	[networks removeObject:net];
 	if ([networks count] == 0) {
@@ -86,29 +81,19 @@ static NSMutableArray *networks = nil;
 }
 
 - (void)unpack {
+	_printMotd = NO;
 	@autoreleasepool {
 		NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithContentsOfFile:PREFS_ABSOLUT];
 		if (!dict) return;
-		if ([dict objectForKey:NETS_KEY]) {
-			NSArray *nets = [[NSArray alloc] initWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:[dict objectForKey:NETS_KEY]]];
-			if ([nets count] == 0) {
-				[self setupWelcomeView];
-				[nets release];
-				[dict release];
-				return;
-			}
-			for (NSDictionary *dict in nets) {
-				[[RCNetworkManager sharedNetworkManager] ircNetworkWithInfo:dict isNew:NO];
-			}
-			[self performSelectorInBackground:@selector(setupChannelData:) withObject:nil];
-			[NSTimer scheduledTimerWithTimeInterval:120 target:self selector:@selector(saveChannelData:) userInfo:nil repeats:YES];
-			[nets release];
+		if ([[dict allKeys] count] == 0) {
+			[self setupWelcomeView];
 			[dict release];
 			return;
 		}
-		[dict release];
-		NSLog(@"Shutup NSKeyedUnarchiver.");
-		[self setupWelcomeView];
+		for (NSString *_net in [dict allKeys]) {
+			NSDictionary *_info = [dict objectForKey:_net];
+			[self ircNetworkWithInfo:_info isNew:NO];
+		}
 	}
 }
 
@@ -123,10 +108,10 @@ static NSMutableArray *networks = nil;
 	[chan recievedMessage:@"Try out some cool features! :D" from:@"" type:RCMessageTypeNormal];
 	[chan recievedMessage:@"Blah, Blah, more blah!" from:@"" type:RCMessageTypeNormal];
 	[[self networks] addObject:net];
-	[net release];
 	[[RCNavigator sharedNavigator] addNetwork:net];
 	[[RCNavigator sharedNavigator] channelSelected:[chan bubble]];
 	[[RCNavigator sharedNavigator] scrollViewDidEndDecelerating:nil];
+	[net release];
 }
 
 - (RCNetwork *)networkWithDescription:(NSString *)_desc {
@@ -137,7 +122,14 @@ static NSMutableArray *networks = nil;
 }
 
 - (void)saveNetworks {
-	[[self class] saveNetworks];
+	NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:PREFS_PLIST] ?: [NSMutableDictionary dictionary];
+	for (RCNetwork *net in networks) {
+		[dict setObject:[net infoDictionary] forKey:[net _description]];
+	}
+	if (![dict writeToFile:PREFS_ABSOLUT atomically:NO]) {
+		// FIX IT
+		NSLog(@"Couldn't save...:l");
+	}
 }
 
 + (RCNetworkManager *)sharedNetworkManager {

@@ -9,13 +9,15 @@
 #import "RCMessage.h"
 
 @implementation RCMessage
-@synthesize flavor, message, highlight, isMine, isOld, messageHeight;
+@synthesize flavor, message, highlight, isMine, isOld, messageHeight, messageHeightLandscape;
 
 - (void) encodeWithCoder: (NSCoder *)coder {
 	[coder encodeObject:message forKey:@"0_MSGKEY"];
 	[coder encodeObject:[NSNumber numberWithBool:isMine] forKey:@"0_ISMINE"];
 	[coder encodeObject:[NSNumber numberWithInt:flavor] forKey:@"0_FLVRKEY"];
 	[coder encodeObject:[NSNumber numberWithBool:highlight] forKey:@"0_HGHLGHTKEY"];
+	[coder encodeObject:[NSNumber numberWithFloat:messageHeight] forKey:@"0_MSGHEIGHT_0"];
+	[coder encodeObject:[NSNumber numberWithFloat:messageHeightLandscape] forKey:@"0_MSGHEIGHT_1"];
 }
 
 - (id)initWithCoder:(NSCoder *)coder {
@@ -25,6 +27,8 @@
 		[self setFlavor:(RCMessageFlavor)[[coder decodeObjectForKey:@"0_FLVRKEY"] intValue]];
 		[self setHighlight:[[coder decodeObjectForKey:@"0_HGHLGHTKEY"] boolValue]];
 		[self setIsMine:[[coder decodeObjectForKey:@"0_ISMINE"] boolValue]];
+		[self setMessageHeight:[[coder decodeObjectForKey:@"0_MSGHEIGHT_0"] floatValue]];
+		[self setMessageHeightLandscape:[[coder decodeObjectForKey:@"0_MSGHEIGHT_1"] floatValue]];
 		self.isOld = YES;
         [poolz drain];
     }

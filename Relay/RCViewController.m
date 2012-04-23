@@ -59,6 +59,7 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+	NSLog(@"ViewWILLAPPPEARRRR");
     [super viewWillAppear:animated];
 }
 
@@ -83,6 +84,7 @@
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+	NSLog(@"Rotaing.");
 	if (UIInterfaceOrientationIsLandscape(toInterfaceOrientation)) 
 		[[RCNavigator sharedNavigator] rotateToLandscape];
 	else 

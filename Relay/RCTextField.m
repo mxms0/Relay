@@ -19,7 +19,9 @@
 
 - (void)drawPlaceholderInRect:(CGRect)rect {
 	[UIColorFromRGB(0xCDCDCD) setFill];
-	[[self placeholder] drawInRect:CGRectMake(rect.origin.x, 0, rect.size.width, rect.size.height) withFont:[UIFont systemFontOfSize:13]];
+	CGContextRef context = UIGraphicsGetCurrentContext();
+	CGContextSetShadowWithColor(context, CGSizeMake(0, 1), 0, [UIColor whiteColor].CGColor);
+	[self.placeholder drawAtPoint:CGPointMake(rect.origin.x, 0) withFont:[UIFont systemFontOfSize:13]];
 }
 
 @end

@@ -7,7 +7,7 @@
 //
 
 #import "RCChatCell.h"
-
+#import "RCNavigator.h"
 
 @implementation RCChatCell
 @synthesize textLabel, message;
@@ -91,9 +91,11 @@
 	[self.textLabel setAttributedText:attr];
 	[attr release];
 	if (![message messageHeight]) {
-		[message setMessageHeight:[self calculateHeightForLabel]];
+		float *heights = [self calculateHeightForLabel];
+		[message setMessageHeight:heights[0]];
+		[message setMessageHeightLandscape:heights[1]];
 	}
-	height = [message messageHeight];
+	height = ([[RCNavigator sharedNavigator] _isLandscape] ? message.messageHeightLandscape : message.messageHeight);
 	if (height > 15) {
 		int layr = height/15;
 		@autoreleasepool {
@@ -104,9 +106,27 @@
 	}
 }
 
-- (float)calculateHeightForLabel {
-
-	int maxWidth = (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation) ? 480 : 320) - 4;
+- (float *)calculateHeightForLabel {
+	float heights[] = {0, 0};
+	for (int i = 0; i <= 1; i++) {
+		int maxWidth = ((i == 0 ? 320 : 480) - 4);
+		int lengthOfName, lengthOfMsg, finalLength, heightToUse;
+		RCMessageFlavor flvr = [message flavor];
+		if (flvr == RCMessageFlavorNormal) {
+			lengthOfName = [[self.textLabel.text substringWithRange:NSMakeRange(0, [self.textLabel.text rangeOfString:@":"].location)] sizeWithFont:[UIFont fontWithName:@"Helvetica-Bold" size:12]].width;
+			lengthOfMsg = [[self.textLabel.text substringWithRange:NSMakeRange([self.textLabel.text rangeOfString:@":"].location, self.textLabel.text.length-[self.textLabel.text rangeOfString:@":"].location)] sizeWithFont:[UIFont fontWithName:@"Helvetica" size:12]].width;
+			finalLength = lengthOfMsg += lengthOfName;
+			heightToUse = (((finalLength += maxWidth) - (finalLength % maxWidth))/maxWidth);
+		}
+		else {
+			lengthOfMsg = [self.textLabel.text sizeWithFont:[UIFont fontWithName:@"Helvetica" size:12]].width;
+			if (maxWidth >= lengthOfMsg) heightToUse = 1;
+			else heightToUse = (((lengthOfMsg += maxWidth) - (lengthOfMsg % maxWidth))/maxWidth);
+		}
+		heights[i] = ((heightToUse <= 1 ? 1 : heightToUse) * 15);
+	}
+	return ((float *)heights);
+/*	int maxWidth = (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation) ? 480 : 320) - 4;
 	int lengthOfName, lengthOfMsg, finalLength, heightToUse;
 	RCMessageFlavor flvr = [message flavor];
 	if (flvr == RCMessageFlavorNormal) {
@@ -119,8 +139,7 @@
 		lengthOfMsg = [self.textLabel.text sizeWithFont:[UIFont fontWithName:@"Helvetica" size:12]].width;
 		if (maxWidth >= lengthOfMsg) heightToUse = 1;
 		else heightToUse = (((lengthOfMsg += maxWidth) - (lengthOfMsg % maxWidth))/maxWidth);
-	}
-	return ((heightToUse <= 1 ? 1 : heightToUse) * 15);
+	}*/
 }
 
 - (void)layoutSubviews {

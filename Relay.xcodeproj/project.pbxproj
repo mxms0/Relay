@@ -73,6 +73,8 @@
 		504B4DBD151D3A040082A44D /* 0_navbar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 504B4DBB151D3A040082A44D /* 0_navbar@2x.png */; };
 		504B4DC0151D40BB0082A44D /* 0_addnav.png in Resources */ = {isa = PBXBuildFile; fileRef = 504B4DBE151D40BB0082A44D /* 0_addnav.png */; };
 		504B4DC1151D40BB0082A44D /* 0_addnav@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 504B4DBF151D40BB0082A44D /* 0_addnav@2x.png */; };
+		504C9B6B152D1E0E00F091B2 /* RCKeychainItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 504349FC152CEEDD0037BD12 /* RCKeychainItem.m */; };
+		504C9B6D152D1E5A00F091B2 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 504C9B6C152D1E5A00F091B2 /* Security.framework */; };
 		504CC2F1151C0B2200605706 /* 0_cancelbutton_pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 504CC2ED151C0B1E00605706 /* 0_cancelbutton_pressed.png */; };
 		504CC2F2151C0B2200605706 /* 0_cancelbutton_pressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 504CC2EE151C0B1F00605706 /* 0_cancelbutton_pressed@2x.png */; };
 		504CC2F3151C0B2200605706 /* 0_donebutton_pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 504CC2EF151C0B1F00605706 /* 0_donebutton_pressed.png */; };
@@ -207,6 +209,7 @@
 		50381ABB1519803100BE93CE /* 0_toggleoff@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_toggleoff@2x.png"; sourceTree = "<group>"; };
 		50381ABC1519803100BE93CE /* 0_toggleon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_toggleon.png; sourceTree = "<group>"; };
 		50381ABD1519803100BE93CE /* 0_toggleon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_toggleon@2x.png"; sourceTree = "<group>"; };
+		504349FC152CEEDD0037BD12 /* RCKeychainItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCKeychainItem.m; sourceTree = "<group>"; };
 		50468A8B1527E46D0025F405 /* 0_input_l.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_input_l.png; sourceTree = "<group>"; };
 		50468A8C1527E46D0025F405 /* 0_input_l@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_input_l@2x.png"; sourceTree = "<group>"; };
 		50472B75151AA6820083D691 /* RCSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCSwitch.h; sourceTree = "<group>"; };
@@ -231,6 +234,7 @@
 		504B4DBB151D3A040082A44D /* 0_navbar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_navbar@2x.png"; sourceTree = "<group>"; };
 		504B4DBE151D40BB0082A44D /* 0_addnav.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_addnav.png; sourceTree = "<group>"; };
 		504B4DBF151D40BB0082A44D /* 0_addnav@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_addnav@2x.png"; sourceTree = "<group>"; };
+		504C9B6C152D1E5A00F091B2 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		504CC2ED151C0B1E00605706 /* 0_cancelbutton_pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_cancelbutton_pressed.png; sourceTree = "<group>"; };
 		504CC2EE151C0B1F00605706 /* 0_cancelbutton_pressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_cancelbutton_pressed@2x.png"; sourceTree = "<group>"; };
 		504CC2EF151C0B1F00605706 /* 0_donebutton_pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_donebutton_pressed.png; sourceTree = "<group>"; };
@@ -291,6 +295,7 @@
 		50AAE7E9151AD8B900E631FD /* RCAddCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCAddCell.m; sourceTree = "<group>"; };
 		50AAE7EB151ADDAB00E631FD /* 0_r_shadow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_r_shadow@2x.png"; sourceTree = "<group>"; };
 		50AAE7EC151ADDAB00E631FD /* 0_r_shadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_r_shadow.png; sourceTree = "<group>"; };
+		50B0DB21154233EB00689EDC /* RCKeychainItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCKeychainItem.h; sourceTree = "<group>"; };
 		50E49229152284F300EF676B /* 0_divider.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_divider.png; sourceTree = "<group>"; };
 		50E4922A152284F400EF676B /* 0_divider@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_divider@2x.png"; sourceTree = "<group>"; };
 		50E492321522A27300EF676B /* 0_navbar_landscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_navbar_landscape.png; sourceTree = "<group>"; };
@@ -351,6 +356,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				504C9B6D152D1E5A00F091B2 /* Security.framework in Frameworks */,
 				503399AE150590D7004C4D28 /* libTestFlight.a in Frameworks */,
 				50221BA414EF6CB800C7AF58 /* CoreText.framework in Frameworks */,
 				5088C0E014C4F89C001ADD06 /* CFNetwork.framework in Frameworks */,
@@ -397,6 +403,7 @@
 			isa = PBXGroup;
 			children = (
 				503399AC15057D0D004C4D28 /* libTestFlight.a */,
+				504C9B6C152D1E5A00F091B2 /* Security.framework */,
 				50221BA314EF6CB800C7AF58 /* CoreText.framework */,
 				5088C0DF14C4F89C001ADD06 /* CFNetwork.framework */,
 				50A7FBB214C0FAB700ABADEA /* QuartzCore.framework */,
@@ -609,6 +616,8 @@
 				50E77A831505A21500E75C64 /* RCNetworkManager.m */,
 				50E77A841505A21500E75C64 /* RCWelcomeNetwork.h */,
 				50E77A851505A21500E75C64 /* RCWelcomeNetwork.m */,
+				50B0DB21154233EB00689EDC /* RCKeychainItem.h */,
+				504349FC152CEEDD0037BD12 /* RCKeychainItem.m */,
 			);
 			name = Backend;
 			sourceTree = "<group>";
@@ -783,6 +792,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				504C9B6B152D1E0E00F091B2 /* RCKeychainItem.m in Sources */,
 				50E77A921505A30400E75C64 /* RCViewController.m in Sources */,
 				50E77A931505A30400E75C64 /* RCChatPanel.m in Sources */,
 				50E77A941505A30400E75C64 /* RCChatCell.m in Sources */,
@@ -887,9 +897,11 @@
 					"\"$(SRCROOT)/../../Downloads/TestFlightSDK0.8.3\"",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/../../Downloads/TestFlightSDK0.8.2\"",
+					"\"$(SDKROOT)/usr/lib/system\"",
 				);
+				OTHER_LDFLAGS = "-Wl,-no_implicit_dylibs";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "4C996602-A82C-48D6-9285-EA45B54B89DE";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "35DC7837-BBB0-40E7-ADC5-3A60CC72F752";
 				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};
@@ -961,7 +973,9 @@
 					"\"$(SRCROOT)/../../Downloads/TestFlightSDK0.8.3\"",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/../../Downloads/TestFlightSDK0.8.2\"",
+					"\"$(SDKROOT)/usr/lib/system\"",
 				);
+				OTHER_LDFLAGS = "-Wl,-no_implicit_dylibs";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "14D570E2-27AE-4D44-A273-4E35D4FAD006";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "ECDA34B2-472E-434A-90FE-AE893D4D1A2B";
@@ -985,9 +999,11 @@
 					"\"$(SRCROOT)/../../Downloads/TestFlightSDK0.8.3\"",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/../../Downloads/TestFlightSDK0.8.2\"",
+					"\"$(SDKROOT)/usr/lib/system\"",
 				);
+				OTHER_LDFLAGS = "-Wl,-no_implicit_dylibs";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "8CCA0AEB-9181-4EFE-8EB3-5E2EDC89BC9B";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "35DC7837-BBB0-40E7-ADC5-3A60CC72F752";
 				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};

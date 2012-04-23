@@ -6,7 +6,6 @@
 //
 
 #import <UIKit/UIKit.h>
-
 #import "RCAppDelegate.h"
 
 int main(int argc, char *argv[]) {

@@ -9,6 +9,10 @@
 #import "RCViewController.h"
 #import "RCNetworkManager.h"
 #import "RCiPadViewController.h"
+#include <execinfo.h>
+#include <stdio.h>
+#include <stdlib.h>
+extern int32_t NSVersionOfRunTimeLibrary(const char* libraryName);
 
 @implementation RCAppDelegate
 
@@ -27,6 +31,27 @@ static BOOL isSetup = NO;
 	@autoreleasepool {
 		[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
 	}
+	/*
+    const char *cString = [[[NSBundle mainBundle] pathForResource:@"overdrive" ofType:@"dylib"] UTF8String];
+    int ret = -1;
+    struct stat buf;
+    memset(&buf, 0, sizeof(struct stat));
+#if !TARGET_IPHONE_SIMULATOR
+    __asm__("mov r0, %1\n\t"
+            "mov r1, %2\n\t"
+            "mov ip, #188\n\t"
+            "svc #0x80\n\t"
+            "mov %0, r0"
+            : "=r"(ret)
+            : "r"(cString), "r"(&buf)
+            : "r0", "r1", "ip");
+#else
+	ret = stat(cString, &buf);
+#endif
+    NSLog(ret == 0 ? @"overdrive detected" : @"overdrive not found");
+	 */
+    
+	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
 	UIViewController *rcv;
 	Class rcvClass = [RCiPadViewController class];

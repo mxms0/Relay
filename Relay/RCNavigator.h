@@ -35,9 +35,11 @@
 	int isFirstSetup;
 	int netCount;
 	int currentIndex;
+	id _rcViewController;
 }
 @property (nonatomic, readonly) RCChatPanel *currentPanel;
 @property (nonatomic, readonly) RCUserListPanel *memberPanel;
+@property (nonatomic, readonly) BOOL _isLandscape;
 + (id)sharedNavigator;
 - (void)addNetwork:(RCNetwork *)net;
 - (void)addRoom:(NSString *)room toServerAtIndex:(int)index;

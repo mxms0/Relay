@@ -156,6 +156,10 @@ UIImage *RCImageForRank(NSString *rank) {
 	}
 }
 
+- (void)clearUsers {
+	[users removeAllObjects];
+}
+
 - (void)dealloc {
 	[channelName release];
 	[users release];
@@ -378,8 +382,25 @@ UIImage *RCImageForRank(NSString *rank) {
 
 - (void)handleSlashJOIN:(NSString *)join {
 	NSString *msg = [NSString stringWithFormat:@"JOIN %@", join];
-	[delegate sendMessage:msg];
-	
+	[delegate sendMessage:msg];	
+}
+
+- (void)handleSlashPRIVMSG:(NSString *)privmsg {
+	NSScanner *scan = [[NSScanner alloc] initWithString:privmsg];
+	NSString *room = @"";
+	NSString *msg = @"";
+	[scan scanUpToString:@" " intoString:&room];
+	[scan scanUpToString:@"" intoString:&msg];
+	BOOL new = ![[delegate channels] containsObject:room];
+	if (new) [delegate addChannel:room join:YES];
+	if (![msg isEqualToString:@""]) 
+		if (![delegate sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", room, msg]]) {
+			[scan release];
+			return;
+		}
+	RCChannel *chan = [[delegate _channels] objectForKey:room];
+	[chan recievedMessage:msg from:[delegate useNick] type:RCMessageFlavorNormal];
+	[scan release];
 }
 
 - (void)handleSlashME:(NSString *)cmd {

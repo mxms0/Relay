@@ -11,9 +11,6 @@
 #import "RCTableView.h"
 #import "RCMessage.h"
 
-@interface UIKeyboardImpl : UIView 
-+ (id)sharedInstance;
-@end
 @interface NSObject (Stuff)
 - (id)performSelector:(SEL)selector onThread:(NSThread *)aThread withObject:(id)p1 withObject:(id)p2 withObject:(id)p3 withObject:(id)p4;
 @end

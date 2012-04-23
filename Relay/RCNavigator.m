@@ -11,7 +11,7 @@
 #import "RCAddNetworkController.h"
 
 @implementation RCNavigator
-@synthesize currentPanel, memberPanel;
+@synthesize currentPanel, memberPanel, _isLandscape;
 static id _sharedNavigator = nil;
 
 - (id)init {
@@ -21,6 +21,9 @@ static id _sharedNavigator = nil;
 
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
+		_rcViewController = [[[UIApplication sharedApplication] keyWindow] rootViewController];
+		if ([_rcViewController isKindOfClass:[UINavigationController class]])
+			_rcViewController = [_rcViewController topViewController];
 		isFirstSetup = -1;
 		_isLandscape = NO;
 		memberPanel = [[RCUserListPanel alloc] initWithFrame:CGRectMake(0, 77, 320, 383)];
@@ -28,7 +31,7 @@ static id _sharedNavigator = nil;
 		memberPanel.separatorStyle = UITableViewCellSeparatorStyleNone;
 		_notifications = [[NSMutableDictionary alloc] init];
 		leftBubble = [[RCNewMessagesBubble alloc] initWithFrame:CGRectMake(30, 10, 28, 25)];
-		rightBubble = [[RCNewMessagesBubble alloc] initWithFrame:CGRectMake(320-60, 10, 30, 25)];
+		rightBubble = [[RCNewMessagesBubble alloc] initWithFrame:CGRectMake(260, 10, 30, 25)];
 		[self addSubview:leftBubble];
 		[self addSubview:rightBubble];
 		[leftBubble release];
@@ -69,7 +72,6 @@ static id _sharedNavigator = nil;
 		[bar setDelegate:self];
 		[self addSubview:bar];
 		[bar release];
-	//	[NSTimer scheduledTimerWithTimeInterval:15 target:self selector:@selector(pulseMofo:) userInfo:nil repeats:YES];
     }
 	_sharedNavigator = self;
     return _sharedNavigator;
@@ -90,8 +92,9 @@ static id _sharedNavigator = nil;
 	if (isFirstSetup == -1) isFirstSetup = ([net isKindOfClass:[RCWelcomeNetwork class]] ? 1 : 0);
 	if (isFirstSetup == 2) {
 		netCount = 0;
+		currentIndex = 0;
 		[[[RCNetworkManager sharedNetworkManager] networks] removeObjectAtIndex:0];
-		[[[bar subviews] objectAtIndex:netCount] removeFromSuperview];
+		[[[bar subviews] objectAtIndex:netCount+1] removeFromSuperview];
 		[scrollBar layoutChannels:nil];
 		isFirstSetup = 0;
 		[rooms removeObjectAtIndex:0];
@@ -288,7 +291,9 @@ static UILabel *active = nil;
 
 		RCNetwork *net = [[RCNetworkManager sharedNetworkManager] networkWithDescription:active.text];
 		if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Disconnect"]) [net disconnect];
-		else [net connect];
+		else {
+			[net connect];
+		}
 		//connect
 	}
 	else if (buttonIndex == 4) {
@@ -363,7 +368,7 @@ static UILabel *active = nil;
 	RCChannel *chan = [[net _channels] objectForKey:[[bubble titleLabel] text]];
 	memberPanel.delegate = chan;
 	memberPanel.dataSource = chan;
-	memberPanel.frame = [self frameForChatTable];
+	memberPanel.frame = [self frameForMemberPanel];
 	chan.usersPanel = memberPanel;
 	[currentPanel removeFromSuperview];
 	[self addSubview:memberPanel];
@@ -411,6 +416,8 @@ static BOOL isShowing = NO;
 	RCNetwork *net = [[RCNetworkManager sharedNetworkManager] networkWithDescription:[[[bar subviews] objectAtIndex:currentIndex+1] text]];
 	RCChannel *chan = [[net _channels] objectForKey:bubble.titleLabel.text];
 	if (chan) {
+		if ([currentPanel isFirstResponder])
+			[[chan panel] becomeFirstResponderNoAnimate];
 		if (currentPanel) {
 			[currentPanel removeFromSuperview];
 		}
@@ -497,6 +504,7 @@ static BOOL isShowing = NO;
 }
 
 - (void)rotateToLandscape {
+	if (_isLandscape) return;
 	_isLandscape = YES;
 	if (bar.frame.size.height == 45) {
 		bar.frame = CGRectMake(bar.frame.origin.x, bar.frame.origin.y, 120, 33);
@@ -505,52 +513,57 @@ static BOOL isShowing = NO;
 		[scrollBar clearBG];
 	}
 	[self setNeedsDisplay];
-//	[self performSelectorInBackground:@selector(reLayoutNetworkTitles) withObject:nil];
 	[leftGroup setFrame:[self frameForLeftBarGroup]];
 	[rightGroup setFrame:[self frameForRightBarGroup]];
 	if (currentPanel) {
 		[currentPanel setFrame:[self frameForChatTable]];
 		[[currentPanel tableView] reloadData];
 	}
-	[memberPanel setFrame:[self frameForChatTable]];
+	[memberPanel setFrame:[self frameForMemberPanel]];
 }
 
 - (CGRect)frameForLeftBarGroup {
-	if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
+	if (_isLandscape) {
 		return CGRectMake(2, 1, 15, 29);
 	}
 	return CGRectMake(10, 7, 15, 29);
 }
 
 - (CGRect)frameForRightBarGroup {
-	if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
+	if (_isLandscape) {
 		return CGRectMake(220, 1, 15, 29);
 	}
 	return CGRectMake(290, 7, 15, 29);
 }
 
 - (CGFloat)heightForNetworkBar {
-	if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation))
+	if (_isLandscape)
 		return 33;
 	return 45;
 }
 
 - (CGFloat)widthForNetworkBar {
-	if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation))
+	if (_isLandscape)
 		return 120;
 	return 200;
 }
 
 - (CGRect)frameForChatTable {
-	if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation))
+	if (_isLandscape)
 		return CGRectMake(0, 33, 480, 227);
 	return CGRectMake(0, 77, 320, 344);
+}
+
+- (CGRect)frameForMemberPanel {
+	if (_isLandscape)
+		return CGRectMake(0, 33, 480, 267);
+	return CGRectMake(0, 77, 320, 384);
 }
 
 - (void)reLayoutNetworkTitles {
 	int i = 0;
 	int _size = 30;
-	if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation))
+	if (_isLandscape)
 		_size = 20;
 	for (i = 0; i <= [[bar subviews] count]-1; i++) {
 		RCTitleLabel *_label = [[bar subviews] objectAtIndex:i];
@@ -563,6 +576,7 @@ static BOOL isShowing = NO;
 }
 
 - (void)rotateToPortrait {
+	if (!_isLandscape) return;
 	_isLandscape = NO;
 	[scrollBar drawBG];
 	[self setNeedsDisplay];
@@ -577,8 +591,7 @@ static BOOL isShowing = NO;
 		bar.frame = CGRectMake(bar.frame.origin.x, bar.frame.origin.y, 200, 45);
 		scrollBar.frame = CGRectMake(0, 45, 320, 32);
 	}
-//	[self performSelectorInBackground:@selector(reLayoutNetworkTitles) withObject:nil];
-	[memberPanel setFrame:[self frameForChatTable]];
+	[memberPanel setFrame:[self frameForMemberPanel]];
 }
 
 - (void)dealloc {

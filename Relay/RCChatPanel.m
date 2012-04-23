@@ -8,6 +8,7 @@
 
 #import "RCChatPanel.h"
 #import "RCChannel.h"
+#import "RCNavigator.h"
 
 @implementation NSObject (Stuff)
 
@@ -113,7 +114,10 @@
 }
 
 - (void)suggestNick:(UIGestureRecognizer *)gestr {
+	UITextRange *range = [field selectedTextRange];
+	NSLog(@"Meh. %@", [field textInRange:range]);
 	prev = [channel userWithPrefix:currentWord pastUser:prev];
+	NSLog(@"Meh. %@", prev);
 }
 
 - (void)setChannel:(RCChannel *)_channel {
@@ -123,43 +127,35 @@
 	return channel;
 }
 
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-//	NSLog(@"Replacement.  [%@] [%@]", [textField.text substringWithRange:range], string);
-//	NSLog(@"Bleh. %@", NSStringFromRange(range));	
-//	if ([[textField.text substringWithRange:range] isEqualToString:@" "]) {
-		// currentWord = previous Word in sentance?!?!?! D:DSofhdsdgisufdsk
-		//	UITextRange *randr = [textField selectedTextRange];
-		//	NSRange rangeOfLastWord = [textField.text rangeOfString:@" " options:NSBackwardsSearch range:NSMakeRange(randr.end, textField.text.length-randr.end)];
-//	}
-//	if (![string isEqualToString:@" "] && ([string length] == 1)) {
-//		if (range.length == 0) [currentWord appendString:string];
-//		else [currentWord deleteCharactersInRange:range];
-//	}
-//	else {
-//		[currentWord setString:@""];
-//	}
-	return YES;
-}
-
 - (void)setFrame:(CGRect)frame {
 	[self.tableView setFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
 	[_bar setFrame:CGRectMake(0, frame.size.height, frame.size.width, 40)];
-	[self repositionKeyboardForUse:[field isFirstResponder]];
+	[self repositionKeyboardForUse:[field isFirstResponder] animated:NO];
 	[super setFrame:CGRectMake(0, frame.origin.y, frame.size.width, frame.size.height+40)];
 }
 
+- (BOOL)isFirstResponder {
+	return field.isFirstResponder;
+}
+
 - (BOOL)becomeFirstResponder {
-	[self repositionKeyboardForUse:YES];
+	[self repositionKeyboardForUse:YES animated:YES];
+	[field becomeFirstResponder];
+	return YES;
+}
+
+- (BOOL)becomeFirstResponderNoAnimate {
+	[self repositionKeyboardForUse:YES animated:NO];
 	[field becomeFirstResponder];
 	return YES;
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
-	[self repositionKeyboardForUse:NO];
+	[self repositionKeyboardForUse:NO animated:YES];
 }
 
 - (BOOL)resignFirstResponder {
-	[self repositionKeyboardForUse:NO];
+	[self repositionKeyboardForUse:NO animated:YES];
 	[field resignFirstResponder];
 	return YES;
 }
@@ -183,16 +179,17 @@
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
 	[textField setEnablesReturnKeyAutomatically:!(textField.text != nil && ![textField.text isEqualToString:@""])];
-	[self repositionKeyboardForUse:YES];
+	[self repositionKeyboardForUse:YES animated:YES];
 }
 
-- (void)repositionKeyboardForUse:(BOOL)key {
-
-	[UIView beginAnimations:nil context:NULL];
-	[UIView setAnimationDuration:0.25];
+- (void)repositionKeyboardForUse:(BOOL)key animated:(BOOL)anim {
+	if (anim) {
+		[UIView beginAnimations:nil context:NULL];
+		[UIView setAnimationDuration:0.25];
+	}
 	[_bar setFrame:[self frameForInputField:key]];
 	field.frame = CGRectMake(15, 5, _bar.frame.size.width-30, 31);
-	[UIView commitAnimations];
+	if (anim) [UIView commitAnimations];
 	if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
 		[_bar setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"0_input_l"]]];
 	}
@@ -229,7 +226,6 @@
 	[self performSelectorOnMainThread:@selector(_correctThreadPost:) withObject:message waitUntilDone:NO];
 }
 
-
 - (void)_correctThreadPost:(RCMessage *)_m {
 	[messages addObject:_m];
 	[_m release];
@@ -243,19 +239,13 @@
 - (CGFloat)tableView:(UITableView *)_tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 	UITableViewCell *c = [self tableView:_tableView cellForRowAtIndexPath:indexPath];
 	[c layoutSubviews];
-	RCMessage *__msg = [messages objectAtIndex:indexPath.row];
-//	return (c.textLabel.frame.size.height + 4);
-	return (__msg.messageHeight + 4);
+	float height = (float)c.textLabel.frame.size.height + 4;
+	if (height == 4) height += 15;
+	return height;
 }
 
 - (NSInteger)tableView:(UITableView *)_tableView indentationLevelForRowAtIndexPath:(NSIndexPath *)indexPath {
 	return 0.0;
-}
-
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    // Return YES for supported orientations
-	return ((interfaceOrientation == UIInterfaceOrientationPortrait) || (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown));
 }
 
 #pragma mark - Table view data source

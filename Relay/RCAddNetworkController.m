@@ -28,7 +28,7 @@
 @implementation RCAddNetworkController
 
 - (id)initWithNetwork:(RCNetwork *)net {
-	if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
+	if ((self = [super initWithStyle:UITableViewStylePlain])) {
 		network = net;
 		isNew = NO;
 		if (!net) {
@@ -67,7 +67,7 @@
 	self.tableView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"0_bg"]];
 	float y = 44;
 	float width = 320;
-	if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
+	if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
 		y = 33; width = 480;
 	}
 	r_shadow = [[UIImageView alloc] initWithFrame:CGRectMake(0, y, width, 10)];
@@ -75,6 +75,7 @@
 	r_shadow.alpha = 0.5;
 	[self.navigationController.navigationBar addSubview:r_shadow];
 	[r_shadow release];
+	[self.tableView reloadData];
 	// Do any additional setup after loading the view, typically from a nib.
 }
 
@@ -113,6 +114,9 @@
 }
 
 - (void)doneWithJoin {
+	if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation))
+		[[RCNavigator sharedNavigator] rotateToLandscape];
+	else [[RCNavigator sharedNavigator] rotateToPortrait];
 	[self dismissModalViewControllerAnimated:YES];
 }
 
@@ -175,15 +179,16 @@
 	if (![network server]) return;
 	if (![network spass]) [network setSpass:@""];
 	if (![network npass]) [network setNpass:@""];
-	if (![network realname]) [network setRealname:@""];
+	if (![network realname]) [network setRealname:@"Guest01"];
 	if (![network nick]) [network setNick:@"Guest01"];
-	if (![network username]) [network setUsername:[network nick]];
+	if (![network username]) {
+		[network setUsername:[network nick]];
+	}
 	if (![network port]) [network setPort:6667];
 	if (![network sDescription]) [network setSDescription:[network server]];
 	if (isNew) {
 		[network setupRooms:[NSArray arrayWithObject:@"IRC"]];
 		[[RCNetworkManager sharedNetworkManager] addNetwork:network];
-		[network release];
 	}
 	else {
 		if ([network isConnected])	[network disconnect];
@@ -273,6 +278,8 @@
 		cell.textLabel.font = [UIFont boldSystemFontOfSize:14];
 		cell.textLabel.textColor = UIColorFromRGB(0x545758);
 	}
+	[cell setIsTop:(indexPath.row == 0)];
+	[cell setIsBottom:NO];
     switch (indexPath.section) {
 		case 0:
 			switch (indexPath.row) {
@@ -345,6 +352,7 @@
 					[cnt addTarget:self action:@selector(sslSwitched:) forControlEvents:UIControlEventValueChanged];
 					[cell setAccessoryView:cnt];
 					[cnt release];
+					[cell setIsBottom:YES];
 					break;
 			}
 			break;
@@ -408,6 +416,7 @@
 					[rField setReturnKeyType:UIReturnKeyNext];
 					[cell setAccessoryView:rField];
 					[rField release];
+					[cell setIsBottom:YES];
 					break;
 			}
 			break;
@@ -450,6 +459,7 @@
 					[seField setReturnKeyType:UIReturnKeyNext];
 					[cell setAccessoryView:seField];
 					[seField release];
+					[cell setIsBottom:YES];
 					break;
 			}
 			break;
@@ -478,6 +488,7 @@
 					cell.textLabel.text = @"Rooms";
 					cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 					cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+					[cell setIsBottom:YES];
 			}
 			break;
 	}

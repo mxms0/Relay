@@ -60,6 +60,7 @@ typedef enum RCEventType {
 - (void)userWouldLikeToPartakeInThisConversation:(NSString *)message;
 - (void)peopleParticipateInConversationsNotPartake:(id)hai wtfWasIThinking:(BOOL)thinking;
 - (void)parseAndHandleSlashCommand:(NSString *)cmd;
+- (void)clearUsers;
 - (NSString *)userWithPrefix:(NSString *)prefix pastUser:(NSString *)user;
 // yes, seriously. :P spent like 15 minutes and felt this was best suited. 
 - (void)setSuccessfullyJoined:(BOOL)success;
