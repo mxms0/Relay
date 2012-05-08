@@ -32,18 +32,17 @@ static NSMutableArray *networks = nil;
 	}
 	RCKeychainItem *wrapper = nil;
 	if ([[info objectForKey:S_PASS_KEY] boolValue]) {
-		wrapper = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@spass", [network _description]] accessGroup:@"us.mxms.relay"];
+		wrapper = [[RCKeychainItem alloc] init];
 		[network setSpass:([wrapper objectForKey:S_PASS_KEY] ?: @"")];
 		[wrapper release];
 		wrapper = nil;
 	}
 	if ([[info objectForKey:N_PASS_KEY] boolValue]) {
-		wrapper = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@npass", [network _description]]  accessGroup:@"us.mxms.relay"];
+		wrapper = [[RCKeychainItem alloc] init];
 		[network setNpass:([wrapper objectForKey:N_PASS_KEY] ?: @"")];
 		[wrapper release];
 		wrapper = nil;
 	}
-
 	NSMutableArray *rooms = [[[info objectForKey:CHANNELS_KEY] mutableCopy] autorelease];
 	if (!rooms) rooms = [[NSMutableArray alloc] init];
 	if (![rooms containsObject:@"IRC"]) [rooms addObject:@"IRC"];
@@ -109,8 +108,8 @@ static NSMutableArray *networks = nil;
 	[chan recievedMessage:@"Blah, Blah, more blah!" from:@"" type:RCMessageTypeNormal];
 	[[self networks] addObject:net];
 	[[RCNavigator sharedNavigator] addNetwork:net];
-	[[RCNavigator sharedNavigator] channelSelected:[chan bubble]];
 	[[RCNavigator sharedNavigator] scrollViewDidEndDecelerating:nil];
+		[[RCNavigator sharedNavigator] channelSelected:[chan bubble]];
 	[net release];
 }
 
@@ -124,7 +123,8 @@ static NSMutableArray *networks = nil;
 - (void)saveNetworks {
 	NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:PREFS_PLIST] ?: [NSMutableDictionary dictionary];
 	for (RCNetwork *net in networks) {
-		[dict setObject:[net infoDictionary] forKey:[net _description]];
+		if (![net isKindOfClass:[RCWelcomeNetwork class]])
+			if ([net _description])	[dict setObject:[net infoDictionary] forKey:[net _description]];
 	}
 	if (![dict writeToFile:PREFS_ABSOLUT atomically:NO]) {
 		// FIX IT
@@ -227,7 +227,8 @@ static NSMutableArray *networks = nil;
 		[netDict release];
 	}
 	
-	if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
+	if (![
+		  [NSFileManager defaultManager] fileExistsAtPath:path]) {
 		[[NSFileManager defaultManager] createFileAtPath:path contents:(NSData *)[NSDictionary dictionary] attributes:NULL];
 	}
 	if (hashCode == [dict hash]) {

@@ -43,7 +43,7 @@
 @interface NSAttributedString (OHCommodityConstructors)
 + (id)attributedStringWithString:(NSString *)string;
 + (id)attributedStringWithAttributedString:(NSAttributedString *)attrStr;
-
+-(CGFloat)boundingHeightForWidth:(CGFloat)inWidth;
 //! Commodity method that call the following sizeConstrainedToSize:fitRange: method with NULL for the fitRange parameter
 - (CGSize)sizeConstrainedToSize:(CGSize)maxSize;
 //! if fitRange is not NULL, on return it will contain the used range that actually fits the constrained size.
@@ -60,6 +60,7 @@
 @interface NSMutableAttributedString (OHCommodityStyleModifiers)
 - (void)setFont:(UIFont *)font;
 - (void)setFont:(UIFont *)font range:(NSRange)range;
+
 - (void)setFontName:(NSString *)fontName size:(CGFloat)size;
 - (void)setFontName:(NSString *)fontName size:(CGFloat)size range:(NSRange)range;
 - (void)setFontFamily:(NSString *)fontFamily size:(CGFloat)size bold:(BOOL)isBold italic:(BOOL)isItalic range:(NSRange)range;

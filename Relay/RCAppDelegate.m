@@ -12,6 +12,7 @@
 #include <execinfo.h>
 #include <stdio.h>
 #include <stdlib.h>
+#import "TestFlight.h"
 extern int32_t NSVersionOfRunTimeLibrary(const char* libraryName);
 
 @implementation RCAppDelegate
@@ -79,6 +80,8 @@ static BOOL isSetup = NO;
 		[[RCNetworkManager sharedNetworkManager] setIsBG:NO];
 		[[RCNetworkManager sharedNetworkManager] unpack];
 		isSetup = YES;
+		[TestFlight takeOff:@"35b8aa0d259ae0c61c57bc770aeafe63_Mzk5NDYyMDExLTExLTA5IDE4OjQ0OjEwLjc4MTM3MQ"];
+		[TestFlight setDeviceIdentifier:[[UIDevice currentDevice] uniqueIdentifier]];
 	}
     return YES;
 }
@@ -110,7 +113,7 @@ static BOOL isSetup = NO;
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
-	NSLog(@"Terminating..");
+	NSLog(@"I want to liveeeeeee");
 	[[RCNetworkManager sharedNetworkManager] _reallySaveChannelData:nil];
 	/*
 	 Called when the application is about to terminate.

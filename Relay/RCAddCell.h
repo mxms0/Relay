@@ -9,10 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface RCAddCell : UITableViewCell {
-	BOOL isTop;
-	BOOL isBottom;
 }
-@property (nonatomic, assign) BOOL isTop;
-@property (nonatomic, assign) BOOL isBottom;
-
 @end

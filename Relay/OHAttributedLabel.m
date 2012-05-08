@@ -395,6 +395,7 @@ static time_t end;
 		BOOL openLink = (self.delegate && [self.delegate respondsToSelector:@selector(attributedLabel:shouldFollowLink:)])
 		? [self.delegate attributedLabel:self shouldFollowLink:activeLink] : YES;
 		if (openLink) {
+			[[UIApplication sharedApplication] openURL:activeLink.URL];
 			if (longHold) {
 			//	UIActionSheet *shit = [[UIActionSheet alloc] initWithTitle:activeLink.URL.absoluteString delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Open URL" otherButtonTitles:nil];
 			//	[shit showInView:[[[[UIApplication sharedApplication] delegate] navigationController] view]];

@@ -21,6 +21,7 @@
 		canSend = YES;
 		channels = [[NSMutableArray alloc] init];
 		_channels = [[NSMutableDictionary alloc] init];
+		_isDiconnecting = NO;
 	}
 	return self;
 }
@@ -113,6 +114,8 @@
 	isReading = NO;
 	canSend = YES;
 	isRegistered = NO;
+	if (sendQueue) [sendQueue release];
+	sendQueue = nil;
 	if (status == RCSocketStatusConnecting) return NO;
 	if (status == RCSocketStatusConnected) return NO;
 	useNick = nick;
@@ -165,7 +168,6 @@
 			status = RCSocketStatusError;
 			return;
 		case NSStreamEventHasBytesAvailable: // 2
-			NSLog(@"Reading.");
 			[self readDataToEnd];
 			return;
 		case NSStreamEventHasSpaceAvailable: // 4
@@ -209,10 +211,6 @@
 	if (!sendQueue) sendQueue = [[NSMutableString alloc] init];
 	[sendQueue appendFormat:@"%@\r\n", msg];
 	return NO;
-}
-
-- (void)_sendMessage:(NSString *)msg {
-	
 }
 
 - (void)errorOccured:(NSError *)error {
@@ -319,19 +317,22 @@ static NSMutableString *data = nil;
 			// because testflight sucks ass.
 		}
 	}
-	isReading = NO;
 	[pool drain];
 	if ([iStream hasBytesAvailable]) [self _readDataToEnd];
-
+	isReading = NO;
 }
 
 - (BOOL)disconnect {
+	if (_isDiconnecting) return;
+	_isDiconnecting = YES;
+	if (status == RCSocketStatusNotOpen) return;
 	if ((status == RCSocketStatusConnected) || (status == RCSocketStatusConnecting)) {
 		[self sendMessage:@"QUIT :Relay 1.0"];
-		[[_channels objectForKey:@"IRC"] recievedMessage:@"Disconnected." from:@"" type:RCMessageTypeNormal];
 	}	
 	if (!(status == RCSocketStatusClosed) && !(status == RCSocketStatusNotOpen)) {
 		status = RCSocketStatusClosed;
+		if (sendQueue) [sendQueue release];
+		sendQueue = nil;
 		[[UIApplication sharedApplication] endBackgroundTask:task];
 		task = UIBackgroundTaskInvalid;
 		[oStream close];
@@ -340,12 +341,15 @@ static NSMutableString *data = nil;
 		[iStream release];
 		oStream = nil;
 		iStream = nil;
+		status = RCSocketStatusNotOpen;
+		isRegistered = NO;
 		for (NSString *chan in channels) {
 			RCChannel *_chan = [_channels objectForKey:chan];
-			[_chan clearUsers];
+			[_chan setMyselfParted];
 		}
 		NSLog(@"Disconnected.");
 	}
+	_isDiconnecting = NO;
 	return YES;
 }
 
@@ -765,7 +769,6 @@ static NSMutableString *data = nil;
 			[self handleCTCPRequest:privmsg];
 		}
 		else if ([msg hasPrefix:@"ACTION"]) {
-			NSLog(@"Meh. %@:%@", msg, [msg dataUsingEncoding:NSUTF8StringEncoding]);
 			if ([msg length] > 7) {
 				msg = [msg substringWithRange:NSMakeRange(7, msg.length-8)];
 				[((RCChannel *)[_channels objectForKey:room]) recievedMessage:msg from:from type:RCMessageTypeAction];
@@ -993,7 +996,6 @@ static NSMutableString *data = nil;
 	[self parseUsermask:from nick:&from user:nil hostmask:nil];
 	[[_channels objectForKey:room] recievedEvent:RCEventTypeTopic from:from message:newTopic];
 	[_scan release];
-	NSObject *arry[] = {};
 }
 
 // PRIVMSG victim :\001CLIENTINFO\001/////

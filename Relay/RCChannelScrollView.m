@@ -80,7 +80,6 @@
 }
 
 - (void)drawBG {
-	shouldDrawBG = YES;
 	[self setNeedsDisplay];
 }
 
@@ -89,12 +88,13 @@
 }
 
 - (void)drawRect:(CGRect)rect {
-	if (shouldDrawBG) {
+	id appDelegate = [[UIApplication sharedApplication] delegate];
+	UIViewController *vc = [appDelegate navigationController];
+	if (UIInterfaceOrientationIsPortrait(vc.interfaceOrientation)) {
 		@autoreleasepool {
 			UIImage *bg = [UIImage imageNamed:@"0_chanbar"];
 			[bg drawInRect:rect];
 		}
-		shouldDrawBG = NO;
 	}
 	else {
 		[super drawRect:rect];

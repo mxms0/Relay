@@ -7,6 +7,7 @@
 //
 
 #import "RCAddNetworkController.h"
+#import "RCKeychainItem.h"
 
 #define FONT_SIZE 12
 #define FONT_COLOR 0x56595A
@@ -28,7 +29,7 @@
 @implementation RCAddNetworkController
 
 - (id)initWithNetwork:(RCNetwork *)net {
-	if ((self = [super initWithStyle:UITableViewStylePlain])) {
+	if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
 		network = net;
 		isNew = NO;
 		if (!net) {
@@ -177,8 +178,18 @@
 
 - (void)doneConnection {
 	if (![network server]) return;
-	if (![network spass]) [network setSpass:@""];
-	if (![network npass]) [network setNpass:@""];
+	if (([network spass] == nil) || [[network spass] isEqualToString:@""]) [network setSpass:@""];
+	else {
+		RCKeychainItem *wrapper = [[RCKeychainItem alloc] init];
+		[wrapper setObject:[network spass] forKey:S_PASS_KEY];
+		[wrapper release];
+	}
+	if (([network npass] == nil) || [[network npass] isEqualToString:@""]) [network setNpass:@""];
+	else {
+		RCKeychainItem *wrapper = [[RCKeychainItem alloc] init];
+		[wrapper setObject:[network npass] forKey:N_PASS_KEY];
+		[wrapper release];
+	}
 	if (![network realname]) [network setRealname:@"Guest01"];
 	if (![network nick]) [network setNick:@"Guest01"];
 	if (![network username]) {
@@ -278,8 +289,6 @@
 		cell.textLabel.font = [UIFont boldSystemFontOfSize:14];
 		cell.textLabel.textColor = UIColorFromRGB(0x545758);
 	}
-	[cell setIsTop:(indexPath.row == 0)];
-	[cell setIsBottom:NO];
     switch (indexPath.section) {
 		case 0:
 			switch (indexPath.row) {
@@ -352,7 +361,6 @@
 					[cnt addTarget:self action:@selector(sslSwitched:) forControlEvents:UIControlEventValueChanged];
 					[cell setAccessoryView:cnt];
 					[cnt release];
-					[cell setIsBottom:YES];
 					break;
 			}
 			break;
@@ -416,7 +424,6 @@
 					[rField setReturnKeyType:UIReturnKeyNext];
 					[cell setAccessoryView:rField];
 					[rField release];
-					[cell setIsBottom:YES];
 					break;
 			}
 			break;
@@ -459,7 +466,6 @@
 					[seField setReturnKeyType:UIReturnKeyNext];
 					[cell setAccessoryView:seField];
 					[seField release];
-					[cell setIsBottom:YES];
 					break;
 			}
 			break;
@@ -488,7 +494,6 @@
 					cell.textLabel.text = @"Rooms";
 					cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 					cell.selectionStyle = UITableViewCellSelectionStyleBlue;
-					[cell setIsBottom:YES];
 			}
 			break;
 	}

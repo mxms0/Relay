@@ -36,16 +36,17 @@ typedef enum RCSocketStatus {
 	NSOutputStream *oStream;
 	NSMutableString *sendQueue;
 	RCSocketStatus status;
-	BOOL isReading;
+	BOOL isReading:1;
 	int task;
 	int port;
 	int index;
 	int maxStatusLength;
-	BOOL isRegistered;
-	BOOL useSSL;
-	BOOL COL;
-	BOOL shouldSave;
-	BOOL canSend;
+	BOOL isRegistered:1;
+	BOOL useSSL:1;
+	BOOL COL:1;
+	BOOL shouldSave:1;
+	BOOL canSend:1;
+	BOOL _isDiconnecting:1;
 }
 @property (nonatomic, retain) NSMutableArray *channels;
 @property (nonatomic, retain) NSMutableDictionary *_channels;

@@ -421,9 +421,10 @@ static BOOL isShowing = NO;
 		if (currentPanel) {
 			[currentPanel removeFromSuperview];
 		}
-		[[chan panel] setFrame:[self frameForChatTable]];
+		[[chan panel] setFrame:(currentPanel ? [currentPanel frame] : [self frameForChatTable])];
 		[self addSubview:[chan panel]];
 		currentPanel = [chan panel];
+		// if this fails, UIApplication->statusBarOrientation
 	}
 	else {
 		NSLog(@"WTF THE CHANNEL EXISTS, BUT THE RCCHANNELL DOESN'T. FR0ST FIX IT");

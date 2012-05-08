@@ -28,7 +28,7 @@
 	[self.view addSubview:navigator];
 	[navigator release];
 	[self.navigationController setNavigationBarHidden:YES];
-	[self performSelectorInBackground:@selector(doConnect:) withObject:nil];
+//	[self performSelectorInBackground:@selector(doConnect:) withObject:nil];
 }
 
 - (void)doConnect:(id)unused {

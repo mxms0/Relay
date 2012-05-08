@@ -156,10 +156,6 @@ UIImage *RCImageForRank(NSString *rank) {
 	}
 }
 
-- (void)clearUsers {
-	[users removeAllObjects];
-}
-
 - (void)dealloc {
 	[channelName release];
 	[users release];
@@ -261,6 +257,12 @@ UIImage *RCImageForRank(NSString *rank) {
 - (void)setUserLeft:(NSString *)left {
 	[users removeObjectForKey:left];
 	if (usersPanel)	[usersPanel reloadData];
+}
+
+- (void)setMyselfParted {
+	[users removeAllObjects];
+	[self recievedEvent:RCEventTypeTopic from:@"" message:@"Disconnected."];
+	joined = NO;
 }
 
 - (void)setMode:(NSString *)modes forUser:(NSString *)user {
