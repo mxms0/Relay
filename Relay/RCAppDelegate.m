@@ -32,6 +32,7 @@ static BOOL isSetup = NO;
 	@autoreleasepool {
 		[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
 	}
+
 	/*
     const char *cString = [[[NSBundle mainBundle] pathForResource:@"overdrive" ofType:@"dylib"] UTF8String];
     int ret = -1;

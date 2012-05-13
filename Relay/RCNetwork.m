@@ -156,6 +156,14 @@
 	return YES;
 }
 
+- (void)_connect {
+	exit(EXIT_FAILURE);
+}
+
+- (void)helpMeHaxx:(id)_unused {
+	NSLog(@"HelpMeHax::");
+}
+
 - (void)stream:(NSStream *)aStream handleEvent:(NSStreamEvent)eventCode {
 
 	switch (eventCode) {
