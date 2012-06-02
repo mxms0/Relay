@@ -32,7 +32,6 @@
 
 #import "OHAttributedLabel.h"
 #import <time.h>
-#import "NSAttributedString+Attributes.h"
 
 #define OHAttributedLabel_WarnAboutKnownIssues 1
 
@@ -46,11 +45,6 @@ CGRect CTLineGetTypographicBoundsAsRect(CTLineRef line, CGPoint lineOrigin);
 CGRect CTRunGetTypographicBoundsAsRect(CTRunRef run, CTLineRef line, CGPoint lineOrigin);
 BOOL CTLineContainsCharactersFromStringRange(CTLineRef line, NSRange range);
 BOOL CTRunContainsCharactersFromStringRange(CTRunRef run, NSRange range);
-
-/////////////////////////////////////////////////////////////////////////////
-// MARK: -
-/////////////////////////////////////////////////////////////////////////////
-
 
 CTTextAlignment CTTextAlignmentFromUITextAlignment(UITextAlignment alignment) {
 	switch (alignment) {
@@ -140,34 +134,18 @@ BOOL CTRunContainsCharactersFromStringRange(CTRunRef run, NSRange range) {
 
 
 @interface OHAttributedLabel(/* Private */)
--(NSTextCheckingResult*)linkAtCharacterIndex:(CFIndex)idx;
--(NSTextCheckingResult*)linkAtPoint:(CGPoint)pt;
--(NSMutableAttributedString*)attributedTextWithLinks;
--(void)resetTextFrame;
--(void)drawActiveLinkHighlightForRect:(CGRect)rect;
+- (NSTextCheckingResult *)linkAtCharacterIndex:(CFIndex)idx;
+- (NSTextCheckingResult *)linkAtPoint:(CGPoint)pt;
+- (NSMutableAttributedString *)attributedTextWithLinks;
+- (void)resetTextFrame;
+- (void)drawActiveLinkHighlightForRect:(CGRect)rect;
 #if OHAttributedLabel_WarnAboutKnownIssues
--(void)warnAboutKnownIssues_CheckLineBreakMode;
--(void)warnAboutKnownIssues_CheckAdjustsFontSizeToFitWidth;
+- (void)warnAboutKnownIssues_CheckLineBreakMode;
+- (void)warnAboutKnownIssues_CheckAdjustsFontSizeToFitWidth;
 #endif
 @end
 
-
-
-
-
-/////////////////////////////////////////////////////////////////////////////
-// MARK: -
-// MARK: Implementation
-/////////////////////////////////////////////////////////////////////////////
-
-
 @implementation OHAttributedLabel
-
-
-/////////////////////////////////////////////////////////////////////////////
-// MARK: -
-// MARK: Init/Dealloc
-/////////////////////////////////////////////////////////////////////////////
 
 - (void)commonInit {
 	customLinks = [[NSMutableArray alloc] init];
@@ -185,8 +163,7 @@ BOOL CTRunContainsCharactersFromStringRange(CTRunRef run, NSRange range) {
 }
 
 - (id) initWithFrame:(CGRect)aFrame {
-	self = [super initWithFrame:aFrame];
-	if (self != nil) {
+	if ((self = [super initWithFrame:aFrame])) {
 		[self commonInit];
 	}
 	return self;
@@ -216,13 +193,6 @@ BOOL CTRunContainsCharactersFromStringRange(CTRunRef run, NSRange range) {
 	[super dealloc];
 }
 
-
-
-/////////////////////////////////////////////////////////////////////////////
-// MARK: -
-// MARK: Links Mgmt
-/////////////////////////////////////////////////////////////////////////////
-
 - (void)addCustomLink:(NSURL*)linkUrl inRange:(NSRange)range {
 	NSTextCheckingResult *link = [NSTextCheckingResult linkCheckingResultWithRange:range URL:linkUrl];
 	[customLinks addObject:link];
@@ -233,8 +203,8 @@ BOOL CTRunContainsCharactersFromStringRange(CTRunRef run, NSRange range) {
 	[self setNeedsDisplay];
 }
 
-- (NSMutableAttributedString*)attributedTextWithLinks {
-	NSMutableAttributedString* str = [self.attributedText mutableCopy];
+- (CHAttributedString *)attributedTextWithLinks {
+	CHAttributedString *str = [self.attributedText mutableCopy];
 	if (!str) return nil;
 	
 	NSString* plainText = [str string];
@@ -278,10 +248,10 @@ BOOL CTRunContainsCharactersFromStringRange(CTRunRef run, NSRange range) {
 	return [str autorelease];
 }
 
-- (NSTextCheckingResult*)linkAtCharacterIndex:(CFIndex)idx {
+- (NSTextCheckingResult *)linkAtCharacterIndex:(CFIndex)idx {
 	__block NSTextCheckingResult *foundResult = nil;
 	
-	NSString* plainText = [_attributedText string];
+	NSString *plainText = [_attributedText string];
 	if (plainText && (self.automaticallyAddLinksForType > 0)) {
 		NSError* error = nil;
 		NSDataDetector* linkDetector = [NSDataDetector dataDetectorWithTypes:self.automaticallyAddLinksForType error:&error];
@@ -306,7 +276,7 @@ BOOL CTRunContainsCharactersFromStringRange(CTRunRef run, NSRange range) {
 	return foundResult;
 }
 
-- (NSTextCheckingResult*)linkAtPoint:(CGPoint)point {
+- (NSTextCheckingResult *)linkAtPoint:(CGPoint)point {
 	static const CGFloat kVMargin = 5.f;
 	if (!CGRectContainsPoint(CGRectInset(drawingRect, 0, -kVMargin), point)) return nil;
 	
@@ -420,12 +390,6 @@ static time_t end;
 	[self setNeedsDisplay];
 }
 
-
-/////////////////////////////////////////////////////////////////////////////
-// MARK: -
-// MARK: Drawing Text
-/////////////////////////////////////////////////////////////////////////////
-
 - (void)resetTextFrame {
 	if (textFrame) {
 		CFRelease(textFrame);
@@ -446,7 +410,7 @@ static time_t end;
 			CGContextSetShadowWithColor(ctx, self.shadowOffset, 0.0, self.shadowColor.CGColor);
 		}
 		
-		NSMutableAttributedString* attrStrWithLinks = [self attributedTextWithLinks];
+		CHAttributedString *attrStrWithLinks = [self attributedTextWithLinks];
 		if (self.highlighted && self.highlightedTextColor != nil) {
 			[attrStrWithLinks setTextColor:self.highlightedTextColor];
 		}
@@ -558,7 +522,7 @@ static time_t end;
 /////////////////////////////////////////////////////////////////////////////
 
 - (void)resetAttributedText {
-	NSMutableAttributedString* mutAttrStr = [NSMutableAttributedString attributedStringWithString:self.text];
+	CHAttributedString *mutAttrStr = [CHAttributedString attributedStringWithString:self.text];
 	[mutAttrStr setFont:self.font];
 	[mutAttrStr setTextColor:self.textColor];
 	CTTextAlignment coreTextAlign = CTTextAlignmentFromUITextAlignment(self.textAlignment);

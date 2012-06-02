@@ -331,9 +331,9 @@ static NSMutableString *data = nil;
 }
 
 - (BOOL)disconnect {
-	if (_isDiconnecting) return;
+	if (_isDiconnecting) return NO;
 	_isDiconnecting = YES;
-	if (status == RCSocketStatusNotOpen) return;
+	if (status == RCSocketStatusNotOpen) return NO;
 	if ((status == RCSocketStatusConnected) || (status == RCSocketStatusConnecting)) {
 		[self sendMessage:@"QUIT :Relay 1.0"];
 	}	
@@ -926,6 +926,7 @@ static NSMutableString *data = nil;
 }
 
 - (void)handleMODE:(NSString *)_modes {
+	NSLog(@"Hello. %@", _modes);
 	_modes = [_modes substringFromIndex:1];
 	NSScanner *scanr = [[NSScanner alloc] initWithString:_modes];
 	NSString *settr;

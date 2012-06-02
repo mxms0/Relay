@@ -18,7 +18,6 @@
 		[self setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
 		self.textLabel.font = [UIFont boldSystemFontOfSize:12];
 		self.textLabel.backgroundColor = [UIColor clearColor];
-	//	self.backgroundColor = [UIColor whiteColor];
 		[self setSelectionStyle:UITableViewCellSelectionStyleNone];
 		[self.textLabel setAutomaticallyAddLinksForType:(NSTextCheckingTypeAddress | NSTextCheckingTypeDate | NSTextCheckingTypeLink | NSTextCheckingTypePhoneNumber)];
 		[self.textLabel setLinkColor:UIColorFromRGB(0x4F94EA)];
@@ -26,7 +25,7 @@
 		[self.textLabel setExtendBottomToFit:YES];
 		[self.textLabel setShadowColor:[UIColor whiteColor]];
 		[self.textLabel setShadowOffset:CGSizeMake(0, 1)];
-		[self addSubview:self.textLabel];
+		[self.contentView addSubview:self.textLabel];
 		[self.textLabel release];
 	}
 	return self;
@@ -35,7 +34,7 @@
 - (void)_textHasBeenSet {
 	self.textLabel.text = [message message];
 	currentFlavor = [message flavor];
-	NSMutableAttributedString *attr = [[NSMutableAttributedString alloc] initWithString:self.textLabel.text];
+	CHAttributedString *attr = [[CHAttributedString alloc] initWithString:self.textLabel.text];
 	[attr setFont:[UIFont fontWithName:@"Helvetica" size:12]];
 	UIColor *normalColor = UIColorFromRGB(0x3F4040);
 	if ([message isOld])
@@ -90,13 +89,14 @@
 	}
 	[self.textLabel setAttributedText:attr];
 	[attr release];
-	if (![message messageHeight]) {
+/*	if (![message messageHeight]) {
 		float *heights = [self calculateHeightForLabel];
 		[message setMessageHeight:heights[0]];
 		[message setMessageHeightLandscape:heights[1]];
 		free(heights);
 	}
-	height = ([[RCNavigator sharedNavigator] _isLandscape] ? message.messageHeightLandscape : message.messageHeight);
+ */
+	height = ((self.frame.size.width == 480) ? message.messageHeightLandscape : message.messageHeight);
 	if (height > 15) {
 		int layr = height/15;
 		@autoreleasepool {

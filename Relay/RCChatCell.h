@@ -11,8 +11,8 @@
 #import <QuartzCore/QuartzCore.h>
 #import <Foundation/Foundation.h>
 #import "OHAttributedLabel.h"
-#import "NSAttributedString+Attributes.h"
 #import "RCMessage.h"
+#import "CHAttributedString.h"
 
 @interface RCChatCell : UITableViewCell {
 	OHAttributedLabel *textLabel;
@@ -22,6 +22,4 @@
 }
 @property (nonatomic, retain) OHAttributedLabel *textLabel;
 @property (nonatomic, retain) RCMessage *message;
-CTFontRef CTFontCreateFromUIFont(UIFont *font);
-- (void)_textHasBeenSet;
 @end

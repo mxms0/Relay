@@ -219,6 +219,46 @@
 
 - (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor highlight:(BOOL)high isMine:(BOOL)mine {
 	RCMessage *message = [[RCMessage alloc] init];
+	
+	
+	CHAttributedString *attr = [[CHAttributedString alloc] initWithString:_message];
+	[attr setFont:[UIFont fontWithName:@"Helvetica" size:12]];
+	switch (flavor) {
+		case RCMessageFlavorAction:
+			[attr setTextIsUnderlined:NO range:NSMakeRange(0, _message.length)];
+			[attr setTextBold:YES range:NSMakeRange(0, _message.length)];
+			[attr setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeClip)];
+			break;
+		case RCMessageFlavorNormal: {
+			NSRange p = [_message rangeOfString:@"]"];
+			NSRange r = [_message rangeOfString:@":" options:0 range:NSMakeRange(p.location, _message.length-p.location)];
+			[attr setTextBold:YES range:NSMakeRange(0, r.location)];
+			break;
+		}
+		case RCMessageFlavorNotice:
+			[attr setTextBold:YES range:NSMakeRange(0, _message.length)];
+			// do something.
+			break;
+		case RCMessageFlavorTopic:
+			[attr setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeWordWrap)];
+			break;
+		case RCMessageFlavorJoin:
+			[attr setFont:[UIFont fontWithName:@"Helvetica" size:11]];
+			[attr setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeWordWrap)];
+			break;
+		case RCMessageFlavorPart:
+			[attr setFont:[UIFont fontWithName:@"Helvetica" size:11]];
+			[attr setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeWordWrap)];
+			break;
+		case RCMessageFlavorNormalE:
+			//	[attr setTextBold:YES range:NSMakeRange(0, _message.length)];
+			break;
+	}
+	float *heights = [self calculateHeightForLabel:attr];
+	[message setMessageHeight:heights[0]];
+	[message setMessageHeightLandscape:heights[1]];
+	free(heights);
+	[attr release];
 	[message setMessage:_message];
 	[message setFlavor:flavor];
 	[message setHighlight:high];
@@ -237,11 +277,12 @@
 }
 
 - (CGFloat)tableView:(UITableView *)_tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-	UITableViewCell *c = [self tableView:_tableView cellForRowAtIndexPath:indexPath];
-	[c layoutSubviews];
-	float height = (float)c.textLabel.frame.size.height + 4;
-	if (height == 4) height += 15;
-	return height;
+//	UITableViewCell *c = [self tableView:_tableView cellForRowAtIndexPath:indexPath];
+//	[c layoutSubviews];
+//	float height = (float)c.textLabel.frame.size.height + 4;
+//	if (height == 4) height += 15;
+	RCMessage *m = [messages objectAtIndex:indexPath.row];
+	return ([[RCNavigator sharedNavigator] _isLandscape] ? m.messageHeightLandscape : m.messageHeight) + 4;
 }
 
 - (NSInteger)tableView:(UITableView *)_tableView indentationLevelForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -267,20 +308,24 @@
     }
     // Configure the cell...
 	RCMessage *_message = [messages objectAtIndex:indexPath.row];
-//	if ([cell message]) {
-//		if (![[cell message] isEqual:_message]) {
-			[cell setMessage:_message];
-			[cell _textHasBeenSet];
-//		}
-//	}
-//	else {
-//		[cell setMessage:_message];
-//		[cell _textHasBeenSet];
-//	}
+	[cell setMessage:_message];
+//	[cell _textHasBeenSet];
 	return cell;
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(RCChatCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+	[cell _textHasBeenSet];
+}
+
+- (float *)calculateHeightForLabel:(NSMutableAttributedString *)str {
+	float *heights = (float *)malloc(sizeof(float *));
+	float fake = [str boundingHeightForWidth:316];
+	float faker = [str boundingHeightForWidth:476];
+	float multiplier = fake/12;
+	heights[0] = fake + (multiplier * 3);
+	multiplier = faker/12;
+	heights[1] = faker + (multiplier * 3);
+	return ((float *)heights);
 }
 
 #pragma mark - Table view delegate

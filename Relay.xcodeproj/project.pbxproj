@@ -100,6 +100,7 @@
 		504CC351151C4C6A00605706 /* 0_redbar_noglow.png in Resources */ = {isa = PBXBuildFile; fileRef = 504CC347151C4C6900605706 /* 0_redbar_noglow.png */; };
 		504CC352151C4C6A00605706 /* 0_redbar_noglow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 504CC348151C4C6A00605706 /* 0_redbar_noglow@2x.png */; };
 		504CC355151C50C200605706 /* RCBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 504CC354151C50C100605706 /* RCBar.m */; };
+		504D6EDC156B2B9E0004D7D7 /* CHAttributedString.m in Sources */ = {isa = PBXBuildFile; fileRef = 504D6EDB156B2B9E0004D7D7 /* CHAttributedString.m */; };
 		5052343E1556D904002EC9AC /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5052343B1556D773002EC9AC /* libTestFlight.a */; };
 		505234401556D938002EC9AC /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5052343F1556D938002EC9AC /* libz.dylib */; };
 		50711B4115156C670022CA68 /* 0_chatcell_2.png in Resources */ = {isa = PBXBuildFile; fileRef = 50711B3715156C440022CA68 /* 0_chatcell_2.png */; };
@@ -150,7 +151,6 @@
 		50E77AA11505A30400E75C64 /* RCNetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A831505A21500E75C64 /* RCNetworkManager.m */; };
 		50E77AA21505A30400E75C64 /* RCWelcomeNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A851505A21500E75C64 /* RCWelcomeNetwork.m */; };
 		50E77AA41505A30400E75C64 /* OHAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A891505A22800E75C64 /* OHAttributedLabel.m */; };
-		50E77AA51505A30400E75C64 /* NSAttributedString+Attributes.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A871505A22100E75C64 /* NSAttributedString+Attributes.m */; };
 		50EEDA241512C6150011618C /* 0_regulares.png in Resources */ = {isa = PBXBuildFile; fileRef = 50EEDA221512C6150011618C /* 0_regulares.png */; };
 		50EEDA251512C6150011618C /* 0_regulares@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50EEDA231512C6150011618C /* 0_regulares@2x.png */; };
 		50EEDA291512C8540011618C /* 0_ops.png in Resources */ = {isa = PBXBuildFile; fileRef = 50EEDA271512C8540011618C /* 0_ops.png */; };
@@ -263,6 +263,8 @@
 		504CC348151C4C6A00605706 /* 0_redbar_noglow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_redbar_noglow@2x.png"; sourceTree = "<group>"; };
 		504CC353151C50C100605706 /* RCBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCBar.h; sourceTree = "<group>"; };
 		504CC354151C50C100605706 /* RCBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCBar.m; sourceTree = "<group>"; };
+		504D6EDA156B2B9E0004D7D7 /* CHAttributedString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHAttributedString.h; sourceTree = "<group>"; };
+		504D6EDB156B2B9E0004D7D7 /* CHAttributedString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CHAttributedString.m; sourceTree = "<group>"; };
 		5052343B1556D773002EC9AC /* libTestFlight.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libTestFlight.a; sourceTree = "<group>"; };
 		5052343D1556D77C002EC9AC /* TestFlight.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestFlight.h; sourceTree = "<group>"; };
 		5052343F1556D938002EC9AC /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
@@ -337,8 +339,6 @@
 		50E77A831505A21500E75C64 /* RCNetworkManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCNetworkManager.m; sourceTree = "<group>"; };
 		50E77A841505A21500E75C64 /* RCWelcomeNetwork.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCWelcomeNetwork.h; sourceTree = "<group>"; };
 		50E77A851505A21500E75C64 /* RCWelcomeNetwork.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCWelcomeNetwork.m; sourceTree = "<group>"; };
-		50E77A861505A22100E75C64 /* NSAttributedString+Attributes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+Attributes.h"; sourceTree = "<group>"; };
-		50E77A871505A22100E75C64 /* NSAttributedString+Attributes.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSAttributedString+Attributes.m"; sourceTree = "<group>"; };
 		50E77A881505A22800E75C64 /* OHAttributedLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OHAttributedLabel.h; sourceTree = "<group>"; };
 		50E77A891505A22800E75C64 /* OHAttributedLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OHAttributedLabel.m; sourceTree = "<group>"; };
 		50E77A8B1505A27800E75C64 /* Relay.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Relay.h; sourceTree = "<group>"; };
@@ -379,8 +379,8 @@
 				5052343D1556D77C002EC9AC /* TestFlight.h */,
 				50E77A881505A22800E75C64 /* OHAttributedLabel.h */,
 				50E77A891505A22800E75C64 /* OHAttributedLabel.m */,
-				50E77A861505A22100E75C64 /* NSAttributedString+Attributes.h */,
-				50E77A871505A22100E75C64 /* NSAttributedString+Attributes.m */,
+				504D6EDA156B2B9E0004D7D7 /* CHAttributedString.h */,
+				504D6EDB156B2B9E0004D7D7 /* CHAttributedString.m */,
 			);
 			name = Imports;
 			sourceTree = "<group>";
@@ -388,7 +388,6 @@
 		50A7FB7114C0F0A800ABADEA = {
 			isa = PBXGroup;
 			children = (
-				5052343F1556D938002EC9AC /* libz.dylib */,
 				50A7FB8614C0F0A800ABADEA /* Relay */,
 				50A7FB7F14C0F0A800ABADEA /* Frameworks */,
 				50A7FB7D14C0F0A800ABADEA /* Products */,
@@ -406,6 +405,7 @@
 		50A7FB7F14C0F0A800ABADEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5052343F1556D938002EC9AC /* libz.dylib */,
 				5052343B1556D773002EC9AC /* libTestFlight.a */,
 				504C9B6C152D1E5A00F091B2 /* Security.framework */,
 				50221BA314EF6CB800C7AF58 /* CoreText.framework */,
@@ -815,7 +815,6 @@
 				50E77AA11505A30400E75C64 /* RCNetworkManager.m in Sources */,
 				50E77AA21505A30400E75C64 /* RCWelcomeNetwork.m in Sources */,
 				50E77AA41505A30400E75C64 /* OHAttributedLabel.m in Sources */,
-				50E77AA51505A30400E75C64 /* NSAttributedString+Attributes.m in Sources */,
 				50E77A8F1505A29100E75C64 /* main.m in Sources */,
 				501F2B3D150995DE0099C9C3 /* RCTableView.m in Sources */,
 				503742291511478300F4DA1A /* RCUserListPanel.m in Sources */,
@@ -828,6 +827,7 @@
 				50929EB6151E65F1007E23D3 /* RCPMChannel.m in Sources */,
 				50929EBA151E86FA007E23D3 /* RCiPadViewController.m in Sources */,
 				50929EC9151F0D2B007E23D3 /* RCNewMessagesBubble.m in Sources */,
+				504D6EDC156B2B9E0004D7D7 /* CHAttributedString.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

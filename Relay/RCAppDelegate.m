@@ -53,6 +53,7 @@ static BOOL isSetup = NO;
     NSLog(ret == 0 ? @"overdrive detected" : @"overdrive not found");
 	 */
     
+	
 	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
 	UIViewController *rcv;

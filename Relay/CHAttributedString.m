@@ -1,91 +1,22 @@
-/***********************************************************************************
- *
- * Copyright (c) 2010 Olivier Halligon
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- * 
- ***********************************************************************************
- *
- * Created by Olivier Halligon  (AliSoftware) on 20 Jul. 2010.
- *
- * Any comment or suggestion welcome. Please contact me before using this class in
- * your projects. Referencing this project in your AboutBox/Credits is appreciated.
- *
- ***********************************************************************************/
+//
+//  CHAttributedString.m
+//  Relay
+//
+//  Created by Max Shavrick on 5/21/12.
+//  Copyright (c) 2012 American Heritage School. All rights reserved.
+//
 
+#import "CHAttributedString.h"
 
-#import "NSAttributedString+Attributes.h"
+@implementation NSMutableAttributedString (Moar_Stuff)
 
-
-/////////////////////////////////////////////////////////////////////////////
-// MARK: -
-// MARK: NS(Mutable)AttributedString Additions
-/////////////////////////////////////////////////////////////////////////////
-
-@implementation NSAttributedString (OHCommodityConstructors)
-
-- (CGFloat)boundingHeightForWidth:(CGFloat)inWidth {
-    CGFloat height = 0;
-    CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString ( (CFMutableAttributedStringRef) self);
-    CGRect box = CGRectMake(0,0, inWidth, CGFLOAT_MAX);
-    CFIndex startIndex = 0;
-    CGMutablePathRef path = CGPathCreateMutable(); 
-    CGPathAddRect(path, NULL, box);
-    CTFrameRef frame = CTFramesetterCreateFrame(framesetter, CFRangeMake(startIndex, 0), path, NULL);
-    CFArrayRef lineArray = CTFrameGetLines(frame); 
-    CFIndex j = 0, lineCount = CFArrayGetCount(lineArray); 
-    CGFloat lineHeight, ascent, descent, leading;
-    for (j = 0; j < lineCount; j++) {
-        CTLineRef currentLine = (CTLineRef)CFArrayGetValueAtIndex(lineArray, j);
-        CTLineGetTypographicBounds(currentLine, &ascent, &descent, &leading);      
-        lineHeight = ascent + descent + leading;
-        height += lineHeight;
-    }
-    CFRelease(frame);
-    CFRelease(path);
-    CFRelease(framesetter);
-    return height;
-}
-+ (id)attributedStringWithString:(NSString *)string {
-	return string ? [[[self alloc] initWithString:string] autorelease] : nil;
-}
-+ (id)attributedStringWithAttributedString:(NSAttributedString *)attrStr {
-	return attrStr ? [[[self alloc] initWithAttributedString:attrStr] autorelease] : nil;
+- (CGFloat)heightForOrientation:(BOOL)isLandscape {
+	return [(NSNumber *)objc_getAssociatedObject(self, (const void *)(isLandscape ? "_landscapeHeight" : "_portraitHeight")) floatValue];
 }
 
-- (CGSize)sizeConstrainedToSize:(CGSize)maxSize {
-	return [self sizeConstrainedToSize:maxSize fitRange:NULL];
+- (void)setTextHeight:(CGFloat)height forOrientation:(BOOL)isLandscape {
+	objc_setAssociatedObject(self, (const void *)(isLandscape ? "_landscapeHeight" : "_portraitHeight"), [NSNumber numberWithFloat:height], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
-- (CGSize)sizeConstrainedToSize:(CGSize)maxSize fitRange:(NSRange *)fitRange {
-	CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString((CFAttributedStringRef)self);
-	CFRange fitCFRange = CFRangeMake(0,0);
-	CGSize sz = CTFramesetterSuggestFrameSizeWithConstraints(framesetter,CFRangeMake(0,0),NULL,maxSize,&fitCFRange);
-	if (framesetter) CFRelease(framesetter);
-	if (fitRange) *fitRange = NSMakeRange(fitCFRange.location, fitCFRange.length);
-	return CGSizeMake( floorf(sz.width+1) , floorf(sz.height+1) ); // take 1pt of margin for security
-}
-@end
-
-
-
-
-@implementation NSMutableAttributedString (OHCommodityStyleModifiers)
 
 - (void)setFont:(UIFont *)font {
 	[self setFontName:font.fontName size:font.pointSize];
@@ -117,7 +48,7 @@
 	CTFontRef aFont = CTFontCreateWithFontDescriptor(desc, size, NULL);
 	CFRelease(desc);
 	if (!aFont) return;
-
+	
 	[self removeAttribute:(NSString *)kCTFontAttributeName range:range]; // Work around for Apple leak
 	[self addAttribute:(NSString *)kCTFontAttributeName value:(id)aFont range:range];
 	CFRelease(aFont);
@@ -185,6 +116,48 @@
 	[self addAttribute:(NSString *)kCTParagraphStyleAttributeName value:(id)aStyle range:range];
 	CFRelease(aStyle);
 }
+
 @end
 
+@implementation NSAttributedString (Stuff)
 
+- (CGFloat)boundingHeightForWidth:(CGFloat)inWidth {
+	CGFloat height = 0;
+	CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString ( (CFMutableAttributedStringRef) self);
+	CGRect box = CGRectMake(0,0, inWidth, CGFLOAT_MAX);
+	CFIndex startIndex = 0;
+	CGMutablePathRef path = CGPathCreateMutable(); 
+	CGPathAddRect(path, NULL, box);
+	CTFrameRef frame = CTFramesetterCreateFrame(framesetter, CFRangeMake(startIndex, 0), path, NULL);
+	CFArrayRef lineArray = CTFrameGetLines(frame); 
+	CFIndex j = 0, lineCount = CFArrayGetCount(lineArray); 
+	CGFloat lineHeight, ascent, descent, leading;
+	for (j = 0; j < lineCount; j++) {
+		CTLineRef currentLine = (CTLineRef)CFArrayGetValueAtIndex(lineArray, j);
+		CTLineGetTypographicBounds(currentLine, &ascent, &descent, &leading);      
+		lineHeight = ascent + descent + leading;
+		height += lineHeight;
+	}
+	CFRelease(frame);
+	CFRelease(path);
+	CFRelease(framesetter);
+	return height;
+}
++ (id)attributedStringWithString:(NSString *)string {
+	return string ? [[[self alloc] initWithString:string] autorelease] : nil;
+}
++ (id)attributedStringWithAttributedString:(NSAttributedString *)attrStr {
+	return attrStr ? [[[self alloc] initWithAttributedString:attrStr] autorelease] : nil;
+}
+- (CGSize)sizeConstrainedToSize:(CGSize)maxSize {
+	return [self sizeConstrainedToSize:maxSize fitRange:NULL];
+}
+- (CGSize)sizeConstrainedToSize:(CGSize)maxSize fitRange:(NSRange *)fitRange {
+	CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString((CFAttributedStringRef)self);
+	CFRange fitCFRange = CFRangeMake(0,0);
+	CGSize sz = CTFramesetterSuggestFrameSizeWithConstraints(framesetter,CFRangeMake(0,0),NULL,maxSize,&fitCFRange);
+	if (framesetter) CFRelease(framesetter);
+	if (fitRange) *fitRange = NSMakeRange(fitCFRange.location, fitCFRange.length);
+	return CGSizeMake( floorf(sz.width+1) , floorf(sz.height+1) ); // take 1pt of margin for security
+}
+@end

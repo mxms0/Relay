@@ -21,6 +21,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+	
 	[[UIApplication sharedApplication] registerForRemoteNotificationTypes:UIRemoteNotificationTypeAlert];
 	CGSize screenWidth = [[UIScreen mainScreen] applicationFrame].size;
 	RCNavigator *navigator = [RCNavigator sharedNavigator];
@@ -32,6 +33,7 @@
 }
 
 - (void)doConnect:(id)unused {
+	
 //	NSURL *file = [NSURL fileURLWithPath:PREFS_ABSOLUT];
 //	NSURL *_path = [[NSFileManager defaultManager] URLForUbiquityContainerIdentifier:nil];
 //	NSError *errro;

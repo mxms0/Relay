@@ -26,12 +26,13 @@
 		#define kCFCoreFoundationVersionNumber_iPhoneOS_4_0 550.32
 	#endif
 	#define PREFS_PLIST @"/Networks.plist"
-#define NETS_PLIST @"/Chat.plist"
+	#define NETS_PLIST @"/Chat.plist"
 	#define PREFS_ABSOLUT [[NSUserDefaults standardUserDefaults] objectForKey:PREFS_PLIST]
 	#define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 	#define isPad (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
 	#define TEAM_TOKEN @"35b8aa0d259ae0c61c57bc770aeafe63_Mzk5NDYyMDExLTExLTA5IDE4OjQ0OjEwLjc4MTM3MQ"
 	#define USE_PRIVATE 1
+	typedef NSMutableAttributedString CHAttributedString;
 #endif
 
 /* NOTES
