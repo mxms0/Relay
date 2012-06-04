@@ -11,7 +11,7 @@
 
 @implementation RCNetwork
 
-@synthesize sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, channels, _channels, index, useNick, userModes;
+@synthesize sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, index, useNick, userModes;
 
 - (id)init {
 	if ((self = [super init])) {
@@ -19,7 +19,6 @@
 		shouldSave = NO;
 		isRegistered = NO;
 		canSend = YES;
-		channels = [[NSMutableArray alloc] init];
 		_channels = [[NSMutableDictionary alloc] init];
 		_isDiconnecting = NO;
 	}
@@ -37,14 +36,13 @@
 			server, SERVR_ADDR_KEY,
 			[NSNumber numberWithInt:port], PORT_KEY,
 			[NSNumber numberWithBool:useSSL], SSL_KEY,
-			channels, CHANNELS_KEY,
+			[_channels allKeys], CHANNELS_KEY,
 			[NSNumber numberWithBool:COL], COL_KEY,
 			nil];
 }
 
 - (void)dealloc {
 	NSLog(@"cya.");
-	[channels release];
 	[_channels release];
 	[server release];
 	[nick release];
@@ -79,8 +77,17 @@
 	[rooms release];
 }
 
+- (RCChannel *)channelWithChannelName:(NSString *)chan {
+	for (NSString *chan_ in [_channels allKeys]) {
+		if ([[chan_ lowercaseString] isEqualToString:[chan lowercaseString]]) return [_channels objectForKey:chan];
+	}
+	return nil;
+}
+
 - (void)addChannel:(NSString *)_chan join:(BOOL)join {
-	if (![[_channels allKeys] containsObject:_chan]) {
+	for (NSString *aChan in [_channels allKeys])
+		if ([[aChan lowercaseString] isEqualToString:[_chan lowercaseString]]) return;
+	if (![self channelWithChannelName:_chan]) {
 		RCChannel *chan = nil;
 		if ([_chan isEqualToString:@"IRC"]) chan = [[RCConsoleChannel alloc] initWithChannelName:_chan];
 		else if ([_chan hasPrefix:@"#"]) chan = [[RCChannel alloc] initWithChannelName:_chan];
@@ -88,8 +95,6 @@
 		[chan setDelegate:self];
 		[[self _channels] setObject:chan forKey:_chan];
 		[chan release];
-		if (![[self channels] containsObject:_chan])
-			[[self channels] addObject:_chan];
 		if (join) [chan setJoined:YES withArgument:nil];
 		if (isRegistered) {
 			[[RCNavigator sharedNavigator] addRoom:_chan toServerAtIndex:index];
@@ -103,7 +108,6 @@
 - (void)removeChannel:(RCChannel *)chan {
 	[chan setJoined:NO withArgument:@"Relay Chat."];
 	[[RCNavigator sharedNavigator] removeChannel:chan toServerAtIndex:index];
-	[channels removeObject:[chan channelName]];
 	[_channels removeObjectForKey:[chan channelName]];
 	[[RCNetworkManager sharedNetworkManager] saveNetworks];
 }
@@ -165,7 +169,6 @@
 }
 
 - (void)stream:(NSStream *)aStream handleEvent:(NSStreamEvent)eventCode {
-
 	switch (eventCode) {
 		case NSStreamEventEndEncountered: // 16 - Called on ping timeout/closing link
 			status = RCSocketStatusClosed;
@@ -223,7 +226,6 @@
 
 - (void)errorOccured:(NSError *)error {
 	NSLog(@"Error: %@", [error localizedDescription]);
-//	[TestFlight submitFeedback:[error localizedDescription]];
 }
 
 - (void)recievedMessage:(NSString *)msg {
@@ -351,8 +353,8 @@ static NSMutableString *data = nil;
 		iStream = nil;
 		status = RCSocketStatusNotOpen;
 		isRegistered = NO;
-		for (NSString *chan in channels) {
-			RCChannel *_chan = [_channels objectForKey:chan];
+		for (NSString *chan in [_channels allKeys]) {
+			RCChannel *_chan = [self channelWithChannelName:chan];
 			[_chan setMyselfParted];
 		}
 		NSLog(@"Disconnected.");
@@ -367,7 +369,7 @@ static NSMutableString *data = nil;
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
 	if (chan) [chan recievedMessage:@"Connected to host." from:@"" type:RCMessageTypeNormal];
 	if ([npass length] > 0)	[self sendMessage:[@"PRIVMSG NickServ IDENTIFY " stringByAppendingString:npass]];
-	for (NSString *chan in channels) {
+	for (NSString *chan in [_channels allKeys]) {
 		if ([[_channels objectForKey:chan] joinOnConnect]) [[_channels objectForKey:chan] setJoined:YES withArgument:nil];
 	}
 }
@@ -550,7 +552,7 @@ static NSMutableString *data = nil;
 	[_scanner scanUpToString:@" " intoString:&room];
 	[_scanner scanUpToString:@"\r\n" intoString:&_topic];
 	_topic = [_topic substringFromIndex:1];
-	[[_channels objectForKey:room] recievedEvent:RCEventTypeTopic from:nil message:_topic];
+	[[self channelWithChannelName:room] recievedEvent:RCEventTypeTopic from:nil message:_topic];
 	// :irc.saurik.com 332 _m #bacon :Bacon | where2start? kitchen | Canadian Bacon? get out. | WE SPEAK: BACON, ENGLISH, PORTUGUESE, DEUTSCH. | http://blog.craftzine.com/bacon-starry-night.jpg THIS IS YOU ¬†
 	[_scanner release];
 }
@@ -627,7 +629,7 @@ static NSMutableString *data = nil;
 	if ([users length] > 1) {
 		users = [users substringFromIndex:1];
 		NSArray *_someUsers = [users componentsSeparatedByString:@" "];
-		RCChannel *chan = [_channels objectForKey:room];
+		RCChannel *chan = [self channelWithChannelName:room];
 		if (chan) {
 			for (NSString *user in _someUsers) {
 				[chan setUserJoined:user];
@@ -779,7 +781,7 @@ static NSMutableString *data = nil;
 		else if ([msg hasPrefix:@"ACTION"]) {
 			if ([msg length] > 7) {
 				msg = [msg substringWithRange:NSMakeRange(7, msg.length-8)];
-				[((RCChannel *)[_channels objectForKey:room]) recievedMessage:msg from:from type:RCMessageTypeAction];
+				[((RCChannel *)[self channelWithChannelName:room]) recievedMessage:msg from:from type:RCMessageTypeAction];
 			}
 			[_scanner release];
 			return;
@@ -790,7 +792,7 @@ static NSMutableString *data = nil;
 			// privmsg or some other mechanical contraptiona.. :(
 			room = from;
 		}
-		if (![_channels objectForKey:room]) {
+		if (![self channelWithChannelName:room]) {
 			// magicall.. 0.0
 			// has to be a private message.
 			// Reasoning: 
@@ -799,17 +801,8 @@ static NSMutableString *data = nil;
 			// which we have caught, and added the RCChannel already.
 			[self addChannel:room join:YES];
 		}
-//		NSMethodSignature *sig = [((RCChannel *)[_channels objectForKey:room]) methodSignatureForSelector:@selector(recievedMessage:from:type:)];
-//		NSInvocation *invo = [NSInvocation invocationWithMethodSignature:sig];
-//		[invo setTarget:((RCChannel *)[_channels objectForKey:room])];
-//		[invo setSelector:@selector(recievedMessage:from:type:)];
-//		[invo setArgument:&msg atIndex:2];
-//		[invo setArgument:&from atIndex:3];
-//		[invo setArgument:([NSNumber numberWithInt:1]) atIndex:4];
-//		[invo retainArguments];
-//		[invo performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
 		// fuck this shit.
-		[((RCChannel *)[_channels objectForKey:room]) recievedMessage:msg from:from type:RCMessageTypeNormal];
+		[((RCChannel *)[self channelWithChannelName:room]) recievedMessage:msg from:from type:RCMessageTypeNormal];
 		// tell the channel a message was recieved. P:
 	}
 	[_scanner release];
@@ -872,7 +865,7 @@ static NSMutableString *data = nil;
 		return;
 	}
 	else {
-		[[_channels objectForKey:room] recievedEvent:RCEventTypePart from:_nick message:nil];
+		[[self channelWithChannelName:room] recievedEvent:RCEventTypePart from:_nick message:nil];
 	}
 	[_scanner release];
 }
@@ -896,10 +889,10 @@ static NSMutableString *data = nil;
 	if ([_nick isEqualToString:useNick]) {
 		[self addChannel:room join:NO];
 		[self sendMessage:[NSString stringWithFormat:@"NAMES %@\r\nTOPIC %@", room, room]];
-		[[_channels objectForKey:room] setSuccessfullyJoined:YES];
+		[[self channelWithChannelName:room] setSuccessfullyJoined:YES];
 	}
 	else {
-		[[_channels objectForKey:room] recievedEvent:RCEventTypeJoin from:_nick message:nil];
+		[[self channelWithChannelName:room] recievedEvent:RCEventTypeJoin from:_nick message:nil];
 	}
 	[_scanner release];
 }
@@ -918,8 +911,8 @@ static NSMutableString *data = nil;
 		msg = [msg substringFromIndex:1];
 	}
 	[self parseUsermask:fullHost nick:&user user:nil hostmask:nil];
-	for (NSString *channel in channels) {
-		RCChannel *chan = [_channels objectForKey:channel];
+	for (NSString *channel in [_channels allKeys]) {
+		RCChannel *chan = [self channelWithChannelName:channel];
 		[chan recievedEvent:RCEventTypeQuit from:user message:msg];
 	}
 	[scannr release];
@@ -940,7 +933,7 @@ static NSMutableString *data = nil;
 	[scanr scanUpToString:@" " intoString:&modes];
 	[scanr scanUpToString:@"\r\n" intoString:&user];
 	[self parseUsermask:settr nick:&settr user:nil hostmask:nil];
-	RCChannel *chan = [_channels objectForKey:room];
+	RCChannel *chan = [self channelWithChannelName:room];
 	if (chan) {
 		if ([room isEqualToString:useNick]) {
 			[scanr release];
@@ -1003,7 +996,7 @@ static NSMutableString *data = nil;
 	newTopic = [newTopic substringFromIndex:1];
 	from = [from substringFromIndex:1];
 	[self parseUsermask:from nick:&from user:nil hostmask:nil];
-	[[_channels objectForKey:room] recievedEvent:RCEventTypeTopic from:from message:newTopic];
+	[[self channelWithChannelName:room] recievedEvent:RCEventTypeTopic from:from message:newTopic];
 	[_scan release];
 }
 

@@ -27,9 +27,9 @@
             id anObject;
             [invo getReturnValue:&anObject];
             return anObject;
-            
-        } else {
-            return nil;
+		}
+		else {
+			return nil;
         }
 	}
 	else {
@@ -64,35 +64,6 @@
 		[field setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
 		[field setBorderStyle:UITextBorderStyleNone];
 #if USE_PRIVATE
-		/*
-		char selector[24];
-		selector[0] = 's';
-		selector[1] = 'e';
-		selector[2] = 't';
-		selector[3] = 'I';
-		selector[4] = 'n';
-		selector[5] = 's';
-		selector[6] = 'e';
-		selector[7] = 'r';
-		selector[8] = 't';
-		selector[9] = 'i';
-		selector[10] = 'o';
-		selector[11] = 'n';
-		selector[12] = 'P';
-		selector[13] = 'o';
-		selector[14] = 'i';
-		selector[15] = 'n';
-		selector[16] = 't';
-		selector[17] = 'C';
-		selector[18] = 'o';
-		selector[19] = 'l';
-		selector[20] = 'o';
-		selector[21] = 'r';
-		selector[22] = ':';
-		selector[23] = '\0';
-		
-		objc_msgSend(field, sel_registerName(selector), UIColorFromRGB(0x4F94EA));
-		 */
 		[field setInsertionPointColor:UIColorFromRGB(0x4F94EA)];
 #endif
 		[field setKeyboardAppearance:UIKeyboardAppearanceDefault];
@@ -114,10 +85,7 @@
 }
 
 - (void)suggestNick:(UIGestureRecognizer *)gestr {
-	UITextRange *range = [field selectedTextRange];
-	NSLog(@"Meh. %@", [field textInRange:range]);
 	prev = [channel userWithPrefix:currentWord pastUser:prev];
-	NSLog(@"Meh. %@", prev);
 }
 
 - (void)setChannel:(RCChannel *)_channel {
@@ -266,6 +234,7 @@
 	[self performSelectorOnMainThread:@selector(_correctThreadPost:) withObject:message waitUntilDone:NO];
 }
 
+
 - (void)_correctThreadPost:(RCMessage *)_m {
 	[messages addObject:_m];
 	[_m release];
@@ -277,10 +246,10 @@
 }
 
 - (CGFloat)tableView:(UITableView *)_tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-//	UITableViewCell *c = [self tableView:_tableView cellForRowAtIndexPath:indexPath];
-//	[c layoutSubviews];
-//	float height = (float)c.textLabel.frame.size.height + 4;
-//	if (height == 4) height += 15;
+	//	UITableViewCell *c = [self tableView:_tableView cellForRowAtIndexPath:indexPath];
+	//	[c layoutSubviews];
+	//	float height = (float)c.textLabel.frame.size.height + 4;
+	//	if (height == 4) height += 15;
 	RCMessage *m = [messages objectAtIndex:indexPath.row];
 	return ([[RCNavigator sharedNavigator] _isLandscape] ? m.messageHeightLandscape : m.messageHeight) + 4;
 }
@@ -309,7 +278,7 @@
     // Configure the cell...
 	RCMessage *_message = [messages objectAtIndex:indexPath.row];
 	[cell setMessage:_message];
-//	[cell _textHasBeenSet];
+	//	[cell _textHasBeenSet];
 	return cell;
 }
 

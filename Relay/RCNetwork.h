@@ -21,7 +21,6 @@ typedef enum RCSocketStatus {
 
 @interface RCNetwork : NSObject <NSStreamDelegate> {
 	NSThread *_thread;
-	NSMutableArray *channels;
 	NSMutableDictionary *_channels;
 	NSString *sDescription;
 	NSString *server;
@@ -48,7 +47,6 @@ typedef enum RCSocketStatus {
 	BOOL canSend:1;
 	BOOL _isDiconnecting:1;
 }
-@property (nonatomic, retain) NSMutableArray *channels;
 @property (nonatomic, retain) NSMutableDictionary *_channels;
 @property (nonatomic, retain) NSString *sDescription;
 @property (nonatomic, retain) NSString *server;

@@ -34,12 +34,6 @@
 
 - (void)doConnect:(id)unused {
 	
-//	NSURL *file = [NSURL fileURLWithPath:PREFS_ABSOLUT];
-//	NSURL *_path = [[NSFileManager defaultManager] URLForUbiquityContainerIdentifier:nil];
-//	NSError *errro;
-//	[[NSFileManager defaultManager] setUbiquitous:YES itemAtURL:file destinationURL:_path error:&errro];
-//	if (errro) NSLog(@"Meh. %@", errro);
-
 //	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 //	NSString *url = @"http://mxms.us/gabby.jpg";
 //	
@@ -52,7 +46,7 @@
 //		return;
 //	else
 //		exit(-1);
-	
+
 //	[p drain];
 }
 

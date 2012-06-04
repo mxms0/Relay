@@ -136,7 +136,7 @@ static id _sharedNavigator = nil;
 	[bar setContentSize:CGSizeMake((netCount * 200) + 0.5, 50)];
 	
 	NSMutableArray *tmp = [[NSMutableArray alloc] init];
-	for (NSString *chan in [net channels]) {
+	for (NSString *chan in [[net _channels] allKeys]) {
 		RCChannelBubble *bubble = [self channelBubbleWithChannelName:chan];
 		[[[net _channels] objectForKey:chan] setBubble:bubble];
 		[bubble _classify:net.index];

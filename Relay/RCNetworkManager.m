@@ -60,7 +60,7 @@ static NSMutableArray *networks = nil;
 			return;
 		}
 	}
-	if (![[_net channels] containsObject:@"IRC"]) [[_net channels] addObject:@"IRC"];
+	if (![[[_net _channels] allKeys] containsObject:@"IRC"]) [_net addChannel:@"IRC" join:NO];
 	[networks addObject:_net];
 	[[RCNavigator sharedNavigator] addNetwork:_net];
 	if ([_net COL]) [_net connect];
@@ -215,7 +215,7 @@ static NSMutableArray *networks = nil;
 	NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
 	for (RCNetwork *net in networks) {
 		NSMutableDictionary *netDict = [[NSMutableDictionary alloc] init];
-		for (NSString *_chan in [net channels]) {
+		for (NSString *_chan in [[net _channels] allKeys]) {
 			RCChannel *chan = [[net _channels] objectForKey:_chan];
 			if (chan) {
 				NSArray *messages = [[chan panel] messages];
