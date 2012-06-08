@@ -89,13 +89,12 @@
 	}
 	[self.textLabel setAttributedText:attr];
 	[attr release];
-/*	if (![message messageHeight]) {
+	if (![message messageHeight]) {
 		float *heights = [self calculateHeightForLabel];
 		[message setMessageHeight:heights[0]];
 		[message setMessageHeightLandscape:heights[1]];
 		free(heights);
 	}
- */
 	height = ((self.frame.size.width == 480) ? message.messageHeightLandscape : message.messageHeight);
 	if (height > 15) {
 		int layr = height/15;

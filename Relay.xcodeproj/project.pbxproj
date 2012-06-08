@@ -890,7 +890,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALTERNATE_MODE = Entitlements.plist;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: deanna shavrick";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: deanna shavrick";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Relay/Relay-Prefix.pch";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
@@ -905,7 +906,7 @@
 				);
 				OTHER_LDFLAGS = "-Wl,-no_implicit_dylibs";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "35DC7837-BBB0-40E7-ADC5-3A60CC72F752";
+				PROVISIONING_PROFILE = "";
 				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};
@@ -967,7 +968,7 @@
 			buildSettings = {
 				ALTERNATE_MODE = Entitlements.plist;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: deanna shavrick";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: deanna shavrick (883972NT79)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Relay/Relay-Prefix.pch";
 				INFOPLIST_FILE = "Relay/Relay-Info.plist";
@@ -981,8 +982,7 @@
 				);
 				OTHER_LDFLAGS = "-Wl,-no_implicit_dylibs";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "14D570E2-27AE-4D44-A273-4E35D4FAD006";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "ECDA34B2-472E-434A-90FE-AE893D4D1A2B";
+				PROVISIONING_PROFILE = "";
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				WRAPPER_EXTENSION = app;
 			};
@@ -992,7 +992,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALTERNATE_MODE = Entitlements.plist;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: deanna shavrick";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: deanna shavrick";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Relay/Relay-Prefix.pch";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
@@ -1007,7 +1008,7 @@
 				);
 				OTHER_LDFLAGS = "-Wl,-no_implicit_dylibs";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "35DC7837-BBB0-40E7-ADC5-3A60CC72F752";
+				PROVISIONING_PROFILE = "";
 				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};

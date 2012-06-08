@@ -187,8 +187,6 @@
 
 - (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor highlight:(BOOL)high isMine:(BOOL)mine {
 	RCMessage *message = [[RCMessage alloc] init];
-	
-	
 	CHAttributedString *attr = [[CHAttributedString alloc] initWithString:_message];
 	[attr setFont:[UIFont fontWithName:@"Helvetica" size:12]];
 	switch (flavor) {
@@ -225,6 +223,10 @@
 	float *heights = [self calculateHeightForLabel:attr];
 	[message setMessageHeight:heights[0]];
 	[message setMessageHeightLandscape:heights[1]];
+	if (heights[0] == 0) {
+		NSLog(@"Haimsg. %@", _message);	
+	}
+
 	free(heights);
 	[attr release];
 	[message setMessage:_message];
@@ -275,14 +277,14 @@
     if (cell == nil) {
         cell = [[[RCChatCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
-    // Configure the cell...
-	RCMessage *_message = [messages objectAtIndex:indexPath.row];
-	[cell setMessage:_message];
 	//	[cell _textHasBeenSet];
 	return cell;
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(RCChatCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+	// Configure the cell...
+	RCMessage *_message = [messages objectAtIndex:indexPath.row];
+	[cell setMessage:_message];
 	[cell _textHasBeenSet];
 }
 
