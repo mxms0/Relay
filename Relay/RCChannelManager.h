@@ -6,12 +6,10 @@
 //  Copyright (c) 2012 American Heritage School. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 #import "RCAddCell.h"
 #import "RCNetwork.h"
 
-@interface RCRoomsController : UITableViewController <UIAlertViewDelegate>
-{
+@interface RCChannelManager : UITableViewController <UIAlertViewDelegate> {
     UIImageView *r_shadow;
     RCNetwork *network;
     NSMutableArray *channels;

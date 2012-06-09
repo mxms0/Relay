@@ -491,7 +491,7 @@
 					cell.selectionStyle = UITableViewCellSelectionStyleBlue;
 					break;
 				case 3:
-					cell.textLabel.text = @"Rooms";
+					cell.textLabel.text = @"Channels";
 					cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 					cell.selectionStyle = UITableViewCellSelectionStyleBlue;
 			}
@@ -515,16 +515,18 @@
 }
 
 - (void)tableView:(UITableView *)_tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    if (indexPath.section == 3) {
-        if (indexPath.row == 3) {
-            
-            RCRoomsController *roomsController = [[RCRoomsController alloc] initWithStyle:UITableViewStyleGrouped andNetwork:network];
-            [self.navigationController pushViewController:roomsController animated:YES];
-
-            [roomsController release];
-        }
-    }
+    switch (indexPath.section) {
+		case 3:
+			if (indexPath.row == 3) {
+				RCChannelManager *roomsController = [[RCChannelManager alloc] initWithStyle:UITableViewStyleGrouped andNetwork:network];
+				[self.navigationController pushViewController:roomsController animated:YES];
+				[roomsController release];
+			}
+			break;
+		default:
+			break;
+			
+	}
     
 	[_tableView deselectRowAtIndexPath:indexPath animated:YES];
 }

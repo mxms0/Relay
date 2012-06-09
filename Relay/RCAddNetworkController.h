@@ -12,6 +12,7 @@
 #import "RCSwitch.h"
 #import "RCTextField.h"
 #import "RCAddCell.h"
+#import "RCChannelManager.h"
 
 @interface RCAddNetworkController : UITableViewController <UITextFieldDelegate, UIScrollViewDelegate> {
 	RCNetwork *network;

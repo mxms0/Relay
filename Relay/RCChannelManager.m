@@ -6,42 +6,27 @@
 //  Copyright (c) 2012 American Heritage School. All rights reserved.
 //
 
-#import "RCRoomsController.h"
+#import "RCChannelManager.h"
 
-@interface RCRoomsController ()
-
-@end
-
-@implementation RCRoomsController
+@implementation RCChannelManager
 
 @synthesize network;
 @synthesize channels;
 
-
-
-- (id)initWithStyle:(UITableViewStyle)style andNetwork:(RCNetwork *)net
-{
-    self = [super initWithStyle:style];
-    if (self) {
-        self.network = net;
-
-        self.channels = [NSMutableArray array];
-        [self.channels addObjectsFromArray:[[self.network _channels] allKeys]];
-
-        NSUInteger indexOfTheObject = [self.channels indexOfObject:@"IRC"];
-        [self.channels removeObjectAtIndex:indexOfTheObject];
-
-        
+- (id)initWithStyle:(UITableViewStyle)style andNetwork:(RCNetwork *)net {
+	if ((self = [super initWithStyle:style])) {
+		self.network = net;
+		self.channels = [[NSMutableArray alloc] initWithArray:[[net _channels] allKeys]];
+		[channels removeObject:@"IRC"];
     }
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     
     UILabel *titleView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
-	titleView.text = @"Rooms";
+	titleView.text = @"Channels";
 	titleView.backgroundColor = [UIColor clearColor];
 	titleView.textAlignment = UITextAlignmentCenter;
 	titleView.font = [UIFont boldSystemFontOfSize:22];
@@ -66,10 +51,9 @@
    
     addBtn = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addNewItem)];
 
-
     NSArray *array = [NSArray arrayWithObjects:self.editButtonItem, nil];
-    
-    self.navigationItem.rightBarButtonItems = array;
+
+    [self.navigationItem setRightBarButtonItems:array animated:YES];
 }
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated { 
     [super setEditing:editing animated:animated];

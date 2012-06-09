@@ -157,6 +157,7 @@
 		50EEDA2A1512C8540011618C /* 0_ops@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50EEDA281512C8540011618C /* 0_ops@2x.png */; };
 		50EEDA2D1512C92F0011618C /* 0_mListr.png in Resources */ = {isa = PBXBuildFile; fileRef = 50EEDA2B1512C92F0011618C /* 0_mListr.png */; };
 		50EEDA301512CA520011618C /* 0_mListr@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50EEDA2F1512CA520011618C /* 0_mListr@2x.png */; };
+		50FC091E1583BA610019DB14 /* RCChannelManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5038C8311583B8E4004BA602 /* RCChannelManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -209,6 +210,8 @@
 		50381ABB1519803100BE93CE /* 0_toggleoff@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_toggleoff@2x.png"; sourceTree = "<group>"; };
 		50381ABC1519803100BE93CE /* 0_toggleon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_toggleon.png; sourceTree = "<group>"; };
 		50381ABD1519803100BE93CE /* 0_toggleon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_toggleon@2x.png"; sourceTree = "<group>"; };
+		5038C8301583B8E4004BA602 /* RCChannelManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCChannelManager.h; sourceTree = "<group>"; };
+		5038C8311583B8E4004BA602 /* RCChannelManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCChannelManager.m; sourceTree = "<group>"; };
 		504349FC152CEEDD0037BD12 /* RCKeychainItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCKeychainItem.m; sourceTree = "<group>"; };
 		50468A8B1527E46D0025F405 /* 0_input_l.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_input_l.png; sourceTree = "<group>"; };
 		50468A8C1527E46D0025F405 /* 0_input_l@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_input_l@2x.png"; sourceTree = "<group>"; };
@@ -557,6 +560,8 @@
 		50A7FBA914C0F7DC00ABADEA /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				5038C8301583B8E4004BA602 /* RCChannelManager.h */,
+				5038C8311583B8E4004BA602 /* RCChannelManager.m */,
 				50929EB8151E86FA007E23D3 /* RCiPadViewController.h */,
 				50929EB9151E86FA007E23D3 /* RCiPadViewController.m */,
 				50E77A641505A17800E75C64 /* RCViewController.h */,
@@ -796,6 +801,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50FC091E1583BA610019DB14 /* RCChannelManager.m in Sources */,
 				504C9B6B152D1E0E00F091B2 /* RCKeychainItem.m in Sources */,
 				50E77A921505A30400E75C64 /* RCViewController.m in Sources */,
 				50E77A931505A30400E75C64 /* RCChatPanel.m in Sources */,
