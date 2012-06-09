@@ -106,7 +106,12 @@
 }
 
 - (void)removeChannel:(RCChannel *)chan {
-	[chan setJoined:NO withArgument:@"Relay Chat."];
+	[self removeChannel:chan withMessage:@"Relay Chat."];
+}
+
+- (void)removeChannel:(RCChannel *)chan withMessage:(NSString *)quitter {
+	
+	[chan setJoined:NO withArgument:quitter];
 	[[RCNavigator sharedNavigator] removeChannel:chan toServerAtIndex:index];
 	[_channels removeObjectForKey:[chan channelName]];
 	[[RCNetworkManager sharedNetworkManager] saveNetworks];

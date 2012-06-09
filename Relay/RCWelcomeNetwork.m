@@ -11,7 +11,6 @@
 @implementation RCWelcomeNetwork
 
 - (void)addChannel:(NSString *)_chan join:(BOOL)join {
-	[[self channels] addObject:_chan];
 	RCChannel *chan = [[RCChannel alloc] initWithChannelName:_chan];
 	[chan setDelegate:self];
 	[chan setSuccessfullyJoined:YES];

@@ -47,12 +47,27 @@
 		[nothingLabel release];
 		return;
 	}
+	NSMutableArray *_chans;
+	BOOL reorder = !([[[((RCChannelBubble *)[channels objectAtIndex:0]) titleLabel] text] isEqualToString:@"IRC"]);
+	if (reorder) {
+		_chans = [[NSMutableArray alloc] initWithArray:channels];
+		for (RCChannelBubble *bub in _chans) {
+			if ([[bub titleLabel].text isEqualToString:@"IRC"]) {
+				[_chans removeObject:bub];
+				[_chans insertObject:bub atIndex:0];
+				break;
+			}
+			else continue;
+		}
+		channels = _chans;
+	}
 	for (RCChannelBubble *bb in channels) {
 		UIView *sub = nil;
 		if ([[self subviews] count] != 0) sub = [[self subviews] objectAtIndex:[[self subviews] count]-1];
 		[bb setFrame:CGRectMake((sub ? sub.frame.size.width+sub.frame.origin.x+2 : 10), 7, bb.frame.size.width, 20)];
 		[self addSubview:bb];
 	}
+	if (reorder) [channels release];
 	[self fixLayout];
 }
 

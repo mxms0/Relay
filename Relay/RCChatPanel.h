@@ -25,6 +25,7 @@
 	NSString *prev;
 	UITextField *field;
 	UIView *_bar;
+	BOOL isScrolling;
 }
 @property (nonatomic, retain) RCTableView *tableView;
 @property (nonatomic, readonly) NSMutableArray *messages;

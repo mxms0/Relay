@@ -265,17 +265,28 @@ UIImage *RCImageForRank(NSString *rank) {
 	joined = NO;
 }
 
+- (void)subtractModes:(NSString *)md forUser:(NSString *)usr {
+	
+}
+
+- (void)addModes:(NSString *)md forUser:(NSString *)usr {
+	
+}
+
 - (void)setMode:(NSString *)modes forUser:(NSString *)user {
 	// clean this up. :P
-	if (([user rangeOfString:@"+"].location != NSNotFound) && ([user rangeOfString:@"-"].location != NSNotFound)) {
-	//	[TestFlight submitFeedback:[NSString stringWithFormat:@"Meh. %@ %@", user, modes]];
-	//	NSRange plus = [user rangeOfString:@"+"];
-	//	NSRange minus = [user rangeOfString:@"-"];
-	//	if (plus.location > minus.location) {
-	//		// + came before minus
-	//		// aka, +ao-v
-	//		// if that's possible..
-	//	}
+	NSRange plus;
+	NSRange minus;
+	plus = [modes rangeOfString:@"+"];
+	minus = [modes rangeOfString:@"-"];
+	if (plus.location != NSNotFound && minus.location != NSNotFound) {
+		// both.
+	}
+	else if (minus.location == NSNotFound) {
+		// revert to + stuff
+	}
+	else {
+		// only subtractions :((
 	}
 	// what you see above is crap. ignore it.
 	modes = RCSterilizeModes(modes);

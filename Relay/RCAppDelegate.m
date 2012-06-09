@@ -85,7 +85,6 @@ static BOOL isSetup = NO;
 		[TestFlight takeOff:@"35b8aa0d259ae0c61c57bc770aeafe63_Mzk5NDYyMDExLTExLTA5IDE4OjQ0OjEwLjc4MTM3MQ"];
 		[TestFlight setDeviceIdentifier:[[UIDevice currentDevice] uniqueIdentifier]];
 	}
-	NSMutableDictionary *dict =[NSMutableDictionary dictionary];
 	return YES;
 }
 
