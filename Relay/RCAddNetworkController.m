@@ -515,6 +515,17 @@
 }
 
 - (void)tableView:(UITableView *)_tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (indexPath.section == 3) {
+        if (indexPath.row == 3) {
+            
+            RCRoomsController *roomsController = [[RCRoomsController alloc] initWithStyle:UITableViewStyleGrouped andNetwork:network];
+            [self.navigationController pushViewController:roomsController animated:YES];
+
+            [roomsController release];
+        }
+    }
+    
 	[_tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
