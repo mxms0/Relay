@@ -3,7 +3,7 @@
 //  Relay
 //
 //  Created by David Murray on 12-06-05.
-//  Copyright (c) 2012 American Heritage School. All rights reserved.
+//  Copyright (c) 2012 École Secondaire De Mortagne. All rights reserved.
 //
 
 #import "RCAddCell.h"
@@ -15,9 +15,9 @@
     NSMutableArray *channels;
     UIBarButtonItem *addBtn;
 }
-@property (nonatomic, retain) RCNetwork *network;
-@property (nonatomic, retain) NSMutableArray *channels;
+
 
 - (id)initWithStyle:(UITableViewStyle)style andNetwork:(RCNetwork *)net;
 - (void)addNewItem;
+
 @end

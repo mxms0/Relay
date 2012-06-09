@@ -279,6 +279,7 @@ static UILabel *active = nil;
 		RCNetwork *net = [[RCNetworkManager sharedNetworkManager] networkWithDescription:active.text];
 		UIViewController *rc = [((RCAppDelegate *)[[UIApplication sharedApplication] delegate]) navigationController];
 		RCAddNetworkController *ctrlr = [[RCAddNetworkController alloc] initWithNetwork:net];
+        [ctrlr setTitleString:active.text];
 		UINavigationController *ctrl = [[UINavigationController alloc] initWithRootViewController:ctrlr];
 		[ctrl setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
 		[rc presentModalViewController:ctrl animated:YES];

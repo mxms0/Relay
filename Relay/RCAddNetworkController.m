@@ -27,7 +27,7 @@
 @end
 
 @implementation RCAddNetworkController
-
+@synthesize titleString;
 - (id)initWithNetwork:(RCNetwork *)net {
 	if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
 		network = net;
@@ -35,6 +35,7 @@
 		if (!net) {
 			network = [[RCNetwork alloc] init];
 			isNew = YES;
+            self.titleString = @"Add A Network";
 		}
 		else {
 			[self.navigationItem.rightBarButtonItem setEnabled:YES];	
@@ -56,7 +57,7 @@
 
 	[self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"0_addnav"] forBarMetrics:UIBarMetricsDefault];
 	UILabel *titleView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 40)];
-	titleView.text = @"Add A Network";
+	titleView.text = titleString;
 	titleView.backgroundColor = [UIColor clearColor];
 	titleView.textAlignment = UITextAlignmentCenter;
 	titleView.font = [UIFont boldSystemFontOfSize:22];

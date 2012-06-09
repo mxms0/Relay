@@ -3,20 +3,17 @@
 //  Relay
 //
 //  Created by David Murray on 12-06-05.
-//  Copyright (c) 2012 American Heritage School. All rights reserved.
+//  Copyright (c) 2012 École Secondaire De Mortagne. All rights reserved.
 //
 
 #import "RCChannelManager.h"
 
 @implementation RCChannelManager
 
-@synthesize network;
-@synthesize channels;
-
 - (id)initWithStyle:(UITableViewStyle)style andNetwork:(RCNetwork *)net {
 	if ((self = [super initWithStyle:style])) {
-		self.network = net;
-		self.channels = [[NSMutableArray alloc] initWithArray:[[net _channels] allKeys]];
+		network = net;
+		channels = [[NSMutableArray alloc] initWithArray:[[net _channels] allKeys]];
 		[channels removeObject:@"IRC"];
     }
     return self;
@@ -78,6 +75,9 @@
     // e.g. self.myOutlet = nil;
     [addBtn release];
     addBtn = nil;
+    [channels release];
+    channels = nil;
+    network = nil;
 
 }
 
@@ -97,7 +97,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-	return [self.channels count];
+	return [channels count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -110,7 +110,7 @@
 		cell.selectionStyle = UITableViewCellSelectionStyleNone;
 		cell.textLabel.font = [UIFont boldSystemFontOfSize:14];
 		cell.textLabel.textColor = UIColorFromRGB(0x545758);
-        cell.textLabel.text = [self.channels objectAtIndex:indexPath.row];
+        cell.textLabel.text = [channels objectAtIndex:indexPath.row];
 
 	}
     
@@ -130,11 +130,11 @@
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         
-        RCChannel *channel = [[RCChannel alloc] initWithChannelName:[self.channels objectAtIndex:indexPath.row]];
-        [self.network removeChannel:channel];
+        RCChannel *channel = [[RCChannel alloc] initWithChannelName:[channels objectAtIndex:indexPath.row]];
+        [network removeChannel:channel];
         [channel release];
         
-        [self.channels removeObjectAtIndex:indexPath.row];
+        [channels removeObjectAtIndex:indexPath.row];
         [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
         
     }   
@@ -168,8 +168,8 @@
 
         }
         
-        [self.channels addObject:newChannelString];
-        [self.network setupRooms:[NSArray arrayWithObject:newChannelString]];
+        [channels addObject:newChannelString];
+        [network setupRooms:[NSArray arrayWithObject:newChannelString]];
          
         [self.tableView reloadData];
     }
