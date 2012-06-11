@@ -68,7 +68,7 @@ static NSMutableArray *networks = nil;
 }
 
 - (void)finishSetupForNetwork:(RCNetwork *)net {
-	if ([net COL]) [net performSelectorOnMainThread:@selector(connect) withObject:nil waitUntilDone:NO];
+	if ([net COL]) [net performSelectorInBackground:@selector(_connect) withObject:nil];
 }
 
 - (void)removeNet:(RCNetwork *)net {

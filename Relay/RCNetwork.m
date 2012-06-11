@@ -21,6 +21,7 @@
 		canSend = YES;
 		_channels = [[NSMutableDictionary alloc] init];
 		_isDiconnecting = NO;
+	//	_thread = [[NSThread alloc] initWithTarget:self selector:@selector(_connect) object:nil];
 	}
 	return self;
 }
@@ -120,6 +121,7 @@
 #pragma mark - SOCKET STUFF
 
 - (BOOL)connect {
+	return YES;
 	isReading = NO;
 	canSend = YES;
 	isRegistered = NO;
@@ -166,9 +168,107 @@
 }
 
 - (void)_connect {
-	exit(EXIT_FAILURE);
+	isReading = NO;
+	canSend = YES;
+	isRegistered = NO;
+	if (sendQueue) [sendQueue release];
+	sendQueue = nil;
+	if (status == RCSocketStatusConnecting) return;
+	if (status == RCSocketStatusConnected) return;;
+	useNick = nick;
+	self.userModes = @"~&@%+";
+	if (kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iPhoneOS_4_0) {
+		task = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+			[[UIApplication sharedApplication] endBackgroundTask:task];
+			task = UIBackgroundTaskInvalid;
+		}];
+	}
+	RCChannel *chan = [_channels objectForKey:@"IRC"];
+	if (chan) [chan recievedMessage:[NSString stringWithFormat:@"Connecting to %@ on port %d", server, port] from:@"" type:RCMessageTypeNormal];
+	status = RCSocketStatusConnecting;
+	sockfd = 0;
+	int fd = 0;
+	char buff[512];
+	struct sockaddr_in serv_addr;
+	memset(buff, '0', sizeof(buff));
+	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+		NSLog(@"ERRRRRRRR");
+	}
+	memset(&serv_addr, '0', sizeof(serv_addr));
+	serv_addr.sin_family = AF_INET;
+	serv_addr.sin_port = htons(port);
+	char *ip = ipForURL(server);
+	if (ip == NULL) {
+		// report error..
+		NSLog(@"ERRRRRRRR");
+		return;
+	}
+	if (inet_pton(AF_INET, ip, &serv_addr.sin_addr) <= 0) {
+		NSLog(@"Errrrrr");
+		return;
+	}
+	if (connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
+		NSLog(@"Errrr");
+		return;
+	}
+	if ([spass length] > 0) {
+		[self sendMessage:[@"PASS " stringByAppendingString:spass] canWait:NO];
+	}
+	[self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
+	[self sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
+	while ((fd = read(sockfd, buff, sizeof(buff)-1)) > 0) {
+		buff[fd] = 0;
+		NSMutableString *msg = [[NSMutableString alloc] initWithCString:(const char *)buff encoding:NSUTF8StringEncoding];
+		while ([msg rangeOfString:@"\r\n"].location != NSNotFound) {
+			if ([msg isEqualToString:@"\r\n"] || [msg isEqualToString:@""] || msg == nil) break;
+			if ([msg rangeOfString:@"\r\n"].location == NSNotFound) break;
+			// i guess i really have to.
+			NSString *send = [[NSString alloc] initWithString:[msg substringWithRange:NSMakeRange(0, [msg rangeOfString:@"\r\n"].location+2)]];
+			[self recievedMessage:send];
+			[send release];
+			send = nil;
+			if ([msg respondsToSelector:@selector(deleteCharactersInRange:)]) {
+				if ([msg rangeOfString:@"\r\n"].location != NSNotFound) {
+					@try {
+						[msg deleteCharactersInRange:NSMakeRange(0, [msg rangeOfString:@"\r\n"].location+2)];
+					}
+					@catch (NSException *e) { }
+				}
+			}
+			else {
+				msg = [msg mutableCopy];
+				// meh. i know i'm going to regret this.
+				// so. so. so. much.
+				// for some reason, data is becoming an NSString for one reason or another,
+				// i'm honestly not sure if it's becoming the actual send var;
+				// or just some random string. 
+				// i honestly just want to bail out here, but i cannot simply trash the data unless its not existant.
+				// also tempted to send this stuff to testflight. but do not want app crashing after multitasking
+				// because testflight sucks ass.
+			}
+		}
+		[msg release];
+		msg = nil;
+	}
+	
 }
-
+char *ipForURL(NSString *URL) {
+	char *hostname = (char *)[URL UTF8String];
+	struct addrinfo hints, *res;
+	struct in_addr addr;
+	int err;
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_family = AF_INET;
+	if ((err = getaddrinfo(hostname, NULL, &hints, &res)) != 0) {
+		return NULL;
+	}
+	addr.s_addr = ((struct sockaddr_in *)(res->ai_addr))->sin_addr.s_addr;
+	freeaddrinfo(res);
+	return inet_ntoa(addr);	
+}
+		
+		
 - (void)helpMeHaxx:(id)_unused {
 	NSLog(@"HelpMeHax::");
 }
@@ -210,20 +310,21 @@
 }
 
 - (BOOL)sendMessage:(NSString *)msg canWait:(BOOL)canWait {	
-
 	if ((!canWait) || isRegistered) {
-		NSData *messageData = [[msg stringByAppendingString:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding];
+		msg = [msg stringByAppendingString:@"\r\n"];
 		if (canSend) {
-			if ([oStream write:[messageData bytes] maxLength:[messageData length]] != -1) {
-					return YES;
+			if (send(sockfd, [msg UTF8String], strlen([msg UTF8String]), 0) < 0) {
+				NSLog(@"BLASPHEMYY");
+				[self errorOccured:[oStream streamError]];
+				return NO;
 			}
 			else {
-				NSLog(@"BLASPHEMYY");
+				// success! :D
+				return YES;
 			}
-			[self errorOccured:[oStream streamError]];
 		}
 	}
-	NSLog(@"Adding to queue... %@",msg);
+	NSLog(@"Adding to queue... %@:%d:%d",msg, (int)canWait, (int)isRegistered);
 	if (!sendQueue) sendQueue = [[NSMutableString alloc] init];
 	[sendQueue appendFormat:@"%@\r\n", msg];
 	return NO;
@@ -234,7 +335,6 @@
 }
 
 - (void)recievedMessage:(NSString *)msg {
-
 	if ([msg isEqualToString:@""] || msg == nil || [msg isEqualToString:@"\r\n"]) return;
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	if ([msg hasPrefix:@"PING"]) {
@@ -272,23 +372,6 @@
 	}
 	[scanner release];
 	[p drain];
-	/*{
-	"░░░░░▄▄▄▄▀▀▀▀▀▀▀▀▄▄▄▄▄▄░░░░░░░\
-	░░░░░█░░░░▒▒▒▒▒▒▒▒▒▒▒▒░░▀▀▄░░░░\
-	░░░░█░░░▒▒▒▒▒▒░░░░░░░░▒▒▒░░█░░░\
-	░░░█░░░░░░▄██▀▄▄░░░░░▄▄▄░░░░█░░\
-	░▄▀▒▄▄▄▒░█▀▀▀▀▄▄█░░░██▄▄█░░░░█░\
-	█░▒█▒▄░▀▄▄▄▀░░░░░░░░█░░░▒▒▒▒▒░█\
-	█░▒█░█▀▄▄░░░░░█▀░░░░▀▄░░▄▀▀▀▄▒█\
-	░█░▀▄░█▄░█▀▄▄░▀░▀▀░▄▄▀░░░░█░░█░\
-	░░█░░░▀▄▀█▄▄░█▀▀▀▄▄▄▄▀▀█▀██░█░░\
-	░░░█░░░░██░░▀█▄▄▄█▄▄█▄████░█░░░\
-	░░░░█░░░░▀▀▄░█░░░█░█▀██████░█░░\
-	░░░░░▀▄░░░░░▀▀▄▄▄█▄█▄█▄█▄▀░░█░░\
-	░░░░░░░▀▄▄░▒▒▒▒░░░░░░░░░░▒░░░█░\
-	░░░░░░░░░░▀▀▄▄░▒▒▒▒▒▒▒▒▒▒░░░░█░\
-	░░░░░░░░░░░░░░▀▄▄▄▄▄░░░░░░░░█░░";
-	};*/
 }
 
 static NSMutableString *data = nil;
@@ -314,12 +397,21 @@ static NSMutableString *data = nil;
 		}			
 	}
 	while ([data rangeOfString:@"\r\n"].location != NSNotFound) {
+		if ([data isEqualToString:@"\r\n"] || [data isEqualToString:@""] || data == nil) break;
+		if ([data rangeOfString:@"\r\n"].location == NSNotFound) break;
+		// i guess i really have to.
 		NSString *send = [[NSString alloc] initWithString:[data substringWithRange:NSMakeRange(0, [data rangeOfString:@"\r\n"].location+2)]];
 		[self recievedMessage:send];
 		[send release];
 		send = nil;
-		if ([data respondsToSelector:@selector(deleteCharactersInRange:)])
-			[data deleteCharactersInRange:NSMakeRange(0, [data rangeOfString:@"\r\n"].location+2)];
+		if ([data respondsToSelector:@selector(deleteCharactersInRange:)]) {
+			if ([data rangeOfString:@"\r\n"].location != NSNotFound) {
+				@try {
+					[data deleteCharactersInRange:NSMakeRange(0, [data rangeOfString:@"\r\n"].location+2)];
+				}
+				@catch (NSException *e) { }
+			}
+		}
 		else {
 			data = [data mutableCopy];
 			// meh. i know i'm going to regret this.
@@ -403,7 +495,7 @@ static NSMutableString *data = nil;
 
 - (void)handle001:(NSString *)welcome {
 	[self networkDidRegister:YES];
-	
+	NSLog(@"hi regs.");
 	NSScanner *scanner = [[NSScanner alloc] initWithString:welcome];
 	NSString *crap;
 	@try {
@@ -586,7 +678,7 @@ static NSMutableString *data = nil;
 	// Relay[2794:f803] MSG: :fr.ac3xx.com 266 _m :Current Global Users: 5  Max: 6
 }
 
-- (void)handle305:(NSString *)athreeofive {
+- (void)handle305:(NSString *)athreeo_five {
 	NSLog(@"Implying this is a znc.");
 	NSLog(@"YAY I'M NO LONGER AWAY.");
 	if ([[[[[RCNavigator sharedNavigator] currentPanel] channel] delegate] isEqual:self]) {
@@ -759,7 +851,7 @@ static NSMutableString *data = nil;
 }
 
 - (void)handlePRIVMSG:(NSString *)privmsg {
-
+	NSLog(@"PRIVMSG %@",privmsg);
 	NSScanner *_scanner = [[NSScanner alloc] initWithString:privmsg];
 	NSString *from = @"";
 	NSString *cmd = from; // will be unused.
@@ -889,8 +981,7 @@ static NSMutableString *data = nil;
 	if ([room hasPrefix:@" "]) room = [room substringFromIndex:1];
 	if ([room hasPrefix:@":"]) room = [room substringFromIndex:1];
 	room = [room stringByReplacingOccurrencesOfString:@"\r\n" withString:@""];
-	[self parseUsermask:user nick:&_nick user:nil hostmask:nil];
-	
+	[self parseUsermask:user nick:&_nick user:nil hostmask:nil];	
 	if ([_nick isEqualToString:useNick]) {
 		[self addChannel:room join:NO];
 		[self sendMessage:[NSString stringWithFormat:@"NAMES %@\r\nTOPIC %@", room, room]];
@@ -958,6 +1049,8 @@ static NSMutableString *data = nil;
 }
 
 - (void)handlePING:(NSString *)pong {
+	NSLog(@"Ping");
+	NSLog(@"Pong");
 	if ([pong hasPrefix:@"PING"]) {
 		[self sendMessage:[@"PONG " stringByAppendingString:[pong substringWithRange:NSMakeRange(5, pong.length-5)]] canWait:NO];
 	}

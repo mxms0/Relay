@@ -47,7 +47,6 @@ static id _sharedNavigator = nil;
 		netCount = 0;
 		draggingNets = NO;
 		draggingChans = NO;
-		rooms = [[NSMutableArray alloc] init];
 		bar = [[RCNavigationBar alloc] initWithFrame:CGRectMake(60, 0, 200, 45)];
 		bar.tag = 100;
 		stupidLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, -50, bar.frame.size.width, bar.frame.size.height)];
@@ -97,7 +96,6 @@ static id _sharedNavigator = nil;
 		[[[bar subviews] objectAtIndex:netCount+1] removeFromSuperview];
 		[scrollBar layoutChannels:nil];
 		isFirstSetup = 0;
-		[rooms removeObjectAtIndex:0];
 		[currentPanel removeFromSuperview];
 		currentPanel = nil;
 		[NSTimer scheduledTimerWithTimeInterval:120 target:[RCNetworkManager sharedNetworkManager] selector:@selector(saveChannelData:) userInfo:nil repeats:YES];
@@ -135,20 +133,14 @@ static id _sharedNavigator = nil;
 	[_label release];
 	[bar setContentSize:CGSizeMake((netCount * 200) + 0.5, 50)];
 	
-	NSMutableArray *tmp = [[NSMutableArray alloc] init];
 	for (NSString *chan in [[net _channels] allKeys]) {
 		RCChannelBubble *bubble = [self channelBubbleWithChannelName:chan];
 		[[[net _channels] objectForKey:chan] setBubble:bubble];
-		[bubble _classify:net.index];
-		[tmp addObject:bubble];
-		[bubble release];
 	}
-	[rooms addObject:tmp];
 	if (netCount == 1) {
 		[self channelSelected:[[[net _channels] objectForKey:@"IRC"] bubble]];
 		[self scrollViewDidEndDecelerating:nil];
 	}
-	[tmp release];
 }
 
 - (void)addCount:(int)mentions forIndex:(int)_index {
@@ -248,7 +240,6 @@ static UILabel *active = nil;
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
 	if (buttonIndex == 0) {
 		// delete.
-		[rooms removeObjectAtIndex:currentIndex];
 		for (RCTitleLabel *label in [bar subviews]) {
 			if (label.frame.origin.x > active.frame.origin.x) {
 				[label setFrame:CGRectMake(label.frame.origin.x-200, label.frame.origin.y, label.frame.size.width, label.frame.size.height)];
@@ -279,7 +270,6 @@ static UILabel *active = nil;
 		RCNetwork *net = [[RCNetworkManager sharedNetworkManager] networkWithDescription:active.text];
 		UIViewController *rc = [((RCAppDelegate *)[[UIApplication sharedApplication] delegate]) navigationController];
 		RCAddNetworkController *ctrlr = [[RCAddNetworkController alloc] initWithNetwork:net];
-        [ctrlr setTitleString:active.text];
 		UINavigationController *ctrl = [[UINavigationController alloc] initWithRootViewController:ctrlr];
 		[ctrl setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
 		[rc presentModalViewController:ctrl animated:YES];
@@ -293,7 +283,7 @@ static UILabel *active = nil;
 		RCNetwork *net = [[RCNetworkManager sharedNetworkManager] networkWithDescription:active.text];
 		if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Disconnect"]) [net disconnect];
 		else {
-			[net connect];
+			[net performSelectorInBackground:@selector(_conncet) withObject:nil];
 		}
 		//connect
 	}
@@ -315,25 +305,24 @@ static UILabel *active = nil;
 	if (!useNet) return;
 	RCChannelBubble *bubble = [self channelBubbleWithChannelName:room];
 	[[[useNet _channels] objectForKey:room] setBubble:bubble];
-	[[rooms objectAtIndex:index] addObject:bubble];
 	[bubble _classify:useNet.index];
 	[bubble release];
-	[scrollBar layoutChannels:[rooms objectAtIndex:index]];
+//	[scrollBar layoutChannels:[rooms objectAtIndex:index]];
 }
 
 - (void)removeChannel:(RCChannel *)room toServerAtIndex:(int)index {
-	NSMutableArray *currentBubbles = [rooms objectAtIndex:index];
-	for (RCChannelBubble *chan in currentBubbles) {
-		if ([[chan titleLabel].text isEqual:[room channelName]]) {
-			[currentBubbles removeObject:chan];
-			[memberPanel removeFromSuperview];
-			memberPanel.delegate = nil;
-			memberPanel.dataSource = nil;
-			currentPanel = nil;
-			break;
-		}
-	}
-	[scrollBar layoutChannels:currentBubbles];
+//	NSMutableArray *currentBubbles = [rooms objectAtIndex:index];
+//	for (RCChannelBubble *chan in currentBubbles) {
+//		if ([[chan titleLabel].text isEqual:[room channelName]]) {
+//			[currentBubbles removeObject:chan];
+//			[memberPanel removeFromSuperview];
+//			memberPanel.delegate = nil;
+//			memberPanel.dataSource = nil;
+//			currentPanel = nil;
+//			break;
+//		}
+//	}
+//	[scrollBar layoutChannels:currentBubbles];
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -438,8 +427,8 @@ static BOOL isShowing = NO;
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-	if (!scrollView) {
-		if ([rooms count] > 0) [scrollBar layoutChannels:[rooms objectAtIndex:0]];
+/*	if (!scrollView) {
+	//	if ([rooms count] > 0) [scrollBar layoutChannels:[rooms objectAtIndex:0]];
 		return;
 	}
 	if (scrollView.tag == 100) {
@@ -449,7 +438,7 @@ static BOOL isShowing = NO;
 			else netLoc = 0;
 			if (netLoc != currentIndex) currentIndex = netLoc;
 			else return;
-			[scrollBar layoutChannels:[rooms objectAtIndex:netLoc]];
+	//		[scrollBar layoutChannels:[rooms objectAtIndex:netLoc]];
 			[stupidLabel setFrame:CGRectMake(currentIndex*200, stupidLabel.frame.origin.y, stupidLabel.frame.size.width, stupidLabel.frame.size.height)];
 			[self resetBubbles];
 		}
@@ -457,6 +446,7 @@ static BOOL isShowing = NO;
 	else {
 		// in case ineed this later.. it's available.
 	}
+ */
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -598,7 +588,6 @@ static BOOL isShowing = NO;
 
 - (void)dealloc {
 	[bar release];
-	[rooms release];
 	[_notifications release];
 	[super dealloc];
 }

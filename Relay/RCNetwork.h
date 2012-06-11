@@ -10,6 +10,18 @@
 #import "RCConsoleChannel.h"
 #import "RCPMChannel.h"
 #import "RCNavigator.h"
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <errno.h>
+#include <string.h>
+#include <sys/types.h>
+#include <netdb.h>
+#include <time.h>   
+#include <ifaddrs.h>
 
 typedef enum RCSocketStatus {
 	RCSocketStatusConnecting,
@@ -20,8 +32,8 @@ typedef enum RCSocketStatus {
 } RCSocketStatus;
 
 @interface RCNetwork : NSObject <NSStreamDelegate> {
-	NSThread *_thread;
 	NSMutableDictionary *_channels;
+	NSMutableArray *_bubbles;
 	NSString *sDescription;
 	NSString *server;
 	NSString *nick;
@@ -40,6 +52,7 @@ typedef enum RCSocketStatus {
 	int port;
 	int index;
 	int maxStatusLength;
+	int sockfd;
 	BOOL isRegistered:1;
 	BOOL useSSL:1;
 	BOOL COL:1;
@@ -81,7 +94,7 @@ typedef enum RCSocketStatus {
 - (void)parseUsermask:(NSString *)mask nick:(NSString **)nick user:(NSString **)user hostmask:(NSString **)hostmask;
 - (id)infoDictionary;
 @end
-
+char *ipForURL(NSString *URL);
 @interface CALayer (Haxx)
 - (id)_nq:(id)arg1;
 @end

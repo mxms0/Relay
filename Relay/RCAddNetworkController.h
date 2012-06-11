@@ -18,9 +18,7 @@
 	RCNetwork *network;
 	BOOL isNew;
 	UIImageView *r_shadow;
-    NSString *titleString;
 }
-@property (nonatomic, retain) NSString *titleString;
 - (id)initWithNetwork:(RCNetwork *)net;
 
 @end

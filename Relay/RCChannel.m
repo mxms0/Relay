@@ -356,7 +356,13 @@ UIImage *RCImageForRank(NSString *rank) {
 					NSMutableString *tmp = [message mutableCopy];
 					while ([tmp length] > 0) {
 						NSString *msg = [tmp substringWithRange:NSMakeRange(0, (tmp.length > max ? max : tmp.length))];
-						[tmp deleteCharactersInRange:NSMakeRange(0, (tmp.length > max ? max : tmp.length))];
+						if ([tmp respondsToSelector:@selector(deleteCharactersInRange:)])
+							[tmp deleteCharactersInRange:NSMakeRange(0, (tmp.length > max ? max : tmp.length))];
+						else {
+							tmp = [tmp mutableCopy];
+							// fuck me.
+							continue;
+						}
 						if ([delegate sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@",channelName, msg]]) {
 							[self recievedMessage:msg from:[delegate useNick] type:RCMessageTypeNormal];
 						}

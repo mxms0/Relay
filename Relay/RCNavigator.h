@@ -28,7 +28,6 @@
 	RCBarGroup *rightGroup;
 	UILabel *stupidLabel;
 	NSMutableDictionary *_notifications;
-	NSMutableArray *rooms;
 	BOOL draggingNets;
 	BOOL draggingChans;
 	BOOL _isLandscape;

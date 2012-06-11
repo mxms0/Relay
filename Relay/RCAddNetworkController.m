@@ -27,19 +27,31 @@
 @end
 
 @implementation RCAddNetworkController
-@synthesize titleString;
+
 - (id)initWithNetwork:(RCNetwork *)net {
 	if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
+		
 		network = net;
 		isNew = NO;
 		if (!net) {
 			network = [[RCNetwork alloc] init];
 			isNew = YES;
-            self.titleString = @"Add A Network";
 		}
 		else {
 			[self.navigationItem.rightBarButtonItem setEnabled:YES];	
 		}
+
+		UILabel *titleView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 40)];
+		titleView.text = ([network _description] ?: @"Add A Network");
+		titleView.backgroundColor = [UIColor clearColor];
+		titleView.textAlignment = UITextAlignmentCenter;
+		titleView.font = [UIFont boldSystemFontOfSize:22];
+		titleView.shadowColor = [UIColor whiteColor];
+		titleView.textColor = UIColorFromRGB(0x424343);
+		titleView.shadowOffset = CGSizeMake(0, 1);
+		self.navigationItem.titleView = titleView;
+		[titleView release];
+
 	}
 	return self;
 }
@@ -54,19 +66,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+	NSLog(@"helloo %s", (char *)_cmd);
 	[self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"0_addnav"] forBarMetrics:UIBarMetricsDefault];
-	UILabel *titleView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 40)];
-	titleView.text = titleString;
-	titleView.backgroundColor = [UIColor clearColor];
-	titleView.textAlignment = UITextAlignmentCenter;
-	titleView.font = [UIFont boldSystemFontOfSize:22];
-	titleView.shadowColor = [UIColor whiteColor];
-	titleView.textColor = UIColorFromRGB(0x424343);
-	titleView.shadowOffset = CGSizeMake(0, 1);
-	self.navigationItem.titleView = titleView;
-	[titleView release];
 	self.tableView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"0_bg"]];
+	[self.tableView reloadData];
 	float y = 44;
 	float width = 320;
 	if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
@@ -77,7 +80,6 @@
 	r_shadow.alpha = 0.5;
 	[self.navigationController.navigationBar addSubview:r_shadow];
 	[r_shadow release];
-	[self.tableView reloadData];
 	// Do any additional setup after loading the view, typically from a nib.
 }
 
@@ -95,11 +97,6 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
 	if (section == 0) return 35.0;
 	return 25.0;
-}
-
-- (void)viewDidUnload {
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -122,6 +119,7 @@
 	[self dismissModalViewControllerAnimated:YES];
 }
 
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 	UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 65, 40)];
@@ -143,7 +141,23 @@
 	[cBtn release];
 	[self.navigationItem setLeftBarButtonItem:cancel];
 	[cancel release];
+
 }
+/*– viewWillAppear:
+ – viewDidAppear:
+ – viewWillDisappear:
+ – viewDidDisappear:
+ – viewWillLayoutSubviews
+ – viewDidLayoutSubviews
+ */
+- (void)viewDidAppear:(BOOL)animated {
+	NSLog(@"haihai _%s", (char *)_cmd);
+}
+- (void)viewWillDisappear:(BOOL)animated {
+	[r_shadow removeFromSuperview];
+	NSLog(@"haihai _%s", (char *)_cmd);
+}
+
 
 - (void)textFieldDidEndEditing:(RCTextField *)textField {
 	switch ([textField tag]) {
@@ -208,10 +222,6 @@
 	[network connect];
 	[[RCNetworkManager sharedNetworkManager] saveNetworks];
 	[self doneWithJoin];
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView indentationLevelForRowAtIndexPath:(NSIndexPath *)indexPath {
