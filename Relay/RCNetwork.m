@@ -147,7 +147,6 @@
 	[oStream setDelegate:self];
 	if ([iStream streamStatus] == NSStreamStatusNotOpen) [iStream open];
 	if ([oStream streamStatus] == NSStreamStatusNotOpen) [oStream open];
-	_thread = [NSThread currentThread];
 	if (useSSL) {
 		[iStream setProperty:NSStreamSocketSecurityLevelNegotiatedSSL forKey:NSStreamSocketSecurityLevelKey];
 		[oStream setProperty:NSStreamSocketSecurityLevelNegotiatedSSL forKey:NSStreamSocketSecurityLevelKey];
@@ -249,6 +248,7 @@
 		}
 		[msg release];
 		msg = nil;
+		usleep(10);
 	}
 	
 }
