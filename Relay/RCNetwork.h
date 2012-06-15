@@ -94,7 +94,7 @@ typedef enum RCSocketStatus {
 - (void)parseUsermask:(NSString *)mask nick:(NSString **)nick user:(NSString **)user hostmask:(NSString **)hostmask;
 - (id)infoDictionary;
 @end
-char *ipForURL(NSString *URL);
+char *RCIPForURL(NSString *URL);
 @interface CALayer (Haxx)
 - (id)_nq:(id)arg1;
 @end

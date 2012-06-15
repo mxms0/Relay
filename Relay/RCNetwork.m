@@ -196,7 +196,7 @@
 	memset(&serv_addr, '0', sizeof(serv_addr));
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_port = htons(port);
-	char *ip = ipForURL(server);
+	char *ip = RCIPForURL(server);
 	if (ip == NULL) {
 		// report error..
 		NSLog(@"ERRRRRRRR");
@@ -252,7 +252,7 @@
 	}
 	
 }
-char *ipForURL(NSString *URL) {
+char *RCIPForURL(NSString *URL) {
 	char *hostname = (char *)[URL UTF8String];
 	struct addrinfo hints, *res;
 	struct in_addr addr;
