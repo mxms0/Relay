@@ -68,7 +68,7 @@ static NSMutableArray *networks = nil;
 }
 
 - (void)finishSetupForNetwork:(RCNetwork *)net {
-	if ([net COL]) [net performSelectorInBackground:@selector(_connect) withObject:nil];
+	if ([net COL]) [net performSelector:@selector(_connect) withObject:nil];
 }
 
 - (void)removeNet:(RCNetwork *)net {
@@ -93,6 +93,7 @@ static NSMutableArray *networks = nil;
 			NSDictionary *_info = [dict objectForKey:_net];
 			[self ircNetworkWithInfo:_info isNew:NO];
 		}
+		[[RCNavigator sharedNavigator] scrollViewDidEndDecelerating:nil];
 	}
 }
 
@@ -109,7 +110,7 @@ static NSMutableArray *networks = nil;
 	[[self networks] addObject:net];
 	[[RCNavigator sharedNavigator] addNetwork:net];
 	[[RCNavigator sharedNavigator] scrollViewDidEndDecelerating:nil];
-		[[RCNavigator sharedNavigator] channelSelected:[chan bubble]];
+	[[RCNavigator sharedNavigator] channelSelected:[chan bubble]];
 	[net release];
 }
 

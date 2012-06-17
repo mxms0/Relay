@@ -11,7 +11,7 @@
 
 @implementation RCNetwork
 
-@synthesize sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, index, useNick, userModes;
+@synthesize sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, index, useNick, userModes, _bubbles;
 
 - (id)init {
 	if ((self = [super init])) {
@@ -19,9 +19,9 @@
 		shouldSave = NO;
 		isRegistered = NO;
 		canSend = YES;
+		_bubbles = [[NSMutableArray alloc] init];
 		_channels = [[NSMutableDictionary alloc] init];
 		_isDiconnecting = NO;
-	//	_thread = [[NSThread alloc] initWithTarget:self selector:@selector(_connect) object:nil];
 	}
 	return self;
 }
@@ -89,6 +89,7 @@
 	for (NSString *aChan in [_channels allKeys])
 		if ([[aChan lowercaseString] isEqualToString:[_chan lowercaseString]]) return;
 	if (![self channelWithChannelName:_chan]) {
+		RCChannelBubble *bubbl = [[RCChannelBubble alloc] init];
 		RCChannel *chan = nil;
 		if ([_chan isEqualToString:@"IRC"]) chan = [[RCConsoleChannel alloc] initWithChannelName:_chan];
 		else if ([_chan hasPrefix:@"#"]) chan = [[RCChannel alloc] initWithChannelName:_chan];
@@ -103,7 +104,6 @@
 			shouldSave = YES; // if we aren't registered.. it's _likely_ just setup.
 		}
 	}
-	else return;
 }
 
 - (void)removeChannel:(RCChannel *)chan {
@@ -119,52 +119,6 @@
 }
 
 #pragma mark - SOCKET STUFF
-
-- (BOOL)connect {
-	return YES;
-	isReading = NO;
-	canSend = YES;
-	isRegistered = NO;
-	if (sendQueue) [sendQueue release];
-	sendQueue = nil;
-	if (status == RCSocketStatusConnecting) return NO;
-	if (status == RCSocketStatusConnected) return NO;
-	useNick = nick;
-	self.userModes = @"~&@%+";
-	RCChannel *chan = [_channels objectForKey:@"IRC"];
-	if (chan) [chan recievedMessage:[NSString stringWithFormat:@"Connecting to %@ on port %d", server, port] from:@"" type:RCMessageTypeNormal];
-	if (kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iPhoneOS_4_0) {
-		task = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
-			[[UIApplication sharedApplication] endBackgroundTask:task];
-			task = UIBackgroundTaskInvalid;
-		}];
-	}
-
-	CFStreamCreatePairWithSocketToHost(NULL, (CFStringRef)server, port ? port : 6667, (CFReadStreamRef *)&iStream, (CFWriteStreamRef *)&oStream);
-	[iStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-	[oStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-	[iStream setDelegate:self];
-	[oStream setDelegate:self];
-	if ([iStream streamStatus] == NSStreamStatusNotOpen) [iStream open];
-	if ([oStream streamStatus] == NSStreamStatusNotOpen) [oStream open];
-	if (useSSL) {
-		[iStream setProperty:NSStreamSocketSecurityLevelNegotiatedSSL forKey:NSStreamSocketSecurityLevelKey];
-		[oStream setProperty:NSStreamSocketSecurityLevelNegotiatedSSL forKey:NSStreamSocketSecurityLevelKey];
-		NSDictionary *settings = [[NSDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithBool:YES], kCFStreamSSLAllowsExpiredCertificates,
-								  [NSNumber numberWithBool:YES], kCFStreamSSLAllowsAnyRoot, [NSNumber numberWithBool:NO], 
-								  kCFStreamSSLValidatesCertificateChain, kCFNull, kCFStreamSSLPeerName, nil];
-		CFReadStreamSetProperty((CFReadStreamRef)iStream, kCFStreamPropertySSLSettings, (CFTypeRef)settings);
-		CFWriteStreamSetProperty((CFWriteStreamRef)oStream, kCFStreamPropertySSLSettings, (CFTypeRef)settings);
-		[settings release];
-	}
-	status = RCSocketStatusConnecting;
-	if ([spass length] > 0) {
-		[self sendMessage:[@"PASS " stringByAppendingString:spass] canWait:NO];
-	}
-	[self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
-	[self sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
-	return YES;
-}
 
 - (void)_connect {
 	isReading = NO;
@@ -268,43 +222,6 @@ char *RCIPForURL(NSString *URL) {
 	return inet_ntoa(addr);	
 }
 		
-		
-- (void)helpMeHaxx:(id)_unused {
-	NSLog(@"HelpMeHax::");
-}
-
-- (void)stream:(NSStream *)aStream handleEvent:(NSStreamEvent)eventCode {
-	switch (eventCode) {
-		case NSStreamEventEndEncountered: // 16 - Called on ping timeout/closing link
-			status = RCSocketStatusClosed;
-			[self disconnect];
-			return;
-		case NSStreamEventErrorOccurred: /// 8 - Unknowns/bad interwebz
-			[self disconnect];
-			status = RCSocketStatusError;
-			return;
-		case NSStreamEventHasBytesAvailable: // 2
-			[self readDataToEnd];
-			return;
-		case NSStreamEventHasSpaceAvailable: // 4
-			if (status == RCSocketStatusConnecting) status = RCSocketStatusConnected;
-			if (sendQueue) {
-				canSend = NO;
-				[oStream write:(uint8_t *)[sendQueue UTF8String] maxLength:[sendQueue length]];
-				[oStream write:(uint8_t *)"\r\n" maxLength:2];
-				[sendQueue release];
-				sendQueue = nil;
-			}
-			canSend = YES;
-			return;
-		case NSStreamEventNone:
-			return;
-		case NSStreamEventOpenCompleted: // 1
-			status = RCSocketStatusConnected;
-			return;
-	}
-}
-
 - (BOOL)sendMessage:(NSString *)msg {
 	return [self sendMessage:msg canWait:YES];
 }
@@ -825,7 +742,7 @@ static NSMutableString *data = nil;
 		[_scans release];
 		return;
 	}
-	[self parseUsermask:from nick:&from user:nil hostmask:nil];
+	RCParseUserMask(from, &from, nil, nil);
 	[_scans scanUpToString:@"\r\n" intoString:&msg];
 	if ([nick isEqualToString:useNick]) {
 		msg = [msg substringFromIndex:1];
@@ -863,7 +780,7 @@ static NSMutableString *data = nil;
 	[_scanner scanUpToString:@"\r\n" intoString:&msg];
 	msg = [msg substringFromIndex:1];
 	from = [from substringFromIndex:1];
-	[self parseUsermask:from nick:&from user:nil hostmask:nil];
+	RCParseUserMask(from, &from, nil, nil);
 	if ([msg hasPrefix:@"\x01"]) {
 		msg = [msg substringFromIndex:1];
 		if ([msg hasPrefix:@"PING"]) {
@@ -927,7 +844,7 @@ static NSMutableString *data = nil;
 	[_sc scanUpToString:@" " intoString:&cmd];
 	[_sc scanUpToString:@" " intoString:&to];
 	[_sc scanUpToString:@" " intoString:&request];
-	[self parseUsermask:_from nick:&_from user:nil hostmask:nil];
+	RCParseUserMask(_from, &_from, nil, nil);
 	request = [request substringWithRange:NSMakeRange(2, request.length-5)];
 	NSLog(@"Meh. %@", request);
 	if ([request isEqualToString:@"TIME"]) 
@@ -955,7 +872,7 @@ static NSMutableString *data = nil;
 	[_scanner scanUpToString:@" " intoString:&room];
 	user = [user substringFromIndex:1];
 	room = [room stringByReplacingOccurrencesOfString:@"\r\n" withString:@""];
-	[self parseUsermask:user nick:&_nick user:nil hostmask:nil];
+	RCParseUserMask(user, &_nick, nil, nil);
 	if ([_nick isEqualToString:useNick]) {
 		NSLog(@"I went byebye. Notify the police");
 		[_scanner release];
@@ -981,7 +898,7 @@ static NSMutableString *data = nil;
 	if ([room hasPrefix:@" "]) room = [room substringFromIndex:1];
 	if ([room hasPrefix:@":"]) room = [room substringFromIndex:1];
 	room = [room stringByReplacingOccurrencesOfString:@"\r\n" withString:@""];
-	[self parseUsermask:user nick:&_nick user:nil hostmask:nil];	
+	RCParseUserMask(user, &_nick, nil, nil);
 	if ([_nick isEqualToString:useNick]) {
 		[self addChannel:room join:NO];
 		[self sendMessage:[NSString stringWithFormat:@"NAMES %@\r\nTOPIC %@", room, room]];
@@ -1006,7 +923,7 @@ static NSMutableString *data = nil;
 	if ([msg length] > 1) {
 		msg = [msg substringFromIndex:1];
 	}
-	[self parseUsermask:fullHost nick:&user user:nil hostmask:nil];
+	RCParseUserMask(fullHost, &user, nil, nil);
 	for (NSString *channel in [_channels allKeys]) {
 		RCChannel *chan = [self channelWithChannelName:channel];
 		[chan recievedEvent:RCEventTypeQuit from:user message:msg];
@@ -1028,7 +945,7 @@ static NSMutableString *data = nil;
 	[scanr scanUpToString:@" " intoString:&room];
 	[scanr scanUpToString:@" " intoString:&modes];
 	[scanr scanUpToString:@"\r\n" intoString:&user];
-	[self parseUsermask:settr nick:&settr user:nil hostmask:nil];
+	RCParseUserMask(settr, &settr, nil, nil);
 	RCChannel *chan = [self channelWithChannelName:room];
 	if (chan) {
 		if ([room isEqualToString:useNick]) {
@@ -1066,7 +983,7 @@ static NSMutableString *data = nil;
 		[scannr scanUpToString:@" " intoString:&cmd];
 		[scannr scanUpToString:@" " intoString:&to];
 		[scannr scanUpToString:@" :" intoString:&msg];
-		[self parseUsermask:from nick:&user user:nil hostmask:nil];
+		RCParseUserMask(from, &user, nil, nil);
 		[self sendMessage:[@"PRIVMSG " stringByAppendingFormat:@"%@ \x01%@ %@\x01", user, @"PING", [msg substringWithRange:NSMakeRange(8, msg.length-9)]]];
 		[scannr release];
 	}
@@ -1093,13 +1010,15 @@ static NSMutableString *data = nil;
 	[_scan scanUpToString:@"\r\n" intoString:&newTopic];
 	newTopic = [newTopic substringFromIndex:1];
 	from = [from substringFromIndex:1];
-	[self parseUsermask:from nick:&from user:nil hostmask:nil];
+	RCParseUserMask(from, &from, nil, nil);
 	[[self channelWithChannelName:room] recievedEvent:RCEventTypeTopic from:from message:newTopic];
 	[_scan release];
 }
 
 // PRIVMSG victim :\001CLIENTINFO\001/////
-- (void)parseUsermask:(NSString *)mask nick:(NSString **)_nick user:(NSString **)user hostmask:(NSString **)hostmask {
+
+void RCParseUserMask(NSString *mask, NSString **_nick, NSString **user, NSString **hostmask) {
+	
 	if (_nick)
 		*_nick = nil;
 	if (user)

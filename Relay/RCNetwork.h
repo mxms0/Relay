@@ -31,7 +31,7 @@ typedef enum RCSocketStatus {
 	RCSocketStatusClosed
 } RCSocketStatus;
 
-@interface RCNetwork : NSObject <NSStreamDelegate> {
+@interface RCNetwork : NSObject {
 	NSMutableDictionary *_channels;
 	NSMutableArray *_bubbles;
 	NSString *sDescription;
@@ -61,6 +61,7 @@ typedef enum RCSocketStatus {
 	BOOL _isDiconnecting:1;
 }
 @property (nonatomic, retain) NSMutableDictionary *_channels;
+@property (nonatomic, readonly) NSMutableArray *_bubbles;
 @property (nonatomic, retain) NSString *sDescription;
 @property (nonatomic, retain) NSString *server;
 @property (nonatomic, retain) NSString *nick;
@@ -95,6 +96,7 @@ typedef enum RCSocketStatus {
 - (id)infoDictionary;
 @end
 char *RCIPForURL(NSString *URL);
+void RCParseUserMask(NSString *mask, NSString **nick, NSString **user, NSString **hostmask);
 @interface CALayer (Haxx)
 - (id)_nq:(id)arg1;
 @end
