@@ -76,7 +76,7 @@ typedef enum RCSocketStatus {
 @property (nonatomic, assign) BOOL useSSL;
 @property (nonatomic, assign) BOOL COL;
 @property (nonatomic, assign) int index;
-
+- (RCChannel *)channelWithChannelName:(NSString *)chan;
 - (NSString *)_description;
 - (BOOL)connect;
 - (BOOL)disconnect;

@@ -11,7 +11,7 @@
 #import "RCAddNetworkController.h"
 
 @implementation RCNavigator
-@synthesize currentPanel, memberPanel, _isLandscape;
+@synthesize currentPanel, memberPanel, _isLandscape, titleLabel;
 static id _sharedNavigator = nil;
 
 - (id)init {
@@ -54,6 +54,22 @@ static id _sharedNavigator = nil;
 		stupidLabel.backgroundColor = [UIColor clearColor];
 		stupidLabel.text = @"Pull for new network";
 		stupidLabel.textAlignment = UITextAlignmentCenter;
+		titleLabel = [[RCTitleLabel alloc] initWithFrame:CGRectMake(0, 0, bar.frame.size.width, bar.frame.size.height)];
+		[titleLabel setBackgroundColor:[UIColor clearColor]];
+		[titleLabel setHidden:NO];
+		[titleLabel setFont:[UIFont boldSystemFontOfSize:25]];
+		UILongPressGestureRecognizer *gesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(editNetwork:)];
+		[gesture setMinimumPressDuration:0.7];
+		[gesture setNumberOfTapsRequired:0];
+		[titleLabel addGestureRecognizer:gesture];
+		[gesture release];
+		UITapGestureRecognizer *dble = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showNetworkPopover:)];
+		[dble setNumberOfTapsRequired:1];
+		[dble setNumberOfTouchesRequired:1];
+		[titleLabel addGestureRecognizer:dble];
+		[dble release];
+		[bar addSubview:titleLabel];
+		[titleLabel release];
 		[bar addSubview:stupidLabel];
 		[stupidLabel release];
 		scrollBar = [[RCChannelScrollView alloc] initWithFrame:CGRectMake(0, 45, 320, 32)];
@@ -61,14 +77,6 @@ static id _sharedNavigator = nil;
 		scrollBar.delegate = self;
 		[self addSubview:scrollBar];
 		[scrollBar release];
-		[bar setContentSize:CGSizeMake(bar.frame.size.width, 50)];
-		[bar setPagingEnabled:YES];
-		[bar setScrollEnabled:YES];
-		[bar setShowsVerticalScrollIndicator:NO];
-		[bar setShowsHorizontalScrollIndicator:NO];
-		[bar setDirectionalLockEnabled:YES];
-		[bar setBounces:YES];
-		[bar setDelegate:self];
 		[self addSubview:bar];
 		[bar release];
     }
@@ -90,8 +98,6 @@ static id _sharedNavigator = nil;
 	}
 	if (isFirstSetup == -1) isFirstSetup = ([net isKindOfClass:[RCWelcomeNetwork class]] ? 1 : 0);
 	if (isFirstSetup == 2) {
-		netCount = 0;
-		currentIndex = 0;
 		[[[RCNetworkManager sharedNetworkManager] networks] removeObjectAtIndex:0];
 		[[[bar subviews] objectAtIndex:netCount+1] removeFromSuperview];
 		[scrollBar layoutChannels:nil];
@@ -108,36 +114,15 @@ static id _sharedNavigator = nil;
 		// if you do, this program will fail to compile.
 		isFirstSetup = 2;
 	}
-	
-	netCount++;
-	[net setIndex:netCount-1];
-	[_notifications setObject:@"0" forKey:[NSString stringWithFormat:@"%d", netCount-1]];
-	RCTitleLabel *_label = [[RCTitleLabel alloc] initWithFrame:CGRectMake(netCount*200-bar.frame.size.width, 0, bar.frame.size.width, bar.frame.size.height)];
-	[_label setBackgroundColor:[UIColor clearColor]];
-	[_label setHidden:NO];
-	[_label setText:[net _description]];
-	[_label setFont:[UIFont boldSystemFontOfSize:25]];
-	if (![net isKindOfClass:[RCWelcomeNetwork class]]) {
-		UILongPressGestureRecognizer *gesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(editNetwork:)];
-		[gesture setMinimumPressDuration:0.7];
-		[gesture setNumberOfTapsRequired:0];
-		[_label addGestureRecognizer:gesture];
-		[gesture release];
-		UITapGestureRecognizer *dble = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showNetworkPopover:)];
-		[dble setNumberOfTapsRequired:2];
-		[dble setNumberOfTouchesRequired:1];
-		[_label addGestureRecognizer:dble];
-		[dble release];
-	}
-	[bar addSubview:_label];
-	[_label release];
-	[bar setContentSize:CGSizeMake((netCount * 200) + 0.5, 50)];
-	
+	if (titleLabel.text == nil || ([titleLabel.text isEqualToString:@""]))
+		[titleLabel setText:[net _description]];
 	for (NSString *chan in [[net _channels] allKeys]) {
-		RCChannelBubble *bubble = [self channelBubbleWithChannelName:chan];
-		[[net _bubbles] insertObject:bubble atIndex:([[net _bubbles] count])];
-		[bubble release];
-		[[[net _channels] objectForKey:chan] setBubble:bubble];
+		if (![chan isEqualToString:@""] && ![chan isEqualToString:@" "]) {
+			RCChannelBubble *bubble = [self channelBubbleWithChannelName:chan];
+			[[net _bubbles] insertObject:bubble atIndex:([[net _bubbles] count])];
+			[bubble release];
+			[[[net _channels] objectForKey:chan] setBubble:bubble];
+		}
 	}
 	if (netCount == 1) {
 		[self channelSelected:[[[net _channels] objectForKey:@"IRC"] bubble]];
@@ -242,29 +227,15 @@ static UILabel *active = nil;
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
 	if (buttonIndex == 0) {
 		// delete.
-		for (RCTitleLabel *label in [bar subviews]) {
-			if (label.frame.origin.x > active.frame.origin.x) {
-				[label setFrame:CGRectMake(label.frame.origin.x-200, label.frame.origin.y, label.frame.size.width, label.frame.size.height)];
-			}
-		}
-		netCount--;
 	//	currentIndex--;
-		[bar setContentSize:CGSizeMake((netCount * 200) + 0.5, 50)];
 		[currentPanel removeFromSuperview];
 		currentPanel = nil;
-		[_notifications removeObjectForKey:[NSString stringWithFormat:@"%d", currentIndex]];
 		RCNetwork *removr = [[RCNetworkManager sharedNetworkManager] networkWithDescription:active.text];
 		[[RCNetworkManager sharedNetworkManager] removeNet:removr];
 		[[RCNetworkManager sharedNetworkManager] saveNetworks];
-		[active removeFromSuperview];
 		if (netCount == 0) {
 			[scrollBar layoutChannels:nil];
-			[currentPanel removeFromSuperview];
 			[[RCNetworkManager sharedNetworkManager] setupWelcomeView];
-		}
-		else {
-			[self scrollViewDidEndDecelerating:bar];
-			
 		}
 		// :(
 	}
@@ -281,7 +252,7 @@ static UILabel *active = nil;
 		// edit.
 	}
 	else if (buttonIndex == 2) {
-		RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:currentIndex];
+		RCNetwork *net = [[RCNetworkManager sharedNetworkManager] networkWithDescription:titleLabel.text];
 		if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Disconnect"]) [net disconnect];
 		else {
 			[net performSelectorInBackground:@selector(_connect) withObject:nil];
@@ -409,8 +380,9 @@ static BOOL isShowing = NO;
 	if (currentPanel != nil) if ([[[currentPanel channel] bubble] isEqual:bubble]) return;
 	[[[currentPanel channel] bubble] _setSelected:NO];
 	[bubble _setSelected:YES];
-	RCNetwork *net = [[RCNetworkManager sharedNetworkManager] networkWithDescription:[[[bar subviews] objectAtIndex:currentIndex+1] text]];
-	RCChannel *chan = [[net _channels] objectForKey:bubble.titleLabel.text];
+	RCNetwork *net = [[RCNetworkManager sharedNetworkManager] networkWithDescription:titleLabel.text];
+	RCChannel *chan = [net channelWithChannelName:bubble.titleLabel.text];
+	NSLog(@"MEH %@", [net _bubbles]);
 	if (chan) {
 		if ([currentPanel isFirstResponder])
 			[[chan panel] becomeFirstResponderNoAnimate];

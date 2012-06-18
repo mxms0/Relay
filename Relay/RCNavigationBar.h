@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface RCNavigationBar : UIScrollView {
+@interface RCNavigationBar : UIView {
 	
 }
 @end

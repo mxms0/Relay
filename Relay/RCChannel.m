@@ -410,7 +410,7 @@ UIImage *RCImageForRank(NSString *rank) {
 	NSString *msg = @"";
 	[scan scanUpToString:@" " intoString:&room];
 	[scan scanUpToString:@"" intoString:&msg];
-	BOOL new = ![[delegate channels] containsObject:room];
+	BOOL new = ([(RCNetwork *)delegate channelWithChannelName:room] == nil);
 	if (new) [delegate addChannel:room join:YES];
 	if (![msg isEqualToString:@""]) 
 		if (![delegate sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", room, msg]]) {

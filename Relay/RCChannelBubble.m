@@ -44,6 +44,10 @@
 	}
 }
 
+- (id)description {
+	return [NSString stringWithFormat:@"%@+%@",[super description],self.titleLabel.text];
+}
+
 - (void)showUserList:(UIGestureRecognizer *)longHold {
 	if (delegate) {
 		[delegate tearDownForChannelList:self];

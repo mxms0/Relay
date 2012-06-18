@@ -101,6 +101,8 @@
 		504CC352151C4C6A00605706 /* 0_redbar_noglow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 504CC348151C4C6A00605706 /* 0_redbar_noglow@2x.png */; };
 		504CC355151C50C200605706 /* RCBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 504CC354151C50C100605706 /* RCBar.m */; };
 		504D6EDC156B2B9E0004D7D7 /* CHAttributedString.m in Sources */ = {isa = PBXBuildFile; fileRef = 504D6EDB156B2B9E0004D7D7 /* CHAttributedString.m */; };
+		5050BFEB158ED168003A238B /* 0_popover.png in Resources */ = {isa = PBXBuildFile; fileRef = 5050BFE9158ED168003A238B /* 0_popover.png */; };
+		5050BFEC158ED168003A238B /* 0_popover@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5050BFEA158ED168003A238B /* 0_popover@2x.png */; };
 		5052343E1556D904002EC9AC /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5052343B1556D773002EC9AC /* libTestFlight.a */; };
 		505234401556D938002EC9AC /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5052343F1556D938002EC9AC /* libz.dylib */; };
 		50711B4115156C670022CA68 /* 0_chatcell_2.png in Resources */ = {isa = PBXBuildFile; fileRef = 50711B3715156C440022CA68 /* 0_chatcell_2.png */; };
@@ -268,6 +270,8 @@
 		504CC354151C50C100605706 /* RCBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCBar.m; sourceTree = "<group>"; };
 		504D6EDA156B2B9E0004D7D7 /* CHAttributedString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHAttributedString.h; sourceTree = "<group>"; };
 		504D6EDB156B2B9E0004D7D7 /* CHAttributedString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CHAttributedString.m; sourceTree = "<group>"; };
+		5050BFE9158ED168003A238B /* 0_popover.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_popover.png; sourceTree = "<group>"; };
+		5050BFEA158ED168003A238B /* 0_popover@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_popover@2x.png"; sourceTree = "<group>"; };
 		5052343B1556D773002EC9AC /* libTestFlight.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libTestFlight.a; sourceTree = "<group>"; };
 		5052343D1556D77C002EC9AC /* TestFlight.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestFlight.h; sourceTree = "<group>"; };
 		5052343F1556D938002EC9AC /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
@@ -437,6 +441,8 @@
 		50A7FB8714C0F0A800ABADEA /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				5050BFE9158ED168003A238B /* 0_popover.png */,
+				5050BFEA158ED168003A238B /* 0_popover@2x.png */,
 				504CC33F151C4C6200605706 /* 0_bluebar_glow.png */,
 				504CC340151C4C6300605706 /* 0_bluebar_glow@2x.png */,
 				504CC341151C4C6300605706 /* 0_bluebar_noglow.png */,
@@ -791,6 +797,8 @@
 				50E492351522A27A00EF676B /* 0_navbar_landscape@2x.png in Resources */,
 				50468A8D1527E46D0025F405 /* 0_input_l.png in Resources */,
 				50468A8E1527E46D0025F405 /* 0_input_l@2x.png in Resources */,
+				5050BFEB158ED168003A238B /* 0_popover.png in Resources */,
+				5050BFEC158ED168003A238B /* 0_popover@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

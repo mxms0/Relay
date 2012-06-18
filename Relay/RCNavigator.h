@@ -27,6 +27,7 @@
 	RCBarGroup *leftGroup;
 	RCBarGroup *rightGroup;
 	UILabel *stupidLabel;
+	RCTitleLabel *titleLabel;
 	NSMutableDictionary *_notifications;
 	BOOL draggingNets;
 	BOOL draggingChans;
@@ -39,6 +40,7 @@
 @property (nonatomic, readonly) RCChatPanel *currentPanel;
 @property (nonatomic, readonly) RCUserListPanel *memberPanel;
 @property (nonatomic, readonly) BOOL _isLandscape;
+@property (nonatomic, readonly) UILabel *titleLabel;
 + (id)sharedNavigator;
 - (void)addNetwork:(RCNetwork *)net;
 - (void)addRoom:(NSString *)room toServerAtIndex:(int)index;
