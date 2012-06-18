@@ -232,7 +232,7 @@ char *RCIPForURL(NSString *URL) {
 		if (canSend) {
 			if (send(sockfd, [msg UTF8String], strlen([msg UTF8String]), 0) < 0) {
 				NSLog(@"BLASPHEMYY");
-				[self errorOccured:[oStream streamError]];
+		//		[self errorOccured:[oStream streamError]];
 				return NO;
 			}
 			else {
@@ -291,61 +291,6 @@ char *RCIPForURL(NSString *URL) {
 	[p drain];
 }
 
-static NSMutableString *data = nil;
-
-- (void)readDataToEnd {
-	if (isReading) return;
-	isReading = YES;
-	[self performSelectorInBackground:@selector(_readDataToEnd) withObject:nil];
-}
-
-- (void)_readDataToEnd {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	if (!data) data = [[NSMutableString alloc] init];
-	while ([iStream hasBytesAvailable]) {
-		uint8_t buffer[512];
-		NSUInteger bytesRead = [iStream read:buffer maxLength:512];
-		if (bytesRead) {
-			NSString *message = [[NSString alloc] initWithBytesNoCopy:buffer length:bytesRead encoding:NSUTF8StringEncoding freeWhenDone:NO];
-			if (message) {
-				[data appendString:message];
-				[message release];
-			}
-		}			
-	}
-	while ([data rangeOfString:@"\r\n"].location != NSNotFound) {
-		if ([data isEqualToString:@"\r\n"] || [data isEqualToString:@""] || data == nil) break;
-		if ([data rangeOfString:@"\r\n"].location == NSNotFound) break;
-		// i guess i really have to.
-		NSString *send = [[NSString alloc] initWithString:[data substringWithRange:NSMakeRange(0, [data rangeOfString:@"\r\n"].location+2)]];
-		[self recievedMessage:send];
-		[send release];
-		send = nil;
-		if ([data respondsToSelector:@selector(deleteCharactersInRange:)]) {
-			if ([data rangeOfString:@"\r\n"].location != NSNotFound) {
-				@try {
-					[data deleteCharactersInRange:NSMakeRange(0, [data rangeOfString:@"\r\n"].location+2)];
-				}
-				@catch (NSException *e) { }
-			}
-		}
-		else {
-			data = [data mutableCopy];
-			// meh. i know i'm going to regret this.
-			// so. so. so. much.
-			// for some reason, data is becoming an NSString for one reason or another,
-			// i'm honestly not sure if it's becoming the actual send var;
-			// or just some random string. 
-			// i honestly just want to bail out here, but i cannot simply trash the data unless its not existant.
-			// also tempted to send this stuff to testflight. but do not want app crashing after multitasking
-			// because testflight sucks ass.
-		}
-	}
-	[pool drain];
-	if ([iStream hasBytesAvailable]) [self _readDataToEnd];
-	isReading = NO;
-}
-
 - (BOOL)disconnect {
 	if (_isDiconnecting) return NO;
 	_isDiconnecting = YES;
@@ -359,12 +304,6 @@ static NSMutableString *data = nil;
 		sendQueue = nil;
 		[[UIApplication sharedApplication] endBackgroundTask:task];
 		task = UIBackgroundTaskInvalid;
-		[oStream close];
-		[iStream close];
-		[oStream release];
-		[iStream release];
-		oStream = nil;
-		iStream = nil;
 		status = RCSocketStatusNotOpen;
 		isRegistered = NO;
 		for (NSString *chan in [_channels allKeys]) {

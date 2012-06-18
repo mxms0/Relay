@@ -43,8 +43,6 @@ typedef enum RCSocketStatus {
 	NSString *spass;
 	NSString *npass;
 	NSString *userModes;
-	NSInputStream *iStream;
-	NSOutputStream *oStream;
 	NSMutableString *sendQueue;
 	RCSocketStatus status;
 	BOOL isReading:1;
