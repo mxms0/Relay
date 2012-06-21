@@ -75,10 +75,6 @@
 	return YES;
 }
 
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-	[[RCNavigator sharedNavigator] performSelectorInBackground:@selector(reLayoutNetworkTitles) withObject:nil];
-}
-
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
 	NSLog(@"Rotaing.");
 	if (UIInterfaceOrientationIsLandscape(toInterfaceOrientation)) 

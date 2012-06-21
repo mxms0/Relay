@@ -14,24 +14,22 @@
 #import "RCChannelBubble.h"
 #import "RCChannel.h"
 #import "RCUserListPanel.h"
-#import "RCNewMessagesBubble.h"
 #import "RCBarGroup.h"
 
-@interface RCNavigator : UIView <UIScrollViewDelegate, UIAlertViewDelegate, UIActionSheetDelegate> {
+@interface RCNavigator : UIView <UIAlertViewDelegate, UIActionSheetDelegate> {
+	RCNetwork *currentNetwork;
 	RCNavigationBar *bar;
 	RCChannelScrollView *scrollBar;
 	RCChatPanel *currentPanel;
 	RCUserListPanel *memberPanel;
-	RCNewMessagesBubble *leftBubble;
-	RCNewMessagesBubble *rightBubble;
 	RCBarGroup *leftGroup;
 	RCBarGroup *rightGroup;
 	UILabel *stupidLabel;
 	RCTitleLabel *titleLabel;
-	NSMutableDictionary *_notifications;
 	BOOL draggingNets;
 	BOOL draggingChans;
 	BOOL _isLandscape;
+	BOOL _isShowingList;
 	int isFirstSetup;
 	int netCount;
 	int currentIndex;
@@ -51,5 +49,7 @@
 - (void)channelWantsSuicide:(RCChannelBubble *)bubble;
 - (void)rotateToLandscape;
 - (void)rotateToPortrait;
+- (void)presentNetworkPopover;
+- (void)dismissNetworkPopover;
 - (RCChannelBubble *)channelBubbleWithChannelName:(NSString *)name;
 @end

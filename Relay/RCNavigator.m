@@ -29,15 +29,6 @@ static id _sharedNavigator = nil;
 		memberPanel = [[RCUserListPanel alloc] initWithFrame:CGRectMake(0, 77, 320, 383)];
 		memberPanel.backgroundColor = [UIColor clearColor];
 		memberPanel.separatorStyle = UITableViewCellSeparatorStyleNone;
-		_notifications = [[NSMutableDictionary alloc] init];
-		leftBubble = [[RCNewMessagesBubble alloc] initWithFrame:CGRectMake(30, 10, 28, 25)];
-		rightBubble = [[RCNewMessagesBubble alloc] initWithFrame:CGRectMake(260, 10, 30, 25)];
-		[self addSubview:leftBubble];
-		[self addSubview:rightBubble];
-		[leftBubble release];
-		[rightBubble release];
-		leftBubble.hidden = YES;
-		rightBubble.hidden = YES;
 		leftGroup = [[RCBarGroup alloc] initWithFrame:CGRectMake(10, 7, 15, 29)];
 		[self addSubview:leftGroup];
 		[leftGroup release];
@@ -74,7 +65,6 @@ static id _sharedNavigator = nil;
 		[stupidLabel release];
 		scrollBar = [[RCChannelScrollView alloc] initWithFrame:CGRectMake(0, 45, 320, 32)];
 		scrollBar.tag = 200;
-		scrollBar.delegate = self;
 		[self addSubview:scrollBar];
 		[scrollBar release];
 		[self addSubview:bar];
@@ -82,13 +72,6 @@ static id _sharedNavigator = nil;
     }
 	_sharedNavigator = self;
     return _sharedNavigator;
-}
-
-- (void)pulseMofo:(NSTimer *)arg1 {
-	if ((leftBubble.hidden) && (rightBubble.hidden)) return;
-	NSLog(@"Pulse.");
-	if (!leftBubble.hidden) [leftBubble pulse];
-	if (!rightBubble.hidden) [rightBubble pulse];
 }
 
 - (void)addNetwork:(RCNetwork *)net	{
@@ -114,8 +97,6 @@ static id _sharedNavigator = nil;
 		// if you do, this program will fail to compile.
 		isFirstSetup = 2;
 	}
-	if (titleLabel.text == nil || ([titleLabel.text isEqualToString:@""]))
-		[titleLabel setText:[net _description]];
 	for (NSString *chan in [[net _channels] allKeys]) {
 		if (![chan isEqualToString:@""] && ![chan isEqualToString:@" "]) {
 			RCChannelBubble *bubble = [self channelBubbleWithChannelName:chan];
@@ -126,89 +107,29 @@ static id _sharedNavigator = nil;
 	}
 	if (netCount == 1) {
 		[self channelSelected:[[[net _channels] objectForKey:@"IRC"] bubble]];
-		[self scrollViewDidEndDecelerating:nil];
 	}
-}
-
-- (void)addCount:(int)mentions forIndex:(int)_index {
-	int _c = [[_notifications objectForKey:[NSString stringWithFormat:@"%d", _index]] intValue];
-	_c += mentions;
-	[_notifications setObject:[NSString stringWithFormat:@"%d", _c] forKey:[NSString stringWithFormat:@"%d", _index]];
-	[self resetBubbles];
-}
-
-- (void)removeCount:(int)c forIndex:(int)_index {
-	int _c = [[_notifications objectForKey:[NSString stringWithFormat:@"%d", _index]] intValue];
-	_c-=c;
-	[_notifications setObject:[NSString stringWithFormat:@"%d", _c] forKey:[NSString stringWithFormat:@"%d", _index]];
-	[self resetBubbles];
-}
-
-- (void)resetBubbles {
-	[self performSelectorInBackground:@selector(_reallyResetBubbles) withObject:nil];
-}
-
-- (void)_reallyResetBubbles {
-	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
-	int leftCount = 0;
-	int rightCount = 0;
-	if (currentIndex == 0) {
-		for (int x = [[_notifications allKeys] count]-1; x > currentIndex; x--) {
-			int z = [[_notifications objectForKey:[[_notifications allKeys] objectAtIndex:x]] intValue];
-			rightCount += z;
-		}
+	if (titleLabel.text == nil || ([titleLabel.text isEqualToString:@""])) {
+		[titleLabel setText:[net _description]];
+		[scrollBar layoutChannels:[net _bubbles]];
+		currentNetwork = net;
 	}
-	else if (currentIndex == [[_notifications allKeys] count]) {
-		for (int i = 0; i < currentIndex; i++) {
-			int z = [[_notifications objectForKey:[[_notifications allKeys] objectAtIndex:i]] intValue];
-			leftCount += z;
-		}		
-	}
-	else {
-		BOOL revert = NO;
-		for (int i = 0; i < [[_notifications allKeys] count]; i++) {
-			if (i == currentIndex) {
-				revert = YES;
-				continue;
-			}
-			int y = [[_notifications objectForKey:[[_notifications allKeys] objectAtIndex:i]] intValue];
-			if (revert)
-				rightCount += y;
-			else 
-				leftCount += y;
-		}		
-	}
-	if (leftCount != 0) {
-		[[leftBubble titleLabel] setText:[NSString stringWithFormat:@"%d", leftCount]];
-		if (leftCount > 99) {
-			[leftBubble setFrame:CGRectMake(leftBubble.frame.origin.x, leftBubble.frame.origin.y, 37, 25)];	
-		}
-		else if (leftCount > 9) {
-			[leftBubble setFrame:CGRectMake(leftBubble.frame.origin.x, leftBubble.frame.origin.y, 32, 25)];
-		}
-		else {
-			[leftBubble setFrame:CGRectMake(leftBubble.frame.origin.x, leftBubble.frame.origin.y, 30, 25)];
-		}
-		[leftBubble realignTitleLabel];
-		leftBubble.hidden = NO;
-	}
-	else {
-		leftBubble.hidden = YES;
-		leftBubble.titleLabel.text = @"";
-	}
-	if (rightCount != 0) {
-		rightBubble.hidden = NO;
-		rightBubble.titleLabel.text = [NSString stringWithFormat:@"%d", rightCount];
-	}
-	else {
-		rightBubble.hidden = YES;
-		rightBubble.titleLabel.text = @"";
-	}
-	
-	[p drain];
 }
 
 - (void)showNetworkPopover:(UIGestureRecognizer *)gerk {
+	if (_isShowingList) {
+		[self dismissNetworkPopover];
+	}
+	else {
+		[self presentNetworkPopover];
+	}
+}
+
+- (void)dismissNetworkPopover {
+	
+}
+
+- (void)presentNetworkPopover {
+	
 	
 }
 
@@ -264,38 +185,6 @@ static UILabel *active = nil;
 		// kbye
 	}
 	active = nil;
-}
-
-- (void)addRoom:(NSString *)room toServerAtIndex:(int)index {
-	RCNetwork *useNet;
-	for (RCNetwork *net in [[RCNetworkManager sharedNetworkManager] networks]) {
-		if ([net index] == index) {
-			useNet = net;
-			break;
-		}
-	}
-	if (!useNet) return;
-	RCChannelBubble *bubble = [self channelBubbleWithChannelName:room];
-	[[useNet _bubbles] addObject:bubble];
-	[bubble release];
-	[[[useNet _channels] objectForKey:room] setBubble:bubble];
-	[bubble _classify:useNet.index];
-//	[scrollBar layoutChannels:[rooms objectAtIndex:index]];
-}
-
-- (void)removeChannel:(RCChannel *)room toServerAtIndex:(int)index {
-//	NSMutableArray *currentBubbles = [rooms objectAtIndex:index];
-//	for (RCChannelBubble *chan in currentBubbles) {
-//		if ([[chan titleLabel].text isEqual:[room channelName]]) {
-//			[currentBubbles removeObject:chan];
-//			[memberPanel removeFromSuperview];
-//			memberPanel.delegate = nil;
-//			memberPanel.dataSource = nil;
-//			currentPanel = nil;
-//			break;
-//		}
-//	}
-//	[scrollBar layoutChannels:currentBubbles];
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -364,10 +253,6 @@ static BOOL isShowing = NO;
 	return YES;
 }
 
-- (void)_channelWantsSuicide:(RCChannelBubble *)bubble {
-	
-}
-
 - (void)channelSelected:(RCChannelBubble *)bubble {
 	if (memberPanel.delegate != nil) {
 		if (currentPanel != nil) 
@@ -382,7 +267,6 @@ static BOOL isShowing = NO;
 	[bubble _setSelected:YES];
 	RCNetwork *net = [[RCNetworkManager sharedNetworkManager] networkWithDescription:titleLabel.text];
 	RCChannel *chan = [net channelWithChannelName:bubble.titleLabel.text];
-	NSLog(@"MEH %@", [net _bubbles]);
 	if (chan) {
 		if ([currentPanel isFirstResponder])
 			[[chan panel] becomeFirstResponderNoAnimate];
@@ -402,59 +286,6 @@ static BOOL isShowing = NO;
 + (id)sharedNavigator {
 	if (!_sharedNavigator) _sharedNavigator = [[self alloc] init];
 	return _sharedNavigator;
-}
-
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-	if (!scrollView) {
-		[scrollBar layoutChannels:[[[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:0] _bubbles]];
-	//	if ([rooms count] > 0) [scrollBar layoutChannels:[rooms objectAtIndex:0]];
-		return;
-	}
-	if (scrollView.tag == 100) {
-		if ([[scrollView subviews] count] > 1) {
-			unsigned int netLoc;
-			if (scrollView.contentOffset.x != 0) netLoc = scrollView.contentOffset.x/bar.frame.size.width;
-			else netLoc = 0;
-			if (netLoc != currentIndex) currentIndex = netLoc;
-			else return;
-			[scrollBar layoutChannels:[[[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:currentIndex] _bubbles]];
-			[stupidLabel setFrame:CGRectMake(currentIndex*200, stupidLabel.frame.origin.y, stupidLabel.frame.size.width, stupidLabel.frame.size.height)];
-			[self resetBubbles];
-		}
-	}
-	else {
-		// in case ineed this later.. it's available.
-	}
-
-}
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-	if (scrollView.tag == 100) {
-		if (scrollView.contentOffset.y <= -50.00) {
-			draggingNets = YES;
-	//		stupidLabel.text = @"Release for new network";
-		}
-		else {
-			draggingNets = NO;
-	//		stupidLabel.text = @"Pull for netz";
-		}
-	}	
-}
-
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-	if (scrollView.tag == 100) {
-		if (scrollView.contentOffset.y <= -50.00) {
-			if (draggingNets) {
-				UIViewController *rc = [((RCAppDelegate *)[[UIApplication sharedApplication] delegate]) navigationController];
-				RCAddNetworkController *ctrlr = [[RCAddNetworkController alloc] initWithNetwork:nil];
-				UINavigationController *ctrl = [[UINavigationController alloc] initWithRootViewController:ctrlr];
-				[ctrl setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
-				[rc presentModalViewController:ctrl animated:YES];
-				[ctrlr release];
-				[ctrl release];
-			}
-		}
-	}
 }
 
 - (void)drawRect:(CGRect)rect {
@@ -491,6 +322,7 @@ static BOOL isShowing = NO;
 		[[currentPanel tableView] reloadData];
 	}
 	[memberPanel setFrame:[self frameForMemberPanel]];
+		[titleLabel setFrame:CGRectMake(0, 0, [self widthForNetworkBar], [self heightForNetworkBar])];
 }
 
 - (CGRect)frameForLeftBarGroup {
@@ -531,21 +363,6 @@ static BOOL isShowing = NO;
 	return CGRectMake(0, 77, 320, 384);
 }
 
-- (void)reLayoutNetworkTitles {
-	int i = 0;
-	int _size = 30;
-	if (_isLandscape)
-		_size = 20;
-	for (i = 0; i <= [[bar subviews] count]-1; i++) {
-		RCTitleLabel *_label = [[bar subviews] objectAtIndex:i];
-		if ([_label isKindOfClass:[RCTitleLabel class]]) {
-			[_label setFrame:CGRectMake((i-1) * bar.frame.size.width, 0, [self widthForNetworkBar], [self heightForNetworkBar])];
-			[_label setFont:[UIFont boldSystemFontOfSize:_size]];
-		}
-	}
-	[bar setContentSize:CGSizeMake((i-1) * bar.frame.size.width, [self heightForNetworkBar] + 0.5)];
-}
-
 - (void)rotateToPortrait {
 	if (!_isLandscape) return;
 	_isLandscape = NO;
@@ -562,12 +379,12 @@ static BOOL isShowing = NO;
 		bar.frame = CGRectMake(bar.frame.origin.x, bar.frame.origin.y, 200, 45);
 		scrollBar.frame = CGRectMake(0, 45, 320, 32);
 	}
+	[titleLabel setFrame:CGRectMake(0, 0, [self widthForNetworkBar], [self heightForNetworkBar])];
 	[memberPanel setFrame:[self frameForMemberPanel]];
 }
 
 - (void)dealloc {
 	[bar release];
-	[_notifications release];
 	[super dealloc];
 }
 

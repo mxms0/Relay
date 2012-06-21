@@ -11,6 +11,7 @@
 		501F2B3215098C6C0099C9C3 /* 0_shadow_t@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 501F2B3015098C6C0099C9C3 /* 0_shadow_t@2x.png */; };
 		501F2B3D150995DE0099C9C3 /* RCTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 501F2B3C150995DE0099C9C3 /* RCTableView.m */; };
 		50221BA414EF6CB800C7AF58 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50221BA314EF6CB800C7AF58 /* CoreText.framework */; };
+		502BE056158FF748002FFA74 /* RCPopoverWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 502BE055158FF748002FFA74 /* RCPopoverWindow.m */; };
 		502F0E1C15156EFE0019CA24 /* 0_chatcell_7.png in Resources */ = {isa = PBXBuildFile; fileRef = 502F0E1815156EFE0019CA24 /* 0_chatcell_7.png */; };
 		502F0E1D15156EFE0019CA24 /* 0_chatcell_7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 502F0E1915156EFE0019CA24 /* 0_chatcell_7@2x.png */; };
 		502F0E1E15156EFE0019CA24 /* 0_chatcell_8.png in Resources */ = {isa = PBXBuildFile; fileRef = 502F0E1A15156EFE0019CA24 /* 0_chatcell_8.png */; };
@@ -118,7 +119,6 @@
 		5088C0E014C4F89C001ADD06 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5088C0DF14C4F89C001ADD06 /* CFNetwork.framework */; };
 		50929EB6151E65F1007E23D3 /* RCPMChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 50929EB5151E65F1007E23D3 /* RCPMChannel.m */; };
 		50929EBA151E86FA007E23D3 /* RCiPadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50929EB9151E86FA007E23D3 /* RCiPadViewController.m */; };
-		50929EC9151F0D2B007E23D3 /* RCNewMessagesBubble.m in Sources */ = {isa = PBXBuildFile; fileRef = 50929EC8151F0D2B007E23D3 /* RCNewMessagesBubble.m */; };
 		50A7FB8114C0F0A800ABADEA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A7FB8014C0F0A800ABADEA /* UIKit.framework */; };
 		50A7FB8314C0F0A800ABADEA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A7FB8214C0F0A800ABADEA /* Foundation.framework */; };
 		50A7FB8514C0F0A800ABADEA /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A7FB8414C0F0A800ABADEA /* CoreGraphics.framework */; };
@@ -168,6 +168,8 @@
 		501F2B3B150995DE0099C9C3 /* RCTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTableView.h; sourceTree = "<group>"; };
 		501F2B3C150995DE0099C9C3 /* RCTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTableView.m; sourceTree = "<group>"; };
 		50221BA314EF6CB800C7AF58 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		502BE054158FF748002FFA74 /* RCPopoverWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCPopoverWindow.h; sourceTree = "<group>"; };
+		502BE055158FF748002FFA74 /* RCPopoverWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCPopoverWindow.m; sourceTree = "<group>"; };
 		502F0E1815156EFE0019CA24 /* 0_chatcell_7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_chatcell_7.png; sourceTree = "<group>"; };
 		502F0E1915156EFE0019CA24 /* 0_chatcell_7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_chatcell_7@2x.png"; sourceTree = "<group>"; };
 		502F0E1A15156EFE0019CA24 /* 0_chatcell_8.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_chatcell_8.png; sourceTree = "<group>"; };
@@ -291,8 +293,6 @@
 		50929EB5151E65F1007E23D3 /* RCPMChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCPMChannel.m; sourceTree = "<group>"; };
 		50929EB8151E86FA007E23D3 /* RCiPadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCiPadViewController.h; sourceTree = "<group>"; };
 		50929EB9151E86FA007E23D3 /* RCiPadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCiPadViewController.m; sourceTree = "<group>"; };
-		50929EC7151F0D2A007E23D3 /* RCNewMessagesBubble.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCNewMessagesBubble.h; sourceTree = "<group>"; };
-		50929EC8151F0D2B007E23D3 /* RCNewMessagesBubble.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCNewMessagesBubble.m; sourceTree = "<group>"; };
 		50A7FB7C14C0F0A800ABADEA /* Relay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Relay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		50A7FB8014C0F0A800ABADEA /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		50A7FB8214C0F0A800ABADEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -602,10 +602,10 @@
 				504CC33D151C457D00605706 /* RCBarGroup.m */,
 				503742271511478300F4DA1A /* RCUserListPanel.h */,
 				503742281511478300F4DA1A /* RCUserListPanel.m */,
+				502BE054158FF748002FFA74 /* RCPopoverWindow.h */,
+				502BE055158FF748002FFA74 /* RCPopoverWindow.m */,
 				504CC353151C50C100605706 /* RCBar.h */,
 				504CC354151C50C100605706 /* RCBar.m */,
-				50929EC7151F0D2A007E23D3 /* RCNewMessagesBubble.h */,
-				50929EC8151F0D2B007E23D3 /* RCNewMessagesBubble.m */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -840,8 +840,8 @@
 				504CC355151C50C200605706 /* RCBar.m in Sources */,
 				50929EB6151E65F1007E23D3 /* RCPMChannel.m in Sources */,
 				50929EBA151E86FA007E23D3 /* RCiPadViewController.m in Sources */,
-				50929EC9151F0D2B007E23D3 /* RCNewMessagesBubble.m in Sources */,
 				504D6EDC156B2B9E0004D7D7 /* CHAttributedString.m in Sources */,
+				502BE056158FF748002FFA74 /* RCPopoverWindow.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

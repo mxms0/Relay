@@ -93,7 +93,6 @@ static NSMutableArray *networks = nil;
 			NSDictionary *_info = [dict objectForKey:_net];
 			[self ircNetworkWithInfo:_info isNew:NO];
 		}
-		[[RCNavigator sharedNavigator] scrollViewDidEndDecelerating:nil];
 	}
 }
 
@@ -109,7 +108,6 @@ static NSMutableArray *networks = nil;
 	[chan recievedMessage:@"Blah, Blah, more blah!" from:@"" type:RCMessageTypeNormal];
 	[[self networks] addObject:net];
 	[[RCNavigator sharedNavigator] addNetwork:net];
-	[[RCNavigator sharedNavigator] scrollViewDidEndDecelerating:nil];
 	[[RCNavigator sharedNavigator] channelSelected:[chan bubble]];
 	[net release];
 }

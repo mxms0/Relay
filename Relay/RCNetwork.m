@@ -89,7 +89,6 @@
 	for (NSString *aChan in [_channels allKeys])
 		if ([[aChan lowercaseString] isEqualToString:[_chan lowercaseString]]) return;
 	if (![self channelWithChannelName:_chan]) {
-		RCChannelBubble *bubbl = [[RCChannelBubble alloc] init];
 		RCChannel *chan = nil;
 		if ([_chan isEqualToString:@"IRC"]) chan = [[RCConsoleChannel alloc] initWithChannelName:_chan];
 		else if ([_chan hasPrefix:@"#"]) chan = [[RCChannel alloc] initWithChannelName:_chan];
@@ -202,7 +201,7 @@
 		}
 		[msg release];
 		msg = nil;
-		usleep(10);
+		usleep(30);
 	}
 	
 }

@@ -78,8 +78,6 @@
 }
 
 - (void)_setSelected:(BOOL)selected {
-
-	[[RCNavigator sharedNavigator] removeCount:_rcount forIndex:_index];
 	_rcount = 0;
 	if (_selected == selected) return;
 	_selected = selected;
