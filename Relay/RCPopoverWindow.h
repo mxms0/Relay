@@ -14,5 +14,5 @@
 	UITableView *networkTable;
 }
 - (void)animateIn;
-
+- (void)animateOut;
 @end

@@ -36,9 +36,17 @@
 	self.hidden = NO;
 	self.alpha = 0;
 	[UIView beginAnimations:nil context:nil];
-	[UIView setAnimationDuration:0.5];
+	[UIView setAnimationDuration:0.25];
 	self.alpha = 1;
 	[UIView commitAnimations];	
+}
+
+- (void)animateOut {
+	[UIView animateWithDuration:0.25 animations:^ {
+		self.alpha = 0;	
+	} completion:^(BOOL fin) {
+		self.hidden = YES;
+	}];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -57,6 +65,10 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 	return [[[RCNetworkManager sharedNetworkManager] networks] count];
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+	[self animateOut];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
