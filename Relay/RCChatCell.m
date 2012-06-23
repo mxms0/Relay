@@ -33,7 +33,6 @@
 
 - (void)_textHasBeenSet {
 	self.textLabel.text = [message message];
-	currentFlavor = [message flavor];
 	CHAttributedString *attr = [[CHAttributedString alloc] initWithString:self.textLabel.text];
 	[attr setFont:[UIFont fontWithName:@"Helvetica" size:12]];
 	UIColor *normalColor = UIColorFromRGB(0x3F4040);
@@ -46,7 +45,7 @@
 		[self.contentView setBackgroundColor:[UIColor colorWithPatternImage:bg]];
 		[self setNeedsDisplay];
 	}
-	switch (currentFlavor) {
+	switch ([message flavor]) {
 		case RCMessageFlavorAction:
 			[attr setTextIsUnderlined:NO range:NSMakeRange(0, self.textLabel.text.length)];
 			[attr setTextBold:YES range:NSMakeRange(0, self.textLabel.text.length)];

@@ -52,9 +52,9 @@
 		50381AD11519803100BE93CE /* 0_toggleoff@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50381ABB1519803100BE93CE /* 0_toggleoff@2x.png */; };
 		50381AD21519803100BE93CE /* 0_toggleon.png in Resources */ = {isa = PBXBuildFile; fileRef = 50381ABC1519803100BE93CE /* 0_toggleon.png */; };
 		50381AD31519803100BE93CE /* 0_toggleon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50381ABD1519803100BE93CE /* 0_toggleon@2x.png */; };
+		5045752B159570460092CB31 /* RCNetworkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5045752A159570450092CB31 /* RCNetworkCell.m */; };
 		50468A8D1527E46D0025F405 /* 0_input_l.png in Resources */ = {isa = PBXBuildFile; fileRef = 50468A8B1527E46D0025F405 /* 0_input_l.png */; };
 		50468A8E1527E46D0025F405 /* 0_input_l@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50468A8C1527E46D0025F405 /* 0_input_l@2x.png */; };
-		50472B77151AA6820083D691 /* RCSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 50472B76151AA6820083D691 /* RCSwitch.m */; };
 		50472B83151ABDEA0083D691 /* 0_toggle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50472B81151ABDEA0083D691 /* 0_toggle@2x.png */; };
 		50472B84151ABDEA0083D691 /* 0_toggle.png in Resources */ = {isa = PBXBuildFile; fileRef = 50472B82151ABDEA0083D691 /* 0_toggle.png */; };
 		5049385914FAAAD3003221FC /* 0_chatcell.png in Resources */ = {isa = PBXBuildFile; fileRef = 5049385714FAAAD3003221FC /* 0_chatcell.png */; };
@@ -217,10 +217,10 @@
 		5038C8301583B8E4004BA602 /* RCChannelManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCChannelManager.h; sourceTree = "<group>"; };
 		5038C8311583B8E4004BA602 /* RCChannelManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCChannelManager.m; sourceTree = "<group>"; };
 		504349FC152CEEDD0037BD12 /* RCKeychainItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCKeychainItem.m; sourceTree = "<group>"; };
+		50457529159570440092CB31 /* RCNetworkCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCNetworkCell.h; sourceTree = "<group>"; };
+		5045752A159570450092CB31 /* RCNetworkCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCNetworkCell.m; sourceTree = "<group>"; };
 		50468A8B1527E46D0025F405 /* 0_input_l.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_input_l.png; sourceTree = "<group>"; };
 		50468A8C1527E46D0025F405 /* 0_input_l@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_input_l@2x.png"; sourceTree = "<group>"; };
-		50472B75151AA6820083D691 /* RCSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCSwitch.h; sourceTree = "<group>"; };
-		50472B76151AA6820083D691 /* RCSwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCSwitch.m; sourceTree = "<group>"; };
 		50472B81151ABDEA0083D691 /* 0_toggle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_toggle@2x.png"; sourceTree = "<group>"; };
 		50472B82151ABDEA0083D691 /* 0_toggle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_toggle.png; sourceTree = "<group>"; };
 		5049385714FAAAD3003221FC /* 0_chatcell.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_chatcell.png; sourceTree = "<group>"; };
@@ -592,10 +592,10 @@
 				50E77A751505A1EC00E75C64 /* RCAddNetworkController.m */,
 				501F2B3B150995DE0099C9C3 /* RCTableView.h */,
 				501F2B3C150995DE0099C9C3 /* RCTableView.m */,
-				50472B75151AA6820083D691 /* RCSwitch.h */,
-				50472B76151AA6820083D691 /* RCSwitch.m */,
 				50AAE7E5151AD6A500E631FD /* RCTextField.h */,
 				50AAE7E6151AD6A500E631FD /* RCTextField.m */,
+				50457529159570440092CB31 /* RCNetworkCell.h */,
+				5045752A159570450092CB31 /* RCNetworkCell.m */,
 				50AAE7E8151AD8B900E631FD /* RCAddCell.h */,
 				50AAE7E9151AD8B900E631FD /* RCAddCell.m */,
 				504CC33C151C457D00605706 /* RCBarGroup.h */,
@@ -833,7 +833,6 @@
 				501F2B3D150995DE0099C9C3 /* RCTableView.m in Sources */,
 				503742291511478300F4DA1A /* RCUserListPanel.m in Sources */,
 				503790FA1512BD4100EE2A7E /* RCUserTableCell.m in Sources */,
-				50472B77151AA6820083D691 /* RCSwitch.m in Sources */,
 				50AAE7E7151AD6A500E631FD /* RCTextField.m in Sources */,
 				50AAE7EA151AD8B900E631FD /* RCAddCell.m in Sources */,
 				504CC33E151C457E00605706 /* RCBarGroup.m in Sources */,
@@ -842,6 +841,7 @@
 				50929EBA151E86FA007E23D3 /* RCiPadViewController.m in Sources */,
 				504D6EDC156B2B9E0004D7D7 /* CHAttributedString.m in Sources */,
 				502BE056158FF748002FFA74 /* RCPopoverWindow.m in Sources */,
+				5045752B159570460092CB31 /* RCNetworkCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

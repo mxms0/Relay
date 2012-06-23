@@ -11,7 +11,7 @@
 
 @implementation RCNetwork
 
-@synthesize sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, index, useNick, userModes, _bubbles;
+@synthesize sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _bubbles;
 
 - (id)init {
 	if ((self = [super init])) {
@@ -63,11 +63,7 @@
 }
 
 - (NSString *)description {
-	return [NSString stringWithFormat:@"<%@: %p; %@; Index = %d;>", NSStringFromClass([self class]), self, [self infoDictionary], index];
-}
-
-- (NSString *)descriptionForComparing {
-	return [NSString stringWithFormat:@"%@%@%@%@%d%d", username, nick, realname, server, port, useSSL];
+	return [NSString stringWithFormat:@"<%@: %p; %@;>", NSStringFromClass([self class]), self, [self infoDictionary]];
 }
 
 - (void)setupRooms:(NSArray *)rooms {
@@ -98,7 +94,7 @@
 		[chan release];
 		if (join) [chan setJoined:YES withArgument:nil];
 		if (isRegistered) {
-			[[RCNavigator sharedNavigator] addRoom:_chan toServerAtIndex:index];
+	//		[[RCNavigator sharedNavigator] addRoom:_chan toServerAtIndex:index];
 			[[RCNetworkManager sharedNetworkManager] saveNetworks];
 			shouldSave = YES; // if we aren't registered.. it's _likely_ just setup.
 		}
@@ -110,9 +106,8 @@
 }
 
 - (void)removeChannel:(RCChannel *)chan withMessage:(NSString *)quitter {
-	
 	[chan setJoined:NO withArgument:quitter];
-	[[RCNavigator sharedNavigator] removeChannel:chan toServerAtIndex:index];
+//	[[RCNavigator sharedNavigator] removeChannel:chan toServerAtIndex:index];
 	[_channels removeObjectForKey:[chan channelName]];
 	[[RCNetworkManager sharedNetworkManager] saveNetworks];
 }
@@ -120,7 +115,6 @@
 #pragma mark - SOCKET STUFF
 
 - (void)_connect {
-	isReading = NO;
 	canSend = YES;
 	isRegistered = NO;
 	if (sendQueue) [sendQueue release];
@@ -203,8 +197,8 @@
 		msg = nil;
 		usleep(30);
 	}
-	
 }
+
 char *RCIPForURL(NSString *URL) {
 	char *hostname = (char *)[URL UTF8String];
 	struct addrinfo hints, *res;
@@ -329,24 +323,6 @@ char *RCIPForURL(NSString *URL) {
 - (BOOL)isConnected {
 	return (status == RCSocketStatusConnected);
 }
-
-- (NSString *)connectionStatus {
-	switch (status) {
-		case RCSocketStatusClosed:
-			return @"Disconnected";
-		case RCSocketStatusError:
-			return @"Error Occurred";
-		case RCSocketStatusNotOpen:
-			return @"Disconnected";
-		case RCSocketStatusConnected:
-			return @"Connected";
-		case RCSocketStatusConnecting:
-			return @"Connceting..";
-	}
-	return @"HAXXXXX";
-}
-
-#pragma mark - COMMANDS
 
 - (void)handle001:(NSString *)welcome {
 	[self networkDidRegister:YES];

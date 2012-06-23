@@ -7,7 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "RCNetworkCell.h"
 
-@interface RCPopoverWindow : UIWindow
+@interface RCPopoverWindow : UIWindow <UITableViewDelegate, UITableViewDataSource> {
+	UIImageView *_pImg;
+	UITableView *networkTable;
+}
+- (void)animateIn;
 
 @end

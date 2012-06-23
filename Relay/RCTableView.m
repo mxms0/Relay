@@ -21,9 +21,6 @@
 	
 	NSArray *indexPathsForVisibleRows = [self indexPathsForVisibleRows];
 	if ([indexPathsForVisibleRows count] == 0) {
-		[bottomShadow removeFromSuperview];
-		[bottomShadow release];
-		bottomShadow = nil;
 		return;
 	}
 	
@@ -52,7 +49,6 @@
 }
 
 - (void)dealloc {
-//	[bottomShadow release];
 	[super dealloc];
 }
 

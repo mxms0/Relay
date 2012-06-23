@@ -45,10 +45,8 @@ typedef enum RCSocketStatus {
 	NSString *userModes;
 	NSMutableString *sendQueue;
 	RCSocketStatus status;
-	BOOL isReading:1;
 	int task;
 	int port;
-	int index;
 	int maxStatusLength;
 	int sockfd;
 	BOOL isRegistered:1;
@@ -73,13 +71,11 @@ typedef enum RCSocketStatus {
 @property (nonatomic, assign) BOOL isRegistered;
 @property (nonatomic, assign) BOOL useSSL;
 @property (nonatomic, assign) BOOL COL;
-@property (nonatomic, assign) int index;
 - (RCChannel *)channelWithChannelName:(NSString *)chan;
 - (NSString *)_description;
 - (BOOL)connect;
 - (BOOL)disconnect;
 - (BOOL)isConnected;
-- (NSString *)descriptionForComparing;
 - (BOOL)sendMessage:(NSString *)msg;
 - (BOOL)sendMessage:(NSString *)msg canWait:(BOOL)canWait;
 - (void)recievedMessage:(NSString *)msg;
@@ -87,7 +83,6 @@ typedef enum RCSocketStatus {
 - (void)setupRooms:(NSArray *)rooms;
 - (void)addChannel:(NSString *)_chan join:(BOOL)join;
 - (void)removeChannel:(RCChannel *)chan;
-- (NSString *)connectionStatus;
 - (void)handlePING:(NSString *)pong;
 - (void)handleCTCPRequest:(NSString *)request;
 - (void)parseUsermask:(NSString *)mask nick:(NSString **)nick user:(NSString **)user hostmask:(NSString **)hostmask;

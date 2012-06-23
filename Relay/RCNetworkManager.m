@@ -150,6 +150,8 @@ static NSMutableArray *networks = nil;
 
 - (void)setupChannelData:(NSString *)nilOrNull {
 	return;
+	// FIX THIS FIX THIS FIX THIS
+	/*
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSString *path = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingString:NETS_PLIST];
 	NSDictionary *dataz = [[NSDictionary alloc] initWithContentsOfFile:path];
@@ -181,6 +183,7 @@ static NSMutableArray *networks = nil;
 	NSLog(@"Archived Messages..");
 	[dataz release];
 	[pool drain];
+	 */
 }
 
 - (void)saveChannelData:(id)unused {
@@ -188,24 +191,11 @@ static NSMutableArray *networks = nil;
 	[self performSelectorInBackground:@selector(_reallySaveChannelData:) withObject:unused];
 }
 
-- (RCNetwork *)networkAtIndex:(int)_index {
-	for (RCNetwork *net in networks) {
-		if ([net index] == _index)
-			return net;
-	}
-	return nil;
-}
-
-- (RCNetwork *)networkWithQuickDescription:(NSString *)_descr {
-	for (RCNetwork *net in networks) {
-		if ([[net descriptionForComparing] isEqualToString:_descr])
-			return net;
-	}
-	return nil;
-}
-
 - (void)_reallySaveChannelData:(id)unused {
 	saving = YES;
+	/* REALLY BAD CODE.
+	 // FIX THIS MAX. 
+	 // REALLY BAD IDEAS IN THIS.
 	NSString *path = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingString:NETS_PLIST];
 	NSUInteger hashCode = 00000;
 	NSDictionary *_dict = [[NSDictionary alloc] initWithContentsOfFile:path];
@@ -215,7 +205,7 @@ static NSMutableArray *networks = nil;
 	for (RCNetwork *net in networks) {
 		NSMutableDictionary *netDict = [[NSMutableDictionary alloc] init];
 		for (NSString *_chan in [[net _channels] allKeys]) {
-			RCChannel *chan = [[net _channels] objectForKey:_chan];
+			RCChannel *chan = [net channelWithChannelName:_chan];
 			if (chan) {
 				NSArray *messages = [[chan panel] messages];
 				NSData *_messages = [NSKeyedArchiver archivedDataWithRootObject:messages];
@@ -226,8 +216,7 @@ static NSMutableArray *networks = nil;
 		[netDict release];
 	}
 	
-	if (![
-		  [NSFileManager defaultManager] fileExistsAtPath:path]) {
+	if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
 		[[NSFileManager defaultManager] createFileAtPath:path contents:(NSData *)[NSDictionary dictionary] attributes:NULL];
 	}
 	if (hashCode == [dict hash]) {
@@ -244,6 +233,7 @@ end:{
 	[p drain];
 	saving = NO;
 	}
+	 */
 }
 
 - (NSMutableArray *)networks {

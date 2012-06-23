@@ -15,6 +15,7 @@
 #import "RCChannel.h"
 #import "RCUserListPanel.h"
 #import "RCBarGroup.h"
+#import "RCPopoverWindow.h"
 
 @interface RCNavigator : UIView <UIAlertViewDelegate, UIActionSheetDelegate> {
 	RCNetwork *currentNetwork;
@@ -24,15 +25,11 @@
 	RCUserListPanel *memberPanel;
 	RCBarGroup *leftGroup;
 	RCBarGroup *rightGroup;
-	UILabel *stupidLabel;
 	RCTitleLabel *titleLabel;
-	BOOL draggingNets;
-	BOOL draggingChans;
+	RCPopoverWindow *window;
 	BOOL _isLandscape;
 	BOOL _isShowingList;
 	int isFirstSetup;
-	int netCount;
-	int currentIndex;
 	id _rcViewController;
 }
 @property (nonatomic, readonly) RCChatPanel *currentPanel;

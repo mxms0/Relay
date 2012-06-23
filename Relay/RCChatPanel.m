@@ -77,7 +77,6 @@
 		[field release];
 		[self addSubview:_bar];
 		[_bar release];
-		postThread = [NSThread currentThread];
 		UISwipeGestureRecognizer *gesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(suggestNick:)];
 		[field addGestureRecognizer:gesture];
 		[gesture release];

@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "RCNetwork.h"
 #import "RCNetworkManager.h"
-#import "RCSwitch.h"
 #import "RCTextField.h"
 #import "RCAddCell.h"
 #import "RCChannelManager.h"

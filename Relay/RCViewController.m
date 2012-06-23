@@ -29,25 +29,6 @@
 	[self.view addSubview:navigator];
 	[navigator release];
 	[self.navigationController setNavigationBarHidden:YES];
-//	[self performSelectorInBackground:@selector(doConnect:) withObject:nil];
-}
-
-- (void)doConnect:(id)unused {
-	
-//	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
-//	NSString *url = @"http://mxms.us/gabby.jpg";
-//	
-//	NSURLRequest* request = [NSURLRequest requestWithURL:[NSURL URLWithString:url] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:5.0];
-//	NSHTTPURLResponse* response = nil;
-//	NSError* error = nil;
-//	[NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-	
-//	if ([response statusCode] == 404)
-//		return;
-//	else
-//		exit(-1);
-
-//	[p drain];
 }
 
 - (void)viewDidUnload {

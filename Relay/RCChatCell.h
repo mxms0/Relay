@@ -16,7 +16,6 @@
 
 @interface RCChatCell : UITableViewCell {
 	OHAttributedLabel *textLabel;
-	RCMessageFlavor currentFlavor;
 	RCMessage *message;
 	float height;
 }

@@ -15,8 +15,7 @@
 static id _sharedNavigator = nil;
 
 - (id)init {
-	CGSize screenWidth = [[UIScreen mainScreen] applicationFrame].size;
-	return [self initWithFrame:CGRectMake(0, 0, screenWidth.width, screenWidth.height)];
+	return [self initWithFrame:CGRectZero];
 }
 
 - (id)initWithFrame:(CGRect)frame {
@@ -26,6 +25,7 @@ static id _sharedNavigator = nil;
 			_rcViewController = [_rcViewController topViewController];
 		isFirstSetup = -1;
 		_isLandscape = NO;
+		window = [[RCPopoverWindow alloc] initWithFrame:CGRectMake(0, 0, 320, 460)];
 		memberPanel = [[RCUserListPanel alloc] initWithFrame:CGRectMake(0, 77, 320, 383)];
 		memberPanel.backgroundColor = [UIColor clearColor];
 		memberPanel.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -35,16 +35,8 @@ static id _sharedNavigator = nil;
 		rightGroup = [[RCBarGroup alloc] initWithFrame:CGRectMake(290, 7, 15, 29)];
 		[self addSubview:rightGroup];
 		[rightGroup release];
-		netCount = 0;
-		draggingNets = NO;
-		draggingChans = NO;
 		bar = [[RCNavigationBar alloc] initWithFrame:CGRectMake(60, 0, 200, 45)];
 		bar.tag = 100;
-		stupidLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, -50, bar.frame.size.width, bar.frame.size.height)];
-		stupidLabel.font = [UIFont systemFontOfSize:11];
-		stupidLabel.backgroundColor = [UIColor clearColor];
-		stupidLabel.text = @"Pull for new network";
-		stupidLabel.textAlignment = UITextAlignmentCenter;
 		titleLabel = [[RCTitleLabel alloc] initWithFrame:CGRectMake(0, 0, bar.frame.size.width, bar.frame.size.height)];
 		[titleLabel setBackgroundColor:[UIColor clearColor]];
 		[titleLabel setHidden:NO];
@@ -56,13 +48,10 @@ static id _sharedNavigator = nil;
 		[gesture release];
 		UITapGestureRecognizer *dble = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showNetworkPopover:)];
 		[dble setNumberOfTapsRequired:1];
-		[dble setNumberOfTouchesRequired:1];
 		[titleLabel addGestureRecognizer:dble];
 		[dble release];
 		[bar addSubview:titleLabel];
 		[titleLabel release];
-		[bar addSubview:stupidLabel];
-		[stupidLabel release];
 		scrollBar = [[RCChannelScrollView alloc] initWithFrame:CGRectMake(0, 45, 320, 32)];
 		scrollBar.tag = 200;
 		[self addSubview:scrollBar];
@@ -81,14 +70,14 @@ static id _sharedNavigator = nil;
 	}
 	if (isFirstSetup == -1) isFirstSetup = ([net isKindOfClass:[RCWelcomeNetwork class]] ? 1 : 0);
 	if (isFirstSetup == 2) {
-		[[[RCNetworkManager sharedNetworkManager] networks] removeObjectAtIndex:0];
-		[[[bar subviews] objectAtIndex:netCount+1] removeFromSuperview];
-		[scrollBar layoutChannels:nil];
-		isFirstSetup = 0;
-		[currentPanel removeFromSuperview];
-		currentPanel = nil;
-		[NSTimer scheduledTimerWithTimeInterval:120 target:[RCNetworkManager sharedNetworkManager] selector:@selector(saveChannelData:) userInfo:nil repeats:YES];
-		isFirstSetup = -1;
+	//	[[[RCNetworkManager sharedNetworkManager] networks] removeObjectAtIndex:0];
+	//	[[[bar subviews] objectAtIndex:netCount+1] removeFromSuperview];
+	//	[scrollBar layoutChannels:nil];
+	//	isFirstSetup = 0;
+	//	[currentPanel removeFromSuperview];
+	//	currentPanel = nil;
+	//	[NSTimer scheduledTimerWithTimeInterval:120 target:[RCNetworkManager sharedNetworkManager] selector:@selector(saveChannelData:) userInfo:nil repeats:YES];
+	//	isFirstSetup = -1;
 	}
 	if (isFirstSetup == 1) {
 		// new network coming through, remove setup she-yite
@@ -105,9 +94,9 @@ static id _sharedNavigator = nil;
 			[[[net _channels] objectForKey:chan] setBubble:bubble];
 		}
 	}
-	if (netCount == 1) {
-		[self channelSelected:[[[net _channels] objectForKey:@"IRC"] bubble]];
-	}
+//	if (netCount == 1) {
+//		[self channelSelected:[[[net _channels] objectForKey:@"IRC"] bubble]];
+//	}
 	if (titleLabel.text == nil || ([titleLabel.text isEqualToString:@""])) {
 		[titleLabel setText:[net _description]];
 		[scrollBar layoutChannels:[net _bubbles]];
@@ -129,7 +118,7 @@ static id _sharedNavigator = nil;
 }
 
 - (void)presentNetworkPopover {
-	
+	[window animateIn];
 	
 }
 
@@ -154,10 +143,10 @@ static UILabel *active = nil;
 		RCNetwork *removr = [[RCNetworkManager sharedNetworkManager] networkWithDescription:active.text];
 		[[RCNetworkManager sharedNetworkManager] removeNet:removr];
 		[[RCNetworkManager sharedNetworkManager] saveNetworks];
-		if (netCount == 0) {
-			[scrollBar layoutChannels:nil];
-			[[RCNetworkManager sharedNetworkManager] setupWelcomeView];
-		}
+	//	if (netCount == 0) {
+	//		[scrollBar layoutChannels:nil];
+	//		[[RCNetworkManager sharedNetworkManager] setupWelcomeView];
+	//	}
 		// :(
 	}
 	else if (buttonIndex == 1) {
@@ -191,15 +180,15 @@ static UILabel *active = nil;
 	isShowing = NO;
 	switch (buttonIndex) {
 		case 1: {
-			RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:currentIndex];
-			RCChannel *chan = [[net _channels] objectForKey:[[questionabubble titleLabel] text]];
-			[[net _bubbles] removeObject:questionabubble];
-			[scrollBar layoutChannels:[net _bubbles]];
-			if ([[chan panel] isEqual:currentPanel]) {
-				[currentPanel removeFromSuperview];
-				currentPanel = nil;
-			}
-			[net removeChannel:chan];
+	//		RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:currentIndex];
+	//		RCChannel *chan = [[net _channels] objectForKey:[[questionabubble titleLabel] text]];
+	//		[[net _bubbles] removeObject:questionabubble];
+	//		[scrollBar layoutChannels:[net _bubbles]];
+	//		if ([[chan panel] isEqual:currentPanel]) {
+	//			[currentPanel removeFromSuperview];
+	//			currentPanel = nil;
+	//		}
+	//		[net removeChannel:chan];
 			
 			break;
 		}
@@ -220,14 +209,14 @@ static UILabel *active = nil;
 	if (![[[currentPanel channel] bubble] isEqual:bubble]) {
 		[self channelSelected:bubble];
 	}
-	RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:currentIndex];	
-	RCChannel *chan = [[net _channels] objectForKey:[[bubble titleLabel] text]];
-	memberPanel.delegate = chan;
-	memberPanel.dataSource = chan;
-	memberPanel.frame = [self frameForMemberPanel];
-	chan.usersPanel = memberPanel;
-	[currentPanel removeFromSuperview];
-	[self addSubview:memberPanel];
+//	RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:currentIndex];	
+//	RCChannel *chan = [[net _channels] objectForKey:[[bubble titleLabel] text]];
+//	memberPanel.delegate = chan;
+//	memberPanel.dataSource = chan;
+//	memberPanel.frame = [self frameForMemberPanel];
+//	chan.usersPanel = memberPanel;
+//	[currentPanel removeFromSuperview];
+//	[self addSubview:memberPanel];
 }
 
 static RCChannelBubble *questionabubble = nil;
