@@ -89,7 +89,6 @@
 		504CC336151C450C00605706 /* 0_rednotification_glow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 504CC328151C450A00605706 /* 0_rednotification_glow@2x.png */; };
 		504CC337151C450C00605706 /* 0_rednotification_noglow.png in Resources */ = {isa = PBXBuildFile; fileRef = 504CC329151C450B00605706 /* 0_rednotification_noglow.png */; };
 		504CC338151C450C00605706 /* 0_rednotification_noglow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 504CC32A151C450B00605706 /* 0_rednotification_noglow@2x.png */; };
-		504CC33E151C457E00605706 /* RCBarGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 504CC33D151C457D00605706 /* RCBarGroup.m */; };
 		504CC349151C4C6A00605706 /* 0_bluebar_glow.png in Resources */ = {isa = PBXBuildFile; fileRef = 504CC33F151C4C6200605706 /* 0_bluebar_glow.png */; };
 		504CC34A151C4C6A00605706 /* 0_bluebar_glow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 504CC340151C4C6300605706 /* 0_bluebar_glow@2x.png */; };
 		504CC34B151C4C6A00605706 /* 0_bluebar_noglow.png in Resources */ = {isa = PBXBuildFile; fileRef = 504CC341151C4C6300605706 /* 0_bluebar_noglow.png */; };
@@ -100,7 +99,6 @@
 		504CC350151C4C6A00605706 /* 0_redbar_glow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 504CC346151C4C6700605706 /* 0_redbar_glow@2x.png */; };
 		504CC351151C4C6A00605706 /* 0_redbar_noglow.png in Resources */ = {isa = PBXBuildFile; fileRef = 504CC347151C4C6900605706 /* 0_redbar_noglow.png */; };
 		504CC352151C4C6A00605706 /* 0_redbar_noglow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 504CC348151C4C6A00605706 /* 0_redbar_noglow@2x.png */; };
-		504CC355151C50C200605706 /* RCBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 504CC354151C50C100605706 /* RCBar.m */; };
 		504D6EDC156B2B9E0004D7D7 /* CHAttributedString.m in Sources */ = {isa = PBXBuildFile; fileRef = 504D6EDB156B2B9E0004D7D7 /* CHAttributedString.m */; };
 		5050BFEB158ED168003A238B /* 0_popover.png in Resources */ = {isa = PBXBuildFile; fileRef = 5050BFE9158ED168003A238B /* 0_popover.png */; };
 		5050BFEC158ED168003A238B /* 0_popover@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5050BFEA158ED168003A238B /* 0_popover@2x.png */; };
@@ -256,8 +254,6 @@
 		504CC328151C450A00605706 /* 0_rednotification_glow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_rednotification_glow@2x.png"; sourceTree = "<group>"; };
 		504CC329151C450B00605706 /* 0_rednotification_noglow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_rednotification_noglow.png; sourceTree = "<group>"; };
 		504CC32A151C450B00605706 /* 0_rednotification_noglow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_rednotification_noglow@2x.png"; sourceTree = "<group>"; };
-		504CC33C151C457D00605706 /* RCBarGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCBarGroup.h; sourceTree = "<group>"; };
-		504CC33D151C457D00605706 /* RCBarGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCBarGroup.m; sourceTree = "<group>"; };
 		504CC33F151C4C6200605706 /* 0_bluebar_glow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_bluebar_glow.png; sourceTree = "<group>"; };
 		504CC340151C4C6300605706 /* 0_bluebar_glow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_bluebar_glow@2x.png"; sourceTree = "<group>"; };
 		504CC341151C4C6300605706 /* 0_bluebar_noglow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_bluebar_noglow.png; sourceTree = "<group>"; };
@@ -268,8 +264,6 @@
 		504CC346151C4C6700605706 /* 0_redbar_glow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_redbar_glow@2x.png"; sourceTree = "<group>"; };
 		504CC347151C4C6900605706 /* 0_redbar_noglow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_redbar_noglow.png; sourceTree = "<group>"; };
 		504CC348151C4C6A00605706 /* 0_redbar_noglow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_redbar_noglow@2x.png"; sourceTree = "<group>"; };
-		504CC353151C50C100605706 /* RCBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCBar.h; sourceTree = "<group>"; };
-		504CC354151C50C100605706 /* RCBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCBar.m; sourceTree = "<group>"; };
 		504D6EDA156B2B9E0004D7D7 /* CHAttributedString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHAttributedString.h; sourceTree = "<group>"; };
 		504D6EDB156B2B9E0004D7D7 /* CHAttributedString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CHAttributedString.m; sourceTree = "<group>"; };
 		5050BFE9158ED168003A238B /* 0_popover.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_popover.png; sourceTree = "<group>"; };
@@ -598,14 +592,10 @@
 				5045752A159570450092CB31 /* RCNetworkCell.m */,
 				50AAE7E8151AD8B900E631FD /* RCAddCell.h */,
 				50AAE7E9151AD8B900E631FD /* RCAddCell.m */,
-				504CC33C151C457D00605706 /* RCBarGroup.h */,
-				504CC33D151C457D00605706 /* RCBarGroup.m */,
 				503742271511478300F4DA1A /* RCUserListPanel.h */,
 				503742281511478300F4DA1A /* RCUserListPanel.m */,
 				502BE054158FF748002FFA74 /* RCPopoverWindow.h */,
 				502BE055158FF748002FFA74 /* RCPopoverWindow.m */,
-				504CC353151C50C100605706 /* RCBar.h */,
-				504CC354151C50C100605706 /* RCBar.m */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -647,6 +637,7 @@
 				50A7FB7814C0F0A800ABADEA /* Sources */,
 				50A7FB7914C0F0A800ABADEA /* Frameworks */,
 				50A7FB7A14C0F0A800ABADEA /* Resources */,
+				504E1F8B1596C41C00AC66F9 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -804,6 +795,22 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		504E1F8B1596C41C00AC66F9 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 12;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" $INFOPLIST_FILE)\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" $INFOPLIST_FILE";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		50A7FB7814C0F0A800ABADEA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -835,8 +842,6 @@
 				503790FA1512BD4100EE2A7E /* RCUserTableCell.m in Sources */,
 				50AAE7E7151AD6A500E631FD /* RCTextField.m in Sources */,
 				50AAE7EA151AD8B900E631FD /* RCAddCell.m in Sources */,
-				504CC33E151C457E00605706 /* RCBarGroup.m in Sources */,
-				504CC355151C50C200605706 /* RCBar.m in Sources */,
 				50929EB6151E65F1007E23D3 /* RCPMChannel.m in Sources */,
 				50929EBA151E86FA007E23D3 /* RCiPadViewController.m in Sources */,
 				504D6EDC156B2B9E0004D7D7 /* CHAttributedString.m in Sources */,

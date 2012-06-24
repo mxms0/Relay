@@ -50,17 +50,26 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-	return 30;
+	return 40;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	static NSString *ident = @"0_networkcell";
 	RCNetworkCell *cell = [tableView dequeueReusableCellWithIdentifier:ident];
 	if (!cell) {
-		cell = [[RCNetworkCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:ident];
+		cell = [[RCNetworkCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:ident];
 	}
 	cell.textLabel.text = [[[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.row] sDescription];
 	return cell;
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+	cell.detailTextLabel.text = [NSString stringWithFormat:@"(%@)", [[[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.row] server]];	
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	[[RCNavigator sharedNavigator] selectNetwork:[[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.row]];
+	[self animateOut];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
