@@ -14,7 +14,6 @@
 #import "RCChannelBubble.h"
 #import "RCChannel.h"
 #import "RCUserListPanel.h"
-#import "RCBarGroup.h"
 #import "RCPopoverWindow.h"
 
 @interface RCNavigator : UIView <UIAlertViewDelegate, UIActionSheetDelegate> {
@@ -23,8 +22,6 @@
 	RCChannelScrollView *scrollBar;
 	RCChatPanel *currentPanel;
 	RCUserListPanel *memberPanel;
-	RCBarGroup *leftGroup;
-	RCBarGroup *rightGroup;
 	RCTitleLabel *titleLabel;
 	RCPopoverWindow *window;
 	BOOL _isLandscape;
@@ -48,5 +45,6 @@
 - (void)rotateToPortrait;
 - (void)presentNetworkPopover;
 - (void)dismissNetworkPopover;
+- (void)selectNetwork:(RCNetwork *)net;
 - (RCChannelBubble *)channelBubbleWithChannelName:(NSString *)name;
 @end

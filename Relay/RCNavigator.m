@@ -29,12 +29,6 @@ static id _sharedNavigator = nil;
 		memberPanel = [[RCUserListPanel alloc] initWithFrame:CGRectMake(0, 77, 320, 383)];
 		memberPanel.backgroundColor = [UIColor clearColor];
 		memberPanel.separatorStyle = UITableViewCellSeparatorStyleNone;
-		leftGroup = [[RCBarGroup alloc] initWithFrame:CGRectMake(10, 7, 15, 29)];
-		[self addSubview:leftGroup];
-		[leftGroup release];
-		rightGroup = [[RCBarGroup alloc] initWithFrame:CGRectMake(290, 7, 15, 29)];
-		[self addSubview:rightGroup];
-		[rightGroup release];
 		bar = [[RCNavigationBar alloc] initWithFrame:CGRectMake(60, 0, 200, 45)];
 		bar.tag = 100;
 		titleLabel = [[RCTitleLabel alloc] initWithFrame:CGRectMake(0, 0, bar.frame.size.width, bar.frame.size.height)];
@@ -105,16 +99,13 @@ static id _sharedNavigator = nil;
 }
 
 - (void)showNetworkPopover:(UIGestureRecognizer *)gerk {
-	if (_isShowingList) {
-		[self dismissNetworkPopover];
-	}
-	else {
-		[self presentNetworkPopover];
-	}
+	[self presentNetworkPopover];
 }
 
 - (void)dismissNetworkPopover {
-	
+	[window animateOut];
+	// never used.
+	// may be needed later on.
 }
 
 - (void)presentNetworkPopover {
@@ -209,14 +200,19 @@ static UILabel *active = nil;
 	if (![[[currentPanel channel] bubble] isEqual:bubble]) {
 		[self channelSelected:bubble];
 	}
-//	RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:currentIndex];	
-//	RCChannel *chan = [[net _channels] objectForKey:[[bubble titleLabel] text]];
-//	memberPanel.delegate = chan;
-//	memberPanel.dataSource = chan;
-//	memberPanel.frame = [self frameForMemberPanel];
-//	chan.usersPanel = memberPanel;
-//	[currentPanel removeFromSuperview];
-//	[self addSubview:memberPanel];
+	RCChannel *chan = [[currentNetwork _channels] objectForKey:[[bubble titleLabel] text]];
+	memberPanel.delegate = chan;
+	memberPanel.dataSource = chan;
+	memberPanel.frame = [self frameForMemberPanel];
+	chan.usersPanel = memberPanel;
+	[currentPanel removeFromSuperview];
+	[self addSubview:memberPanel];
+}
+
+- (void)selectNetwork:(RCNetwork *)net {
+	currentNetwork = net;
+	titleLabel.text = [net _description];
+	[scrollBar layoutChannels:[net _bubbles]];
 }
 
 static RCChannelBubble *questionabubble = nil;
@@ -227,7 +223,6 @@ static BOOL isShowing = NO;
 		isShowing = YES;
 		questionabubble = bubble;
 		[self performSelectorOnMainThread:@selector(doSuicideConfirmationAlert:) withObject:bubble waitUntilDone:YES];
-		
 	}
 }
 
@@ -304,28 +299,12 @@ static BOOL isShowing = NO;
 		[scrollBar clearBG];
 	}
 	[self setNeedsDisplay];
-	[leftGroup setFrame:[self frameForLeftBarGroup]];
-	[rightGroup setFrame:[self frameForRightBarGroup]];
 	if (currentPanel) {
 		[currentPanel setFrame:[self frameForChatTable]];
 		[[currentPanel tableView] reloadData];
 	}
 	[memberPanel setFrame:[self frameForMemberPanel]];
 		[titleLabel setFrame:CGRectMake(0, 0, [self widthForNetworkBar], [self heightForNetworkBar])];
-}
-
-- (CGRect)frameForLeftBarGroup {
-	if (_isLandscape) {
-		return CGRectMake(2, 1, 15, 29);
-	}
-	return CGRectMake(10, 7, 15, 29);
-}
-
-- (CGRect)frameForRightBarGroup {
-	if (_isLandscape) {
-		return CGRectMake(220, 1, 15, 29);
-	}
-	return CGRectMake(290, 7, 15, 29);
 }
 
 - (CGFloat)heightForNetworkBar {
@@ -357,8 +336,6 @@ static BOOL isShowing = NO;
 	_isLandscape = NO;
 	[scrollBar drawBG];
 	[self setNeedsDisplay];
-	[leftGroup setFrame:[self frameForLeftBarGroup]];
-	[rightGroup setFrame:[self frameForRightBarGroup]];
 	if (currentPanel) {
 		[currentPanel setFrame:[self frameForChatTable]];
 		[[currentPanel tableView] reloadData];
