@@ -82,6 +82,7 @@
 }
 
 - (void)addChannel:(NSString *)_chan join:(BOOL)join {
+	NSLog(@"Meh. %@", [NSThread currentThread]);
 	for (NSString *aChan in [_channels allKeys])
 		if ([[aChan lowercaseString] isEqualToString:[_chan lowercaseString]]) return;
 	if (![self channelWithChannelName:_chan]) {
@@ -94,7 +95,7 @@
 		[chan release];
 		if (join) [chan setJoined:YES withArgument:nil];
 		if (isRegistered) {
-	//		[[RCNavigator sharedNavigator] addRoom:_chan toServerAtIndex:index];
+			[[RCNavigator sharedNavigator] addChannel:_chan toServer:self];
 			[[RCNetworkManager sharedNetworkManager] saveNetworks];
 			shouldSave = YES; // if we aren't registered.. it's _likely_ just setup.
 		}
@@ -107,7 +108,7 @@
 
 - (void)removeChannel:(RCChannel *)chan withMessage:(NSString *)quitter {
 	[chan setJoined:NO withArgument:quitter];
-//	[[RCNavigator sharedNavigator] removeChannel:chan toServerAtIndex:index];
+	[[RCNavigator sharedNavigator] removeChannel:chan fromServer:self];
 	[_channels removeObjectForKey:[chan channelName]];
 	[[RCNetworkManager sharedNetworkManager] saveNetworks];
 }
@@ -682,7 +683,6 @@ char *RCIPForURL(NSString *URL) {
 }
 
 - (void)handlePRIVMSG:(NSString *)privmsg {
-	NSLog(@"PRIVMSG %@",privmsg);
 	NSScanner *_scanner = [[NSScanner alloc] initWithString:privmsg];
 	NSString *from = @"";
 	NSString *cmd = from; // will be unused.

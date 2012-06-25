@@ -16,10 +16,12 @@
 	if ((self = [super initWithFrame:frame])) {
 		[[self titleLabel] setFont:[UIFont boldSystemFontOfSize:13]];
 		[[self titleLabel] setShadowOffset:CGSizeMake(0, 1)];
+		[[self titleLabel] setTextColor:UIColorFromRGB(0x3e3f3f)];
 		_selected = NO;
 		hasNew = NO;
 		_highlighted = NO;
 		_rcount = 0;
+		self.alpha = 1;
 		self.reversesTitleShadowWhenHighlighted = NO;
     }
     return self;
@@ -102,13 +104,9 @@
 	}
 }
 
-- (void)_classify:(int)f {
-	_index = f;
-}
-
 - (void)setMentioned:(BOOL)mentioned {
 	_rcount++;
-	[[RCNavigator sharedNavigator] addCount:1 forIndex:_index];
+//	[[RCNavigator sharedNavigator] addCount:1 forIndex:_index];
 	if (_highlighted == mentioned) return;
 	_highlighted = mentioned;
 	if (_highlighted) {

@@ -219,7 +219,7 @@
 	else {
 		if ([network isConnected])	[network disconnect];
 	}
-	[network connect];
+	[network performSelectorInBackground:@selector(_connect) withObject:nil];
 	[[RCNetworkManager sharedNetworkManager] saveNetworks];
 	[self doneWithJoin];
 }

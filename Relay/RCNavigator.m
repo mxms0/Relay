@@ -11,7 +11,7 @@
 #import "RCAddNetworkController.h"
 
 @implementation RCNavigator
-@synthesize currentPanel, memberPanel, _isLandscape, titleLabel;
+@synthesize currentPanel, memberPanel, _isLandscape, titleLabel, currentNetwork;
 static id _sharedNavigator = nil;
 
 - (id)init {
@@ -57,11 +57,42 @@ static id _sharedNavigator = nil;
     return _sharedNavigator;
 }
 
+- (void)addChannel:(NSString *)chan toServer:(RCNetwork *)net {
+	if (![chan isEqualToString:@""] && ![chan isEqualToString:@" "]) {
+		RCChannelBubble *bubble = [self channelBubbleWithChannelName:chan];
+		[[net _bubbles] insertObject:bubble atIndex:([[net _bubbles] count])];
+		[bubble release];
+		[[net channelWithChannelName:chan] setBubble:bubble];
+	}
+	if ([[net description] isEqualToString:[currentNetwork description]])
+		[scrollBar layoutChannels:[currentNetwork _bubbles]];
+}
+
+- (void)removeChannel:(RCChannel *)chan fromServer:(RCNetwork *)net {
+	for (RCChannelBubble *bb in [net _bubbles]) {
+		if ([[[chan channelName] lowercaseString] isEqualToString:[[[bb titleLabel] text] lowercaseString]]) {
+			if ([bb _selected]) {
+				[currentPanel removeFromSuperview];
+				currentPanel = nil;
+			}
+			[[net _bubbles] removeObject:bb];
+			break;
+		}
+	}
+	if ([[net description] isEqualToString:[currentNetwork description]]) {
+		[scrollBar performSelectorOnMainThread:@selector(layoutChannels:) withObject:[currentNetwork _bubbles] waitUntilDone:NO];
+	}
+}
+
 - (void)addNetwork:(RCNetwork *)net	{
 	if (!net) {
 		NSLog(@"Dear haxor, an argument goes here. %s", __PRETTY_FUNCTION__);
 		return;
 	}
+	// definitely removing this whole construction 
+	// sometime soon/
+	// can't stand this ugly mess.
+	
 	if (isFirstSetup == -1) isFirstSetup = ([net isKindOfClass:[RCWelcomeNetwork class]] ? 1 : 0);
 	if (isFirstSetup == 2) {
 	//	[[[RCNetworkManager sharedNetworkManager] networks] removeObjectAtIndex:0];
@@ -80,21 +111,12 @@ static id _sharedNavigator = nil;
 		// if you do, this program will fail to compile.
 		isFirstSetup = 2;
 	}
-	for (NSString *chan in [[net _channels] allKeys]) {
-		if (![chan isEqualToString:@""] && ![chan isEqualToString:@" "]) {
-			RCChannelBubble *bubble = [self channelBubbleWithChannelName:chan];
-			[[net _bubbles] insertObject:bubble atIndex:([[net _bubbles] count])];
-			[bubble release];
-			[[[net _channels] objectForKey:chan] setBubble:bubble];
-		}
-	}
-//	if (netCount == 1) {
-//		[self channelSelected:[[[net _channels] objectForKey:@"IRC"] bubble]];
-//	}
 	if (titleLabel.text == nil || ([titleLabel.text isEqualToString:@""])) {
 		[titleLabel setText:[net _description]];
-		[scrollBar layoutChannels:[net _bubbles]];
 		currentNetwork = net;
+	}
+	for (NSString *chan in [[net _channels] allKeys]) {
+		[self addChannel:chan toServer:net];
 	}
 }
 
@@ -171,16 +193,7 @@ static UILabel *active = nil;
 	isShowing = NO;
 	switch (buttonIndex) {
 		case 1: {
-	//		RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:currentIndex];
-	//		RCChannel *chan = [[net _channels] objectForKey:[[questionabubble titleLabel] text]];
-	//		[[net _bubbles] removeObject:questionabubble];
-	//		[scrollBar layoutChannels:[net _bubbles]];
-	//		if ([[chan panel] isEqual:currentPanel]) {
-	//			[currentPanel removeFromSuperview];
-	//			currentPanel = nil;
-	//		}
-	//		[net removeChannel:chan];
-			
+			[currentNetwork removeChannel:[currentNetwork channelWithChannelName:[[questionabubble titleLabel] text]]];		
 			break;
 		}
 		case 0:
