@@ -23,13 +23,14 @@ static id _sharedNavigator = nil;
 		_rcViewController = [[[UIApplication sharedApplication] keyWindow] rootViewController];
 		if ([_rcViewController isKindOfClass:[UINavigationController class]])
 			_rcViewController = [_rcViewController topViewController];
-		isFirstSetup = -1;
+		isFirstSetup = NO;
 		_isLandscape = NO;
-		window = [[RCPopoverWindow alloc] initWithFrame:CGRectMake(0, 0, 320, 460)];
+		window = [RCPopoverWindow sharedPopover];
 		memberPanel = [[RCUserListPanel alloc] initWithFrame:CGRectMake(0, 77, 320, 383)];
 		memberPanel.backgroundColor = [UIColor clearColor];
 		memberPanel.separatorStyle = UITableViewCellSeparatorStyleNone;
-		bar = [[RCNavigationBar alloc] initWithFrame:CGRectMake(60, 0, 200, 45)];
+		bar = [[RCNavigationBar alloc] initWithFrame:CGRectMake(0, 0, 320, 45)];
+        [bar setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"0_navbar"]]];
 		bar.tag = 100;
 		titleLabel = [[RCTitleLabel alloc] initWithFrame:CGRectMake(0, 0, bar.frame.size.width, bar.frame.size.height)];
 		[titleLabel setBackgroundColor:[UIColor clearColor]];
@@ -51,10 +52,31 @@ static id _sharedNavigator = nil;
 		[self addSubview:scrollBar];
 		[scrollBar release];
 		[self addSubview:bar];
+        plus = [[RCBarButton alloc] initWithFrame:[self frameForPlusButton]];
+        listr = [[RCBarButton alloc] initWithFrame:[self frameForListButton]];
+        [plus setTitle:@"+" forState:UIControlStateNormal];
+        [plus setBackgroundColor:[UIColor blackColor]];
+        [listr setBackgroundColor:[UIColor blackColor]];
+        [bar addSubview:plus];
+        [plus addTarget:self action:@selector(presentAddNetworkController) forControlEvents:UIControlEventTouchUpInside];
+        [bar addSubview:listr];
+        [plus release];
+        [listr release];
 		[bar release];
     }
 	_sharedNavigator = self;
     return _sharedNavigator;
+}
+
+- (void)presentAddNetworkController {
+    UIViewController *rc = [((RCAppDelegate *)[[UIApplication sharedApplication] delegate]) navigationController];
+    RCAddNetworkController *ctrlr = [[RCAddNetworkController alloc] initWithNetwork:nil];
+    UINavigationController *ctrl = [[UINavigationController alloc] initWithRootViewController:ctrlr];
+    [ctrl setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
+    [rc presentModalViewController:ctrl animated:YES];
+    [ctrlr release];
+    [ctrl release];    
+
 }
 
 - (void)addChannel:(NSString *)chan toServer:(RCNetwork *)net {
@@ -92,25 +114,17 @@ static id _sharedNavigator = nil;
 	// definitely removing this whole construction 
 	// sometime soon/
 	// can't stand this ugly mess.
-	
-	if (isFirstSetup == -1) isFirstSetup = ([net isKindOfClass:[RCWelcomeNetwork class]] ? 1 : 0);
-	if (isFirstSetup == 2) {
-	//	[[[RCNetworkManager sharedNetworkManager] networks] removeObjectAtIndex:0];
-	//	[[[bar subviews] objectAtIndex:netCount+1] removeFromSuperview];
-	//	[scrollBar layoutChannels:nil];
-	//	isFirstSetup = 0;
-	//	[currentPanel removeFromSuperview];
-	//	currentPanel = nil;
-	//	[NSTimer scheduledTimerWithTimeInterval:120 target:[RCNetworkManager sharedNetworkManager] selector:@selector(saveChannelData:) userInfo:nil repeats:YES];
-	//	isFirstSetup = -1;
-	}
-	if (isFirstSetup == 1) {
-		// new network coming through, remove setup she-yite
-		// useless comment above. means nothing at all.
-		// do not remove it. evar.
-		// if you do, this program will fail to compile.
-		isFirstSetup = 2;
-	}
+    if (isFirstSetup) {
+        [[[RCNetworkManager sharedNetworkManager] networks] removeAllObjects];
+        titleLabel.text = nil;
+        currentNetwork = nil;
+        [currentPanel removeFromSuperview];
+        currentPanel = nil;
+    }
+	isFirstSetup = ([net isKindOfClass:[RCWelcomeNetwork class]]);
+    if (!isFirstSetup) {
+        
+    }
 	if (titleLabel.text == nil || ([titleLabel.text isEqualToString:@""])) {
 		[titleLabel setText:[net _description]];
 		currentNetwork = net;
@@ -131,17 +145,18 @@ static id _sharedNavigator = nil;
 }
 
 - (void)presentNetworkPopover {
-	[window animateIn];
-	
+    if (!isFirstSetup) {
+        [window setFrame:CGRectMake(0, 0, 320, 480)];
+        [window reloadData];
+        [window animateIn];
+    }
 }
 
-static UILabel *active = nil;
-
 - (void)editNetwork:(UIGestureRecognizer *)recog {
-	active = (UILabel *)recog.view;
+    if (isFirstSetup) return;
 	if (recog.state == UIGestureRecognizerStateBegan) {
 		RCNetwork *net = [[RCNetworkManager sharedNetworkManager] networkWithDescription:[(UILabel *)[recog view] text]];
-		UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"What do you want to do for %@", [(UILabel *)[recog view] text]] delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Delete" otherButtonTitles:@"Edit", ([net isConnected] ? @"Disconnect" : @"Connect"), nil];
+		UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"What do you want to do for %@", [currentNetwork _description]] delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Delete" otherButtonTitles:@"Edit", ([net isConnected] ? @"Disconnect" : @"Connect"), nil];
 		[sheet showInView:self];
 		[sheet release];
 	}
@@ -153,7 +168,7 @@ static UILabel *active = nil;
 	//	currentIndex--;
 		[currentPanel removeFromSuperview];
 		currentPanel = nil;
-		RCNetwork *removr = [[RCNetworkManager sharedNetworkManager] networkWithDescription:active.text];
+		RCNetwork *removr = currentNetwork;
 		[[RCNetworkManager sharedNetworkManager] removeNet:removr];
 		[[RCNetworkManager sharedNetworkManager] saveNetworks];
 	//	if (netCount == 0) {
@@ -163,7 +178,7 @@ static UILabel *active = nil;
 		// :(
 	}
 	else if (buttonIndex == 1) {
-		RCNetwork *net = [[RCNetworkManager sharedNetworkManager] networkWithDescription:active.text];
+		RCNetwork *net = currentNetwork;
 		UIViewController *rc = [((RCAppDelegate *)[[UIApplication sharedApplication] delegate]) navigationController];
 		RCAddNetworkController *ctrlr = [[RCAddNetworkController alloc] initWithNetwork:net];
 		UINavigationController *ctrl = [[UINavigationController alloc] initWithRootViewController:ctrlr];
@@ -175,10 +190,9 @@ static UILabel *active = nil;
 		// edit.
 	}
 	else if (buttonIndex == 2) {
-		RCNetwork *net = [[RCNetworkManager sharedNetworkManager] networkWithDescription:titleLabel.text];
-		if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Disconnect"]) [net disconnect];
+		if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Disconnect"]) [currentNetwork disconnect];
 		else {
-			[net performSelectorInBackground:@selector(_connect) withObject:nil];
+			[currentNetwork performSelectorInBackground:@selector(_connect) withObject:nil];
 		}
 		//connect
 	}
@@ -186,7 +200,6 @@ static UILabel *active = nil;
 		// cancel.
 		// kbye
 	}
-	active = nil;
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -262,8 +275,7 @@ static BOOL isShowing = NO;
 	if (currentPanel != nil) if ([[[currentPanel channel] bubble] isEqual:bubble]) return;
 	[[[currentPanel channel] bubble] _setSelected:NO];
 	[bubble _setSelected:YES];
-	RCNetwork *net = [[RCNetworkManager sharedNetworkManager] networkWithDescription:titleLabel.text];
-	RCChannel *chan = [net channelWithChannelName:bubble.titleLabel.text];
+	RCChannel *chan = [currentNetwork channelWithChannelName:bubble.titleLabel.text];
 	if (chan) {
 		if ([currentPanel isFirstResponder])
 			[[chan panel] becomeFirstResponderNoAnimate];
@@ -288,14 +300,10 @@ static BOOL isShowing = NO;
 - (void)drawRect:(CGRect)rect {
 	@autoreleasepool {
 		if (_isLandscape) {
-			UIImage *tb = [UIImage imageNamed:@"0_navbar_landscape"];
-			[tb drawInRect:CGRectMake(0, 0, 480, 33)];
 			UIImage *bg = [UIImage imageNamed:@"0_bg"];
 			[bg drawInRect:CGRectMake(0, 33, 480, 300)];
 		}
 		else {
-			UIImage *tb = [UIImage imageNamed:@"0_navbar"];
-			[tb drawInRect:CGRectMake(0, 0, 320, 45)];
 			UIImage *bg = [UIImage imageNamed:@"0_bg"];
 			[bg drawInRect:CGRectMake(0, 45, 320, 426)];
 		}
@@ -306,7 +314,8 @@ static BOOL isShowing = NO;
 	if (_isLandscape) return;
 	_isLandscape = YES;
 	if (bar.frame.size.height == 45) {
-		bar.frame = CGRectMake(bar.frame.origin.x, bar.frame.origin.y, 120, 33);
+		bar.frame = CGRectMake(0, 0, 480, 33);
+        bar.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"0_navbar_landscape"]];
 		scrollBar.frame = CGRectMake(240, 0, 480-250, 33);
 				scrollBar.backgroundColor = [UIColor clearColor];
 		[scrollBar clearBG];
@@ -317,7 +326,7 @@ static BOOL isShowing = NO;
 		[[currentPanel tableView] reloadData];
 	}
 	[memberPanel setFrame:[self frameForMemberPanel]];
-		[titleLabel setFrame:CGRectMake(0, 0, [self widthForNetworkBar], [self heightForNetworkBar])];
+		[titleLabel setFrame:CGRectMake(50, 0, 140, bar.frame.size.height-2)];
 }
 
 - (CGFloat)heightForNetworkBar {
@@ -329,7 +338,7 @@ static BOOL isShowing = NO;
 - (CGFloat)widthForNetworkBar {
 	if (_isLandscape)
 		return 120;
-	return 200;
+	return 320;
 }
 
 - (CGRect)frameForChatTable {
@@ -344,6 +353,13 @@ static BOOL isShowing = NO;
 	return CGRectMake(0, 77, 320, 384);
 }
 
+- (CGRect)frameForListButton {
+    return CGRectMake(5, 5, 40, 35);
+}
+- (CGRect)frameForPlusButton {
+    return CGRectMake(275, 5, 40, 35);
+}
+
 - (void)rotateToPortrait {
 	if (!_isLandscape) return;
 	_isLandscape = NO;
@@ -355,7 +371,8 @@ static BOOL isShowing = NO;
 	}
 	[self setNeedsDisplay];
 	if (bar.frame.size.height == 33) {
-		bar.frame = CGRectMake(bar.frame.origin.x, bar.frame.origin.y, 200, 45);
+		bar.frame = CGRectMake(0, 0, 320, 45);
+        bar.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"0_navbar"]];
 		scrollBar.frame = CGRectMake(0, 45, 320, 32);
 	}
 	[titleLabel setFrame:CGRectMake(0, 0, [self widthForNetworkBar], [self heightForNetworkBar])];

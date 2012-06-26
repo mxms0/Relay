@@ -63,7 +63,7 @@ static NSMutableArray *networks = nil;
 	if (![[[_net _channels] allKeys] containsObject:@"IRC"]) [_net addChannel:@"IRC" join:NO];
 	[networks addObject:_net];
 	[[RCNavigator sharedNavigator] addNetwork:_net];
-	if ([_net COL]) [_net connect];
+	if ([_net COL]) [_net performSelectorInBackground:@selector(_connect) withObject:nil];
 	[self saveNetworks];
 }
 

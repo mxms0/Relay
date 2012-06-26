@@ -15,6 +15,7 @@
 #import "RCChannel.h"
 #import "RCUserListPanel.h"
 #import "RCPopoverWindow.h"
+#import "RCBarButton.h"
 
 @interface RCNavigator : UIView <UIAlertViewDelegate, UIActionSheetDelegate> {
 	RCNetwork *currentNetwork;
@@ -24,9 +25,11 @@
 	RCUserListPanel *memberPanel;
 	RCTitleLabel *titleLabel;
 	RCPopoverWindow *window;
+    RCBarButton *plus;
+    RCBarButton *listr;
 	BOOL _isLandscape;
 	BOOL _isShowingList;
-	int isFirstSetup;
+	BOOL isFirstSetup;
 	id _rcViewController;
 }
 @property (nonatomic, readonly) RCChatPanel *currentPanel;
@@ -40,12 +43,13 @@
 - (void)removeChannel:(RCChannel *)chan fromServer:(RCNetwork *)net;
 - (void)channelSelected:(RCChannelBubble *)bubble;
 - (void)tearDownForChannelList:(RCChannelBubble *)bubble;
-- (void)setMentioned:(BOOL)m forIndex:(int)_index;
 - (void)channelWantsSuicide:(RCChannelBubble *)bubble;
 - (void)rotateToLandscape;
 - (void)rotateToPortrait;
 - (void)presentNetworkPopover;
 - (void)dismissNetworkPopover;
 - (void)selectNetwork:(RCNetwork *)net;
+- (CGRect)frameForListButton;
+- (CGRect)frameForPlusButton;
 - (RCChannelBubble *)channelBubbleWithChannelName:(NSString *)name;
 @end

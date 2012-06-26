@@ -95,6 +95,16 @@
 	return channel;
 }
 
+- (void)setEntryFieldEnabled:(BOOL)en {
+    field.enabled = en;
+    if (en) {
+        _bar.alpha = 1.0;
+    }
+    else {
+        _bar.alpha = 0.7;
+    }
+}
+
 - (void)setFrame:(CGRect)frame {
 	[self.tableView setFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
 	[_bar setFrame:CGRectMake(0, frame.size.height, frame.size.width, 40)];

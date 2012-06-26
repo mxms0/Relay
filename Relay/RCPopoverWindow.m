@@ -11,6 +11,7 @@
 
 @implementation RCPopoverWindow
 
+static id _instance = nil;
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
 		networkTable = [[UITableView alloc] initWithFrame:CGRectMake(40, 65, 240, 205)];
@@ -29,7 +30,17 @@
 		self.opaque = NO;
 		self.alpha = 0;
     }
-    return self;
+    _instance = self;
+    return _instance;
+}
+
++ (id)sharedPopover {
+    if (!_instance) [[self alloc] initWithFrame:CGRectMake(0,0,320,480)];
+    return _instance;
+}
+
+- (void)reloadData {
+    [networkTable reloadData];
 }
 
 - (void)animateIn {

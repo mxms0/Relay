@@ -13,6 +13,7 @@
 	UIImageView *_pImg;
 	UITableView *networkTable;
 }
++ (id)sharedPopover;
 - (void)animateIn;
 - (void)animateOut;
 @end

@@ -105,6 +105,7 @@ UIImage *RCImageForRank(NSString *rank) {
 		joined = NO;
 		users = [[NSMutableDictionary alloc] init];
 		panel = [[RCChatPanel alloc] initWithStyle:UITableViewStylePlain andChannel:self];
+        [panel setEntryFieldEnabled:NO];
 	}
 	return self;
 }
@@ -320,13 +321,12 @@ UIImage *RCImageForRank(NSString *rank) {
 		NSLog(@"State the same. Canceling request..");
 		return;
 	}
+    NSLog(@"Meh %@", [self channelName]);
 	if ([[self channelName] hasPrefix:@"#"]) {
 		if (joind) {
-			NSLog(@"Joining..%@", channelName);
 			[delegate sendMessage:[@"JOIN " stringByAppendingString:channelName]];
 		}
 		else {
-			NSLog(@"Parting.. %@", channelName);
 			[delegate sendMessage:[NSString stringWithFormat:@"PART %@ %@", channelName, (arg1 ? arg1 : @"Leaving...")]];
 		}
 	}
@@ -334,6 +334,7 @@ UIImage *RCImageForRank(NSString *rank) {
 
 - (void)setSuccessfullyJoined:(BOOL)success {
 	joined = success;
+    [panel setEntryFieldEnabled:YES];
 }
 
 - (BOOL)joined {
@@ -400,8 +401,7 @@ UIImage *RCImageForRank(NSString *rank) {
 }
 
 - (void)handleSlashJOIN:(NSString *)join {
-	NSString *msg = [NSString stringWithFormat:@"JOIN %@", join];
-	[delegate sendMessage:msg];	
+    [delegate addChannel:join join:YES];
 }
 
 - (void)handleSlashPRIVMSG:(NSString *)privmsg {

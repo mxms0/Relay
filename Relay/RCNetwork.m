@@ -82,7 +82,9 @@
 }
 
 - (void)addChannel:(NSString *)_chan join:(BOOL)join {
-	NSLog(@"Meh. %@", [NSThread currentThread]);
+    if ([_chan hasPrefix:@" "]) {
+        _chan = [_chan stringByReplacingOccurrencesOfString:@" " withString:@""];
+    }
 	for (NSString *aChan in [_channels allKeys])
 		if ([[aChan lowercaseString] isEqualToString:[_chan lowercaseString]]) return;
 	if (![self channelWithChannelName:_chan]) {
@@ -100,6 +102,10 @@
 			shouldSave = YES; // if we aren't registered.. it's _likely_ just setup.
 		}
 	}
+    else {
+        RCChannel *chan = [self channelWithChannelName:_chan];
+        [chan setSuccessfullyJoined:YES];
+    }
 }
 
 - (void)removeChannel:(RCChannel *)chan {
