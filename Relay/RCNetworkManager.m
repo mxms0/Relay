@@ -60,7 +60,9 @@ static NSMutableArray *networks = nil;
 			return;
 		}
 	}
+	NSLog(@"Meh %@", networks);
 	if (![[[_net _channels] allKeys] containsObject:@"IRC"]) [_net addChannel:@"IRC" join:NO];
+		NSLog(@"Meh %@", networks);
 	[networks addObject:_net];
 	[[RCNavigator sharedNavigator] addNetwork:_net];
 	if ([_net COL]) [_net performSelectorInBackground:@selector(_connect) withObject:nil];
@@ -120,6 +122,7 @@ static NSMutableArray *networks = nil;
 }
 
 - (void)saveNetworks {
+	NSLog(@"HI %@", networks);
 	NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:PREFS_PLIST] ?: [NSMutableDictionary dictionary];
 	for (RCNetwork *net in networks) {
 		if (![net isKindOfClass:[RCWelcomeNetwork class]])

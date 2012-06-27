@@ -82,6 +82,10 @@
 		5050BFEC158ED168003A238B /* 0_popover@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5050BFEA158ED168003A238B /* 0_popover@2x.png */; };
 		5052343E1556D904002EC9AC /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5052343B1556D773002EC9AC /* libTestFlight.a */; };
 		505234401556D938002EC9AC /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5052343F1556D938002EC9AC /* libz.dylib */; };
+		506F7969159A91B6002266C9 /* 0_plusbtn.png in Resources */ = {isa = PBXBuildFile; fileRef = 506F7967159A91B6002266C9 /* 0_plusbtn.png */; };
+		506F796A159A91B6002266C9 /* 0_plusbtn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 506F7968159A91B6002266C9 /* 0_plusbtn@2x.png */; };
+		506F796E159A91C2002266C9 /* 0_listrbtn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 506F796C159A91C2002266C9 /* 0_listrbtn@2x.png */; };
+		506F796F159A91C2002266C9 /* 0_listrbtn.png in Resources */ = {isa = PBXBuildFile; fileRef = 506F796D159A91C2002266C9 /* 0_listrbtn.png */; };
 		50711B4115156C670022CA68 /* 0_chatcell_2.png in Resources */ = {isa = PBXBuildFile; fileRef = 50711B3715156C440022CA68 /* 0_chatcell_2.png */; };
 		50711B4215156C670022CA68 /* 0_chatcell_2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50711B3815156C440022CA68 /* 0_chatcell_2@2x.png */; };
 		50711B4315156C670022CA68 /* 0_chatcell_3.png in Resources */ = {isa = PBXBuildFile; fileRef = 50711B3915156C450022CA68 /* 0_chatcell_3.png */; };
@@ -227,6 +231,12 @@
 		5052343D1556D77C002EC9AC /* TestFlight.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestFlight.h; sourceTree = "<group>"; };
 		5052343F1556D938002EC9AC /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		506944C6152813530096140C /* Relay.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Relay.entitlements; sourceTree = "<group>"; };
+		506F795F159A8D8A002266C9 /* RCBarButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCBarButton.h; sourceTree = "<group>"; };
+		506F7960159A8D8A002266C9 /* RCBarButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCBarButton.m; sourceTree = "<group>"; };
+		506F7967159A91B6002266C9 /* 0_plusbtn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_plusbtn.png; sourceTree = "<group>"; };
+		506F7968159A91B6002266C9 /* 0_plusbtn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_plusbtn@2x.png"; sourceTree = "<group>"; };
+		506F796C159A91C2002266C9 /* 0_listrbtn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_listrbtn@2x.png"; sourceTree = "<group>"; };
+		506F796D159A91C2002266C9 /* 0_listrbtn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_listrbtn.png; sourceTree = "<group>"; };
 		50711B3715156C440022CA68 /* 0_chatcell_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_chatcell_2.png; sourceTree = "<group>"; };
 		50711B3815156C440022CA68 /* 0_chatcell_2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_chatcell_2@2x.png"; sourceTree = "<group>"; };
 		50711B3915156C450022CA68 /* 0_chatcell_3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_chatcell_3.png; sourceTree = "<group>"; };
@@ -390,6 +400,10 @@
 		50A7FB8714C0F0A800ABADEA /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				506F796C159A91C2002266C9 /* 0_listrbtn@2x.png */,
+				506F796D159A91C2002266C9 /* 0_listrbtn.png */,
+				506F7967159A91B6002266C9 /* 0_plusbtn.png */,
+				506F7968159A91B6002266C9 /* 0_plusbtn@2x.png */,
 				5050BFE9158ED168003A238B /* 0_popover.png */,
 				5050BFEA158ED168003A238B /* 0_popover@2x.png */,
 				50AAE7EB151ADDAB00E631FD /* 0_r_shadow@2x.png */,
@@ -529,6 +543,8 @@
 				503742281511478300F4DA1A /* RCUserListPanel.m */,
 				502BE054158FF748002FFA74 /* RCPopoverWindow.h */,
 				502BE055158FF748002FFA74 /* RCPopoverWindow.m */,
+				506F795F159A8D8A002266C9 /* RCBarButton.h */,
+				506F7960159A8D8A002266C9 /* RCBarButton.m */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -699,6 +715,10 @@
 				50468A8E1527E46D0025F405 /* 0_input_l@2x.png in Resources */,
 				5050BFEB158ED168003A238B /* 0_popover.png in Resources */,
 				5050BFEC158ED168003A238B /* 0_popover@2x.png in Resources */,
+				506F7969159A91B6002266C9 /* 0_plusbtn.png in Resources */,
+				506F796A159A91B6002266C9 /* 0_plusbtn@2x.png in Resources */,
+				506F796E159A91C2002266C9 /* 0_listrbtn@2x.png in Resources */,
+				506F796F159A91C2002266C9 /* 0_listrbtn.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

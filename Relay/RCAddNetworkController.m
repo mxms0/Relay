@@ -219,7 +219,8 @@
 	else {
 		if ([network isConnected])	[network disconnect];
 	}
-	[[RCNetworkManager sharedNetworkManager] saveNetworks];
+	if (!isNew)
+		[[RCNetworkManager sharedNetworkManager] saveNetworks];
 	[self doneWithJoin];
 }
 

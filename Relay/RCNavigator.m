@@ -32,7 +32,7 @@ static id _sharedNavigator = nil;
 		bar = [[RCNavigationBar alloc] initWithFrame:CGRectMake(0, 0, 320, 45)];
         [bar setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"0_navbar"]]];
 		bar.tag = 100;
-		titleLabel = [[RCTitleLabel alloc] initWithFrame:CGRectMake(0, 0, bar.frame.size.width, bar.frame.size.height)];
+		titleLabel = [[RCTitleLabel alloc] initWithFrame:CGRectMake(60, 0, 200, bar.frame.size.height)];
 		[titleLabel setBackgroundColor:[UIColor clearColor]];
 		[titleLabel setHidden:NO];
 		[titleLabel setFont:[UIFont boldSystemFontOfSize:25]];
@@ -55,14 +55,15 @@ static id _sharedNavigator = nil;
         plus = [[RCBarButton alloc] initWithFrame:[self frameForPlusButton]];
         listr = [[RCBarButton alloc] initWithFrame:[self frameForListButton]];
         [plus setTitle:@"+" forState:UIControlStateNormal];
-        [plus setBackgroundColor:[UIColor blackColor]];
-        [listr setBackgroundColor:[UIColor blackColor]];
+		[plus setImage:[UIImage imageNamed:@"0_plusbtn"] forState:UIControlStateNormal];
+		[listr setImage:[UIImage imageNamed:@"0_listrbtn"] forState:UIControlStateNormal];
         [bar addSubview:plus];
         [plus addTarget:self action:@selector(presentAddNetworkController) forControlEvents:UIControlEventTouchUpInside];
         [bar addSubview:listr];
         [plus release];
         [listr release];
 		[bar release];
+		[self bringSubviewToFront:scrollBar];
     }
 	_sharedNavigator = self;
     return _sharedNavigator;
@@ -115,7 +116,12 @@ static id _sharedNavigator = nil;
 	// sometime soon/
 	// can't stand this ugly mess.
     if (isFirstSetup) {
-        [[[RCNetworkManager sharedNetworkManager] networks] removeAllObjects];
+		for (RCNetwork *net in [[RCNetworkManager sharedNetworkManager] networks]) {
+			if ([net isKindOfClass:[RCWelcomeNetwork class]]) {
+				[[RCNetworkManager sharedNetworkManager] removeNet:net];
+				break;
+			}
+		}
         titleLabel.text = nil;
         currentNetwork = nil;
         [currentPanel removeFromSuperview];
@@ -148,6 +154,8 @@ static id _sharedNavigator = nil;
     if (!isFirstSetup) {
         [window setFrame:CGRectMake(0, 0, 320, 480)];
         [window reloadData];
+	//	if (_isLandscape)
+	//		window.transform = CGAffineTransformMakeRotation(((90) * M_PI / 180.0));
         [window animateIn];
     }
 }
@@ -301,7 +309,7 @@ static BOOL isShowing = NO;
 	@autoreleasepool {
 		if (_isLandscape) {
 			UIImage *bg = [UIImage imageNamed:@"0_bg"];
-			[bg drawInRect:CGRectMake(0, 33, 480, 300)];
+			[bg drawInRect:CGRectMake(0, 32, 480, 300)];
 		}
 		else {
 			UIImage *bg = [UIImage imageNamed:@"0_bg"];
@@ -310,23 +318,35 @@ static BOOL isShowing = NO;
 	}
 }
 
-- (void)rotateToLandscape {
-	if (_isLandscape) return;
-	_isLandscape = YES;
-	if (bar.frame.size.height == 45) {
-		bar.frame = CGRectMake(0, 0, 480, 33);
-        bar.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"0_navbar_landscape"]];
-		scrollBar.frame = CGRectMake(240, 0, 480-250, 33);
-				scrollBar.backgroundColor = [UIColor clearColor];
-		[scrollBar clearBG];
-	}
+- (void)rotateToInterfaceOrientation:(UIInterfaceOrientation)oi {
+	_isLandscape = (UIInterfaceOrientationIsLandscape(oi));
+	[scrollBar drawBG];
 	[self setNeedsDisplay];
 	if (currentPanel) {
 		[currentPanel setFrame:[self frameForChatTable]];
 		[[currentPanel tableView] reloadData];
 	}
+	if (_isLandscape) {
+		bar.frame = CGRectMake(0, 0, 480, 32);
+		bar.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"0_navbar_landscape"]];
+		scrollBar.frame = CGRectMake(240, 0, 233, 33); // 233, for the hell of it.
+		[scrollBar clearBG];
+	}
+	else {
+		bar.frame = CGRectMake(0, 0, 320, 45);
+		bar.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"0_navbar"]];
+		scrollBar.frame = CGRectMake(0, 45, 320, 32);
+	}
+	[plus setFrame:[self frameForPlusButton]];
+	[listr setFrame:[self frameForListButton]];
+	[titleLabel setFrame:CGRectMake(60, 0, [self widthForTitleLabel], bar.frame.size.height)];
 	[memberPanel setFrame:[self frameForMemberPanel]];
-		[titleLabel setFrame:CGRectMake(50, 0, 140, bar.frame.size.height-2)];
+}
+
+- (CGFloat)widthForTitleLabel {
+	if (_isLandscape) 
+		return 140;
+	return 200;
 }
 
 - (CGFloat)heightForNetworkBar {
@@ -354,29 +374,14 @@ static BOOL isShowing = NO;
 }
 
 - (CGRect)frameForListButton {
+	if (_isLandscape) 
+		return CGRectMake(3, 2, 40, 30);
     return CGRectMake(5, 5, 40, 35);
 }
 - (CGRect)frameForPlusButton {
+	if (_isLandscape)
+		return CGRectMake(197, 2, 40, 30);
     return CGRectMake(275, 5, 40, 35);
-}
-
-- (void)rotateToPortrait {
-	if (!_isLandscape) return;
-	_isLandscape = NO;
-	[scrollBar drawBG];
-	[self setNeedsDisplay];
-	if (currentPanel) {
-		[currentPanel setFrame:[self frameForChatTable]];
-		[[currentPanel tableView] reloadData];
-	}
-	[self setNeedsDisplay];
-	if (bar.frame.size.height == 33) {
-		bar.frame = CGRectMake(0, 0, 320, 45);
-        bar.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"0_navbar"]];
-		scrollBar.frame = CGRectMake(0, 45, 320, 32);
-	}
-	[titleLabel setFrame:CGRectMake(0, 0, [self widthForNetworkBar], [self heightForNetworkBar])];
-	[memberPanel setFrame:[self frameForMemberPanel]];
 }
 
 - (void)dealloc {

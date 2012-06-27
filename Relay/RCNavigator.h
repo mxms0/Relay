@@ -44,8 +44,7 @@
 - (void)channelSelected:(RCChannelBubble *)bubble;
 - (void)tearDownForChannelList:(RCChannelBubble *)bubble;
 - (void)channelWantsSuicide:(RCChannelBubble *)bubble;
-- (void)rotateToLandscape;
-- (void)rotateToPortrait;
+- (void)rotateToInterfaceOrientation:(UIInterfaceOrientation)oi;
 - (void)presentNetworkPopover;
 - (void)dismissNetworkPopover;
 - (void)selectNetwork:(RCNetwork *)net;

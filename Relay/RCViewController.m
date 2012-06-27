@@ -58,10 +58,7 @@
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
 	NSLog(@"Rotaing.");
-	if (UIInterfaceOrientationIsLandscape(toInterfaceOrientation)) 
-		[[RCNavigator sharedNavigator] rotateToLandscape];
-	else 
-		[[RCNavigator sharedNavigator] rotateToPortrait];
+	[[RCNavigator sharedNavigator] rotateToInterfaceOrientation:toInterfaceOrientation];
 }
 
 @end
