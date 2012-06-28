@@ -22,6 +22,7 @@
 		_bubbles = [[NSMutableArray alloc] init];
 		_channels = [[NSMutableDictionary alloc] init];
 		_isDiconnecting = NO;
+//      sDescription = @"(No Description)";
 	}
 	return self;
 }

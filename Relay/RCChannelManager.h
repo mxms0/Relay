@@ -2,8 +2,8 @@
 //  RCRoomsController.h
 //  Relay
 //
-//  Created by David Murray on 12-06-05.
-//  Copyright (c) 2012 École Secondaire De Mortagne. All rights reserved.
+//  Created by Max Shavrick on 3/24/12.
+//  Copyright (c) 2012 American Heritage School. All rights reserved.
 //
 
 #import "RCAddCell.h"

@@ -2,8 +2,8 @@
 //  RCRoomsController.m
 //  Relay
 //
-//  Created by David Murray on 12-06-05.
-//  Copyright (c) 2012 École Secondaire De Mortagne. All rights reserved.
+//  Created by Max Shavrick on 3/24/12.
+//  Copyright (c) 2012 American Heritage School. All rights reserved.
 //
 
 #import "RCChannelManager.h"
@@ -113,10 +113,14 @@
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {  
     if (buttonIndex == 1) {
         UITextField *textField = [alertView textFieldAtIndex:0];
+        
+        NSString *tempString = @"#";
 		if (![textField.text hasPrefix:@"#"])
-			textField.text = [textField.text stringByAppendingString:@"#"];        
-        [channels addObject:textField.text];
-        [network addChannel:textField.text join:NO];
+			tempString = [tempString stringByAppendingString:textField.text];  
+        else 
+            tempString = textField.text;
+        [channels addObject:tempString];
+        [network addChannel:tempString join:NO];
         [self.tableView reloadData];
     }
 }
