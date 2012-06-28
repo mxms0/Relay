@@ -154,8 +154,6 @@ static id _sharedNavigator = nil;
     if (!isFirstSetup) {
         [window setFrame:CGRectMake(0, 0, 320, 480)];
         [window reloadData];
-	//	if (_isLandscape)
-	//		window.transform = CGAffineTransformMakeRotation(((90) * M_PI / 180.0));
         [window animateIn];
     }
 }
@@ -179,11 +177,6 @@ static id _sharedNavigator = nil;
 		RCNetwork *removr = currentNetwork;
 		[[RCNetworkManager sharedNetworkManager] removeNet:removr];
 		[[RCNetworkManager sharedNetworkManager] saveNetworks];
-	//	if (netCount == 0) {
-	//		[scrollBar layoutChannels:nil];
-	//		[[RCNetworkManager sharedNetworkManager] setupWelcomeView];
-	//	}
-		// :(
 	}
 	else if (buttonIndex == 1) {
 		RCNetwork *net = currentNetwork;
@@ -341,6 +334,7 @@ static BOOL isShowing = NO;
 	[listr setFrame:[self frameForListButton]];
 	[titleLabel setFrame:CGRectMake(60, 0, [self widthForTitleLabel], bar.frame.size.height)];
 	[memberPanel setFrame:[self frameForMemberPanel]];
+	[window correctAndRotateToInterfaceOrientation:oi];
 }
 
 - (CGFloat)widthForTitleLabel {

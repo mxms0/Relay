@@ -34,6 +34,13 @@ static id _instance = nil;
     return _instance;
 }
 
+- (void)setBasicFramesForElements {
+	[_pImg setTransform:CGAffineTransformMakeRotation(0)];
+	[_pImg setFrame:CGRectMake(26, 50, 268, 240)];
+	[networkTable setFrame:CGRectMake(40, 65, 240, 205)];
+	[networkTable setTransform:CGAffineTransformMakeRotation(0)];
+}
+
 + (id)sharedPopover {
     if (!_instance) [[self alloc] initWithFrame:CGRectMake(0,0,320,480)];
     return _instance;
@@ -58,6 +65,36 @@ static id _instance = nil;
 	} completion:^(BOOL fin) {
 		self.hidden = YES;
 	}];
+}
+
+- (void)correctAndRotateToInterfaceOrientation:(UIInterfaceOrientation)oi {
+	[self setBasicFramesForElements];
+	BOOL animate = NO;
+	// NEED THIS BOOLEAN INCASE THE VIEW APPEARS WHILE THIS IS OCCURING 
+	if (!self.hidden) {
+		animate = YES;
+		[UIView beginAnimations:nil context:nil];
+		[UIView setAnimationDuration:0.25];
+	}
+	networkTable.transform = CGAffineTransformMakeRotation(0);
+	UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    CGFloat angle = 0.0;
+    CGRect newFrame = self.bounds;
+    CGSize statusBarSize = [[UIApplication sharedApplication] statusBarFrame].size;
+	if (UIInterfaceOrientationIsLandscape(oi)) {
+		networkTable.transform = CGAffineTransformMakeRotation(_deg(90));
+		networkTable.frame = CGRectMake(55, 10, networkTable.frame.size.width, networkTable.frame.size.height);
+		_pImg.frame = CGRectMake(20, 10, _pImg.frame.size.width, _pImg.frame.size.height);
+		// i like 20.
+	}
+	else {
+		[self setBasicFramesForElements];
+		// necessary. don't. even. ask.
+	}
+	_pImg.transform = networkTable.transform;
+	if (animate) {
+		[UIView commitAnimations];
+	}
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {

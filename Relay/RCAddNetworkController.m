@@ -30,7 +30,6 @@
 
 - (id)initWithNetwork:(RCNetwork *)net {
 	if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
-		
 		network = net;
 		isNew = NO;
 		if (!net) {
@@ -51,7 +50,6 @@
 		titleView.shadowOffset = CGSizeMake(0, 1);
 		self.navigationItem.titleView = titleView;
 		[titleView release];
-
 	}
 	return self;
 }
@@ -66,20 +64,21 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-	NSLog(@"helloo %s", (char *)_cmd);
 	[self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"0_addnav"] forBarMetrics:UIBarMetricsDefault];
 	self.tableView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"0_bg"]];
 	[self.tableView reloadData];
 	float y = 44;
 	float width = 320;
 	if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
-		y = 33; width = 480;
+		y = 32; width = 480;
 	}
-	r_shadow = [[UIImageView alloc] initWithFrame:CGRectMake(0, y, width, 10)];
-	[r_shadow setImage:[UIImage imageNamed:@"0_r_shadow"]];
-	r_shadow.alpha = 0.5;
-	[self.navigationController.navigationBar addSubview:r_shadow];
-	[r_shadow release];
+	if (!r_shadow) {
+		r_shadow = [[UIImageView alloc] initWithFrame:CGRectMake(0, y, width, 10)];
+		[r_shadow setImage:[UIImage imageNamed:@"0_r_shadow"]];
+		r_shadow.alpha = 0.5;
+		[self.navigationController.navigationBar addSubview:r_shadow];
+		[r_shadow release];
+	}
 	// Do any additional setup after loading the view, typically from a nib.
 }
 
@@ -107,22 +106,20 @@
 	float y = 44;
 	float width = 320;
 	if (UIInterfaceOrientationIsLandscape(toInterfaceOrientation)) {
-		y = 33; width = 480;
+		y = 32; width = 480;
 	}
 	r_shadow.frame = CGRectMake(0, y, width, 10);
 }
 
 - (void)doneWithJoin {
-	if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation))
-		[[RCNavigator sharedNavigator] rotateToLandscape];
-	else [[RCNavigator sharedNavigator] rotateToPortrait];
+	[[RCNavigator sharedNavigator] rotateToInterfaceOrientation:self.interfaceOrientation];
 	[self dismissModalViewControllerAnimated:YES];
 }
 
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-	UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 65, 40)];
+	UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 65, 30)];
 	[btn setImage:[UIImage imageNamed:@"0_donebutton_normal"] forState:UIControlStateNormal];
 	[btn setImage:[UIImage imageNamed:@"0_donebutton_pressed"] forState:UIControlStateHighlighted];
 	[btn setImage:[UIImage imageNamed:@"0_donebutton_disabled"] forState:UIControlStateDisabled];
@@ -133,7 +130,7 @@
 	[self.navigationItem setRightBarButtonItem:done];
 	[done release];
 	
-	UIButton *cBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 65, 40)];
+	UIButton *cBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 65, 30)];
 	[cBtn setImage:[UIImage imageNamed:@"0_cancelbutton_normal"] forState:UIControlStateNormal];
 	[cBtn setImage:[UIImage imageNamed:@"0_cancelbutton_pressed"] forState:UIControlStateHighlighted];
 	[cBtn addTarget:self action:@selector(doneWithJoin) forControlEvents:UIControlEventTouchUpInside];
@@ -143,21 +140,6 @@
 	[cancel release];
 
 }
-/*– viewWillAppear:
- – viewDidAppear:
- – viewWillDisappear:
- – viewDidDisappear:
- – viewWillLayoutSubviews
- – viewDidLayoutSubviews
- */
-- (void)viewDidAppear:(BOOL)animated {
-	NSLog(@"haihai _%s", (char *)_cmd);
-}
-- (void)viewWillDisappear:(BOOL)animated {
-	[r_shadow removeFromSuperview];
-	NSLog(@"haihai _%s", (char *)_cmd);
-}
-
 
 - (void)textFieldDidEndEditing:(RCTextField *)textField {
 	switch ([textField tag]) {

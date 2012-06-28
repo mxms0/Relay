@@ -16,4 +16,5 @@
 + (id)sharedPopover;
 - (void)animateIn;
 - (void)animateOut;
+- (void)correctAndRotateToInterfaceOrientation:(UIInterfaceOrientation)oi;
 @end
