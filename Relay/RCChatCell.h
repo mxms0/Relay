@@ -15,6 +15,7 @@
 #import "CHAttributedString.h"
 
 @interface RCChatCell : UITableViewCell {
+	BOOL needsLayout;
 	OHAttributedLabel *textLabel;
 	RCMessage *message;
 	float height;

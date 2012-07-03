@@ -175,17 +175,11 @@
 	}
 	[self.tableView setFrame:CGRectMake(0, 0, _bar.frame.size.width, _bar.frame.origin.y)];
 	if (key) if ([messages count] != 0) [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-	if (key) {
-		if (self.tableView.contentSize.height > 129) {
-		}
-	}
-	else {
-	}
 }
 
 - (CGRect)frameForInputField:(BOOL)activ {
 	if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
-		return CGRectMake(0, (activ ? 65 : 227), 480, 40);
+		return CGRectMake(0, (activ ? 66 : 227), 480, 40);
 	}
 	return CGRectMake(0, (activ ? 127 : 345), 320, 40);
 }
@@ -195,6 +189,7 @@
 }
 
 - (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor highlight:(BOOL)high isMine:(BOOL)mine {
+	// definitely shouldn't have this code twice. will do something about it asap.
 	RCMessage *message = [[RCMessage alloc] init];
 	CHAttributedString *attr = [[CHAttributedString alloc] initWithString:_message];
 	[attr setFont:[UIFont fontWithName:@"Helvetica" size:12]];

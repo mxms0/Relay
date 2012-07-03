@@ -12,6 +12,13 @@
 
 @implementation RCPMChannel
 
+- (id)initWithChannelName:(NSString *)_name {
+	if ((self = [super initWithChannelName:_name])) {
+		[[self panel] setEntryFieldEnabled:YES];
+	}
+	return self;
+}
+
 - (void)shouldPost:(BOOL)isHighlight withMessage:(NSString *)msg {
 	BOOL iAmCurrent = NO;
 	if ([[RCNavigator sharedNavigator] currentPanel])

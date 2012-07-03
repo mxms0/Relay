@@ -14,6 +14,7 @@
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
+		needsLayout = NO;
 		self.textLabel = [[OHAttributedLabel alloc] init];
 		[self setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
 		self.textLabel.font = [UIFont boldSystemFontOfSize:12];
@@ -32,6 +33,7 @@
 }
 
 - (void)_textHasBeenSet {
+	needsLayout = YES;
 	self.textLabel.text = [message message];
 	CHAttributedString *attr = [[CHAttributedString alloc] initWithString:self.textLabel.text];
 	[attr setFont:[UIFont fontWithName:@"Helvetica" size:12]];
@@ -118,8 +120,11 @@
 
 - (void)layoutSubviews {
 	[super layoutSubviews];
-	[self.textLabel setFrame:CGRectMake(2, 2,((UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation) ? 480 : 320) - 4) , height)];
-	[self.textLabel setNeedsDisplay];
+	if (needsLayout) {
+		[self.textLabel setFrame:CGRectMake(2, 2,((UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation) ? 480 : 320) - 4) , height)];
+		[self.textLabel setNeedsDisplay];
+		needsLayout = NO;
+	}
 }
 
 @end
