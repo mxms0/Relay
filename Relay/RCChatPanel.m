@@ -44,7 +44,6 @@
 
 - (id)initWithStyle:(UITableViewStyle)style andChannel:(RCChannel *)chan {
 	if ((self = [super init])) {
-		isScrolling = NO;
 		[self setBackgroundColor:[UIColor clearColor]];
 		[self setChannel:chan];
 		self.tableView = [[RCTableView alloc] initWithFrame:CGRectMake(0, 0, 320, 343) style:style];
@@ -233,9 +232,6 @@
 	float *heights = [self calculateHeightForLabel:attr];
 	[message setMessageHeight:heights[0]];
 	[message setMessageHeightLandscape:heights[1]];
-	if (heights[0] == 0) {
-	}
-
 	free(heights);
 	[attr release];
 	[message setMessage:_message];
@@ -245,23 +241,14 @@
 	[self performSelectorOnMainThread:@selector(_correctThreadPost:) withObject:message waitUntilDone:NO];
 }
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-	isScrolling = YES;
-}
-
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-	isScrolling = NO;
-}
-
 - (void)_correctThreadPost:(RCMessage *)_m {
 	[messages addObject:_m];
 	[_m release];
 	[self.tableView beginUpdates];
 	[self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0]] withRowAnimation:UITableViewRowAnimationMiddle];
 	[self.tableView endUpdates];
-	if (!isScrolling)
-		if ([messages count] > 2)
-			[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+	if ([messages count] > 2)
+		[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 }
 
 - (CGFloat)tableView:(UITableView *)_tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {

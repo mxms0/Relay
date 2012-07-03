@@ -29,6 +29,7 @@ static id _instance = nil;
 		self.hidden = YES;
 		self.opaque = NO;
 		self.alpha = 0;
+		applicationDelegate = [UIApp delegate];
     }
     _instance = self;
     return _instance;
@@ -77,11 +78,10 @@ static id _instance = nil;
 		[UIView setAnimationDuration:0.25];
 	}
 	networkTable.transform = CGAffineTransformMakeRotation(0);
-	UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-    CGFloat angle = 0.0;
-    CGRect newFrame = self.bounds;
-    CGSize statusBarSize = [[UIApplication sharedApplication] statusBarFrame].size;
 	if (UIInterfaceOrientationIsLandscape(oi)) {
+		if (self.frame.origin.y == 20) {
+			self.frame = CGRectMake(0,0,320,480);
+		}
 		networkTable.transform = CGAffineTransformMakeRotation(_deg(90));
 		networkTable.frame = CGRectMake(55, 10, networkTable.frame.size.width, networkTable.frame.size.height);
 		_pImg.frame = CGRectMake(20, 10, _pImg.frame.size.width, _pImg.frame.size.height);

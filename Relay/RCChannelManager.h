@@ -8,14 +8,13 @@
 
 #import "RCAddCell.h"
 #import "RCNetwork.h"
+#import "RCBasicViewController.h"
 
-@interface RCChannelManager : UITableViewController <UIAlertViewDelegate> {
-    UIImageView *r_shadow;
+@interface RCChannelManager : RCBasicViewController <UIAlertViewDelegate> {
     RCNetwork *network;
     NSMutableArray *channels;
     UIBarButtonItem *addBtn;
 }
-
 
 - (id)initWithStyle:(UITableViewStyle)style andNetwork:(RCNetwork *)net;
 - (void)addNewItem;

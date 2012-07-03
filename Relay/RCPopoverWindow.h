@@ -11,9 +11,11 @@
 
 @interface RCPopoverWindow : UIWindow <UITableViewDelegate, UITableViewDataSource> {
 	UIImageView *_pImg;
+	id applicationDelegate;
 	UITableView *networkTable;
 }
 + (id)sharedPopover;
+- (void)reloadData;
 - (void)animateIn;
 - (void)animateOut;
 - (void)correctAndRotateToInterfaceOrientation:(UIInterfaceOrientation)oi;

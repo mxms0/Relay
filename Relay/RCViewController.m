@@ -57,7 +57,6 @@
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-	NSLog(@"Rotaing.");
 	[[RCNavigator sharedNavigator] rotateToInterfaceOrientation:toInterfaceOrientation];
 }
 

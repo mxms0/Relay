@@ -12,11 +12,11 @@
 #import "RCTextField.h"
 #import "RCAddCell.h"
 #import "RCChannelManager.h"
+#import "RCBasicViewController.h"
 
-@interface RCAddNetworkController : UITableViewController <UITextFieldDelegate, UIScrollViewDelegate> {
+@interface RCAddNetworkController : RCBasicViewController <UITextFieldDelegate, UIScrollViewDelegate> {
 	RCNetwork *network;
 	BOOL isNew;
-	UIImageView *r_shadow;
 }
 - (id)initWithNetwork:(RCNetwork *)net;
 

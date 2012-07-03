@@ -47,6 +47,7 @@
 		5045752B159570460092CB31 /* RCNetworkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5045752A159570450092CB31 /* RCNetworkCell.m */; };
 		50468A8D1527E46D0025F405 /* 0_input_l.png in Resources */ = {isa = PBXBuildFile; fileRef = 50468A8B1527E46D0025F405 /* 0_input_l.png */; };
 		50468A8E1527E46D0025F405 /* 0_input_l@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50468A8C1527E46D0025F405 /* 0_input_l@2x.png */; };
+		504706E5159FBA2000C3E256 /* RCWelcomeChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 504706E4159FBA2000C3E256 /* RCWelcomeChannel.m */; };
 		50472B83151ABDEA0083D691 /* 0_toggle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50472B81151ABDEA0083D691 /* 0_toggle@2x.png */; };
 		50472B84151ABDEA0083D691 /* 0_toggle.png in Resources */ = {isa = PBXBuildFile; fileRef = 50472B82151ABDEA0083D691 /* 0_toggle.png */; };
 		5049385914FAAAD3003221FC /* 0_chatcell.png in Resources */ = {isa = PBXBuildFile; fileRef = 5049385714FAAAD3003221FC /* 0_chatcell.png */; };
@@ -131,6 +132,7 @@
 		50E77AA11505A30400E75C64 /* RCNetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A831505A21500E75C64 /* RCNetworkManager.m */; };
 		50E77AA21505A30400E75C64 /* RCWelcomeNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A851505A21500E75C64 /* RCWelcomeNetwork.m */; };
 		50E77AA41505A30400E75C64 /* OHAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A891505A22800E75C64 /* OHAttributedLabel.m */; };
+		50E9BEC215A13C9900121507 /* RCBasicViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E9BEC115A13C9900121507 /* RCBasicViewController.m */; };
 		50EEDA241512C6150011618C /* 0_regulares.png in Resources */ = {isa = PBXBuildFile; fileRef = 50EEDA221512C6150011618C /* 0_regulares.png */; };
 		50EEDA251512C6150011618C /* 0_regulares@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50EEDA231512C6150011618C /* 0_regulares@2x.png */; };
 		50EEDA291512C8540011618C /* 0_ops.png in Resources */ = {isa = PBXBuildFile; fileRef = 50EEDA271512C8540011618C /* 0_ops.png */; };
@@ -192,6 +194,8 @@
 		5045752A159570450092CB31 /* RCNetworkCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCNetworkCell.m; sourceTree = "<group>"; };
 		50468A8B1527E46D0025F405 /* 0_input_l.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_input_l.png; sourceTree = "<group>"; };
 		50468A8C1527E46D0025F405 /* 0_input_l@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_input_l@2x.png"; sourceTree = "<group>"; };
+		504706E3159FBA2000C3E256 /* RCWelcomeChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCWelcomeChannel.h; sourceTree = "<group>"; };
+		504706E4159FBA2000C3E256 /* RCWelcomeChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCWelcomeChannel.m; sourceTree = "<group>"; };
 		50472B81151ABDEA0083D691 /* 0_toggle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_toggle@2x.png"; sourceTree = "<group>"; };
 		50472B82151ABDEA0083D691 /* 0_toggle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_toggle.png; sourceTree = "<group>"; };
 		5049385714FAAAD3003221FC /* 0_chatcell.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_chatcell.png; sourceTree = "<group>"; };
@@ -309,6 +313,8 @@
 		50E77A8C1505A28400E75C64 /* Relay-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Relay-Info.plist"; sourceTree = "<group>"; };
 		50E77A8E1505A29100E75C64 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		50E77A901505A2C300E75C64 /* Relay-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Relay-Prefix.pch"; sourceTree = "<group>"; };
+		50E9BEC015A13C9900121507 /* RCBasicViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCBasicViewController.h; sourceTree = "<group>"; };
+		50E9BEC115A13C9900121507 /* RCBasicViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCBasicViewController.m; sourceTree = "<group>"; };
 		50EEDA221512C6150011618C /* 0_regulares.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_regulares.png; sourceTree = "<group>"; };
 		50EEDA231512C6150011618C /* 0_regulares@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_regulares@2x.png"; sourceTree = "<group>"; };
 		50EEDA271512C8540011618C /* 0_ops.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_ops.png; sourceTree = "<group>"; };
@@ -505,6 +511,8 @@
 		50A7FBA914C0F7DC00ABADEA /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				50E9BEC015A13C9900121507 /* RCBasicViewController.h */,
+				50E9BEC115A13C9900121507 /* RCBasicViewController.m */,
 				5038C8301583B8E4004BA602 /* RCChannelManager.h */,
 				5038C8311583B8E4004BA602 /* RCChannelManager.m */,
 				50929EB8151E86FA007E23D3 /* RCiPadViewController.h */,
@@ -570,6 +578,8 @@
 				50E77A831505A21500E75C64 /* RCNetworkManager.m */,
 				50E77A841505A21500E75C64 /* RCWelcomeNetwork.h */,
 				50E77A851505A21500E75C64 /* RCWelcomeNetwork.m */,
+				504706E3159FBA2000C3E256 /* RCWelcomeChannel.h */,
+				504706E4159FBA2000C3E256 /* RCWelcomeChannel.m */,
 				50B0DB21154233EB00689EDC /* RCKeychainItem.h */,
 				504349FC152CEEDD0037BD12 /* RCKeychainItem.m */,
 			);
@@ -603,7 +613,7 @@
 		50A7FB7314C0F0A800ABADEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0450;
 				ORGANIZATIONNAME = "American Heritage School";
 			};
 			buildConfigurationList = 50A7FB7614C0F0A800ABADEA /* Build configuration list for PBXProject "Relay" */;
@@ -777,6 +787,8 @@
 				502BE056158FF748002FFA74 /* RCPopoverWindow.m in Sources */,
 				5045752B159570460092CB31 /* RCNetworkCell.m in Sources */,
 				7EF931D9159A137B0031CDD0 /* RCBarButton.m in Sources */,
+				504706E5159FBA2000C3E256 /* RCWelcomeChannel.m in Sources */,
+				50E9BEC215A13C9900121507 /* RCBasicViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -845,7 +857,7 @@
 				GCC_PREFIX_HEADER = "Relay/Relay-Prefix.pch";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "Relay/Relay-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../Downloads/TestFlightSDK0.8.3\"",
@@ -922,7 +934,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Relay/Relay-Prefix.pch";
 				INFOPLIST_FILE = "Relay/Relay-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../Downloads/TestFlightSDK0.8.3\"",
@@ -949,7 +961,7 @@
 				GCC_PREFIX_HEADER = "Relay/Relay-Prefix.pch";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "Relay/Relay-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../Downloads/TestFlightSDK0.8.3\"",

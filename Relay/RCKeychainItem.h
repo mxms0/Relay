@@ -8,7 +8,9 @@
 #import <UIKit/UIKit.h>
 
 @interface RCKeychainItem : NSObject {
+	NSString *service;
 }
-- (NSString *)objectForKey:(NSString *)key;
-- (BOOL)setObject:(NSString *)value forKey:(NSString *)key;
+- (id)initWithService:(NSString *)serv;
+- (NSString *)stringForKey:(NSString *)key;
+- (void)setObject:(NSString *)value forKey:(NSString *)key;
 @end

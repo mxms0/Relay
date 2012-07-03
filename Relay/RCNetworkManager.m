@@ -30,18 +30,12 @@ static NSMutableArray *networks = nil;
 			return;
 		}
 	}
-	RCKeychainItem *wrapper = nil;
+	RCKeychainItem *wrapper = [[RCKeychainItem alloc] initWithService:[network _description]];
 	if ([[info objectForKey:S_PASS_KEY] boolValue]) {
-		wrapper = [[RCKeychainItem alloc] init];
-		[network setSpass:([wrapper objectForKey:S_PASS_KEY] ?: @"")];
-		[wrapper release];
-		wrapper = nil;
+		[network setSpass:([wrapper stringForKey:S_PASS_KEY] ?: @"")];
 	}
 	if ([[info objectForKey:N_PASS_KEY] boolValue]) {
-		wrapper = [[RCKeychainItem alloc] init];
-		[network setNpass:([wrapper objectForKey:N_PASS_KEY] ?: @"")];
-		[wrapper release];
-		wrapper = nil;
+		[network setNpass:([wrapper stringForKey:N_PASS_KEY] ?: @"")];
 	}
 	NSMutableArray *rooms = [[[info objectForKey:CHANNELS_KEY] mutableCopy] autorelease];
 	if (!rooms) rooms = [[NSMutableArray alloc] init];
@@ -52,6 +46,8 @@ static NSMutableArray *networks = nil;
 	[self performSelectorInBackground:@selector(finishSetupForNetwork:) withObject:network];
 	[network release];
 	[self performSelectorInBackground:@selector(saveNetworks) withObject:nil];
+	[wrapper release];
+	wrapper = nil;
 }
 
 - (void)addNetwork:(RCNetwork *)_net {
@@ -79,6 +75,7 @@ static NSMutableArray *networks = nil;
 		[self setupWelcomeView];
 	}
 	[self saveChannelData:nil];
+	[self saveNetworks];
 }
 
 - (void)unpack {
@@ -122,7 +119,6 @@ static NSMutableArray *networks = nil;
 }
 
 - (void)saveNetworks {
-	NSLog(@"HI %@", networks);
 	NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:PREFS_PLIST] ?: [NSMutableDictionary dictionary];
 	for (RCNetwork *net in networks) {
 		if (![net isKindOfClass:[RCWelcomeNetwork class]])

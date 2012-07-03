@@ -37,19 +37,8 @@
 			isNew = YES;
 		}
 		else {
-			[self.navigationItem.rightBarButtonItem setEnabled:YES];	
+			[self.navigationItem.rightBarButtonItem setEnabled:NO];
 		}
-
-		UILabel *titleView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 40)];
-		titleView.text = ([network _description] ?: @"Add A Network");
-		titleView.backgroundColor = [UIColor clearColor];
-		titleView.textAlignment = UITextAlignmentCenter;
-		titleView.font = [UIFont boldSystemFontOfSize:22];
-		titleView.shadowColor = [UIColor whiteColor];
-		titleView.textColor = UIColorFromRGB(0x424343);
-		titleView.shadowOffset = CGSizeMake(0, 1);
-		self.navigationItem.titleView = titleView;
-		[titleView release];
 	}
 	return self;
 }
@@ -64,9 +53,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-	[self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"0_addnav"] forBarMetrics:UIBarMetricsDefault];
-	self.tableView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"0_bg"]];
-	[self.tableView reloadData];
+	if (isNew) {
+		titleView.text = @"Add A Network";
+	}
+	else {
+		titleView.text = [network _description];
+	}
 	float y = 44;
 	float width = 320;
 	if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
@@ -75,10 +67,29 @@
 	if (!r_shadow) {
 		r_shadow = [[UIImageView alloc] initWithFrame:CGRectMake(0, y, width, 10)];
 		[r_shadow setImage:[UIImage imageNamed:@"0_r_shadow"]];
-		r_shadow.alpha = 0.5;
+		r_shadow.alpha = 0.3;
 		[self.navigationController.navigationBar addSubview:r_shadow];
 		[r_shadow release];
 	}
+	UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 65, 30)];
+	[btn setImage:[UIImage imageNamed:@"0_donebutton_normal"] forState:UIControlStateNormal];
+	[btn setImage:[UIImage imageNamed:@"0_donebutton_pressed"] forState:UIControlStateHighlighted];
+	[btn setImage:[UIImage imageNamed:@"0_donebutton_disabled"] forState:UIControlStateDisabled];
+	btn.enabled = NO;
+	[btn addTarget:self action:@selector(doneConnection) forControlEvents:UIControlEventTouchUpInside];
+	UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithCustomView:btn];
+	[btn release];
+	[self.navigationItem setRightBarButtonItem:done];
+	[done release];
+	
+	UIButton *cBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 65, 30)];
+	[cBtn setImage:[UIImage imageNamed:@"0_cancelbutton_normal"] forState:UIControlStateNormal];
+	[cBtn setImage:[UIImage imageNamed:@"0_cancelbutton_pressed"] forState:UIControlStateHighlighted];
+	[cBtn addTarget:self action:@selector(doneWithJoin) forControlEvents:UIControlEventTouchUpInside];
+	UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithCustomView:cBtn];
+	[cBtn release];
+	[self.navigationItem setLeftBarButtonItem:cancel];
+	[cancel release];
 	// Do any additional setup after loading the view, typically from a nib.
 }
 
@@ -116,31 +127,6 @@
 	[self dismissModalViewControllerAnimated:YES];
 }
 
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-	UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 65, 30)];
-	[btn setImage:[UIImage imageNamed:@"0_donebutton_normal"] forState:UIControlStateNormal];
-	[btn setImage:[UIImage imageNamed:@"0_donebutton_pressed"] forState:UIControlStateHighlighted];
-	[btn setImage:[UIImage imageNamed:@"0_donebutton_disabled"] forState:UIControlStateDisabled];
-	btn.enabled = ([network server] != nil);
-	[btn addTarget:self action:@selector(doneConnection) forControlEvents:UIControlEventTouchUpInside];
-	UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithCustomView:btn];
-	[btn release];
-	[self.navigationItem setRightBarButtonItem:done];
-	[done release];
-	
-	UIButton *cBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 65, 30)];
-	[cBtn setImage:[UIImage imageNamed:@"0_cancelbutton_normal"] forState:UIControlStateNormal];
-	[cBtn setImage:[UIImage imageNamed:@"0_cancelbutton_pressed"] forState:UIControlStateHighlighted];
-	[cBtn addTarget:self action:@selector(doneWithJoin) forControlEvents:UIControlEventTouchUpInside];
-	UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithCustomView:cBtn];
-	[cBtn release];
-	[self.navigationItem setLeftBarButtonItem:cancel];
-	[cancel release];
-
-}
-
 - (void)textFieldDidEndEditing:(RCTextField *)textField {
 	switch ([textField tag]) {
 		case 1:
@@ -175,18 +161,6 @@
 
 - (void)doneConnection {
 	if (![network server]) return;
-	if (([network spass] == nil) || [[network spass] isEqualToString:@""]) [network setSpass:@""];
-	else {
-		RCKeychainItem *wrapper = [[RCKeychainItem alloc] init];
-		[wrapper setObject:[network spass] forKey:S_PASS_KEY];
-		[wrapper release];
-	}
-	if (([network npass] == nil) || [[network npass] isEqualToString:@""]) [network setNpass:@""];
-	else {
-		RCKeychainItem *wrapper = [[RCKeychainItem alloc] init];
-		[wrapper setObject:[network npass] forKey:N_PASS_KEY];
-		[wrapper release];
-	}
 	if (![network realname]) [network setRealname:@"Guest01"];
 	if (![network nick]) [network setNick:@"Guest01"];
 	if (![network username]) {
@@ -194,6 +168,15 @@
 	}
 	if (![network port]) [network setPort:6667];
 	if (![network sDescription]) [network setSDescription:[network server]];
+	RCKeychainItem *wrapper = [[RCKeychainItem alloc] initWithService:[network _description]];
+	if (([network spass] == nil) || [[network spass] isEqualToString:@""]) [network setSpass:@""];
+	else {
+		[wrapper setObject:[network spass] forKey:kSecValueData];
+	}
+	if (([network npass] == nil) || [[network npass] isEqualToString:@""]) [network setNpass:@""];
+	else {
+		[wrapper setObject:[network npass] forKey:N_PASS_KEY];
+	}
 	if (isNew) {
 		[network setupRooms:[NSArray arrayWithObject:@"IRC"]];
 		[[RCNetworkManager sharedNetworkManager] addNetwork:network];
@@ -204,6 +187,8 @@
 	if (!isNew)
 		[[RCNetworkManager sharedNetworkManager] saveNetworks];
 	[self doneWithJoin];
+	[wrapper release];
+	wrapper = nil;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView indentationLevelForRowAtIndexPath:(NSIndexPath *)indexPath {

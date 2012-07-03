@@ -87,8 +87,9 @@ static id _sharedNavigator = nil;
 		[bubble release];
 		[[net channelWithChannelName:chan] setBubble:bubble];
 	}
-	if ([[net description] isEqualToString:[currentNetwork description]])
-		[scrollBar layoutChannels:[currentNetwork _bubbles]];
+	if (currentNetwork)
+		if ([[net description] isEqualToString:[currentNetwork description]])
+			[scrollBar layoutChannels:[currentNetwork _bubbles]];
 }
 
 - (void)removeChannel:(RCChannel *)chan fromServer:(RCNetwork *)net {
@@ -101,6 +102,11 @@ static id _sharedNavigator = nil;
 			[[net _bubbles] removeObject:bb];
 			break;
 		}
+	}
+	if ([[[((RCChannel *)memberPanel.delegate) channelName] lowercaseString] isEqualToString:[[chan channelName] lowercaseString]]) {
+		memberPanel.delegate = nil;
+		memberPanel.dataSource = nil;
+		[memberPanel removeFromSuperview];
 	}
 	if ([[net description] isEqualToString:[currentNetwork description]]) {
 		[scrollBar performSelectorOnMainThread:@selector(layoutChannels:) withObject:[currentNetwork _bubbles] waitUntilDone:NO];
@@ -174,9 +180,10 @@ static id _sharedNavigator = nil;
 	//	currentIndex--;
 		[currentPanel removeFromSuperview];
 		currentPanel = nil;
-		RCNetwork *removr = currentNetwork;
-		[[RCNetworkManager sharedNetworkManager] removeNet:removr];
-		[[RCNetworkManager sharedNetworkManager] saveNetworks];
+		[scrollBar layoutChannels:nil];
+		titleLabel.text = nil;
+		[[RCNetworkManager sharedNetworkManager] removeNet:currentNetwork];
+		currentNetwork = nil;
 	}
 	else if (buttonIndex == 1) {
 		RCNetwork *net = currentNetwork;
@@ -277,6 +284,7 @@ static BOOL isShowing = NO;
 	[[[currentPanel channel] bubble] _setSelected:NO];
 	[bubble _setSelected:YES];
 	RCChannel *chan = [currentNetwork channelWithChannelName:bubble.titleLabel.text];
+	NSLog(@"Meh %@ %@", currentNetwork, chan);
 	if (chan) {
 		if ([currentPanel isFirstResponder])
 			[[chan panel] becomeFirstResponderNoAnimate];
@@ -357,14 +365,14 @@ static BOOL isShowing = NO;
 
 - (CGRect)frameForChatTable {
 	if (_isLandscape)
-		return CGRectMake(0, 33, 480, 227);
+		return CGRectMake(0, 32, 480, 227);
 	return CGRectMake(0, 77, 320, 344);
 }
 
 - (CGRect)frameForMemberPanel {
 	if (_isLandscape)
 		return CGRectMake(0, 33, 480, 267);
-	return CGRectMake(0, 77, 320, 384);
+	return CGRectMake(0, 77, 320, 383);
 }
 
 - (CGRect)frameForListButton {

@@ -11,7 +11,7 @@
 @implementation RCWelcomeNetwork
 
 - (void)addChannel:(NSString *)_chan join:(BOOL)join {
-	RCChannel *chan = [[RCChannel alloc] initWithChannelName:_chan];
+	RCWelcomeChannel *chan = [[RCWelcomeChannel alloc] initWithChannelName:_chan];
 	[chan setDelegate:self];
 	[chan setSuccessfullyJoined:YES];
 	[[self _channels] setObject:chan forKey:_chan];
@@ -22,7 +22,6 @@
 - (BOOL)connect {
 	return YES;
 }
-
 
 - (BOOL)sendMessage:(NSString *)msg {
 	return YES;

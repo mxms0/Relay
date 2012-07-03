@@ -21,23 +21,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-	UILabel *titleView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
-	titleView.text = @"Channels";
-	titleView.backgroundColor = [UIColor clearColor];
-	titleView.textAlignment = UITextAlignmentCenter;
-	titleView.font = [UIFont boldSystemFontOfSize:22];
-	titleView.shadowColor = [UIColor whiteColor];
-	titleView.textColor = UIColorFromRGB(0x424343);
-	titleView.shadowOffset = CGSizeMake(0, 1);
-	self.navigationItem.titleView = titleView;
-	[titleView release];
-	self.tableView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"0_bg"]];
-	float y = 44;
-	float width = 320;
-	if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
-		y = 33; width = 480;
-	}
 	[self.tableView reloadData];
     addBtn = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addNewItem)];
     NSArray *array = [NSArray arrayWithObjects:self.editButtonItem, nil];
@@ -86,8 +69,8 @@
 		cell.selectionStyle = UITableViewCellSelectionStyleNone;
 		cell.textLabel.font = [UIFont boldSystemFontOfSize:14];
 		cell.textLabel.textColor = UIColorFromRGB(0x545758);
-        cell.textLabel.text = [channels objectAtIndex:indexPath.row];
 	}
+	cell.textLabel.text = [channels objectAtIndex:indexPath.row];
     return cell;
 }
 
@@ -97,7 +80,6 @@
         [network removeChannel:chan];
         [channels removeObjectAtIndex:indexPath.row];
         [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-        
     }   
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
@@ -113,7 +95,6 @@
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {  
     if (buttonIndex == 1) {
         UITextField *textField = [alertView textFieldAtIndex:0];
-        
         NSString *tempString = @"#";
 		if (![textField.text hasPrefix:@"#"])
 			tempString = [tempString stringByAppendingString:textField.text];  
@@ -127,7 +108,7 @@
 
 - (BOOL)alertViewShouldEnableFirstOtherButton:(UIAlertView *)alertView {
     NSString *inputText = [[alertView textFieldAtIndex:0] text];
-    if([inputText length] >= 1) {
+    if([inputText length] > 0) {
         return YES;
     }
     else {

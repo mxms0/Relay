@@ -47,7 +47,7 @@ typedef enum RCEventType {
 @property (nonatomic, assign) RCChatPanel *panel;
 @property (nonatomic, readonly) NSString *topic;
 @property (nonatomic, assign) RCChannelBubble *bubble;
-@property (nonatomic, retain) RCUserListPanel *usersPanel;
+@property (nonatomic, assign) RCUserListPanel *usersPanel;
 - (id)initWithChannelName:(NSString *)_name;
 - (void)setDelegate:(RCNetwork *)delegate;
 - (RCNetwork *)delegate;

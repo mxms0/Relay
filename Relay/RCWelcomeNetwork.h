@@ -7,6 +7,7 @@
 //
 
 #import "RCNetwork.h"
+#import "RCWelcomeChannel.h"
 
 @interface RCWelcomeNetwork : RCNetwork
 

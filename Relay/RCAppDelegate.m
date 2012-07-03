@@ -13,12 +13,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #import "TestFlight.h"
-extern int32_t NSVersionOfRunTimeLibrary(const char* libraryName);
 
 @implementation RCAppDelegate
 
-@synthesize window = _window;
-@synthesize navigationController = _navigationController;
+@synthesize window = _window, navigationController = _navigationController, isDoubleHeight;
 
 static BOOL isSetup = NO;
 
@@ -52,7 +50,8 @@ static BOOL isSetup = NO;
 #endif
     NSLog(ret == 0 ? @"overdrive detected" : @"overdrive not found");
 	 */
-    
+    // nice DRM i won't be using. 
+	// thanks a lot nighthawk.
 	
 	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
@@ -98,6 +97,17 @@ static BOOL isSetup = NO;
 	 Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
 	 If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 	 */
+}
+
+- (void)application:(UIApplication *)application willChangeStatusBarFrame:(CGRect)newStatusBarFrame {
+	isDoubleHeight = (newStatusBarFrame.size.height == 40);
+	NSLog(@"Meh %@", [[RCPopoverWindow sharedPopover] subviews]);
+	if (isDoubleHeight) {
+		//		[[RCPopoverWindow sharedPopover] setFrame:CGRectMake(0, 5, 320, 460)];
+	}
+	else {
+		//[[RCPopoverWindow sharedPopover] setFrame:CGRectMake(0, 0, 320, 480)];	
+	}
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {

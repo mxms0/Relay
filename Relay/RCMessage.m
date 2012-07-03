@@ -36,7 +36,7 @@
 }
 
 - (id)description {
-	return [NSString stringWithFormat:@"<%@ :%p; Message = %@; Height = %d; Flavor = %d>", NSStringFromClass([self class]), self, message, messageHeight, (int)flavor];
+	return [NSString stringWithFormat:@"<%@ :%p; Message = %@; Height = %f; Flavor = %d>", NSStringFromClass([self class]), self, message, messageHeight, (int)flavor];
 }
 
 - (id)init {
