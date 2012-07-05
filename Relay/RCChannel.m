@@ -10,6 +10,7 @@
 #import "RCNetworkManager.h"
 #import "RCNavigator.h"
 #import "TestFlight.h"
+#import <MediaPlayer/MediaPlayer.h>
 
 @implementation RCChannel
 
@@ -379,8 +380,8 @@ UIImage *RCImageForRank(NSString *rank) {
 	}
 }
 
-- (void)parseAndHandleSlashCommand:(NSString *)msg {
-	if ([msg hasPrefix:@"/"]) {
+- (void)parseAndHandleSlashCommand:(NSString *)msg {    
+    if ([msg hasPrefix:@"/"]) {
 		if ([delegate sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", channelName, msg]])
 			[self recievedMessage:msg from:[delegate useNick] type:RCMessageTypeNormal];
 		return;
@@ -391,7 +392,7 @@ UIImage *RCImageForRank(NSString *rank) {
 	[scanr scanUpToString:@" " intoString:&cmd];
 	args = [msg substringWithRange:NSMakeRange([scanr scanLocation], msg.length-[scanr scanLocation])];
 	NSString *realCmd = [NSString stringWithFormat:@"handleSlash%@:", [cmd uppercaseString]];
-	SEL _pSEL = NSSelectorFromString(realCmd);
+    SEL _pSEL = NSSelectorFromString(realCmd);
 	if ([self respondsToSelector:_pSEL]) [self performSelector:_pSEL withObject:args];
 	else {
 		NSLog(@"PRINT TO CONSOLE NO HANDLER");
@@ -421,7 +422,28 @@ UIImage *RCImageForRank(NSString *rank) {
 	[chan recievedMessage:msg from:[delegate useNick] type:RCMessageFlavorNormal];
 	[scan release];
 }
+- (void)handleSlashIPOD:(NSString *)cmd {
 
+    MPMusicPlayerController *musicPlayer = [MPMusicPlayerController iPodMusicPlayer];
+    if (!musicPlayer) return;
+    
+    MPMediaItem *currentItem = [musicPlayer nowPlayingItem];
+    if (!currentItem) {
+        [self handleSlashME:@"is not currently listening to music."];
+        return;
+    }
+    
+    NSString *AlbumTitle = [currentItem valueForProperty:MPMediaItemPropertyAlbumTitle];
+    NSString *Artist = [currentItem valueForProperty:MPMediaItemPropertyArtist];
+    NSString *Song = [currentItem valueForProperty:MPMediaItemPropertyTitle];
+    NSNumber *duration = [currentItem valueForProperty:MPMediaItemPropertyPlaybackDuration];
+    
+    NSString *finalStr = [NSString stringWithFormat:@"is listening to %@ - %@, from the album %@ [%@ mins].",Artist, Song, AlbumTitle, duration];
+    
+    [self handleSlashME:finalStr];
+
+
+}   
 - (void)handleSlashME:(NSString *)cmd {
 	if ([cmd hasPrefix:@" "]) cmd = [cmd substringFromIndex:1];
 	NSString *msg = [NSString stringWithFormat:@"PRIVMSG %@ :%c%@ %@%c", channelName, 0x01, @"ACTION", cmd, 0x01];

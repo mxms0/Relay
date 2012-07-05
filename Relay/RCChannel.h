@@ -6,6 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <MediaPlayer/MediaPlayer.h>
 #import "RCChatPanel.h"
 #import "RCAppDelegate.h"
 #import "NSString+Comparing.h"
