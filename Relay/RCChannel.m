@@ -277,6 +277,14 @@ UIImage *RCImageForRank(NSString *rank) {
 
 - (void)setMode:(NSString *)modes forUser:(NSString *)user {
 	// clean this up. :P
+	// this is all going to the trash
+	// there's absolutely no point.
+	// if a user has +vao
+	// only the server knows that/
+	// so i will be told max has +a,
+	// then he will lose +a, and it'll just say he's normal
+	// so i need to refresh al users
+	// so i guess i'll just re-index everytime.
 	NSRange plus;
 	NSRange minus;
 	plus = [modes rangeOfString:@"+"];
@@ -435,7 +443,6 @@ UIImage *RCImageForRank(NSString *rank) {
 }
 
 - (void)handleSlashIPOD:(NSString *)cmd {
-	NSLog(@"meh %s", (char *)_cmd);
 	NSString *finalStr = @"is not currently listening to music.";
 	if (![NSThread isMainThread]) {
 		NSInvocation *vc = [[NSInvocation alloc] init];
@@ -448,13 +455,12 @@ UIImage *RCImageForRank(NSString *rank) {
 		[vc release];
 	}
 	else {
-		NSString *meh = [self nowPlayingInfo];;
+		NSString *meh = [self nowPlayingInfo];
 		if (meh) finalStr = meh;
 	}    
     [self handleSlashME:finalStr];
+}
 
-
-}   
 - (void)handleSlashME:(NSString *)cmd {
 	if ([cmd hasPrefix:@" "]) cmd = [cmd substringFromIndex:1];
 	NSString *msg = [NSString stringWithFormat:@"PRIVMSG %@ :%c%@ %@%c", channelName, 0x01, @"ACTION", cmd, 0x01];
