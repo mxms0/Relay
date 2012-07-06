@@ -12,7 +12,10 @@
 
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
-		
+#if USE_PRIVATE 
+		if ([self respondsToSelector:@selector(setInsertionPointColor:)])
+			[self setInsertionPointColor:UIColorFromRGB(0x4F94EA)];
+#endif
 	}
 	return self;
 }

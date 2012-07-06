@@ -21,7 +21,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-	
+	//	NSLog(@"%@", [AVCaptureDevice devices]);
 	[[UIApplication sharedApplication] registerForRemoteNotificationTypes:UIRemoteNotificationTypeAlert];
 	CGSize screenWidth = [[UIScreen mainScreen] applicationFrame].size;
 	RCNavigator *navigator = [RCNavigator sharedNavigator];

@@ -168,7 +168,7 @@
 	}
 	if (![network port]) [network setPort:6667];
 	if (![network sDescription]) [network setSDescription:[network server]];
-	RCKeychainItem *wrapper = [[RCKeychainItem alloc] initWithService:[network _description]];
+	RCKeychainItem *wrapper = [[RCKeychainItem alloc] initWithIdentifier:[network _description] accessGroup:nil];
 	if (([network spass] == nil) || [[network spass] isEqualToString:@""]) [network setSpass:@""];
 	else {
 		[wrapper setObject:[network spass] forKey:kSecValueData];
@@ -283,9 +283,6 @@
 					[dField setReturnKeyType:UIReturnKeyNext];
 					[dField setTextColor:UIColorFromRGB(FONT_COLOR)];
 					[dField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
-#if USE_PRIVATE 
-					[dField setInsertionPointColor:UIColorFromRGB(0x4F94EA)];
-#endif
 					[cell setAccessoryView:dField];
 					[dField release];
 					break;
@@ -300,9 +297,6 @@
 					address.autocapitalizationType = UITextAutocapitalizationTypeNone;
                     address.returnKeyType = UIReturnKeyNext;
                     address.tag = 2;
-#if USE_PRIVATE 
-					[address setInsertionPointColor:UIColorFromRGB(0x4F94EA)];
-#endif
                     address.keyboardAppearance = UIKeyboardAppearanceDefault;
                     [address setDelegate:self];
 					[address setTextColor:UIColorFromRGB(FONT_COLOR)];
@@ -321,9 +315,6 @@
 					[pField setText:([network port] ? [NSString stringWithFormat:@"%d", [network port]] : nil)];
 					[pField setKeyboardAppearance:UIKeyboardAppearanceDefault];
 					[pField setDelegate:self];
-#if USE_PRIVATE 
-					[pField setInsertionPointColor:UIColorFromRGB(0x4F94EA)];
-#endif
 					[pField setTextColor:UIColorFromRGB(FONT_COLOR)];
 					[pField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
                     [cell setAccessoryView:pField];
@@ -354,9 +345,6 @@
 					[uField setDelegate:self];
 					[uField setKeyboardAppearance:UIKeyboardAppearanceDefault];
 					[uField setReturnKeyType:UIReturnKeyNext];
-#if USE_PRIVATE 
-					[uField setInsertionPointColor:UIColorFromRGB(0x4F94EA)];
-#endif
 					[uField setTextColor:UIColorFromRGB(FONT_COLOR)];
 					[uField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
 					[cell setAccessoryView:uField];
@@ -375,9 +363,6 @@
 					[nField setTag:5];
 					[nField setText:[network nick]];
 					[nField setDelegate:self];
-#if USE_PRIVATE 
-					[nField setInsertionPointColor:UIColorFromRGB(0x4F94EA)];
-#endif
 					[nField setKeyboardAppearance:UIKeyboardAppearanceDefault];
 					[nField setReturnKeyType:UIReturnKeyNext];
 					[nField setTextColor:UIColorFromRGB(FONT_COLOR)];
@@ -393,9 +378,6 @@
 					[rField setTag:6];
 					[rField setText:[network realname]];
 					[rField setDelegate:self];
-#if USE_PRIVATE 
-					[rField setInsertionPointColor:UIColorFromRGB(0x4F94EA)];
-#endif
 					[rField setTextColor:UIColorFromRGB(FONT_COLOR)];
 					[rField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
 					[rField setKeyboardAppearance:UIKeyboardAppearanceDefault];
@@ -416,9 +398,6 @@
 					[nsField setSecureTextEntry:YES];
 					[nsField setText:[network npass]];
 					[nsField setDelegate:self];
-#if USE_PRIVATE 
-					[nsField setInsertionPointColor:UIColorFromRGB(0x4F94EA)];
-#endif
 					[nsField setTextColor:UIColorFromRGB(FONT_COLOR)];
 					[nsField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
 					[nsField setKeyboardAppearance:UIKeyboardAppearanceDefault];
@@ -435,9 +414,6 @@
 					[seField setSecureTextEntry:YES];
 					[seField setText:[network spass]];
 					[seField setDelegate:self];
-#if USE_PRIVATE 
-					[seField setInsertionPointColor:UIColorFromRGB(0x4F94EA)];
-#endif
 					[seField setTextColor:UIColorFromRGB(FONT_COLOR)];
 					[seField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
 					[seField setKeyboardAppearance:UIKeyboardAppearanceDefault];

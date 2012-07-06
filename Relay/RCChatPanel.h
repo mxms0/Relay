@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "RCChatCell.h"
 #import "RCTableView.h"
+#import "RCTextField.h"
 #import "RCMessage.h"
 
 @interface NSObject (Stuff)
@@ -25,14 +26,15 @@
 	UITextField *field;
 	UIView *_bar;
 }
+@property (nonatomic, assign) RCChannel *channel;
 @property (nonatomic, retain) RCTableView *tableView;
 @property (nonatomic, readonly) NSMutableArray *messages;
-- (void)setChannel:(RCChannel *)channel;
-- (RCChannel *)channel;
+
 - (id)initWithStyle:(UITableViewStyle)style andChannel:(RCChannel *)chan;
 - (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor highlight:(BOOL)high;
 - (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor highlight:(BOOL)high isMine:(BOOL)mine;
-- (void)repositionKeyboardForUse:(BOOL)key;
+- (void)repositionKeyboardForUse:(BOOL)key animated:(BOOL)an;
 - (void)setHidesEntryField:(BOOL)entry;
 - (void)setEntryFieldEnabled:(BOOL)en;
+- (void)becomeFirstResponderNoAnimate;
 @end

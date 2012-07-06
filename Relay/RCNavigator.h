@@ -30,6 +30,7 @@
 	BOOL _isLandscape;
 	BOOL _isShowingList;
 	BOOL isFirstSetup;
+	BOOL isShowing;
 	id _rcViewController;
 }
 @property (nonatomic, readonly) RCChatPanel *currentPanel;

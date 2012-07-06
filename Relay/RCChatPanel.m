@@ -40,7 +40,7 @@
 @end
 
 @implementation RCChatPanel
-@synthesize tableView, messages;
+@synthesize tableView, messages, channel;
 
 - (id)initWithStyle:(UITableViewStyle)style andChannel:(RCChannel *)chan {
 	if ((self = [super init])) {
@@ -59,13 +59,10 @@
 		_bar = [[UIView alloc] initWithFrame:CGRectMake(0, 343, 320, 40)];
 		[_bar setOpaque:NO];
 		[_bar setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"0_input"]]];
-		field = [[UITextField alloc] initWithFrame:CGRectMake(15, 5, 295, 31)];
+		field = [[RCTextField alloc] initWithFrame:CGRectMake(15, 5, 295, 31)];
 		[field setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
 		[field setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
 		[field setBorderStyle:UITextBorderStyleNone];
-#if USE_PRIVATE
-		[field setInsertionPointColor:UIColorFromRGB(0x4F94EA)];
-#endif
 		[field setKeyboardAppearance:UIKeyboardAppearanceDefault];
 		[field setReturnKeyType:UIReturnKeySend];
 		[field setFont:[UIFont fontWithName:@"Helvetica" size:12]];
@@ -85,13 +82,6 @@
 
 - (void)suggestNick:(UIGestureRecognizer *)gestr {
 	prev = [channel userWithPrefix:currentWord pastUser:prev];
-}
-
-- (void)setChannel:(RCChannel *)_channel {
-	channel = _channel;
-}
-- (RCChannel *)channel {
-	return channel;
 }
 
 - (void)setEntryFieldEnabled:(BOOL)en {
@@ -121,10 +111,9 @@
 	return YES;
 }
 
-- (BOOL)becomeFirstResponderNoAnimate {
+- (void)becomeFirstResponderNoAnimate {
 	[self repositionKeyboardForUse:YES animated:NO];
 	[field becomeFirstResponder];
-	return YES;
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
@@ -247,10 +236,6 @@
 }
 
 - (CGFloat)tableView:(UITableView *)_tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-	//	UITableViewCell *c = [self tableView:_tableView cellForRowAtIndexPath:indexPath];
-	//	[c layoutSubviews];
-	//	float height = (float)c.textLabel.frame.size.height + 4;
-	//	if (height == 4) height += 15;
 	RCMessage *m = [messages objectAtIndex:indexPath.row];
 	return ([[RCNavigator sharedNavigator] _isLandscape] ? m.messageHeightLandscape : m.messageHeight) + 4;
 }
@@ -276,7 +261,6 @@
     if (cell == nil) {
         cell = [[[RCChatCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
-	//	[cell _textHasBeenSet];
 	return cell;
 }
 
@@ -285,6 +269,9 @@
 	RCMessage *_message = [messages objectAtIndex:indexPath.row];
 	[cell setMessage:_message];
 	[cell _textHasBeenSet];
+	// this method above is heavy
+	// and is the reason for slow scrolling
+	// must work on a way around
 }
 
 - (float *)calculateHeightForLabel:(NSMutableAttributedString *)str {

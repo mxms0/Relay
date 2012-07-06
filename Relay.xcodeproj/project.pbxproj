@@ -60,6 +60,8 @@
 		5049386B14FAAAE3003221FC /* 0_chanbar_old@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5049386114FAAAE3003221FC /* 0_chanbar_old@2x.png */; };
 		5049387A14FB187D003221FC /* 0_joinbar.png in Resources */ = {isa = PBXBuildFile; fileRef = 5049387814FB187D003221FC /* 0_joinbar.png */; };
 		5049387B14FB187D003221FC /* 0_joinbar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5049387914FB187D003221FC /* 0_joinbar@2x.png */; };
+		5049F69515A66329004CA2B4 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5049F69415A66329004CA2B4 /* MediaPlayer.framework */; };
+		5049F69815A6700A004CA2B4 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5049F69715A6700A004CA2B4 /* AVFoundation.framework */; };
 		504B4DB8151D39DD0082A44D /* 0_chanbar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 504B4DB6151D39DD0082A44D /* 0_chanbar@2x.png */; };
 		504B4DB9151D39DD0082A44D /* 0_chanbar.png in Resources */ = {isa = PBXBuildFile; fileRef = 504B4DB7151D39DD0082A44D /* 0_chanbar.png */; };
 		504B4DBC151D3A040082A44D /* 0_navbar.png in Resources */ = {isa = PBXBuildFile; fileRef = 504B4DBA151D3A040082A44D /* 0_navbar.png */; };
@@ -210,6 +212,8 @@
 		5049387114FAC487003221FC /* 0_chatcell.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_chatcell.png; sourceTree = "<group>"; };
 		5049387814FB187D003221FC /* 0_joinbar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_joinbar.png; sourceTree = "<group>"; };
 		5049387914FB187D003221FC /* 0_joinbar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_joinbar@2x.png"; sourceTree = "<group>"; };
+		5049F69415A66329004CA2B4 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
+		5049F69715A6700A004CA2B4 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		504B4DB6151D39DD0082A44D /* 0_chanbar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_chanbar@2x.png"; sourceTree = "<group>"; };
 		504B4DB7151D39DD0082A44D /* 0_chanbar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_chanbar.png; sourceTree = "<group>"; };
 		504B4DBA151D3A040082A44D /* 0_navbar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_navbar.png; sourceTree = "<group>"; };
@@ -330,6 +334,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5049F69815A6700A004CA2B4 /* AVFoundation.framework in Frameworks */,
+				5049F69515A66329004CA2B4 /* MediaPlayer.framework in Frameworks */,
 				505234401556D938002EC9AC /* libz.dylib in Frameworks */,
 				5052343E1556D904002EC9AC /* libTestFlight.a in Frameworks */,
 				504C9B6D152D1E5A00F091B2 /* Security.framework in Frameworks */,
@@ -379,6 +385,8 @@
 			children = (
 				5052343F1556D938002EC9AC /* libz.dylib */,
 				5052343B1556D773002EC9AC /* libTestFlight.a */,
+				5049F69715A6700A004CA2B4 /* AVFoundation.framework */,
+				5049F69415A66329004CA2B4 /* MediaPlayer.framework */,
 				504C9B6C152D1E5A00F091B2 /* Security.framework */,
 				50221BA314EF6CB800C7AF58 /* CoreText.framework */,
 				5088C0DF14C4F89C001ADD06 /* CFNetwork.framework */,

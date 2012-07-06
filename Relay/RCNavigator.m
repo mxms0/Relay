@@ -250,7 +250,6 @@ static id _sharedNavigator = nil;
 }
 
 static RCChannelBubble *questionabubble = nil;
-static BOOL isShowing = NO;
 
 - (void)channelWantsSuicide:(RCChannelBubble *)bubble {
 	if (!isShowing) {

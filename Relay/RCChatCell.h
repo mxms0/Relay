@@ -22,4 +22,5 @@
 }
 @property (nonatomic, retain) OHAttributedLabel *textLabel;
 @property (nonatomic, retain) RCMessage *message;
+- (void)_textHasBeenSet;
 @end

@@ -422,24 +422,35 @@ UIImage *RCImageForRank(NSString *rank) {
 	[chan recievedMessage:msg from:[delegate useNick] type:RCMessageFlavorNormal];
 	[scan release];
 }
-- (void)handleSlashIPOD:(NSString *)cmd {
 
+- (NSString *)nowPlayingInfo {
     MPMusicPlayerController *musicPlayer = [MPMusicPlayerController iPodMusicPlayer];
-    if (!musicPlayer) return;
-    
+    if (!musicPlayer) return nil;
     MPMediaItem *currentItem = [musicPlayer nowPlayingItem];
     if (!currentItem) {
-        [self handleSlashME:@"is not currently listening to music."];
-        return;
-    }
-    
-    NSString *AlbumTitle = [currentItem valueForProperty:MPMediaItemPropertyAlbumTitle];
-    NSString *Artist = [currentItem valueForProperty:MPMediaItemPropertyArtist];
-    NSString *Song = [currentItem valueForProperty:MPMediaItemPropertyTitle];
-    NSNumber *duration = [currentItem valueForProperty:MPMediaItemPropertyPlaybackDuration];
-    
-    NSString *finalStr = [NSString stringWithFormat:@"is listening to %@ - %@, from the album %@ [%@ mins].",Artist, Song, AlbumTitle, duration];
-    
+        return nil;
+	}
+    NSString *finalStr = [NSString stringWithFormat:@"is listening to %@ by %@, from %@", [currentItem valueForProperty:MPMediaItemPropertyTitle], [currentItem valueForProperty:MPMediaItemPropertyArtist], [currentItem valueForProperty:MPMediaItemPropertyAlbumTitle]];
+	return finalStr;
+}
+
+- (void)handleSlashIPOD:(NSString *)cmd {
+	NSLog(@"meh %s", (char *)_cmd);
+	NSString *finalStr = @"is not currently listening to music.";
+	if (![NSThread isMainThread]) {
+		NSInvocation *vc = [[NSInvocation alloc] init];
+		[vc setTarget:self];
+		[vc setSelector:@selector(nowPlayingInfo)];
+		NSString *rt;
+		[vc getReturnValue:&rt];
+		[vc performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
+		if (rt) finalStr = rt;
+		[vc release];
+	}
+	else {
+		NSString *meh = [self nowPlayingInfo];;
+		if (meh) finalStr = meh;
+	}    
     [self handleSlashME:finalStr];
 
 
