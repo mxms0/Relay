@@ -1,0 +1,25 @@
+===============		
+	TO DO
+===============
+
+Reload all user lists/something more efficient in RCChannel
+Probably move all command loading systems to a singleton class to make the stack happy
+Fix the strange occurrences of when things don't appear, but exist. like channel bubbles every once in a while
+Fix the text field not appearing on joins (it's just the background image, if you rotate it fixes)
+Fix the popover rotation bugs, left orientation works fine, and portrait normal. Everything else is fucky.
+Add the new message/highlight bubbles to the RCPopoverWindow table view
+FIX THE KEYCHAIN SO IT CAN SAVE PASSWORDS !!!! !!!!!! !!! !!! !! !!! !!!
+Fix the scrolling bugs in the RCChatPanel like when the user is scrolling and a new message is displayed, etc.
+Improve table view scrolling drastically. (Involved NSMutableAttributedString attribute crap most likely.)
+Fix most of the stuff in the RCAddNetworkController, like the done button being disabled/enabled. (Behavior changes from simulator to device)
+Fix the channel manager, it shouldn't add the channels until the user clicks the done button.
+When the user does /join, it should immediately add the channel bubble, and then wait for the server response?
+Fix the text field looking disabled until someone interacts for some odd reason. It's only disabled when the channel is not joined etc.
+Fix some small stupid rotation bugs.
+Reload table views after rotation so cells don't look fucked up
+When the user selects a different network from the popover, it should select the channel he was previously on.
+Save scroll position somehow so when you return to a channel it's at the same position you were previously at.
+Vibrate on push notifications.
+Setup pulsing bar concept surenix made.
+Add support for channels with passwords! !! !!  (!IMPORTANT!)
+(The above also requires the keychain to work)
