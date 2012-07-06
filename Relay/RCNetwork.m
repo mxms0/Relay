@@ -242,6 +242,7 @@ char *RCIPForURL(NSString *URL) {
 			}
 		}
 	}
+	// this whole sendqueue shit needs to be cleaned up majorly.
 	NSLog(@"Adding to queue... %@:%d:%d",msg, (int)canWait, (int)isRegistered);
 	if (!sendQueue) sendQueue = [[NSMutableString alloc] init];
 	[sendQueue appendFormat:@"%@\r\n", msg];
