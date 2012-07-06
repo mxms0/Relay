@@ -14,6 +14,7 @@
 	if ((self = [super initWithStyle:style])) {
 		network = net;
 		channels = [[NSMutableArray alloc] initWithArray:[[net _channels] allKeys]];
+        pendingChannels = [[NSMutableArray alloc] init];
 		[channels removeObject:@"IRC"];
     }
     return self;
@@ -37,6 +38,11 @@
 		NSMutableArray *items = [[self.navigationItem.rightBarButtonItems mutableCopy] autorelease];
 		[items removeObject: addBtn];
 		self.navigationItem.rightBarButtonItems = items;
+
+        for (NSString *channel in pendingChannels) {
+            [network addChannel:channel join:NO];
+        }
+        [pendingChannels removeAllObjects];
 	}
 }
 
@@ -47,6 +53,8 @@
     [channels release];
     channels = nil;
     network = nil;
+    [pendingChannels release];
+    pendingChannels = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -101,7 +109,7 @@
         else 
             tempString = textField.text;
         [channels addObject:tempString];
-        [network addChannel:tempString join:NO];
+        [pendingChannels addObject:tempString];
         [self.tableView reloadData];
     }
 }
