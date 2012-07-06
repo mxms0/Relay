@@ -226,9 +226,6 @@ UIImage *RCImageForRank(NSString *rank) {
 		if (!iAmCurrent) [bubble setMentioned:YES];
 		if ([[RCNetworkManager sharedNetworkManager] isBG]) {
             
-            // Not sure if this is really necessary...
-            [[UIApplication sharedApplication] cancelAllLocalNotifications];
-            
 			UILocalNotification *nc = [[UILocalNotification alloc] init];
 			[nc setFireDate:[NSDate date]];
 			[nc setAlertBody:msg];

@@ -9,6 +9,7 @@
 #import "RCNetwork.h"
 #import "RCWelcomeNetwork.h"
 #import "RCKeychainItem.h"
+#import "PDKeychainBindings.h"
 
 @interface RCNetworkManager : NSObject {
 	BOOL isBG;

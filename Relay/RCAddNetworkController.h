@@ -13,6 +13,7 @@
 #import "RCAddCell.h"
 #import "RCChannelManager.h"
 #import "RCBasicViewController.h"
+#import "PDKeychainBindings.h"
 
 @interface RCAddNetworkController : RCBasicViewController <UITextFieldDelegate, UIScrollViewDelegate> {
 	RCNetwork *network;

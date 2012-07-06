@@ -168,14 +168,20 @@
 	}
 	if (![network port]) [network setPort:6667];
 	if (![network sDescription]) [network setSDescription:[network server]];
-	RCKeychainItem *wrapper = [[RCKeychainItem alloc] initWithIdentifier:[network _description] accessGroup:nil];
+	//RCKeychainItem *wrapper = [[RCKeychainItem alloc] initWithIdentifier:[network _description] accessGroup:nil];
+    PDKeychainBindings *keychain = [PDKeychainBindings sharedKeychainBindings];
+
 	if (([network spass] == nil) || [[network spass] isEqualToString:@""]) [network setSpass:@""];
 	else {
-		[wrapper setObject:[network spass] forKey:kSecValueData];
+		//[wrapper setObject:[network spass] forKey:kSecValueData];
+        [keychain setObject:[network spass] forKey:[NSString stringWithFormat:@"%@_spass",[network _description]]];
+
 	}
 	if (([network npass] == nil) || [[network npass] isEqualToString:@""]) [network setNpass:@""];
 	else {
-		[wrapper setObject:[network npass] forKey:N_PASS_KEY];
+		//[wrapper setObject:[network npass] forKey:N_PASS_KEY];
+        [keychain setObject:[network npass] forKey:[NSString stringWithFormat:@"%@_npass",[network _description]]];
+
 	}
 	if (isNew) {
 		[network setupRooms:[NSArray arrayWithObject:@"IRC"]];
@@ -187,8 +193,9 @@
 	if (!isNew)
 		[[RCNetworkManager sharedNetworkManager] saveNetworks];
 	[self doneWithJoin];
-	[wrapper release];
-	wrapper = nil;
+	//[wrapper release];
+	//wrapper = nil;
+    keychain = nil;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView indentationLevelForRowAtIndexPath:(NSIndexPath *)indexPath {

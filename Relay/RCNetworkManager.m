@@ -30,12 +30,17 @@ static NSMutableArray *networks = nil;
 			return;
 		}
 	}
-	RCKeychainItem *wrapper = [[RCKeychainItem alloc] initWithIdentifier:[network _description] accessGroup:nil];
+	//RCKeychainItem *wrapper = [[RCKeychainItem alloc] initWithIdentifier:[network _description] accessGroup:nil];
+    PDKeychainBindings *keychain = [PDKeychainBindings sharedKeychainBindings];
+
 	if ([[info objectForKey:S_PASS_KEY] boolValue]) {
-		[network setSpass:([wrapper objectForKey:S_PASS_KEY] ?: @"")];
+        //[network setSpass:([wrapper objectForKey:S_PASS_KEY] ?: @"")];
+		[network setSpass:([keychain objectForKey:[NSString stringWithFormat:@"%@_spass",[network _description]]] ?: @"")];
 	}
 	if ([[info objectForKey:N_PASS_KEY] boolValue]) {
-		[network setNpass:([wrapper objectForKey:N_PASS_KEY] ?: @"")];
+		//[network setNpass:([wrapper objectForKey:N_PASS_KEY] ?: @"")];
+        [network setNpass:([keychain objectForKey:[NSString stringWithFormat:@"%@_npass",[network _description]]] ?: @"")];
+
 	}
 	NSMutableArray *rooms = [[[info objectForKey:CHANNELS_KEY] mutableCopy] autorelease];
 	if (!rooms) rooms = [[NSMutableArray alloc] init];

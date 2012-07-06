@@ -25,8 +25,7 @@
 		iAmCurrent = [[[[RCNavigator sharedNavigator] currentPanel] channel] isEqual:self];
 	if (!iAmCurrent) [bubble setMentioned:YES];
 	if ([[RCNetworkManager sharedNetworkManager] isBG]) {
-        [[UIApplication sharedApplication] cancelAllLocalNotifications];
-        
+
         UILocalNotification *nc = [[UILocalNotification alloc] init];
         [nc setFireDate:[NSDate date]];
         [nc setAlertBody:msg];
