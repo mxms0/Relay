@@ -11,7 +11,7 @@
 
 @implementation RCNetwork
 
-@synthesize sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _bubbles;
+@synthesize sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _bubbles, _nicknames;
 
 - (id)init {
 	if ((self = [super init])) {
@@ -22,6 +22,9 @@
 		_bubbles = [[NSMutableArray alloc] init];
 		_channels = [[NSMutableDictionary alloc] init];
 		_isDiconnecting = NO;
+        _nicknames = [[NSMutableArray alloc] init];
+        if ([self useNick])
+            [_nicknames addObject:[self useNick]];
 	}
 	return self;
 }
@@ -52,6 +55,7 @@
 	[spass release];
 	[npass release];
 	[sDescription release];
+    [_nicknames release];
 	[super dealloc];
 }
 

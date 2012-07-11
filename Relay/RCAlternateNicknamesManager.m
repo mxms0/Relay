@@ -1,33 +1,32 @@
 //
-//  RCRoomsController.m
+//  RCAlternateNicknamesManager.m
 //  Relay
 //
-//  Created by Max Shavrick on 3/24/12.
+//  Created by David Murray on 12-07-10.
 //  Copyright (c) 2012 American Heritage School. All rights reserved.
 //
 
-#import "RCChannelManager.h"
+#import "RCAlternateNicknamesManager.h"
 
-@implementation RCChannelManager
+@implementation RCAlternateNicknamesManager
 
 - (id)initWithStyle:(UITableViewStyle)style andNetwork:(RCNetwork *)net {
-	if ((self = [super initWithStyle:style])) {
-		network = net;
-        titleView.text = @"Channels";
-		channels = [[NSMutableArray alloc] initWithArray:[[net _channels] allKeys]];
-        pendingChannels = [[NSMutableArray alloc] init];
-		[channels removeObject:@"IRC"];
+    self = [super initWithStyle:style];
+    if (self) {
+        
+        //XXX: Should I retain it?
+        network = net;
+        titleView.text = @"Nicknames"; //Doesn't fit. >_<
+        
+        if ([network nick])
+            nicknames = [[NSMutableArray alloc] initWithArray:[network _nicknames]];
+        else 
+            nicknames = [[NSMutableArray alloc] initWithArray:[NSArray arrayWithObject:@"Guest01"]];
+        
     }
     return self;
 }
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-	[self.tableView reloadData];
-    addBtn = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addNewItem)];
-    NSArray *array = [NSArray arrayWithObjects:self.editButtonItem, nil];
-    [self.navigationItem setRightBarButtonItems:array animated:YES];
-}
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated { 
     [super setEditing:editing animated:animated];
 	if (editing) {
@@ -39,27 +38,7 @@
 		NSMutableArray *items = [[self.navigationItem.rightBarButtonItems mutableCopy] autorelease];
 		[items removeObject: addBtn];
 		self.navigationItem.rightBarButtonItems = items;
-
-        for (NSString *channel in pendingChannels) {
-            [network addChannel:channel join:NO];
-        }
-        [pendingChannels removeAllObjects];
-	}
-}
-
-- (void)viewDidUnload {
-    [super viewDidUnload];
-    [addBtn release];
-    addBtn = nil;
-    [channels release];
-    channels = nil;
-    network = nil;
-    [pendingChannels release];
-    pendingChannels = nil;
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    return YES;
+    }
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -67,7 +46,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	return [channels count];
+	return [nicknames count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -79,15 +58,14 @@
 		cell.textLabel.font = [UIFont boldSystemFontOfSize:14];
 		cell.textLabel.textColor = UIColorFromRGB(0x545758);
 	}
-	cell.textLabel.text = [channels objectAtIndex:indexPath.row];
+	cell.textLabel.text = [nicknames objectAtIndex:indexPath.row];
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-		RCChannel *chan = [network channelWithChannelName:[channels objectAtIndex:indexPath.row]];
-        [network removeChannel:chan];
-        [channels removeObjectAtIndex:indexPath.row];
+        //implement server removing shit crap
+        [nicknames removeObjectAtIndex:indexPath.row];
         [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }   
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
@@ -96,7 +74,7 @@
 }
 
 - (void)addNewItem {
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Add New Channel" message:@"Enter the channel name below" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Add channel", nil];
+    UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Add New Nickname" message:@"Enter the nickname below" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Add nickname", nil];
     [av setAlertViewStyle:UIAlertViewStylePlainTextInput];
     [av show];
     [av release];                           
@@ -104,13 +82,7 @@
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {  
     if (buttonIndex == 1) {
         UITextField *textField = [alertView textFieldAtIndex:0];
-        NSString *tempString = @"#";
-		if (![textField.text hasPrefix:@"#"])
-			tempString = [tempString stringByAppendingString:textField.text];  
-        else 
-            tempString = textField.text;
-        [channels addObject:tempString];
-        [pendingChannels addObject:tempString];
+        [nicknames addObject:[textField text]];
         [self.tableView reloadData];
     }
 }
@@ -129,4 +101,34 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    [self.tableView reloadData];
+    
+    addBtn = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addNewItem)];
+    NSArray *array = [NSArray arrayWithObjects:self.editButtonItem, nil];
+    [self.navigationItem setRightBarButtonItems:array animated:YES];
+
+	// Do any additional setup after loading the view.
+}
+
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+    
+    [addBtn release];
+    addBtn = nil;
+    [nicknames release];
+    nicknames = nil;
+    network = nil;
+
+    // Release any retained subviews of the main view.
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
 @end

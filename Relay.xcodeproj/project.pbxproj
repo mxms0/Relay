@@ -146,6 +146,7 @@
 		50EEDA301512CA520011618C /* 0_mListr@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50EEDA2F1512CA520011618C /* 0_mListr@2x.png */; };
 		50FC091E1583BA610019DB14 /* RCChannelManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5038C8311583B8E4004BA602 /* RCChannelManager.m */; };
 		7EF931D9159A137B0031CDD0 /* RCBarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF931D8159A137B0031CDD0 /* RCBarButton.m */; };
+		AA503EEF15AD2C5A00EF223E /* RCAlternateNicknamesManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AA503EEE15AD2C5A00EF223E /* RCAlternateNicknamesManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -335,6 +336,8 @@
 		50EEDA2F1512CA520011618C /* 0_mListr@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_mListr@2x.png"; sourceTree = "<group>"; };
 		7EF931D7159A137B0031CDD0 /* RCBarButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCBarButton.h; sourceTree = "<group>"; };
 		7EF931D8159A137B0031CDD0 /* RCBarButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCBarButton.m; sourceTree = "<group>"; };
+		AA503EED15AD2C5A00EF223E /* RCAlternateNicknamesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCAlternateNicknamesManager.h; sourceTree = "<group>"; };
+		AA503EEE15AD2C5A00EF223E /* RCAlternateNicknamesManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCAlternateNicknamesManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -532,6 +535,8 @@
 				50E9BEC115A13C9900121507 /* RCBasicViewController.m */,
 				5038C8301583B8E4004BA602 /* RCChannelManager.h */,
 				5038C8311583B8E4004BA602 /* RCChannelManager.m */,
+				AA503EED15AD2C5A00EF223E /* RCAlternateNicknamesManager.h */,
+				AA503EEE15AD2C5A00EF223E /* RCAlternateNicknamesManager.m */,
 				50929EB8151E86FA007E23D3 /* RCiPadViewController.h */,
 				50929EB9151E86FA007E23D3 /* RCiPadViewController.m */,
 				50E77A641505A17800E75C64 /* RCViewController.h */,
@@ -813,6 +818,7 @@
 				50E9BEC215A13C9900121507 /* RCBasicViewController.m in Sources */,
 				501D895015AD08C100366019 /* PDKeychainBindings.m in Sources */,
 				501D895115AD08C100366019 /* PDKeychainBindingsController.m in Sources */,
+				AA503EEF15AD2C5A00EF223E /* RCAlternateNicknamesManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
