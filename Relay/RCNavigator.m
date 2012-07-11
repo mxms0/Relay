@@ -283,7 +283,6 @@ static RCChannelBubble *questionabubble = nil;
 	[[[currentPanel channel] bubble] _setSelected:NO];
 	[bubble _setSelected:YES];
 	RCChannel *chan = [currentNetwork channelWithChannelName:bubble.titleLabel.text];
-	NSLog(@"Meh %@ %@", currentNetwork, chan);
 	if (chan) {
 		if ([currentPanel isFirstResponder])
 			[[chan panel] becomeFirstResponderNoAnimate];
