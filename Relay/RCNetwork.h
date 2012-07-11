@@ -27,7 +27,6 @@ typedef enum RCSocketStatus {
 	RCSocketStatusConnecting,
 	RCSocketStatusConnected,
 	RCSocketStatusError,
-	RCSocketStatusNotOpen,
 	RCSocketStatusClosed
 } RCSocketStatus;
 

@@ -110,7 +110,7 @@
 	if (_highlighted == mentioned) return;
 	_highlighted = mentioned;
 	if (_highlighted) {
-		[[self titleLabel] setTextColor:[UIColor redColor]];
+		[[self titleLabel] setTextColor:UIColorFromRGB(0xDA4156)];
 //		[[RCNavigator sharedNavigator] addCount:1 forIndex:_index];
 	}
 	else {

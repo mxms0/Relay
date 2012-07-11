@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		501D895015AD08C100366019 /* PDKeychainBindings.m in Sources */ = {isa = PBXBuildFile; fileRef = 501D894D15AD08C100366019 /* PDKeychainBindings.m */; };
+		501D895115AD08C100366019 /* PDKeychainBindingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 501D894F15AD08C100366019 /* PDKeychainBindingsController.m */; };
 		501F2B3115098C6C0099C9C3 /* 0_shadow_t.png in Resources */ = {isa = PBXBuildFile; fileRef = 501F2B2F15098C6C0099C9C3 /* 0_shadow_t.png */; };
 		501F2B3215098C6C0099C9C3 /* 0_shadow_t@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 501F2B3015098C6C0099C9C3 /* 0_shadow_t@2x.png */; };
 		501F2B3D150995DE0099C9C3 /* RCTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 501F2B3C150995DE0099C9C3 /* RCTableView.m */; };
@@ -146,6 +148,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		501D894C15AD08C100366019 /* PDKeychainBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDKeychainBindings.h; sourceTree = "<group>"; };
+		501D894D15AD08C100366019 /* PDKeychainBindings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDKeychainBindings.m; sourceTree = "<group>"; };
+		501D894E15AD08C100366019 /* PDKeychainBindingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDKeychainBindingsController.h; sourceTree = "<group>"; };
+		501D894F15AD08C100366019 /* PDKeychainBindingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDKeychainBindingsController.m; sourceTree = "<group>"; };
 		501F2B2F15098C6C0099C9C3 /* 0_shadow_t.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_shadow_t.png; sourceTree = "<group>"; };
 		501F2B3015098C6C0099C9C3 /* 0_shadow_t@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_shadow_t@2x.png"; sourceTree = "<group>"; };
 		501F2B3B150995DE0099C9C3 /* RCTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTableView.h; sourceTree = "<group>"; };
@@ -578,6 +584,10 @@
 				50929EB5151E65F1007E23D3 /* RCPMChannel.m */,
 				50E77A7C1505A21500E75C64 /* RCConsoleChannel.h */,
 				50E77A7D1505A21500E75C64 /* RCConsoleChannel.m */,
+				501D894C15AD08C100366019 /* PDKeychainBindings.h */,
+				501D894D15AD08C100366019 /* PDKeychainBindings.m */,
+				501D894E15AD08C100366019 /* PDKeychainBindingsController.h */,
+				501D894F15AD08C100366019 /* PDKeychainBindingsController.m */,
 				50E77A7E1505A21500E75C64 /* RCMessage.h */,
 				50E77A7F1505A21500E75C64 /* RCMessage.m */,
 				50E77A801505A21500E75C64 /* RCNetwork.h */,
@@ -797,6 +807,8 @@
 				7EF931D9159A137B0031CDD0 /* RCBarButton.m in Sources */,
 				504706E5159FBA2000C3E256 /* RCWelcomeChannel.m in Sources */,
 				50E9BEC215A13C9900121507 /* RCBasicViewController.m in Sources */,
+				501D895015AD08C100366019 /* PDKeychainBindings.m in Sources */,
+				501D895115AD08C100366019 /* PDKeychainBindingsController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

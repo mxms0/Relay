@@ -15,14 +15,13 @@
 
 - (id)init {
 	if ((self = [super init])) {
-		status = RCSocketStatusNotOpen;
+		status = RCSocketStatusClosed;
 		shouldSave = NO;
 		isRegistered = NO;
 		canSend = YES;
 		_bubbles = [[NSMutableArray alloc] init];
 		_channels = [[NSMutableDictionary alloc] init];
 		_isDiconnecting = NO;
-//      sDescription = @"(No Description)";
 	}
 	return self;
 }
@@ -296,17 +295,16 @@ char *RCIPForURL(NSString *URL) {
 - (BOOL)disconnect {
 	if (_isDiconnecting) return NO;
 	_isDiconnecting = YES;
-	if (status == RCSocketStatusNotOpen) return NO;
+	if (status == RCSocketStatusClosed) return NO;
 	if ((status == RCSocketStatusConnected) || (status == RCSocketStatusConnecting)) {
 		[self sendMessage:@"QUIT :Relay 1.0"];
-	}	
-	if (!(status == RCSocketStatusClosed) && !(status == RCSocketStatusNotOpen)) {
 		status = RCSocketStatusClosed;
 		if (sendQueue) [sendQueue release];
 		sendQueue = nil;
+		close(sockfd);
 		[[UIApplication sharedApplication] endBackgroundTask:task];
 		task = UIBackgroundTaskInvalid;
-		status = RCSocketStatusNotOpen;
+		status = RCSocketStatusClosed;
 		isRegistered = NO;
 		for (NSString *chan in [_channels allKeys]) {
 			RCChannel *_chan = [self channelWithChannelName:chan];
@@ -334,6 +332,7 @@ char *RCIPForURL(NSString *URL) {
 }
 
 - (void)handle001:(NSString *)welcome {
+	status = RCSocketStatusConnected;
 	[self networkDidRegister:YES];
 	NSLog(@"hi regs.");
 	NSScanner *scanner = [[NSScanner alloc] initWithString:welcome];

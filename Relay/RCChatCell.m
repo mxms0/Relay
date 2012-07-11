@@ -56,7 +56,7 @@
 		case RCMessageFlavorNormal:
 			if ([message highlight]) {
 				if (![message isOld])
-					[attr setTextColor:[UIColor redColor]];
+					[attr setTextColor:UIColorFromRGB(0xDA4156)];
 				else [attr setTextColor:UIColorFromRGB(0xB6BCCC)];
 			}
 			NSRange p = [self.textLabel.text rangeOfString:@"]"];
