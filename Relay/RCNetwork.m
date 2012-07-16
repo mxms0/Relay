@@ -746,7 +746,18 @@ char *RCIPForURL(NSString *URL) {
 	}
 	[_scanner release];
 }
+- (void)handleINVITE:(NSString *)invite {
+    
+    NSRange channelRange = [invite rangeOfString:@"#"];
+    
+    if (channelRange.location == NSNotFound)
+        return;
+    
+    NSRange finalRange = NSMakeRange(channelRange.location, invite.length-channelRange.location);    
+    NSString *channel = [invite substringWithRange:finalRange];
 
+    [self addChannel:channel join:YES];
+}
 - (void)handleKICK:(NSString *)aKick {
 	// [NSString stringWithFormat:@"%@ %@", from, msg]
 	// sending the from, must be User kicked user, and msg must be the reason, 
