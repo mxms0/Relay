@@ -13,6 +13,7 @@
 #import "RCChannelBubble.h"
 #import "RCUserListPanel.h"
 #import "RCUserTableCell.h"
+#import "RCDateManager.h"
 
 typedef enum RCMessageType {
 	RCMessageTypeAction,

@@ -176,12 +176,7 @@ UIImage *RCImageForRank(NSString *rank) {
 	RCMessageFlavor flavor;
 	NSString *msg = @"";
 	NSString *time = @"";
-	NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-	dateFormatter.dateStyle = NSDateFormatterNoStyle;
-	dateFormatter.PMSymbol = @"";
-	dateFormatter.AMSymbol = @"";
-	dateFormatter.timeStyle = NSDateFormatterShortStyle;
-	time = [dateFormatter stringFromDate:[NSDate date]];
+	time = [[RCDateManager sharedInstance] currentDateAsString];
 	if ([time hasSuffix:@" "])
 		time = [time substringToIndex:time.length-1];
 	switch (type) {
@@ -208,7 +203,6 @@ UIImage *RCImageForRank(NSString *rank) {
 	if (flavor != RCMessageFlavorNormalE && flavor != RCMessageFlavorNotice) isHighlight =  ([message rangeOfString:[delegate useNick] options:NSCaseInsensitiveSearch].location != NSNotFound);
 	[panel postMessage:msg withFlavor:flavor highlight:isHighlight isMine:([from isEqualToString:[delegate useNick]])];
 	[self shouldPost:isHighlight withMessage:msg];
-	[dateFormatter release];
 	[msg release];
 	[p drain];
 	return;

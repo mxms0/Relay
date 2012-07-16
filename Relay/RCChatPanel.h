@@ -11,6 +11,7 @@
 #import "RCTableView.h"
 #import "RCTextField.h"
 #import "RCMessage.h"
+#import "RCTextFieldBackgroundView.h"
 
 @interface NSObject (Stuff)
 - (id)performSelector:(SEL)selector onThread:(NSThread *)aThread withObject:(id)p1 withObject:(id)p2 withObject:(id)p3 withObject:(id)p4;
@@ -24,7 +25,7 @@
 	NSMutableString *currentWord;
 	NSString *prev;
 	UITextField *field;
-	UIView *_bar;
+	RCTextFieldBackgroundView *_bar;
 }
 @property (nonatomic, assign) RCChannel *channel;
 @property (nonatomic, retain) RCTableView *tableView;

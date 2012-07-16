@@ -33,7 +33,7 @@
 	#define TEAM_TOKEN @"35b8aa0d259ae0c61c57bc770aeafe63_Mzk5NDYyMDExLTExLTA5IDE4OjQ0OjEwLjc4MTM3MQ"
 	#define USE_PRIVATE 1
 	#define _deg(x) ((x * M_PI)/180.0)
-#define UIApp [UIApplication sharedApplication]
+	#define UIApp [UIApplication sharedApplication]
 	typedef NSMutableAttributedString CHAttributedString;
 #endif
 

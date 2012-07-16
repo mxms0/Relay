@@ -10,12 +10,11 @@
 #import "RCNetwork.h"
 #import "RCAddCell.h"
 
-@interface RCAlternateNicknamesManager : RCBasicViewController
-{
+@interface RCAlternateNicknamesManager : RCBasicViewController {
     RCNetwork *network;
     NSMutableArray *nicknames;
     UIBarButtonItem *addBtn;
 }
 - (id)initWithStyle:(UITableViewStyle)style andNetwork:(RCNetwork *)net;
-- (void)addNewItem;
+- (void)presentAddAlert;
 @end

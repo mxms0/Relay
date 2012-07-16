@@ -25,6 +25,10 @@
 }
 
 - (void)layoutChannels:(NSArray *)channels {
+	if (![NSThread isMainThread]) {
+		[self performSelectorOnMainThread:_cmd withObject:channels waitUntilDone:NO];
+		return;
+	}
 	if ([[self gestureRecognizers] count] != 0) {
 		for (id recog in [self gestureRecognizers]) {
 			if ([recog isKindOfClass:[UITapGestureRecognizer class]]) [self removeGestureRecognizer:recog];

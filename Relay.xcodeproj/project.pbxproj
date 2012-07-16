@@ -40,6 +40,8 @@
 		503050201521389B002AAA44 /* 0_chatcell_12.png in Resources */ = {isa = PBXBuildFile; fileRef = 5030501A1521389B002AAA44 /* 0_chatcell_12.png */; };
 		503050211521389B002AAA44 /* 0_chatcell_12@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5030501B1521389B002AAA44 /* 0_chatcell_12@2x.png */; };
 		503742291511478300F4DA1A /* RCUserListPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 503742281511478300F4DA1A /* RCUserListPanel.m */; };
+		50376D2A15B3CCAD00E13006 /* RCDateManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 50376D2915B3CCAD00E13006 /* RCDateManager.m */; };
+		50376D2E15B3D1D700E13006 /* RCTextFieldBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50376D2D15B3D1D700E13006 /* RCTextFieldBackgroundView.m */; };
 		503790FA1512BD4100EE2A7E /* RCUserTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 503790F91512BD4100EE2A7E /* RCUserTableCell.m */; };
 		50381AC21519803100BE93CE /* 0_cancelbutton_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 50381AAC1519802E00BE93CE /* 0_cancelbutton_normal.png */; };
 		50381AC31519803100BE93CE /* 0_cancelbutton_normal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50381AAD1519802F00BE93CE /* 0_cancelbutton_normal@2x.png */; };
@@ -190,6 +192,10 @@
 		503399E71505A0EC004C4D28 /* shadow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shadow@2x.png"; sourceTree = "<group>"; };
 		503742271511478300F4DA1A /* RCUserListPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCUserListPanel.h; sourceTree = "<group>"; };
 		503742281511478300F4DA1A /* RCUserListPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCUserListPanel.m; sourceTree = "<group>"; };
+		50376D2815B3CCAD00E13006 /* RCDateManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCDateManager.h; sourceTree = "<group>"; };
+		50376D2915B3CCAD00E13006 /* RCDateManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCDateManager.m; sourceTree = "<group>"; };
+		50376D2C15B3D1D700E13006 /* RCTextFieldBackgroundView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTextFieldBackgroundView.h; sourceTree = "<group>"; };
+		50376D2D15B3D1D700E13006 /* RCTextFieldBackgroundView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTextFieldBackgroundView.m; sourceTree = "<group>"; };
 		503790F81512BD4100EE2A7E /* RCUserTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCUserTableCell.h; sourceTree = "<group>"; };
 		503790F91512BD4100EE2A7E /* RCUserTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCUserTableCell.m; sourceTree = "<group>"; };
 		50381AAC1519802E00BE93CE /* 0_cancelbutton_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_cancelbutton_normal.png; sourceTree = "<group>"; };
@@ -531,6 +537,8 @@
 		50A7FBA914C0F7DC00ABADEA /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				50376D2C15B3D1D700E13006 /* RCTextFieldBackgroundView.h */,
+				50376D2D15B3D1D700E13006 /* RCTextFieldBackgroundView.m */,
 				50E9BEC015A13C9900121507 /* RCBasicViewController.h */,
 				50E9BEC115A13C9900121507 /* RCBasicViewController.m */,
 				5038C8301583B8E4004BA602 /* RCChannelManager.h */,
@@ -582,6 +590,8 @@
 		50A7FBAA14C0F7E200ABADEA /* Backend */ = {
 			isa = PBXGroup;
 			children = (
+				50376D2815B3CCAD00E13006 /* RCDateManager.h */,
+				50376D2915B3CCAD00E13006 /* RCDateManager.m */,
 				50E77A761505A21500E75C64 /* NSString+Comparing.h */,
 				50E77A771505A21500E75C64 /* NSString+Comparing.m */,
 				50E77A781505A21500E75C64 /* RCAppDelegate.h */,
@@ -819,6 +829,8 @@
 				501D895015AD08C100366019 /* PDKeychainBindings.m in Sources */,
 				501D895115AD08C100366019 /* PDKeychainBindingsController.m in Sources */,
 				AA503EEF15AD2C5A00EF223E /* RCAlternateNicknamesManager.m in Sources */,
+				50376D2A15B3CCAD00E13006 /* RCDateManager.m in Sources */,
+				50376D2E15B3D1D700E13006 /* RCTextFieldBackgroundView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

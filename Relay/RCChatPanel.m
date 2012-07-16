@@ -56,9 +56,13 @@
 		messages = [[NSMutableArray alloc] init];
 		currentWord = [[NSMutableString alloc] init];
 		prev = @"";
-		_bar = [[UIView alloc] initWithFrame:CGRectMake(0, 343, 320, 40)];
+		_bar = [[RCTextFieldBackgroundView alloc] initWithFrame:CGRectMake(0, 343, 320, 40)];
 		[_bar setOpaque:NO];
-		[_bar setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"0_input"]]];
+		//	UIImage *bg = [UIImage imageNamed:@"0_input"];
+		//NSLog(@"Meh %@", bg);
+		//UIColor *cc = [UIColor colorWithPatternImage:bg];
+		//NSLog(@"meh_ %@", cc);
+		//[_bar performSelectorOnMainThread:@selector(setBackgroundColor:) withObject:cc waitUntilDone:NO];
 		field = [[RCTextField alloc] initWithFrame:CGRectMake(15, 5, 295, 31)];
 		[field setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
 		[field setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
@@ -156,13 +160,8 @@
 	[_bar setFrame:[self frameForInputField:key]];
 	field.frame = CGRectMake(15, 5, _bar.frame.size.width-30, 31);
 	if (anim) [UIView commitAnimations];
-	if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
-		[_bar setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"0_input_l"]]];
-	}
-	else {
-		[_bar setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"0_input"]]];	
-	}
 	[self.tableView setFrame:CGRectMake(0, 0, _bar.frame.size.width, _bar.frame.origin.y)];
+	[_bar performSelectorOnMainThread:@selector(setNeedsDisplay) withObject:nil waitUntilDone:NO];
 	if (key) if ([messages count] != 0) [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 }
 

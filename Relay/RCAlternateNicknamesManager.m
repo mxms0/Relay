@@ -11,10 +11,7 @@
 @implementation RCAlternateNicknamesManager
 
 - (id)initWithStyle:(UITableViewStyle)style andNetwork:(RCNetwork *)net {
-    self = [super initWithStyle:style];
-    if (self) {
-        
-        //XXX: Should I retain it?
+	if ((self = [super initWithStyle:style])) {
         network = net;
         titleView.text = @"Nicknames"; //Doesn't fit. >_<
         
@@ -73,7 +70,7 @@
     }   
 }
 
-- (void)addNewItem {
+- (void)presentAddAlert {
     UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Add New Nickname" message:@"Enter the nickname below" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Add nickname", nil];
     [av setAlertViewStyle:UIAlertViewStylePlainTextInput];
     [av show];
@@ -88,47 +85,38 @@
 }
 
 - (BOOL)alertViewShouldEnableFirstOtherButton:(UIAlertView *)alertView {
-    NSString *inputText = [[alertView textFieldAtIndex:0] text];
-    if([inputText length] > 0) {
-        return YES;
-    }
-    else {
-        return NO;
-    }
+	NSString *inputText = [[alertView textFieldAtIndex:0] text];
+    if ([inputText length] > 0) {
+		return YES;
+	}
+	else {
+		return NO;
+	}
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
-    
     [self.tableView reloadData];
-    
-    addBtn = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addNewItem)];
+    addBtn = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(presentAddAlert)];
     NSArray *array = [NSArray arrayWithObjects:self.editButtonItem, nil];
     [self.navigationItem setRightBarButtonItems:array animated:YES];
-
-	// Do any additional setup after loading the view.
 }
 
-- (void)viewDidUnload
-{
+- (void)viewDidUnload {
     [super viewDidUnload];
-    
     [addBtn release];
     addBtn = nil;
     [nicknames release];
     nicknames = nil;
     network = nil;
-
-    // Release any retained subviews of the main view.
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
+
 @end
