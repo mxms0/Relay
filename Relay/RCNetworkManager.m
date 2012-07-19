@@ -66,12 +66,12 @@ static NSMutableArray *networks = nil;
 		NSLog(@"Meh %@", networks);
 	[networks addObject:_net];
 	[[RCNavigator sharedNavigator] addNetwork:_net];
-	if ([_net COL]) [_net performSelectorInBackground:@selector(_connect) withObject:nil];
+	if ([_net COL]) [_net connect];
 	[self saveNetworks];
 }
 
 - (void)finishSetupForNetwork:(RCNetwork *)net {
-	if ([net COL]) [net performSelector:@selector(_connect) withObject:nil];
+	if ([net COL]) [net connect];
 }
 
 - (void)removeNet:(RCNetwork *)net {

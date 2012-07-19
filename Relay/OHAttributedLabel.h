@@ -47,7 +47,7 @@ CTLineBreakMode CTLineBreakModeFromUILineBreakMode(UILineBreakMode lineBreakMode
 #define UITextAlignmentJustify ((UITextAlignment)kCTJustifiedTextAlignment)
 
 @interface OHAttributedLabel : UILabel {
-	CHAttributedString *_attributedText;
+	RCAttributedString *_attributedText;
 	CTFrameRef textFrame;
 	CGRect drawingRect;
 	NSMutableArray *customLinks;
@@ -55,7 +55,7 @@ CTLineBreakMode CTLineBreakModeFromUILineBreakMode(UILineBreakMode lineBreakMode
 	CGPoint touchStartPoint;
 }
 
-@property (nonatomic, copy) CHAttributedString* attributedText;
+@property (nonatomic, copy) RCAttributedString* attributedText;
 - (void)resetAttributedText;
 @property (nonatomic, assign) NSTextCheckingTypes automaticallyAddLinksForType;
 @property (nonatomic, retain) UIColor *linkColor;

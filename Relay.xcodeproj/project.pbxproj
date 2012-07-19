@@ -52,6 +52,7 @@
 		5045752B159570460092CB31 /* RCNetworkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5045752A159570450092CB31 /* RCNetworkCell.m */; };
 		50468A8D1527E46D0025F405 /* 0_input_l.png in Resources */ = {isa = PBXBuildFile; fileRef = 50468A8B1527E46D0025F405 /* 0_input_l.png */; };
 		50468A8E1527E46D0025F405 /* 0_input_l@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50468A8C1527E46D0025F405 /* 0_input_l@2x.png */; };
+		50468D8515B792B9005BC3EA /* RCChatCellContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50468D8415B792B9005BC3EA /* RCChatCellContentView.m */; };
 		504706E5159FBA2000C3E256 /* RCWelcomeChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 504706E4159FBA2000C3E256 /* RCWelcomeChannel.m */; };
 		50472B83151ABDEA0083D691 /* 0_toggle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50472B81151ABDEA0083D691 /* 0_toggle@2x.png */; };
 		50472B84151ABDEA0083D691 /* 0_toggle.png in Resources */ = {isa = PBXBuildFile; fileRef = 50472B82151ABDEA0083D691 /* 0_toggle.png */; };
@@ -211,6 +212,8 @@
 		5045752A159570450092CB31 /* RCNetworkCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCNetworkCell.m; sourceTree = "<group>"; };
 		50468A8B1527E46D0025F405 /* 0_input_l.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_input_l.png; sourceTree = "<group>"; };
 		50468A8C1527E46D0025F405 /* 0_input_l@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_input_l@2x.png"; sourceTree = "<group>"; };
+		50468D8315B792B9005BC3EA /* RCChatCellContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCChatCellContentView.h; sourceTree = "<group>"; };
+		50468D8415B792B9005BC3EA /* RCChatCellContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCChatCellContentView.m; sourceTree = "<group>"; };
 		504706E3159FBA2000C3E256 /* RCWelcomeChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCWelcomeChannel.h; sourceTree = "<group>"; };
 		504706E4159FBA2000C3E256 /* RCWelcomeChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCWelcomeChannel.m; sourceTree = "<group>"; };
 		50472B81151ABDEA0083D691 /* 0_toggle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_toggle@2x.png"; sourceTree = "<group>"; };
@@ -553,6 +556,8 @@
 				50E77A671505A18700E75C64 /* RCChatPanel.m */,
 				50E77A681505A1AC00E75C64 /* RCChatCell.h */,
 				50E77A691505A1AC00E75C64 /* RCChatCell.m */,
+				50468D8315B792B9005BC3EA /* RCChatCellContentView.h */,
+				50468D8415B792B9005BC3EA /* RCChatCellContentView.m */,
 				503790F81512BD4100EE2A7E /* RCUserTableCell.h */,
 				503790F91512BD4100EE2A7E /* RCUserTableCell.m */,
 				50E77A6A1505A1B500E75C64 /* RCChannelBubble.h */,
@@ -831,6 +836,7 @@
 				AA503EEF15AD2C5A00EF223E /* RCAlternateNicknamesManager.m in Sources */,
 				50376D2A15B3CCAD00E13006 /* RCDateManager.m in Sources */,
 				50376D2E15B3D1D700E13006 /* RCTextFieldBackgroundView.m in Sources */,
+				50468D8515B792B9005BC3EA /* RCChatCellContentView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

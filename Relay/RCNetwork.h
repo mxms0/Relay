@@ -74,7 +74,7 @@ typedef enum RCSocketStatus {
 @property (nonatomic, assign) BOOL COL;
 - (RCChannel *)channelWithChannelName:(NSString *)chan;
 - (NSString *)_description;
-- (BOOL)connect;
+- (void)connect;
 - (BOOL)disconnect;
 - (BOOL)isConnected;
 - (BOOL)sendMessage:(NSString *)msg;

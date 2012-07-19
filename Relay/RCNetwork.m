@@ -125,7 +125,12 @@
 
 #pragma mark - SOCKET STUFF
 
+- (void)connect {
+	[self performSelectorInBackground:@selector(_connect) withObject:nil];
+}
+
 - (void)_connect {
+	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	canSend = YES;
 	isRegistered = NO;
 	if (sendQueue) [sendQueue release];
@@ -208,6 +213,7 @@
 		msg = nil;
 		usleep(30);
 	}
+	[p drain];
 }
 
 char *RCIPForURL(NSString *URL) {
@@ -230,7 +236,7 @@ char *RCIPForURL(NSString *URL) {
 	return [self sendMessage:msg canWait:YES];
 }
 
-- (BOOL)sendMessage:(NSString *)msg canWait:(BOOL)canWait {	
+- (BOOL)sendMessage:(NSString *)msg canWait:(BOOL)canWait {
 	if ((!canWait) || isRegistered) {
 		msg = [msg stringByAppendingString:@"\r\n"];
 		if (canSend) {

@@ -7,6 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "CHAttributedString.h"
+#import "OHAttributedLabel.h"
 
 typedef enum RCMessageFlavor {
 	RCMessageFlavorNotice = 0,
@@ -19,20 +21,13 @@ typedef enum RCMessageFlavor {
 } RCMessageFlavor;
 
 @interface RCMessage : NSObject {
-	NSString *message;
-	BOOL highlight;
+	RCAttributedString *string;
 	RCMessageFlavor flavor;
-	BOOL isHighlight;
-	BOOL isMine;
-	BOOL isOld;
 	float messageHeight;
 	float messageHeightLandscape;
 }
-@property (nonatomic, retain) NSString *message;
-@property (nonatomic, assign) RCMessageFlavor flavor;
-@property (nonatomic, assign) BOOL highlight;
-@property (nonatomic, assign) BOOL isMine;
-@property (nonatomic, assign) BOOL isOld;
+@property (nonatomic, readonly) RCAttributedString *string;
 @property (nonatomic, assign) float messageHeight;
 @property (nonatomic, assign) float messageHeightLandscape;
+- (id)initWithMessage:(NSString *)msg isOld:(BOOL)old isMine:(BOOL)m isHighlight:(BOOL)hh flavor:(RCMessageFlavor)flavor;
 @end

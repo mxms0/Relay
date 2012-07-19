@@ -178,49 +178,11 @@
 
 - (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor highlight:(BOOL)high isMine:(BOOL)mine {
 	// definitely shouldn't have this code twice. will do something about it asap.
-	RCMessage *message = [[RCMessage alloc] init];
-	CHAttributedString *attr = [[CHAttributedString alloc] initWithString:_message];
-	[attr setFont:[UIFont fontWithName:@"Helvetica" size:12]];
-	switch (flavor) {
-		case RCMessageFlavorAction:
-			[attr setTextIsUnderlined:NO range:NSMakeRange(0, _message.length)];
-			[attr setTextBold:YES range:NSMakeRange(0, _message.length)];
-			[attr setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeClip)];
-			break;
-		case RCMessageFlavorNormal: {
-			NSRange p = [_message rangeOfString:@"]"];
-			NSRange r = [_message rangeOfString:@":" options:0 range:NSMakeRange(p.location, _message.length-p.location)];
-			[attr setTextBold:YES range:NSMakeRange(0, r.location)];
-			break;
-		}
-		case RCMessageFlavorNotice:
-			[attr setTextBold:YES range:NSMakeRange(0, _message.length)];
-			// do something.
-			break;
-		case RCMessageFlavorTopic:
-			[attr setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeWordWrap)];
-			break;
-		case RCMessageFlavorJoin:
-			[attr setFont:[UIFont fontWithName:@"Helvetica" size:11]];
-			[attr setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeWordWrap)];
-			break;
-		case RCMessageFlavorPart:
-			[attr setFont:[UIFont fontWithName:@"Helvetica" size:11]];
-			[attr setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeWordWrap)];
-			break;
-		case RCMessageFlavorNormalE:
-			//	[attr setTextBold:YES range:NSMakeRange(0, _message.length)];
-			break;
-	}
-	float *heights = [self calculateHeightForLabel:attr];
+	RCMessage *message = [[RCMessage alloc] initWithMessage:_message isOld:NO isMine:mine isHighlight:high flavor:flavor];
+	float *heights = [self calculateHeightForLabel:[message string]];
 	[message setMessageHeight:heights[0]];
 	[message setMessageHeightLandscape:heights[1]];
 	free(heights);
-	[attr release];
-	[message setMessage:_message];
-	[message setFlavor:flavor];
-	[message setHighlight:high];
-	[message setIsMine:mine];
 	[self performSelectorOnMainThread:@selector(_correctThreadPost:) withObject:message waitUntilDone:NO];
 }
 
@@ -236,7 +198,7 @@
 
 - (CGFloat)tableView:(UITableView *)_tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 	RCMessage *m = [messages objectAtIndex:indexPath.row];
-	return ([[RCNavigator sharedNavigator] _isLandscape] ? m.messageHeightLandscape : m.messageHeight) + 4;
+	return ([[RCNavigator sharedNavigator] _isLandscape] ? (float)[m messageHeightLandscape] : (float)[m messageHeight]) + 4;
 }
 
 - (NSInteger)tableView:(UITableView *)_tableView indentationLevelForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -260,14 +222,14 @@
     if (cell == nil) {
         cell = [[[RCChatCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
+	RCMessage *_message = [messages objectAtIndex:indexPath.row];
+	[cell setMessage:_message];
+	[cell _messageHasBeenSet];
 	return cell;
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(RCChatCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
 	// Configure the cell...
-	RCMessage *_message = [messages objectAtIndex:indexPath.row];
-	[cell setMessage:_message];
-	[cell _textHasBeenSet];
 	// this method above is heavy
 	// and is the reason for slow scrolling
 	// must work on a way around

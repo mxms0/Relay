@@ -9,45 +9,75 @@
 #import "RCMessage.h"
 
 @implementation RCMessage
-@synthesize flavor, message, highlight, isMine, isOld, messageHeight, messageHeightLandscape;
+@synthesize string, messageHeight, messageHeightLandscape;
 
 - (void) encodeWithCoder: (NSCoder *)coder {
-	[coder encodeObject:message forKey:@"0_MSGKEY"];
-	[coder encodeObject:[NSNumber numberWithBool:isMine] forKey:@"0_ISMINE"];
-	[coder encodeObject:[NSNumber numberWithInt:flavor] forKey:@"0_FLVRKEY"];
-	[coder encodeObject:[NSNumber numberWithBool:highlight] forKey:@"0_HGHLGHTKEY"];
+	[coder encodeObject:string.string forKey:@"0_MSGKEY"];
 	[coder encodeObject:[NSNumber numberWithFloat:messageHeight] forKey:@"0_MSGHEIGHT_0"];
 	[coder encodeObject:[NSNumber numberWithFloat:messageHeightLandscape] forKey:@"0_MSGHEIGHT_1"];
+	[coder encodeObject:[NSNumber numberWithInt:flavor] forKey:@"0_MSGFLAV"];
 }
 
 - (id)initWithCoder:(NSCoder *)coder {
-    if ((self = [super init])) {
-        NSAutoreleasePool *poolz = [[NSAutoreleasePool alloc] init];
-		[self setMessage:[coder decodeObjectForKey:@"0_MSGKEY"]];
-		[self setFlavor:(RCMessageFlavor)[[coder decodeObjectForKey:@"0_FLVRKEY"] intValue]];
-		[self setHighlight:[[coder decodeObjectForKey:@"0_HGHLGHTKEY"] boolValue]];
-		[self setIsMine:[[coder decodeObjectForKey:@"0_ISMINE"] boolValue]];
-		[self setMessageHeight:[[coder decodeObjectForKey:@"0_MSGHEIGHT_0"] floatValue]];
-		[self setMessageHeightLandscape:[[coder decodeObjectForKey:@"0_MSGHEIGHT_1"] floatValue]];
-		self.isOld = YES;
-        [poolz drain];
-    }
-    return self;
+	if ([coder containsValueForKey:@"0_MSGKEY"]) {
+		self = [self initWithMessage:[coder decodeObjectForKey:@"0_MSGKEY"] isOld:YES isMine:NO isHighlight:NO flavor:[[coder decodeObjectForKey:@"0_MSGFLAV"] intValue]];
+		messageHeight = [[coder decodeObjectForKey:@"0_MSGHEIGHT_0"] floatValue];
+		messageHeightLandscape = [[coder decodeObjectForKey:@"0_MSGHEIGHT_1"] floatValue];
+		return self;
+	}
+	return nil;
 }
 
 - (id)description {
-	return [NSString stringWithFormat:@"<%@ :%p; Message = %@; Height = %f; Flavor = %d>", NSStringFromClass([self class]), self, message, messageHeight, (int)flavor];
+	return [NSString stringWithFormat:@"<%@ :%p; Message = %@; Height = %f;", NSStringFromClass([self class]), self, string.string, messageHeight];
 }
 
-- (id)init {
+- (id)initWithMessage:(NSString *)_message isOld:(BOOL)old isMine:(BOOL)m isHighlight:(BOOL)hh flavor:(RCMessageFlavor)_flavor {
 	if ((self = [super init])) {
-		isOld = NO;
+		string = [[RCAttributedString alloc] initWithString:_message];
+		flavor = _flavor;
 	}
+	[string setFont:[UIFont fontWithName:@"Helvetica" size:12]];
+	UIColor *normalColor = UIColorFromRGB(0x3F4040);
+	if (old)
+		normalColor = UIColorFromRGB(0xB6BCCC);
+	[string setTextColor:normalColor];
+	switch (flavor) {
+		case RCMessageFlavorAction:
+			[string setTextIsUnderlined:NO range:NSMakeRange(0, _message.length)];
+			[string setTextBold:YES range:NSMakeRange(0, _message.length)];
+			[string setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeClip)];
+			break;
+		case RCMessageFlavorNormal: {
+			NSRange p = [_message rangeOfString:@"]"];
+			NSRange r = [_message rangeOfString:@":" options:0 range:NSMakeRange(p.location, _message.length-p.location)];
+			[string setTextBold:YES range:NSMakeRange(0, r.location)];
+			break;
+		}
+		case RCMessageFlavorNotice:
+			[string setTextBold:YES range:NSMakeRange(0, _message.length)];
+			// do something.
+			break;
+		case RCMessageFlavorTopic:
+			[string setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeWordWrap)];
+			break;
+		case RCMessageFlavorJoin:
+			[string setFont:[UIFont fontWithName:@"Helvetica" size:11]];
+			[string setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeWordWrap)];
+			break;
+		case RCMessageFlavorPart:
+			[string setFont:[UIFont fontWithName:@"Helvetica" size:11]];
+			[string setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeWordWrap)];
+			break;
+		case RCMessageFlavorNormalE:
+			//	[attr setTextBold:YES range:NSMakeRange(0, _message.length)];
+			break;
+	}	
 	return self;
 }
 
 - (void)dealloc {
-	[message release];
+	[string release];
 	[super dealloc];
 }
 @end

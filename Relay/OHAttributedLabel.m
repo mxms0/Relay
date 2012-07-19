@@ -203,13 +203,13 @@ BOOL CTRunContainsCharactersFromStringRange(CTRunRef run, NSRange range) {
 	[self setNeedsDisplay];
 }
 
-- (CHAttributedString *)attributedTextWithLinks {
-	CHAttributedString *str = [self.attributedText mutableCopy];
+- (RCAttributedString *)attributedTextWithLinks {
+	RCAttributedString *str = [self.attributedText mutableCopy];
 	if (!str) return nil;
 	
-	NSString* plainText = [str string];
+	NSString *plainText = [str string];
 	if (plainText && (self.automaticallyAddLinksForType > 0)) {
-		NSError* error = nil;
+		NSError *error = nil;
 		NSDataDetector* linkDetector = [NSDataDetector dataDetectorWithTypes:self.automaticallyAddLinksForType error:&error];
 		[linkDetector enumerateMatchesInString:plainText options:0 range:NSMakeRange(0,[plainText length])
 									usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
@@ -409,7 +409,7 @@ static time_t end;
 			CGContextSetShadowWithColor(ctx, self.shadowOffset, 0.0, self.shadowColor.CGColor);
 		}
 		
-		CHAttributedString *attrStrWithLinks = [self attributedTextWithLinks];
+		RCAttributedString *attrStrWithLinks = [self attributedTextWithLinks];
 		if (self.highlighted && self.highlightedTextColor != nil) {
 			[attrStrWithLinks setTextColor:self.highlightedTextColor];
 		}
@@ -521,7 +521,7 @@ static time_t end;
 /////////////////////////////////////////////////////////////////////////////
 
 - (void)resetAttributedText {
-	CHAttributedString *mutAttrStr = [CHAttributedString attributedStringWithString:self.text];
+	RCAttributedString *mutAttrStr = [RCAttributedString attributedStringWithString:self.text];
 	[mutAttrStr setFont:self.font];
 	[mutAttrStr setTextColor:self.textColor];
 	CTTextAlignment coreTextAlign = CTTextAlignmentFromUITextAlignment(self.textAlignment);
