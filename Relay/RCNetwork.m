@@ -86,9 +86,9 @@
 }
 
 - (void)addChannel:(NSString *)_chan join:(BOOL)join {
-    if ([_chan hasPrefix:@" "]) {
-        _chan = [_chan stringByReplacingOccurrencesOfString:@" " withString:@""];
-    }
+	if ([_chan rangeOfString:@" "].location != NSNotFound) {
+		_chan = [_chan stringByReplacingOccurrencesOfString:@" " withString:@""];
+	}
 	for (NSString *aChan in [_channels allKeys])
 		if ([[aChan lowercaseString] isEqualToString:[_chan lowercaseString]]) return;
 	if (![self channelWithChannelName:_chan]) {
