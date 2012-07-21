@@ -22,9 +22,9 @@
 		_bubbles = [[NSMutableArray alloc] init];
 		_channels = [[NSMutableDictionary alloc] init];
 		_isDiconnecting = NO;
-		_nicknames = [[NSMutableArray alloc] init];
-	if ([self useNick])
-		[_nicknames addObject:[self useNick]];
+        _nicknames = [[NSMutableArray alloc] init];
+        if ([self useNick])
+            [_nicknames addObject:[self useNick]];
 	}
 	return self;
 }
@@ -55,7 +55,7 @@
 	[spass release];
 	[npass release];
 	[sDescription release];
-	[_nicknames release];
+    [_nicknames release];
 	[super dealloc];
 }
 
@@ -86,9 +86,9 @@
 }
 
 - (void)addChannel:(NSString *)_chan join:(BOOL)join {
-	if ([_chan rangeOfString:@" "].location != NSNotFound) {
-		_chan = [_chan stringByReplacingOccurrencesOfString:@" " withString:@""];
-	}
+    if ([_chan hasPrefix:@" "]) {
+        _chan = [_chan stringByReplacingOccurrencesOfString:@" " withString:@""];
+    }
 	for (NSString *aChan in [_channels allKeys])
 		if ([[aChan lowercaseString] isEqualToString:[_chan lowercaseString]]) return;
 	if (![self channelWithChannelName:_chan]) {
@@ -130,13 +130,13 @@
 }
 
 - (void)_connect {
-	if (status == RCSocketStatusConnecting) return;
-	if (status == RCSocketStatusConnected) return;;
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	canSend = YES;
 	isRegistered = NO;
 	if (sendQueue) [sendQueue release];
 	sendQueue = nil;
+	if (status == RCSocketStatusConnecting) return;
+	if (status == RCSocketStatusConnected) return;;
 	useNick = nick;
 	self.userModes = @"~&@%+";
 	if (kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iPhoneOS_4_0) {
@@ -291,7 +291,6 @@ char *RCIPForURL(NSString *URL) {
 		return;
 	}
 	if (![msg hasPrefix:@":"]) {
-		NSLog(@"Unkown CMD %@", msg);
 		[p drain];
 		return;
 	}
@@ -319,6 +318,7 @@ char *RCIPForURL(NSString *URL) {
 	if (status == RCSocketStatusClosed) return NO;
 	if ((status == RCSocketStatusConnected) || (status == RCSocketStatusConnecting)) {
 		[self sendMessage:@"QUIT :Relay 1.0"];
+		status = RCSocketStatusClosed;
 		if (sendQueue) [sendQueue release];
 		sendQueue = nil;
 		close(sockfd);
@@ -326,7 +326,6 @@ char *RCIPForURL(NSString *URL) {
 		task = UIBackgroundTaskInvalid;
 		status = RCSocketStatusClosed;
 		isRegistered = NO;
-		// this is set on _connect also. :(
 		for (NSString *chan in [_channels allKeys]) {
 			RCChannel *_chan = [self channelWithChannelName:chan];
 			[_chan setMyselfParted];
@@ -343,8 +342,6 @@ char *RCIPForURL(NSString *URL) {
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
 	if (chan) [chan recievedMessage:@"Connected to host." from:@"" type:RCMessageTypeNormal];
 	if ([npass length] > 0)	[self sendMessage:[@"PRIVMSG NickServ IDENTIFY " stringByAppendingString:npass]];
-	// make this use +[NSString stringWithFormat:,..] because we want preferences to be able
-	// to enter the actual nickserv nickname, since some people change it :()
 	for (NSString *chan in [_channels allKeys]) {
 		if ([[_channels objectForKey:chan] joinOnConnect]) [[_channels objectForKey:chan] setJoined:YES withArgument:nil];
 	}
@@ -357,6 +354,7 @@ char *RCIPForURL(NSString *URL) {
 - (void)handle001:(NSString *)welcome {
 	status = RCSocketStatusConnected;
 	[self networkDidRegister:YES];
+	NSLog(@"hi regs.");
 	NSScanner *scanner = [[NSScanner alloc] initWithString:welcome];
 	NSString *crap;
 	@try {
@@ -369,13 +367,12 @@ char *RCIPForURL(NSString *URL) {
 	@catch (NSException *exception) {
 		NSLog(@"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF %s", (char *)_cmd);
 	}
-	// need to remove this try/catch
-	// someone please find out why that is crashing. i think it's when i set scan location to ++
 	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
 	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
 	[scanner release];
 }
+
 
 - (void)handle002:(NSString *)infos {
 	NSScanner *scanner = [[NSScanner alloc] initWithString:infos];
