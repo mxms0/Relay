@@ -21,6 +21,10 @@
     return self;
 }
 
+- (NSString *)titleText {
+	return @"Channels";
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 	[self.tableView reloadData];

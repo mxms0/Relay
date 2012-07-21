@@ -43,6 +43,16 @@
 	return self;
 }
 
+- (NSString *)titleText {
+	if (isNew) {
+		return @"Add A Network";
+	}
+	else {
+		return [network _description];
+	}
+	return nil;
+}
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 	[self.view findAndResignFirstResponder];
 }
@@ -53,12 +63,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-	if (isNew) {
-		titleView.text = @"Add A Network";
-	}
-	else {
-		titleView.text = [network _description];
-	}
 	float y = 44;
 	float width = 320;
 	if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {

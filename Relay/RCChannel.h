@@ -16,7 +16,7 @@
 #import "RCDateManager.h"
 
 typedef enum RCMessageType {
-	RCMessageTypeAction,
+	RCMessageTypeAction = 0,
 	RCMessageTypeNormal,
 	RCMessageTypeNotice,
 } RCMessageType;

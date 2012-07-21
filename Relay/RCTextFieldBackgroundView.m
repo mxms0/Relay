@@ -12,7 +12,6 @@
 
 - (void)drawRect:(CGRect)rect {
 	[super drawRect:rect];
-	NSLog(@"Drawing rect %@",NSStringFromCGRect(rect));
 	if (rect.size.width > 320) {
 		[[UIImage imageNamed:@"0_input_l"] drawInRect:rect];
 	}

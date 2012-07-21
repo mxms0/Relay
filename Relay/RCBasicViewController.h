@@ -12,5 +12,5 @@
 	UILabel *titleView;
 	UIImageView *r_shadow;
 }
-
+- (NSString *)titleText;
 @end

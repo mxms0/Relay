@@ -383,6 +383,82 @@
 			name = Imports;
 			sourceTree = "<group>";
 		};
+		503F1D2315BA351D0003F808 /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				50E9BEC015A13C9900121507 /* RCBasicViewController.h */,
+				50E9BEC115A13C9900121507 /* RCBasicViewController.m */,
+				50E77A741505A1EC00E75C64 /* RCAddNetworkController.h */,
+				50E77A751505A1EC00E75C64 /* RCAddNetworkController.m */,
+				5038C8301583B8E4004BA602 /* RCChannelManager.h */,
+				5038C8311583B8E4004BA602 /* RCChannelManager.m */,
+				AA503EED15AD2C5A00EF223E /* RCAlternateNicknamesManager.h */,
+				AA503EEE15AD2C5A00EF223E /* RCAlternateNicknamesManager.m */,
+				50929EB8151E86FA007E23D3 /* RCiPadViewController.h */,
+				50929EB9151E86FA007E23D3 /* RCiPadViewController.m */,
+				50E77A641505A17800E75C64 /* RCViewController.h */,
+				50E77A651505A17800E75C64 /* RCViewController.m */,
+			);
+			name = "View Controllers";
+			sourceTree = "<group>";
+		};
+		503F1D2415BA353B0003F808 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				501F2B3B150995DE0099C9C3 /* RCTableView.h */,
+				501F2B3C150995DE0099C9C3 /* RCTableView.m */,
+				503742271511478300F4DA1A /* RCUserListPanel.h */,
+				503742281511478300F4DA1A /* RCUserListPanel.m */,
+				50E77A701505A1D800E75C64 /* RCNavigator.h */,
+				50E77A711505A1D800E75C64 /* RCNavigator.m */,
+				502BE054158FF748002FFA74 /* RCPopoverWindow.h */,
+				502BE055158FF748002FFA74 /* RCPopoverWindow.m */,
+				50376D2C15B3D1D700E13006 /* RCTextFieldBackgroundView.h */,
+				50376D2D15B3D1D700E13006 /* RCTextFieldBackgroundView.m */,
+				50E77A661505A18700E75C64 /* RCChatPanel.h */,
+				50E77A671505A18700E75C64 /* RCChatPanel.m */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		503F1D2515BA35BA0003F808 /* Table View Crap */ = {
+			isa = PBXGroup;
+			children = (
+				50457529159570440092CB31 /* RCNetworkCell.h */,
+				5045752A159570450092CB31 /* RCNetworkCell.m */,
+				50AAE7E8151AD8B900E631FD /* RCAddCell.h */,
+				50AAE7E9151AD8B900E631FD /* RCAddCell.m */,
+				50E77A681505A1AC00E75C64 /* RCChatCell.h */,
+				50E77A691505A1AC00E75C64 /* RCChatCell.m */,
+				50468D8315B792B9005BC3EA /* RCChatCellContentView.h */,
+				50468D8415B792B9005BC3EA /* RCChatCellContentView.m */,
+				503790F81512BD4100EE2A7E /* RCUserTableCell.h */,
+				503790F91512BD4100EE2A7E /* RCUserTableCell.m */,
+			);
+			name = "Table View Crap";
+			sourceTree = "<group>";
+		};
+		503F1D2615BA35F90003F808 /* View Objects */ = {
+			isa = PBXGroup;
+			children = (
+				50E77A6A1505A1B500E75C64 /* RCChannelBubble.h */,
+				50E77A6B1505A1B500E75C64 /* RCChannelBubble.m */,
+				50E77A6C1505A1BE00E75C64 /* RCChannelScrollView.h */,
+				50E77A6D1505A1BE00E75C64 /* RCChannelScrollView.m */,
+				50E77A6E1505A1CF00E75C64 /* RCNavigationBar.h */,
+				50E77A6F1505A1CF00E75C64 /* RCNavigationBar.m */,
+				50E77A721505A1E300E75C64 /* RCTitleLabel.h */,
+				50E77A731505A1E300E75C64 /* RCTitleLabel.m */,
+				7EF931D7159A137B0031CDD0 /* RCBarButton.h */,
+				7EF931D8159A137B0031CDD0 /* RCBarButton.m */,
+				50AAE7E5151AD6A500E631FD /* RCTextField.h */,
+				50AAE7E6151AD6A500E631FD /* RCTextField.m */,
+				506F795F159A8D8A002266C9 /* RCBarButton.h */,
+				506F7960159A8D8A002266C9 /* RCBarButton.m */,
+			);
+			name = "View Objects";
+			sourceTree = "<group>";
+		};
 		50A7FB7114C0F0A800ABADEA = {
 			isa = PBXGroup;
 			children = (
@@ -540,54 +616,10 @@
 		50A7FBA914C0F7DC00ABADEA /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				50376D2C15B3D1D700E13006 /* RCTextFieldBackgroundView.h */,
-				50376D2D15B3D1D700E13006 /* RCTextFieldBackgroundView.m */,
-				50E9BEC015A13C9900121507 /* RCBasicViewController.h */,
-				50E9BEC115A13C9900121507 /* RCBasicViewController.m */,
-				5038C8301583B8E4004BA602 /* RCChannelManager.h */,
-				5038C8311583B8E4004BA602 /* RCChannelManager.m */,
-				AA503EED15AD2C5A00EF223E /* RCAlternateNicknamesManager.h */,
-				AA503EEE15AD2C5A00EF223E /* RCAlternateNicknamesManager.m */,
-				50929EB8151E86FA007E23D3 /* RCiPadViewController.h */,
-				50929EB9151E86FA007E23D3 /* RCiPadViewController.m */,
-				50E77A641505A17800E75C64 /* RCViewController.h */,
-				50E77A651505A17800E75C64 /* RCViewController.m */,
-				50E77A661505A18700E75C64 /* RCChatPanel.h */,
-				50E77A671505A18700E75C64 /* RCChatPanel.m */,
-				50E77A681505A1AC00E75C64 /* RCChatCell.h */,
-				50E77A691505A1AC00E75C64 /* RCChatCell.m */,
-				50468D8315B792B9005BC3EA /* RCChatCellContentView.h */,
-				50468D8415B792B9005BC3EA /* RCChatCellContentView.m */,
-				503790F81512BD4100EE2A7E /* RCUserTableCell.h */,
-				503790F91512BD4100EE2A7E /* RCUserTableCell.m */,
-				50E77A6A1505A1B500E75C64 /* RCChannelBubble.h */,
-				50E77A6B1505A1B500E75C64 /* RCChannelBubble.m */,
-				50E77A6C1505A1BE00E75C64 /* RCChannelScrollView.h */,
-				50E77A6D1505A1BE00E75C64 /* RCChannelScrollView.m */,
-				50E77A6E1505A1CF00E75C64 /* RCNavigationBar.h */,
-				50E77A6F1505A1CF00E75C64 /* RCNavigationBar.m */,
-				50E77A701505A1D800E75C64 /* RCNavigator.h */,
-				50E77A711505A1D800E75C64 /* RCNavigator.m */,
-				50E77A721505A1E300E75C64 /* RCTitleLabel.h */,
-				50E77A731505A1E300E75C64 /* RCTitleLabel.m */,
-				7EF931D7159A137B0031CDD0 /* RCBarButton.h */,
-				7EF931D8159A137B0031CDD0 /* RCBarButton.m */,
-				50E77A741505A1EC00E75C64 /* RCAddNetworkController.h */,
-				50E77A751505A1EC00E75C64 /* RCAddNetworkController.m */,
-				501F2B3B150995DE0099C9C3 /* RCTableView.h */,
-				501F2B3C150995DE0099C9C3 /* RCTableView.m */,
-				50AAE7E5151AD6A500E631FD /* RCTextField.h */,
-				50AAE7E6151AD6A500E631FD /* RCTextField.m */,
-				50457529159570440092CB31 /* RCNetworkCell.h */,
-				5045752A159570450092CB31 /* RCNetworkCell.m */,
-				50AAE7E8151AD8B900E631FD /* RCAddCell.h */,
-				50AAE7E9151AD8B900E631FD /* RCAddCell.m */,
-				503742271511478300F4DA1A /* RCUserListPanel.h */,
-				503742281511478300F4DA1A /* RCUserListPanel.m */,
-				502BE054158FF748002FFA74 /* RCPopoverWindow.h */,
-				502BE055158FF748002FFA74 /* RCPopoverWindow.m */,
-				506F795F159A8D8A002266C9 /* RCBarButton.h */,
-				506F7960159A8D8A002266C9 /* RCBarButton.m */,
+				503F1D2615BA35F90003F808 /* View Objects */,
+				503F1D2515BA35BA0003F808 /* Table View Crap */,
+				503F1D2415BA353B0003F808 /* Views */,
+				503F1D2315BA351D0003F808 /* View Controllers */,
 			);
 			name = UI;
 			sourceTree = "<group>";

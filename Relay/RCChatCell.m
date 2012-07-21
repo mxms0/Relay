@@ -78,9 +78,7 @@
 
 - (void)layoutSubviews {
 	[super layoutSubviews];
-		[self.textLabel setFrame:CGRectMake(2, 2,((UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation) ? 480 : 320) - 4) , height)];
-	//self.contentView.hidden = YES;
-	//	[self.contentView removeFromSuperview];
+	[self.textLabel setFrame:CGRectMake(2, 2,((UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation) ? 480 : 320) - 4) , height)];
 }
 
 - (void)drawContentView:(CGRect)rect {

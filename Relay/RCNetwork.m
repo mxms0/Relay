@@ -154,7 +154,7 @@
 	struct sockaddr_in serv_addr;
 	memset(buff, '0', sizeof(buff));
 	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-		NSLog(@"ERRRRRRRR");
+		NSLog(@"ERRRRRRRR00");
 	}
 	memset(&serv_addr, '0', sizeof(serv_addr));
 	serv_addr.sin_family = AF_INET;
@@ -186,6 +186,9 @@
 			if ([msg rangeOfString:@"\r\n"].location == NSNotFound) break;
 			// i guess i really have to.
 			NSString *send = [[NSString alloc] initWithString:[msg substringWithRange:NSMakeRange(0, [msg rangeOfString:@"\r\n"].location+2)]];
+#if LOGALL
+			NSLog(@"MESSAGE: %@", send);
+#endif
 			[self recievedMessage:send];
 			[send release];
 			send = nil;
@@ -218,6 +221,13 @@
 
 char *RCIPForURL(NSString *URL) {
 	char *hostname = (char *)[URL UTF8String];
+	//BOOL valid;
+	//NSCharacterSet *alphaNums = [NSCharacterSet decimalDigitCharacterSet];
+	//	NSCharacterSet *inStringSet = [NSCharacterSet characterSetWithCharactersInString:URL];
+	//valid = [alphaNums isSupersetOfSet:inStringSet];
+	//	if (!valid) return hostname;
+	
+	//	NSLog(@"MEH %d %@", (int)valid, URL);
 	struct addrinfo hints, *res;
 	struct in_addr addr;
 	int err;
@@ -662,6 +672,7 @@ char *RCIPForURL(NSString *URL) {
 }
 
 - (void)handleNOTICE:(NSString *)notice {
+	return;
 	NSScanner *_scans = [[NSScanner alloc] initWithString:notice];
 	NSString *from = @"_";
 	NSString *cmd = from;

@@ -170,7 +170,6 @@ UIImage *RCImageForRank(NSString *rank) {
 }
 
 - (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type {
-
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	message = [message stringByReplacingOccurrencesOfString:@"\t" withString:@""];
 	RCMessageFlavor flavor;
@@ -200,7 +199,7 @@ UIImage *RCImageForRank(NSString *rank) {
 			break;
 	}
 	BOOL isHighlight = NO;
-	if (flavor != RCMessageFlavorNormalE && flavor != RCMessageFlavorNotice) isHighlight =  ([message rangeOfString:[delegate useNick] options:NSCaseInsensitiveSearch].location != NSNotFound);
+	if (flavor != RCMessageFlavorNormalE && flavor != RCMessageFlavorNotice) isHighlight = ([message rangeOfString:[delegate useNick] options:NSCaseInsensitiveSearch].location != NSNotFound);
 	[panel postMessage:msg withFlavor:flavor highlight:isHighlight isMine:([from isEqualToString:[delegate useNick]])];
 	[self shouldPost:isHighlight withMessage:msg];
 	[msg release];
@@ -219,7 +218,6 @@ UIImage *RCImageForRank(NSString *rank) {
 	if (isHighlight) {
 		if (!iAmCurrent) [bubble setMentioned:YES];
 		if ([[RCNetworkManager sharedNetworkManager] isBG]) {
-            
 			UILocalNotification *nc = [[UILocalNotification alloc] init];
 			[nc setFireDate:[NSDate date]];
 			[nc setAlertBody:msg];
@@ -422,7 +420,7 @@ UIImage *RCImageForRank(NSString *rank) {
 			[scan release];
 			return;
 		}
-	RCChannel *chan = [[delegate _channels] objectForKey:room];
+	RCChannel *chan = [delegate channelWithChannelName:room];
 	[chan recievedMessage:msg from:[delegate useNick] type:RCMessageFlavorNormal];
 	[scan release];
 }

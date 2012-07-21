@@ -34,6 +34,7 @@
 	#define USE_PRIVATE 1
 	#define _deg(x) ((x * M_PI)/180.0)
 	#define UIApp [UIApplication sharedApplication]
+	#define LOGALL 1
 	typedef NSMutableAttributedString RCAttributedString;
 #endif
 

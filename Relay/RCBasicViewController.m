@@ -16,7 +16,7 @@
 
 - (id)initWithStyle:(UITableViewStyle)style {
 	if ((self = [super initWithStyle:style])) {
-		titleView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
+		titleView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 160, 40)];
 		titleView.backgroundColor = [UIColor clearColor];
 		titleView.textAlignment = UITextAlignmentCenter;
 		titleView.font = [UIFont boldSystemFontOfSize:22];
@@ -29,6 +29,10 @@
     return self;
 }
 
+- (NSString *)titleText {
+	return @"HAIRLYLONGSTRINGHERE HAI";
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 	[self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"0_addnav"] forBarMetrics:UIBarMetricsDefault];
@@ -36,20 +40,19 @@
 	[bg setFrame:self.view.frame];
 	self.tableView.backgroundView = bg;
 	[bg release];
+	titleView.text = [self titleText];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 }
 
-- (void)viewDidUnload
-{
+- (void)viewDidUnload {
     [super viewDidUnload];
     // Release any retained subviews of the main view.
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 

@@ -5,7 +5,7 @@
 //  Created by Max Shavrick on 2/17/12.
 //  Copyright (c) 2012 American Heritage School. All rights reserved.
 //	Somewhat based off Loren b's implementation
-// 
+//
 
 #import <UIKit/UIKit.h>
 #import <CoreText/CoreText.h>
