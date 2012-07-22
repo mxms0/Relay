@@ -11,7 +11,7 @@
 
 @implementation RCNetwork
 
-@synthesize sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _bubbles, _nicknames;
+@synthesize sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _bubbles, _nicknames, shouldRequestSPass, shouldRequestNPass;
 
 - (id)init {
 	if ((self = [super init])) {
@@ -672,7 +672,6 @@ char *RCIPForURL(NSString *URL) {
 }
 
 - (void)handleNOTICE:(NSString *)notice {
-	return;
 	NSScanner *_scans = [[NSScanner alloc] initWithString:notice];
 	NSString *from = @"_";
 	NSString *cmd = from;

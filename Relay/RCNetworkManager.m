@@ -30,16 +30,21 @@ static NSMutableArray *networks = nil;
 			return;
 		}
 	}
-	//RCKeychainItem *wrapper = [[RCKeychainItem alloc] initWithIdentifier:[network _description] accessGroup:nil];
     PDKeychainBindings *keychain = [PDKeychainBindings sharedKeychainBindings];
 
 	if ([[info objectForKey:S_PASS_KEY] boolValue]) {
         //[network setSpass:([wrapper objectForKey:S_PASS_KEY] ?: @"")];
 		[network setSpass:([keychain objectForKey:[NSString stringWithFormat:@"%@_spass",[network _description]]] ?: @"")];
+		if ([network spass] == nil || [[network spass] length] == 0) {
+			[network setShouldRequestSPass:YES];
+		}
 	}
 	if ([[info objectForKey:N_PASS_KEY] boolValue]) {
 		//[network setNpass:([wrapper objectForKey:N_PASS_KEY] ?: @"")];
         [network setNpass:([keychain objectForKey:[NSString stringWithFormat:@"%@_npass",[network _description]]] ?: @"")];
+		if ([network npass] == nil || [[network npass] length] == 0) {
+			[network setShouldRequestNPass:YES];
+		}
 
 	}
 	NSMutableArray *rooms = [[[info objectForKey:CHANNELS_KEY] mutableCopy] autorelease];
@@ -48,11 +53,8 @@ static NSMutableArray *networks = nil;
 	[network setupRooms:rooms];
 	[networks addObject:network];
 	[[RCNavigator sharedNavigator] addNetwork:network];
-	[self performSelectorInBackground:@selector(finishSetupForNetwork:) withObject:network];
 	[network release];
 	[self performSelectorInBackground:@selector(saveNetworks) withObject:nil];
-	//	[wrapper release];
-	//	wrapper = nil;
 }
 
 - (void)addNetwork:(RCNetwork *)_net {
@@ -61,16 +63,30 @@ static NSMutableArray *networks = nil;
 			return;
 		}
 	}
-	NSLog(@"Meh %@", networks);
 	if (![[[_net _channels] allKeys] containsObject:@"IRC"]) [_net addChannel:@"IRC" join:NO];
-		NSLog(@"Meh %@", networks);
 	[networks addObject:_net];
 	[[RCNavigator sharedNavigator] addNetwork:_net];
 	if ([_net COL]) [_net connect];
-	[self saveNetworks];
+	if (!isSetup) [self saveNetworks];
 }
 
 - (void)finishSetupForNetwork:(RCNetwork *)net {
+	// the alerts do not stop the connection to process to wait for the user to enter the password
+	// so we dont want the network connecting until we get the users password or not.
+	BOOL sc = NO;
+	if ([net shouldRequestNPass]) {
+		RCPasswordRequestAlert *alert = [[RCPasswordRequestAlert alloc] initWithNetwork:net type:RCPasswordRequestAlertTypeNickServ];
+		[alert show];
+		[alert release];
+		sc = YES;
+	}
+	if ([net shouldRequestSPass]) {
+		RCPasswordRequestAlert *alert = [[RCPasswordRequestAlert alloc] initWithNetwork:net type:RCPasswordRequestAlertTypeServer];
+		[alert show];
+		[alert release];
+		sc = YES;
+	}
+	if (sc) return;
 	if ([net COL]) [net connect];
 }
 
@@ -84,6 +100,7 @@ static NSMutableArray *networks = nil;
 }
 
 - (void)unpack {
+	isSetup = YES;
 	_printMotd = NO;
 	@autoreleasepool {
 		NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithContentsOfFile:PREFS_ABSOLUT];
@@ -98,6 +115,7 @@ static NSMutableArray *networks = nil;
 			[self ircNetworkWithInfo:_info isNew:NO];
 		}
 	}
+	isSetup = NO;
 }
 
 - (void)setupWelcomeView {
@@ -124,14 +142,17 @@ static NSMutableArray *networks = nil;
 }
 
 - (void)saveNetworks {
+	if (isSetup) return;
 	NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:PREFS_PLIST] ?: [NSMutableDictionary dictionary];
 	for (RCNetwork *net in networks) {
 		if (![net isKindOfClass:[RCWelcomeNetwork class]])
 			if ([net _description])	[dict setObject:[net infoDictionary] forKey:[net _description]];
 	}
-	if (![dict writeToFile:PREFS_ABSOLUT atomically:NO]) {
-		// FIX IT
-		NSLog(@"Couldn't save...:l");
+	NSString *error;
+	NSData *saveData = [NSPropertyListSerialization dataFromPropertyList:dict format:NSPropertyListBinaryFormat_v1_0 errorDescription:&error];
+	if (![saveData writeToFile:PREFS_ABSOLUT atomically:NO]) {
+		NSLog(@"Couldn't save.. :(%@)", error);
+		return;
 	}
 }
 

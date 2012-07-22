@@ -7,9 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		500DD85315BBD6FD00F2E59D /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = 500DD85215BBD6FD00F2E59D /* TODO */; };
+		500DD85615BBDBC700F2E59D /* RCPasswordRequestAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 500DD85515BBDBC700F2E59D /* RCPasswordRequestAlert.m */; };
 		501D895015AD08C100366019 /* PDKeychainBindings.m in Sources */ = {isa = PBXBuildFile; fileRef = 501D894D15AD08C100366019 /* PDKeychainBindings.m */; };
 		501D895115AD08C100366019 /* PDKeychainBindingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 501D894F15AD08C100366019 /* PDKeychainBindingsController.m */; };
-		501D895815AD16B200366019 /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = 501D895715AD16B200366019 /* TODO */; };
 		501F2B3115098C6C0099C9C3 /* 0_shadow_t.png in Resources */ = {isa = PBXBuildFile; fileRef = 501F2B2F15098C6C0099C9C3 /* 0_shadow_t.png */; };
 		501F2B3215098C6C0099C9C3 /* 0_shadow_t@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 501F2B3015098C6C0099C9C3 /* 0_shadow_t@2x.png */; };
 		501F2B3D150995DE0099C9C3 /* RCTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 501F2B3C150995DE0099C9C3 /* RCTableView.m */; };
@@ -153,11 +154,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		500DD85215BBD6FD00F2E59D /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
+		500DD85415BBDBC700F2E59D /* RCPasswordRequestAlert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCPasswordRequestAlert.h; sourceTree = "<group>"; };
+		500DD85515BBDBC700F2E59D /* RCPasswordRequestAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCPasswordRequestAlert.m; sourceTree = "<group>"; };
 		501D894C15AD08C100366019 /* PDKeychainBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDKeychainBindings.h; sourceTree = "<group>"; };
 		501D894D15AD08C100366019 /* PDKeychainBindings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDKeychainBindings.m; sourceTree = "<group>"; };
 		501D894E15AD08C100366019 /* PDKeychainBindingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDKeychainBindingsController.h; sourceTree = "<group>"; };
 		501D894F15AD08C100366019 /* PDKeychainBindingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDKeychainBindingsController.m; sourceTree = "<group>"; };
-		501D895715AD16B200366019 /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
 		501F2B2F15098C6C0099C9C3 /* 0_shadow_t.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_shadow_t.png; sourceTree = "<group>"; };
 		501F2B3015098C6C0099C9C3 /* 0_shadow_t@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_shadow_t@2x.png"; sourceTree = "<group>"; };
 		501F2B3B150995DE0099C9C3 /* RCTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTableView.h; sourceTree = "<group>"; };
@@ -497,7 +500,7 @@
 		50A7FB8614C0F0A800ABADEA /* Relay */ = {
 			isa = PBXGroup;
 			children = (
-				501D895715AD16B200366019 /* TODO */,
+				500DD85215BBD6FD00F2E59D /* TODO */,
 				506944C6152813530096140C /* Relay.entitlements */,
 				50E77A8B1505A27800E75C64 /* Relay.h */,
 				50A7FBA914C0F7DC00ABADEA /* UI */,
@@ -655,6 +658,8 @@
 				504706E4159FBA2000C3E256 /* RCWelcomeChannel.m */,
 				50B0DB21154233EB00689EDC /* RCKeychainItem.h */,
 				504349FC152CEEDD0037BD12 /* RCKeychainItem.m */,
+				500DD85415BBDBC700F2E59D /* RCPasswordRequestAlert.h */,
+				500DD85515BBDBC700F2E59D /* RCPasswordRequestAlert.m */,
 			);
 			name = Backend;
 			sourceTree = "<group>";
@@ -802,7 +807,7 @@
 				506F796A159A91B6002266C9 /* 0_plusbtn@2x.png in Resources */,
 				506F796E159A91C2002266C9 /* 0_listrbtn@2x.png in Resources */,
 				506F796F159A91C2002266C9 /* 0_listrbtn.png in Resources */,
-				501D895815AD16B200366019 /* TODO in Resources */,
+				500DD85315BBD6FD00F2E59D /* TODO in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -869,6 +874,7 @@
 				50376D2A15B3CCAD00E13006 /* RCDateManager.m in Sources */,
 				50376D2E15B3D1D700E13006 /* RCTextFieldBackgroundView.m in Sources */,
 				50468D8515B792B9005BC3EA /* RCChatCellContentView.m in Sources */,
+				500DD85615BBDBC700F2E59D /* RCPasswordRequestAlert.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

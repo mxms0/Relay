@@ -170,6 +170,7 @@ UIImage *RCImageForRank(NSString *rank) {
 }
 
 - (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type {
+	NSLog(@"%s:%d", (char *)_cmd, type);
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	message = [message stringByReplacingOccurrencesOfString:@"\t" withString:@""];
 	RCMessageFlavor flavor;

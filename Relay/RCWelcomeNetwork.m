@@ -19,8 +19,7 @@
 	[chan setJoined:YES withArgument:nil];
 }
 
-- (BOOL)connect {
-	return YES;
+- (void)connect {
 }
 
 - (BOOL)sendMessage:(NSString *)msg {

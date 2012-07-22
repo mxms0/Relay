@@ -10,11 +10,13 @@
 #import "RCWelcomeNetwork.h"
 #import "RCKeychainItem.h"
 #import "PDKeychainBindings.h"
+#import "RCPasswordRequestAlert.h"
 
 @interface RCNetworkManager : NSObject {
 	BOOL isBG;
 	BOOL saving;
 	BOOL _printMotd;
+	BOOL isSetup;
 }
 @property (nonatomic, assign) BOOL isBG;
 @property (nonatomic, readonly) BOOL _printMotd;

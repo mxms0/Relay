@@ -49,12 +49,14 @@ typedef enum RCSocketStatus {
 	int port;
 	int maxStatusLength;
 	int sockfd;
-	BOOL isRegistered:1;
-	BOOL useSSL:1;
-	BOOL COL:1;
-	BOOL shouldSave:1;
-	BOOL canSend:1;
-	BOOL _isDiconnecting:1;
+	BOOL isRegistered;
+	BOOL useSSL;
+	BOOL COL;
+	BOOL shouldSave;
+	BOOL canSend;
+	BOOL _isDiconnecting;
+	BOOL shouldRequestSPass;
+	BOOL shouldRequestNPass;
 }
 @property (nonatomic, retain) NSMutableDictionary *_channels;
 @property (nonatomic, retain) NSMutableArray *_nicknames;
@@ -72,6 +74,8 @@ typedef enum RCSocketStatus {
 @property (nonatomic, assign) BOOL isRegistered;
 @property (nonatomic, assign) BOOL useSSL;
 @property (nonatomic, assign) BOOL COL;
+@property (nonatomic, assign) BOOL shouldRequestSPass;
+@property (nonatomic, assign) BOOL shouldRequestNPass;
 - (RCChannel *)channelWithChannelName:(NSString *)chan;
 - (NSString *)_description;
 - (void)connect;
