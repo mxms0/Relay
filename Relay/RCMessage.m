@@ -49,6 +49,11 @@
 			[string setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeClip)];
 			break;
 		case RCMessageFlavorNormal: {
+			if (hh) {
+				if (!old)
+					[string setTextColor:UIColorFromRGB(0xDA4156)];
+				else [string setTextColor:UIColorFromRGB(0xB6BCCC)];
+			}
 			NSRange p = [_message rangeOfString:@"]"];
 			NSRange r = [_message rangeOfString:@":" options:0 range:NSMakeRange(p.location, _message.length-p.location)];
 			[string setTextBold:YES range:NSMakeRange(0, r.location)];

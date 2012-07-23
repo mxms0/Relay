@@ -94,7 +94,7 @@
         _bar.alpha = 1.0;
     }
     else {
-        _bar.alpha = 0.7;
+        _bar.alpha = 0.5;
     }
 }
 
@@ -177,7 +177,6 @@
 }
 
 - (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor highlight:(BOOL)high isMine:(BOOL)mine {
-	// definitely shouldn't have this code twice. will do something about it asap.
 	RCMessage *message = [[RCMessage alloc] initWithMessage:_message isOld:NO isMine:mine isHighlight:high flavor:flavor];
 	float *heights = [self calculateHeightForLabel:[message string]];
 	[message setMessageHeight:heights[0]];

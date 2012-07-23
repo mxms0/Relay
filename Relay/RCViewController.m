@@ -8,7 +8,7 @@
 #import "RCViewController.h"
 #import "RCNetworkManager.h"
 #import "RCNavigator.h"
-
+#import "RCPrettyAlertView.h"
 
 @implementation RCViewController
 

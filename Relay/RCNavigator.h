@@ -16,6 +16,7 @@
 #import "RCUserListPanel.h"
 #import "RCPopoverWindow.h"
 #import "RCBarButton.h"
+#import "RCPrettyAlertView.h"
 
 @interface RCNavigator : UIView <UIAlertViewDelegate, UIActionSheetDelegate> {
 	RCNetwork *currentNetwork;

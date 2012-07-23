@@ -36,9 +36,6 @@
 			network = [[RCNetwork alloc] init];
 			isNew = YES;
 		}
-		else {
-			[self.navigationItem.rightBarButtonItem setEnabled:NO];
-		}
 	}
 	return self;
 }
@@ -83,6 +80,7 @@
 	[btn addTarget:self action:@selector(doneConnection) forControlEvents:UIControlEventTouchUpInside];
 	UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithCustomView:btn];
 	[btn release];
+	btn.enabled = !isNew;
 	[self.navigationItem setRightBarButtonItem:done];
 	[done release];
 	
@@ -194,12 +192,8 @@
 	else {
 		if ([network isConnected])	[network disconnect];
 	}
-	if (!isNew)
-		[[RCNetworkManager sharedNetworkManager] saveNetworks];
+	[[RCNetworkManager sharedNetworkManager] saveNetworks];
 	[self doneWithJoin];
-	//[wrapper release];
-	//wrapper = nil;
-    keychain = nil;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView indentationLevelForRowAtIndexPath:(NSIndexPath *)indexPath {

@@ -117,6 +117,7 @@ UIImage *RCImageForRank(NSString *rank) {
 
 - (void)setDelegate:(RCNetwork *)_delegate {
 	delegate = _delegate;
+	[panel setEntryFieldEnabled:[delegate isConnected]];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -205,7 +206,6 @@ UIImage *RCImageForRank(NSString *rank) {
 	[self shouldPost:isHighlight withMessage:msg];
 	[msg release];
 	[p drain];
-	return;
 }
 
 - (void)peopleParticipateInConversationsNotPartake:(id)hai wtfWasIThinking:(BOOL)thinking {

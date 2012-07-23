@@ -104,10 +104,14 @@ static NSMutableArray *networks = nil;
 	_printMotd = NO;
 	@autoreleasepool {
 		NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithContentsOfFile:PREFS_ABSOLUT];
-		if (!dict) return;
+		if (!dict) {
+			isSetup = NO;
+			return;
+		}
 		if ([[dict allKeys] count] == 0) {
 			[self setupWelcomeView];
 			[dict release];
+			isSetup = NO;
 			return;
 		}
 		for (NSString *_net in [dict allKeys]) {

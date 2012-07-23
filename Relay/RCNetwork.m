@@ -82,6 +82,7 @@
 	for (NSString *chan_ in [_channels allKeys]) {
 		if ([[chan_ lowercaseString] isEqualToString:[chan lowercaseString]]) return [_channels objectForKey:chan];
 	}
+	NSLog(@"MEH COULND'T FIND THIS CHANNEL SURENIX %@", chan);
 	return nil;
 }
 
@@ -343,7 +344,11 @@ char *RCIPForURL(NSString *URL) {
 	if (chan) [chan recievedMessage:@"Connected to host." from:@"" type:RCMessageTypeNormal];
 	if ([npass length] > 0)	[self sendMessage:[@"PRIVMSG NickServ IDENTIFY " stringByAppendingString:npass]];
 	for (NSString *chan in [_channels allKeys]) {
-		if ([[_channels objectForKey:chan] joinOnConnect]) [[_channels objectForKey:chan] setJoined:YES withArgument:nil];
+		if (![[self channelWithChannelName:chan] isKindOfClass:[RCPMChannel class]]) {
+			if ([[self channelWithChannelName:chan] joinOnConnect]) [[self channelWithChannelName:chan] setJoined:YES withArgument:nil];
+		}
+		else
+			[[self channelWithChannelName:chan] setSuccessfullyJoined:YES];
 	}
 }
 

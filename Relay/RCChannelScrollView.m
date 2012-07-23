@@ -18,8 +18,16 @@
 		shouldDrawBG = YES;
 		[self setOpaque:NO];
 		[self setClearsContextBeforeDrawing:YES];
-		[self setClipsToBounds:YES];
+		[self setClipsToBounds:NO];
+		[self.layer setMasksToBounds:NO];
 		[self setShowsHorizontalScrollIndicator:NO];
+		UIImage *shadow = [UIImage imageNamed:@"0_r_shadow"];
+		CALayer *sLayer = [[CALayer alloc] init];
+		sLayer.contents = (id)shadow.CGImage;
+		sLayer.opacity = 0.3;
+		sLayer.frame = CGRectMake(0, 32, 320, 15);
+		[self.layer addSublayer:sLayer];
+		[sLayer release];
 	}
 	return self;
 }

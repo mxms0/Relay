@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "RCPrettyAlertView.h"
 @class RCNetwork;
 
 typedef enum RCPasswordRequestAlertType {
@@ -14,7 +15,7 @@ typedef enum RCPasswordRequestAlertType {
 	RCPasswordRequestAlertTypeServer
 } RCPasswordRequestAlertType;
 
-@interface RCPasswordRequestAlert : UIAlertView {
+@interface RCPasswordRequestAlert : RCPrettyAlertView {
 	RCNetwork *net;
 	RCPasswordRequestAlertType type;
 }

@@ -56,6 +56,7 @@ typedef enum RCEventType {
 - (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type;
 - (void)recievedEvent:(RCEventType)type from:(NSString *)from message:(NSString *)msg;
 - (void)setUserJoined:(NSString *)joined;
+- (void)setSuccessfullyJoined:(BOOL)success;
 - (void)setUserLeft:(NSString *)left;
 - (void)setMode:(NSString *)modes forUser:(NSString *)user;
 - (void)setJoined:(BOOL)joind withArgument:(NSString *)arg1;

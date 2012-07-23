@@ -56,7 +56,9 @@ static id _sharedNavigator = nil;
         listr = [[RCBarButton alloc] initWithFrame:[self frameForListButton]];
         [plus setTitle:@"+" forState:UIControlStateNormal];
 		[plus setImage:[UIImage imageNamed:@"0_plusbtn"] forState:UIControlStateNormal];
+		[plus setImage:[UIImage imageNamed:@"0_plusbtn_pressed"] forState:UIControlStateHighlighted];
 		[listr setImage:[UIImage imageNamed:@"0_listrbtn"] forState:UIControlStateNormal];
+		[listr setImage:[UIImage imageNamed:@"0_listrbtn_pressed"] forState:UIControlStateHighlighted];
         [bar addSubview:plus];
         [plus addTarget:self action:@selector(presentAddNetworkController) forControlEvents:UIControlEventTouchUpInside];
         [bar addSubview:listr];
@@ -260,7 +262,7 @@ static RCChannelBubble *questionabubble = nil;
 }
 
 - (void)doSuicideConfirmationAlert:(RCChannelBubble *)questionAble {
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Are you sure?" message:[NSString stringWithFormat:@"Are you sure you want to delete %@", [questionAble titleLabel].text] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Delete", nil];
+	RCPrettyAlertView *alert = [[RCPrettyAlertView alloc] initWithTitle:@"Are you sure?" message:[NSString stringWithFormat:@"Are you sure you want to delete %@", [questionAble titleLabel].text] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Delete", nil];
 	[alert show];
 	[alert release];
 	
@@ -290,7 +292,7 @@ static RCChannelBubble *questionabubble = nil;
 			[currentPanel removeFromSuperview];
 		}
 		[[chan panel] setFrame:(currentPanel ? [currentPanel frame] : [self frameForChatTable])];
-		[self addSubview:[chan panel]];
+		[self insertSubview:[chan panel] belowSubview:scrollBar];
 		currentPanel = [chan panel];
 		// if this fails, UIApplication->statusBarOrientation
 	}

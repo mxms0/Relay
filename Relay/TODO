@@ -9,9 +9,6 @@ RCChannel:: {
 	Add support in the infodictionary stuff for the join-on-connect channels, etc. 
 	Add support for channels with passwords. 
 }
-RCNetworkManager:: {
-	Save all networks in binary plist, it's much faster (NSPropertyListSerialization).
-}
 Commands:: {
 	Having instances of classes that have huge method lists could hurt the stack/slow things down, so instead let's have one singleton class in memory always that can just handle and return values or something to each network? Maybe some sort of queue? The only bad things about this, is that if one command is slow, costly, etc, other commands won't happen until that one is finished. But then again, what user is doing /ipod /sysinfo /this /that, constantly? fr0st maybe. So meh.
 }
