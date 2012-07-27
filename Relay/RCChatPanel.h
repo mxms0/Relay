@@ -36,6 +36,5 @@
 - (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor highlight:(BOOL)high isMine:(BOOL)mine;
 - (void)repositionKeyboardForUse:(BOOL)key animated:(BOOL)an;
 - (void)setHidesEntryField:(BOOL)entry;
-- (void)setEntryFieldEnabled:(BOOL)en;
 - (void)becomeFirstResponderNoAnimate;
 @end

@@ -14,7 +14,6 @@
 
 - (id)initWithChannelName:(NSString *)_name {
 	if ((self = [super initWithChannelName:_name])) {
-		[[self panel] setEntryFieldEnabled:NO];
 	}
 	return self;
 }

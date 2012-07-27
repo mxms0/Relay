@@ -106,7 +106,6 @@ UIImage *RCImageForRank(NSString *rank) {
 		joined = NO;
 		users = [[NSMutableDictionary alloc] init];
 		panel = [[RCChatPanel alloc] initWithStyle:UITableViewStylePlain andChannel:self];
-        [panel setEntryFieldEnabled:NO];
 	}
 	return self;
 }
@@ -117,7 +116,6 @@ UIImage *RCImageForRank(NSString *rank) {
 
 - (void)setDelegate:(RCNetwork *)_delegate {
 	delegate = _delegate;
-	[panel setEntryFieldEnabled:[delegate isConnected]];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -338,7 +336,6 @@ UIImage *RCImageForRank(NSString *rank) {
 
 - (void)setSuccessfullyJoined:(BOOL)success {
 	joined = success;
-    [panel setEntryFieldEnabled:YES];
 }
 
 - (BOOL)joined {

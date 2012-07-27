@@ -161,6 +161,7 @@
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_port = htons(port);
 	char *ip = RCIPForURL(server);
+	NSLog(@"hi %@", CFNetworkCopySystemProxySettings());
 	if (ip == NULL) {
 		// report error..
 		NSLog(@"ERRRRRRRR");
@@ -344,11 +345,7 @@ char *RCIPForURL(NSString *URL) {
 	if (chan) [chan recievedMessage:@"Connected to host." from:@"" type:RCMessageTypeNormal];
 	if ([npass length] > 0)	[self sendMessage:[@"PRIVMSG NickServ IDENTIFY " stringByAppendingString:npass]];
 	for (NSString *chan in [_channels allKeys]) {
-		if (![[self channelWithChannelName:chan] isKindOfClass:[RCPMChannel class]]) {
-			if ([[self channelWithChannelName:chan] joinOnConnect]) [[self channelWithChannelName:chan] setJoined:YES withArgument:nil];
-		}
-		else
-			[[self channelWithChannelName:chan] setSuccessfullyJoined:YES];
+		if ([[self channelWithChannelName:chan] joinOnConnect]) [[self channelWithChannelName:chan] setJoined:YES withArgument:nil];
 	}
 }
 

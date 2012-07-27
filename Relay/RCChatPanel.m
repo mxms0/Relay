@@ -88,16 +88,6 @@
 	prev = [channel userWithPrefix:currentWord pastUser:prev];
 }
 
-- (void)setEntryFieldEnabled:(BOOL)en {
-    field.enabled = en;
-    if (en) {
-        _bar.alpha = 1.0;
-    }
-    else {
-        _bar.alpha = 0.5;
-    }
-}
-
 - (void)setFrame:(CGRect)frame {
 	[self.tableView setFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
 	[_bar setFrame:CGRectMake(0, frame.size.height, frame.size.width, 40)];
@@ -223,11 +213,12 @@
     }
 	RCMessage *_message = [messages objectAtIndex:indexPath.row];
 	[cell setMessage:_message];
-	[cell _messageHasBeenSet];
+	[cell setNeedsDisplay];
 	return cell;
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(RCChatCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+		[cell _messageHasBeenSet];
 	// Configure the cell...
 	// this method above is heavy
 	// and is the reason for slow scrolling

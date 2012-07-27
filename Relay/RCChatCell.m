@@ -14,6 +14,8 @@
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
+		self.opaque = YES;
+		self.layer.opaque = YES;
 		contentView = [[RCChatCellContentView alloc] initWithFrame:CGRectZero];
 		contentView.opaque = YES;
 		self.backgroundView = contentView;
@@ -31,6 +33,7 @@
 		[self.textLabel setExtendBottomToFit:YES];
 		[self.textLabel setShadowColor:[UIColor whiteColor]];
 		[self.textLabel setShadowOffset:CGSizeMake(0, 1)];
+		self.textLabel.hidden = YES;
 		[self.contentView addSubview:self.textLabel];
 		[self.textLabel release];
 	}
@@ -71,18 +74,17 @@
 		@autoreleasepool {
 			UIImage *bg = [UIImage imageNamed:[NSString stringWithFormat:@"0_chatcell_%d", (int)layr]];
 			[self.contentView setBackgroundColor:[UIColor colorWithPatternImage:bg]];
-			[self setNeedsDisplay];
 		}
 	}	
 }
 
 - (void)layoutSubviews {
 	[super layoutSubviews];
-	[self.textLabel setFrame:CGRectMake(2, 2,((UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation) ? 480 : 320) - 4) , height)];
+	[self.textLabel setFrame:CGRectMake(2, 2, self.frame.size.width-4 , height)];
 }
 
 - (void)drawContentView:(CGRect)rect {
-	[self.textLabel setNeedsDisplay];
+
 }
 
 @end
