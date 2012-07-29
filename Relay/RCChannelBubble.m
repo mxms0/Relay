@@ -69,7 +69,7 @@
 - (void)layoutSubviews {
 	[super layoutSubviews];
 	if (![NSThread isMainThread]) {
-		[self dispatchMessageOnMainThread:_cmd withBool:NULL];
+		[self dispatchMessageOnMainThread:_cmd withBool:(BOOL)NULL];
 		return;
 	}
 	if (_highlighted) {
@@ -156,7 +156,7 @@
 	NSInvocation *invc = [[NSInvocation alloc] init];
 	[invc setTarget:self];
 	[invc setSelector:fds];
-	[invc setArgument:Bb atIndex:2];
+	[invc setArgument:(void *)Bb atIndex:2];
 	[invc performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
 	[invc release];
 }

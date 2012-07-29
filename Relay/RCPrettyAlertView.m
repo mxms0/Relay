@@ -18,7 +18,7 @@
 			UIImageView *gradient = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"0_alertview_mask"]];
 			[v addSubview:gradient];
 			[gradient release];
-			NSLog(@"Meh %@", NSStringFromCGRect([v frame]));
+			break;
 		}
 	}
 }

@@ -11,7 +11,7 @@
 
 @implementation RCNetwork
 
-@synthesize sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _bubbles, _nicknames, shouldRequestSPass, shouldRequestNPass;
+@synthesize sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _bubbles, _nicknames, shouldRequestSPass, shouldRequestNPass, namesCallback;
 
 - (id)init {
 	if ((self = [super init])) {
@@ -82,7 +82,6 @@
 	for (NSString *chan_ in [_channels allKeys]) {
 		if ([[chan_ lowercaseString] isEqualToString:[chan lowercaseString]]) return [_channels objectForKey:chan];
 	}
-	NSLog(@"MEH COULND'T FIND THIS CHANNEL SURENIX %@", chan);
 	return nil;
 }
 
@@ -356,7 +355,6 @@ char *RCIPForURL(NSString *URL) {
 - (void)handle001:(NSString *)welcome {
 	status = RCSocketStatusConnected;
 	[self networkDidRegister:YES];
-	NSLog(@"hi regs.");
 	NSScanner *scanner = [[NSScanner alloc] initWithString:welcome];
 	NSString *crap;
 	@try {
@@ -969,10 +967,7 @@ char *RCIPForURL(NSString *URL) {
 	[_scan release];
 }
 
-// PRIVMSG victim :\001CLIENTINFO\001/////
-
 void RCParseUserMask(NSString *mask, NSString **_nick, NSString **user, NSString **hostmask) {
-	
 	if (_nick)
 		*_nick = nil;
 	if (user)
@@ -998,4 +993,3 @@ void RCParseUserMask(NSString *mask, NSString **_nick, NSString **user, NSString
 	return nil;
 }
 @end
-

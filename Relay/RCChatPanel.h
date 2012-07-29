@@ -12,6 +12,7 @@
 #import "RCTextField.h"
 #import "RCMessage.h"
 #import "RCTextFieldBackgroundView.h"
+#import "RCScrollView.h"
 
 @interface NSObject (Stuff)
 - (id)performSelector:(SEL)selector onThread:(NSThread *)aThread withObject:(id)p1 withObject:(id)p2 withObject:(id)p3 withObject:(id)p4;
@@ -20,6 +21,7 @@
 @class RCChannel;
 @interface RCChatPanel : UIView <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate> {
 	NSMutableArray *messages;
+	RCScrollView *mainView;
 	RCChannel *channel;
 	RCTableView *tableView;
 	NSMutableString *currentWord;

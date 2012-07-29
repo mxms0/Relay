@@ -57,6 +57,7 @@ typedef enum RCSocketStatus {
 	BOOL _isDiconnecting;
 	BOOL shouldRequestSPass;
 	BOOL shouldRequestNPass;
+	id namesCallback;
 }
 @property (nonatomic, retain) NSMutableDictionary *_channels;
 @property (nonatomic, retain) NSMutableArray *_nicknames;
@@ -76,6 +77,7 @@ typedef enum RCSocketStatus {
 @property (nonatomic, assign) BOOL COL;
 @property (nonatomic, assign) BOOL shouldRequestSPass;
 @property (nonatomic, assign) BOOL shouldRequestNPass;
+@property (nonatomic, assign) id namesCallback;
 - (RCChannel *)channelWithChannelName:(NSString *)chan;
 - (NSString *)_description;
 - (void)connect;

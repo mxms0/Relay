@@ -170,6 +170,7 @@ UIImage *RCImageForRank(NSString *rank) {
 
 - (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type {
 	NSLog(@"%s:%d", (char *)_cmd, type);
+	
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	message = [message stringByReplacingOccurrencesOfString:@"\t" withString:@""];
 	RCMessageFlavor flavor;
@@ -413,13 +414,16 @@ UIImage *RCImageForRank(NSString *rank) {
 	[scan scanUpToString:@"" intoString:&msg];
 	BOOL new = ([(RCNetwork *)delegate channelWithChannelName:room] == nil);
 	if (new) [delegate addChannel:room join:YES];
-	if (![msg isEqualToString:@""]) 
+	if (![msg isEqualToString:@""] && ![msg isEqualToString:@" "] && (msg != nil)) {
 		if (![delegate sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", room, msg]]) {
 			[scan release];
 			return;
 		}
-	RCChannel *chan = [delegate channelWithChannelName:room];
-	[chan recievedMessage:msg from:[delegate useNick] type:RCMessageFlavorNormal];
+		else {
+			RCChannel *chan = [delegate channelWithChannelName:room];
+			[chan recievedMessage:msg from:[delegate useNick] type:RCMessageTypeNormal];
+		}
+	}
 	[scan release];
 }
 

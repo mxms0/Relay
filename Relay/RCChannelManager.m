@@ -12,10 +12,10 @@
 
 - (id)initWithStyle:(UITableViewStyle)style andNetwork:(RCNetwork *)net {
 	if ((self = [super initWithStyle:style])) {
+		[net setNamesCallback:self];
 		network = net;
-        titleView.text = @"Channels";
+		_rEditing = NO;
 		channels = [[NSMutableArray alloc] initWithArray:[[net _channels] allKeys]];
-        pendingChannels = [[NSMutableArray alloc] init];
 		[channels removeObject:@"IRC"];
     }
     return self;
@@ -28,10 +28,54 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	[self.tableView reloadData];
-    addBtn = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addNewItem)];
-    NSArray *array = [NSArray arrayWithObjects:self.editButtonItem, nil];
-    [self.navigationItem setRightBarButtonItems:array animated:YES];
+	UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(edit)];
+	[self.navigationItem setRightBarButtonItem:edit];
+	[edit release];
+	self.tableView.allowsSelectionDuringEditing = YES;
+	if ([network isConnected]) {
+		[self addStupidWarningView];
+	}
 }
+
+- (void)addStupidWarningView {
+	UIView *back = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 40)];
+	UILabel *warning = [[UILabel alloc] initWithFrame:CGRectMake(47, 5, 280, 40)];
+	[warning setShadowColor:[UIColor blackColor]];
+	[warning setShadowOffset:CGSizeMake(0, 1)];
+	[warning setFont:[UIFont systemFontOfSize:14]];
+	[warning setNumberOfLines:0];
+	[warning setTextColor:[UIColor whiteColor]];
+	[warning setBackgroundColor:[UIColor clearColor]];
+	[warning setText:@"Requesting channel list from the server..."];
+	UIActivityIndicatorView *vv = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
+	[vv startAnimating];
+	[back addSubview:vv];
+	[vv release];
+	[back addSubview:warning];
+	[warning release];
+	[self.tableView setTableHeaderView:back];
+	[back release];
+}
+
+- (void)removeStupidWarningView {
+	[self.tableView setTableHeaderView:nil];
+}
+
+- (void)edit {
+	_rEditing = !_rEditing;
+	[((UITableView *)self.tableView) setEditing:!_rEditing animated:NO];
+	[((UITableView *)self.tableView) setEditing:_rEditing animated:YES];
+	
+	UIBarButtonItem *rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:([((UITableView *)self.view) isEditing] ? UIBarButtonSystemItemDone : UIBarButtonSystemItemEdit) target:self action:@selector(edit)];
+	[self.navigationItem setRightBarButtonItem:rightBarButtonItem animated:YES];
+	[rightBarButtonItem release];
+	[((UITableView *)self.view) beginUpdates];
+	if (_rEditing)
+		[((UITableView *)self.view) insertRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:[channels count] inSection:0]] withRowAnimation:UITableViewRowAnimationTop];
+	else [((UITableView *)self.view) deleteRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:[channels count] inSection:0]] withRowAnimation:UITableViewRowAnimationTop];
+	[((UITableView *)self.view) endUpdates];
+}
+
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated { 
     [super setEditing:editing animated:animated];
 	if (editing) {
@@ -44,10 +88,10 @@
 		[items removeObject: addBtn];
 		self.navigationItem.rightBarButtonItems = items;
 
-        for (NSString *channel in pendingChannels) {
-            [network addChannel:channel join:NO];
-        }
-        [pendingChannels removeAllObjects];
+		//        for (NSString *channel in pendingChannels) {
+		//   [network addChannel:channel join:NO];
+        //}
+        //[pendingChannels removeAllObjects];
 	}
 }
 
@@ -58,8 +102,6 @@
     [channels release];
     channels = nil;
     network = nil;
-    [pendingChannels release];
-    pendingChannels = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -70,8 +112,15 @@
     return 1;
 }
 
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if ([channels count] == indexPath.row) {
+        return UITableViewCellEditingStyleInsert;
+    }
+	return UITableViewCellEditingStyleDelete;
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	return [channels count];
+	return ([channels count] + (_rEditing ? 1 : 0));
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -83,7 +132,13 @@
 		cell.textLabel.font = [UIFont boldSystemFontOfSize:14];
 		cell.textLabel.textColor = UIColorFromRGB(0x545758);
 	}
-	cell.textLabel.text = [channels objectAtIndex:indexPath.row];
+	if ([channels count] == indexPath.row) {
+		cell.textLabel.text = @"Add Channel";
+	}
+	else {
+		cell.textLabel.text = [channels objectAtIndex:indexPath.row];
+		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+	}
     return cell;
 }
 
@@ -114,7 +169,7 @@
         else 
             tempString = textField.text;
         [channels addObject:tempString];
-        [pendingChannels addObject:tempString];
+		//   [pendingChannels addObject:tempString];
         [self.tableView reloadData];
     }
 }

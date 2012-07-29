@@ -46,13 +46,16 @@
 	if ((self = [super init])) {
 		[self setBackgroundColor:[UIColor clearColor]];
 		[self setChannel:chan];
-		self.tableView = [[RCTableView alloc] initWithFrame:CGRectMake(0, 0, 320, 343) style:style];
-		self.tableView.delegate = self;
-		self.tableView.dataSource = self;
-		[self.tableView setBackgroundColor:[UIColor clearColor]];
-		[self addSubview:tableView];
-		[tableView release];
-		[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+		mainView = [[RCScrollView alloc] initWithFrame:CGRectMake(0, 0, 320, 343)];
+		[self addSubview:mainView];
+		[mainView release];
+		//		self.tableView = [[RCTableView alloc] initWithFrame:CGRectMake(0, 0, 320, 343) style:style];
+		//self.tableView.delegate = self;
+		//self.tableView.dataSource = self;
+		//[self.tableView setBackgroundColor:[UIColor clearColor]];
+		//[self addSubview:tableView];
+		//[tableView release];
+		//[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 		messages = [[NSMutableArray alloc] init];
 		currentWord = [[NSMutableString alloc] init];
 		prev = @"";
@@ -89,7 +92,7 @@
 }
 
 - (void)setFrame:(CGRect)frame {
-	[self.tableView setFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
+	//	[self.tableView setFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
 	[_bar setFrame:CGRectMake(0, frame.size.height, frame.size.width, 40)];
 	[self repositionKeyboardForUse:[field isFirstResponder] animated:NO];
 	[super setFrame:CGRectMake(0, frame.origin.y, frame.size.width, frame.size.height+40)];
@@ -122,8 +125,8 @@
 
 - (void)setHidesEntryField:(BOOL)entry {
 	[_bar setHidden:entry];
-	if (entry) [tableView setFrame:CGRectMake(0, 0, 320, 384)];
-	else [tableView setFrame:CGRectMake(0, 0, 320, 340)];	
+	//	if (entry) [tableView setFrame:CGRectMake(0, 0, 320, 384)];
+	//else [tableView setFrame:CGRectMake(0, 0, 320, 340)];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
@@ -150,9 +153,9 @@
 	[_bar setFrame:[self frameForInputField:key]];
 	field.frame = CGRectMake(15, 5, _bar.frame.size.width-30, 31);
 	if (anim) [UIView commitAnimations];
-	[self.tableView setFrame:CGRectMake(0, 0, _bar.frame.size.width, _bar.frame.origin.y)];
+	//	[self.tableView setFrame:CGRectMake(0, 0, _bar.frame.size.width, _bar.frame.origin.y)];
 	[_bar performSelectorOnMainThread:@selector(setNeedsDisplay) withObject:nil waitUntilDone:NO];
-	if (key) if ([messages count] != 0) [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+	//if (key) if ([messages count] != 0) [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 }
 
 - (CGRect)frameForInputField:(BOOL)activ {
@@ -177,7 +180,8 @@
 
 - (void)_correctThreadPost:(RCMessage *)_m {
 	[messages addObject:_m];
-	[_m release];
+	//	[mainView layoutMessage:_m];
+	return;
 	[self.tableView beginUpdates];
 	[self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0]] withRowAnimation:UITableViewRowAnimationMiddle];
 	[self.tableView endUpdates];

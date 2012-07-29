@@ -61,6 +61,7 @@ static id _sharedNavigator = nil;
 		[listr setImage:[UIImage imageNamed:@"0_listrbtn_pressed"] forState:UIControlStateHighlighted];
         [bar addSubview:plus];
         [plus addTarget:self action:@selector(presentAddNetworkController) forControlEvents:UIControlEventTouchUpInside];
+		[listr addTarget:self action:@selector(presentChannelManagementController) forControlEvents:UIControlEventTouchUpInside];
         [bar addSubview:listr];
         [plus release];
         [listr release];
@@ -71,15 +72,22 @@ static id _sharedNavigator = nil;
     return _sharedNavigator;
 }
 
-- (void)presentAddNetworkController {
-    UIViewController *rc = [((RCAppDelegate *)[[UIApplication sharedApplication] delegate]) navigationController];
-    RCAddNetworkController *ctrlr = [[RCAddNetworkController alloc] initWithNetwork:nil];
-    UINavigationController *ctrl = [[UINavigationController alloc] initWithRootViewController:ctrlr];
-    [ctrl setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
-    [rc presentModalViewController:ctrl animated:YES];
-    [ctrlr release];
-    [ctrl release];    
+- (void)presentChannelManagementController {
 
+}
+
+- (void)presentViewControllerInMainViewController:(UIViewController *)hi {
+	UIViewController *rc = [((RCAppDelegate *)[[UIApplication sharedApplication] delegate]) navigationController];
+	UINavigationController *ctrl = [[UINavigationController alloc] initWithRootViewController:hi];
+	[ctrl setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
+	[rc presentModalViewController:ctrl animated:YES];
+	[ctrl release];
+}
+
+- (void)presentAddNetworkController {
+    RCAddNetworkController *ctrlr = [[RCAddNetworkController alloc] initWithNetwork:nil];
+	[self presentViewControllerInMainViewController:ctrlr];
+    [ctrlr release];
 }
 
 - (void)addChannel:(NSString *)chan toServer:(RCNetwork *)net {
@@ -202,7 +210,7 @@ static id _sharedNavigator = nil;
 	else if (buttonIndex == 2) {
 		if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Disconnect"]) [currentNetwork disconnect];
 		else {
-			[currentNetwork performSelectorInBackground:@selector(_connect) withObject:nil];
+			[currentNetwork connect];
 		}
 		//connect
 	}

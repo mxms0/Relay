@@ -208,7 +208,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 	switch (section) {
 		case 0:
-			return 3;
+			return 4;
 		case 1:
 			return 3;
 		case 2:
@@ -327,9 +327,6 @@
 					break;
 				case 3:
 					cell.textLabel.text = @"Use SSL";
-				//	RCSwitch *cnt = [[RCSwitch alloc] initWithFrame:CGRectMake(0, 0, 57, 29)];
-				//	[cell setAccessoryView:cnt];
-				//	[cnt release];
 					UISwitch *cnt = [[UISwitch alloc] init];
 					[cnt setOn:[network useSSL]];
 					[cnt addTarget:self action:@selector(sslSwitched:) forControlEvents:UIControlEventValueChanged];

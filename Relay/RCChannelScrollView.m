@@ -7,7 +7,7 @@
 //
 
 #import "RCChannelScrollView.h"
-#import <CoreGraphics/CoreGraphics.h>
+#import <QuartzCore/QuartzCore.h>
 
 @implementation RCChannelScrollView
 
