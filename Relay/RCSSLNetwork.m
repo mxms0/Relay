@@ -144,4 +144,31 @@ SSL_CTX *initContext(void) {
 	return NO;
 }
 
+- (BOOL)disconnect {
+	if (_isDiconnecting) return NO;
+	_isDiconnecting = YES;
+	if (status == RCSocketStatusClosed) return NO;
+	if ((status == RCSocketStatusConnected) || (status == RCSocketStatusConnecting)) {
+		[self sendMessage:@"QUIT :Relay 1.0"];
+		status = RCSocketStatusClosed;
+		if (sendQueue) [sendQueue release];
+		sendQueue = nil;
+		close(sockfd);
+		[[UIApplication sharedApplication] endBackgroundTask:task];
+		task = UIBackgroundTaskInvalid;
+		status = RCSocketStatusClosed;
+		isRegistered = NO;
+		SSL_CTX_free(ctx);
+		for (NSString *chan in [_channels allKeys]) {
+			RCChannel *_chan = [self channelWithChannelName:chan];
+			[_chan setMyselfParted];
+		}
+		NSLog(@"Disconnected.");
+	}
+	_isDiconnecting = NO;
+	return YES;	
+	
+
+}
+
 @end
