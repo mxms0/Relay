@@ -159,6 +159,7 @@ SSL_CTX *initContext(void) {
 		status = RCSocketStatusClosed;
 		isRegistered = NO;
 		SSL_CTX_free(ctx);
+		SSL_free(ssl);
 		for (NSString *chan in [_channels allKeys]) {
 			RCChannel *_chan = [self channelWithChannelName:chan];
 			[_chan setMyselfParted];

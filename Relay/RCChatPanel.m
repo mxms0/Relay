@@ -180,7 +180,7 @@
 
 - (void)_correctThreadPost:(RCMessage *)_m {
 	[messages addObject:_m];
-	//	[mainView layoutMessage:_m];
+	[mainView layoutMessage:_m];
 	return;
 	[self.tableView beginUpdates];
 	[self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0]] withRowAnimation:UITableViewRowAnimationMiddle];

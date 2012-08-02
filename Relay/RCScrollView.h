@@ -9,7 +9,9 @@
 #import <UIKit/UIKit.h>
 
 @class RCMessage;
-@interface RCScrollView : UIScrollView
+@interface RCScrollView : UIScrollView {
+	float y;
+}
 
 - (void)layoutMessage:(RCMessage *)ms;
 

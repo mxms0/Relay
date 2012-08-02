@@ -68,10 +68,6 @@
 
 - (void)layoutSubviews {
 	[super layoutSubviews];
-	if (![NSThread isMainThread]) {
-		[self dispatchMessageOnMainThread:_cmd withBool:(BOOL)NULL];
-		return;
-	}
 	if (_highlighted) {
 		[[self titleLabel] setTextColor:[UIColor redColor]];
 		[[self titleLabel] setShadowColor:[UIColor whiteColor]];
@@ -85,10 +81,6 @@
 
 - (void)_setSelected:(BOOL)selected {
 	if (_selected == selected) return;
-	if (![NSThread isMainThread]) {
-		[self dispatchMessageOnMainThread:_cmd withBool:selected];
-		return;
-	}
 	_rcount = 0;
 	_selected = selected;
 	hasNew = NO;
@@ -114,11 +106,6 @@
 
 - (void)setMentioned:(BOOL)mentioned {
 	if (_highlighted == mentioned) return;
-	if (![NSThread isMainThread]) {
-		[self dispatchMessageOnMainThread:_cmd withBool:mentioned];
-		return;
-	}
-	NSLog(@"meh %d", mentioned);
 	_highlighted = mentioned;
 	if (_highlighted) {
 		[[self titleLabel] setTextColor:UIColorFromRGB(0xDA4156)];
@@ -131,10 +118,6 @@
 }
 
 - (void)setHasNewMessage:(BOOL)msgs {
-	if (![NSThread isMainThread]) {
-		[self dispatchMessageOnMainThread:_cmd withBool:msgs];
-		return;
-	}
 	if (msgs == hasNew) return;
 	hasNew = msgs;
 	if (hasNew) {

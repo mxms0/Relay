@@ -14,8 +14,14 @@
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
 		self.textLabel.backgroundColor = [UIColor clearColor];
+		[self setOpaque:YES];
 	}
 	return self;
+}
+
+- (void)addSubview:(UIView *)view {
+	[super addSubview:view];
+	NSLog(@"Subview: %@",view);
 }
 
 @end

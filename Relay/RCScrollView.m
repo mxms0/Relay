@@ -7,25 +7,30 @@
 //
 
 #import "RCScrollView.h"
+#import <CoreText/CoreText.h>
+#import "CHAttributedString.h"
+#import "RCMessage.h"
 
 @implementation RCScrollView
 
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code
-    }
-    return self;
+- (id)initWithFrame:(CGRect)frame {
+	if ((self = [super initWithFrame:frame])) {
+		[self setBackgroundColor:[UIColor clearColor]];
+		y = 0;
+	}
+	return self;
 }
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
+- (void)layoutMessage:(RCMessage *)ms {
+	[ms setFrame:CGRectMake(2, y+2, 316, [ms messageHeight])];
+	[ms setWrapped:YES];
+	[self.layer addSublayer:ms];
+	[ms release];
+	y = ms.frame.size.height + ms.frame.origin.y;
 }
-*/
+
+- (void)drawRect:(CGRect)rect {
+	[super drawRect:rect];
+}
 
 @end

@@ -276,6 +276,8 @@ char *RCIPForURL(NSString *URL) {
 - (void)recievedMessage:(NSString *)msg {
 	if ([msg isEqualToString:@""] || msg == nil || [msg isEqualToString:@"\r\n"]) return;
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+	msg = [msg stringByReplacingOccurrencesOfString:@"\r" withString:@""];
+	msg = [msg stringByReplacingOccurrencesOfString:@"\n" withString:@""];	
 	if ([msg hasPrefix:@"PING"]) {
 		[self handlePING:msg];
 		[p drain];

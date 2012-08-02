@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "CHAttributedString.h"
 #import "OHAttributedLabel.h"
+#import <QuartzCore/QuartzCore.h>
 
 typedef enum RCMessageFlavor {
 	RCMessageFlavorNotice = 0,
@@ -20,13 +21,11 @@ typedef enum RCMessageFlavor {
 	RCMessageFlavorNormalE
 } RCMessageFlavor;
 
-@interface RCMessage : NSObject {
-	RCAttributedString *string;
+@interface RCMessage : CATextLayer {
 	RCMessageFlavor flavor;
 	float messageHeight;
 	float messageHeightLandscape;
 }
-@property (nonatomic, readonly) RCAttributedString *string;
 @property (nonatomic, assign) float messageHeight;
 @property (nonatomic, assign) float messageHeightLandscape;
 - (id)initWithMessage:(NSString *)msg isOld:(BOOL)old isMine:(BOOL)m isHighlight:(BOOL)hh flavor:(RCMessageFlavor)flavor;
