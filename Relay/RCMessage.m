@@ -42,21 +42,29 @@
 	self.contentsScale = [[UIScreen mainScreen] scale];
 	self.rasterizationScale = [[UIScreen mainScreen] scale];
 	[_string setFont:[UIFont fontWithName:@"Helvetica" size:12]];
-	UIColor *normalColor = UIColorFromRGB(0x3F4040);
+//	UIColor *normalColor = UIColorFromRGB(0x3F4040);
+	BOOL centerAlign = NO;
+	UIColor *normalColor = [UIColor whiteColor];
 	if (old)
-		normalColor = UIColorFromRGB(0xB6BCCC);
+		normalColor = [UIColor brownColor];
+//	if (old)
+//		normalColor = UIColorFromRGB(0xB6BCCC);
 	[_string setTextColor:normalColor];
 	switch (flavor) {
 		case RCMessageFlavorAction:
 			[_string setTextIsUnderlined:NO range:NSMakeRange(0, _message.length)];
 			[_string setTextBold:YES range:NSMakeRange(0, _message.length)];
 			[_string setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeClip)];
+			centerAlign = YES;
 			break;
 		case RCMessageFlavorNormal: {
 			if (hh) {
+			//	if (!old)
+		//			[_string setTextColor:UIColorFromRGB(0xDA4156)];
+		//		else [_string setTextColor:UIColorFromRGB(0xB6BCCC)];
 				if (!old)
-					[_string setTextColor:UIColorFromRGB(0xDA4156)];
-				else [_string setTextColor:UIColorFromRGB(0xB6BCCC)];
+					[_string setTextColor:[UIColor whiteColor]];
+				else [_string setTextColor:[UIColor brownColor]];
 			}
 			NSRange p = [_message rangeOfString:@"]"];
 			NSRange r = [_message rangeOfString:@":" options:0 range:NSMakeRange(p.location, _message.length-p.location)];
@@ -69,20 +77,32 @@
 			break;
 		case RCMessageFlavorTopic:
 			[_string setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeWordWrap)];
+			centerAlign = YES;
 			break;
 		case RCMessageFlavorJoin:
 			[_string setFont:[UIFont fontWithName:@"Helvetica" size:11]];
 			[_string setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeWordWrap)];
+			centerAlign = YES;
 			break;
 		case RCMessageFlavorPart:
 			[_string setFont:[UIFont fontWithName:@"Helvetica" size:11]];
 			[_string setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeWordWrap)];
+			centerAlign = YES;
 			break;
 		case RCMessageFlavorNormalE:
 			//	[attr setTextBold:YES range:NSMakeRange(0, _message.length)];
 			break;
 	}
+	if (centerAlign) {
+		CTTextAlignment alignment = kCTCenterTextAlignment;
+		CTParagraphStyleSetting settings[] = {kCTParagraphStyleSpecifierAlignment, sizeof(kCTCenterTextAlignment), &alignment};
+		CTParagraphStyleRef paragraphStyle = CTParagraphStyleCreate(settings, sizeof(settings) / sizeof(settings[0]));
+		CFAttributedStringSetAttribute((CFMutableAttributedStringRef)_string, CFRangeMake(0, _string.string.length), kCTParagraphStyleAttributeName, paragraphStyle);
+		CFRelease(paragraphStyle);
+	
+	}
 	self.string = _string;
+	[_string release];
 	return self;
 }
 

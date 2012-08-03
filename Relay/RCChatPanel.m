@@ -40,7 +40,7 @@
 @end
 
 @implementation RCChatPanel
-@synthesize tableView, messages, channel;
+@synthesize messages, channel;
 
 - (id)initWithStyle:(UITableViewStyle)style andChannel:(RCChannel *)chan {
 	if ((self = [super init])) {
@@ -49,7 +49,6 @@
 		mainView = [[RCScrollView alloc] initWithFrame:CGRectMake(0, 0, 320, 343)];
 		[self addSubview:mainView];
 		[mainView release];
-		self.tableView = nil;
 		//		self.tableView = [[RCTableView alloc] initWithFrame:CGRectMake(0, 0, 320, 343) style:style];
 		//self.tableView.delegate = self;
 		//self.tableView.dataSource = self;
@@ -57,7 +56,6 @@
 		//[self addSubview:tableView];
 		//[tableView release];
 		//[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-		messages = [[NSMutableArray alloc] init];
 		currentWord = [[NSMutableString alloc] init];
 		prev = @"";
 		_bar = [[RCTextFieldBackgroundView alloc] initWithFrame:CGRectMake(0, 343, 320, 40)];
@@ -93,7 +91,6 @@
 }
 
 - (void)setFrame:(CGRect)frame {
-	//	[self.tableView setFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
 	[_bar setFrame:CGRectMake(0, frame.size.height, frame.size.width, 40)];
 	[self repositionKeyboardForUse:[field isFirstResponder] animated:NO];
 	[super setFrame:CGRectMake(0, frame.origin.y, frame.size.width, frame.size.height+40)];
@@ -126,8 +123,6 @@
 
 - (void)setHidesEntryField:(BOOL)entry {
 	[_bar setHidden:entry];
-	//	if (entry) [tableView setFrame:CGRectMake(0, 0, 320, 384)];
-	//else [tableView setFrame:CGRectMake(0, 0, 320, 340)];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
@@ -155,8 +150,8 @@
 	field.frame = CGRectMake(15, 5, _bar.frame.size.width-30, 31);
 	if (anim) [UIView commitAnimations];
 		[mainView setFrame:CGRectMake(0, 0, _bar.frame.size.width, _bar.frame.origin.y)];
+	[mainView performSelectorInBackground:@selector(prepareToRelaySubviews) withObject:nil];
 	[_bar performSelectorOnMainThread:@selector(setNeedsDisplay) withObject:nil waitUntilDone:NO];
-	//if (key) if ([messages count] != 0) [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 }
 
 - (CGRect)frameForInputField:(BOOL)activ {
@@ -180,54 +175,7 @@
 }
 
 - (void)_correctThreadPost:(RCMessage *)_m {
-	[messages addObject:_m];
 	[mainView layoutMessage:_m];
-	return;
-	[self.tableView beginUpdates];
-	[self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0]] withRowAnimation:UITableViewRowAnimationMiddle];
-	[self.tableView endUpdates];
-	if ([messages count] > 2)
-		[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-}
-
-- (CGFloat)tableView:(UITableView *)_tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-	RCMessage *m = [messages objectAtIndex:indexPath.row];
-	return ([[RCNavigator sharedNavigator] _isLandscape] ? (float)[m messageHeightLandscape] : (float)[m messageHeight]) + 4;
-}
-
-- (NSInteger)tableView:(UITableView *)_tableView indentationLevelForRowAtIndexPath:(NSIndexPath *)indexPath {
-	return 0.0;
-}
-
-#pragma mark - Table view data source
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)_tableView {
-    // Return the number of sections.
-    return 1;
-}
-
-- (NSInteger)tableView:(UITableView *)_tableView numberOfRowsInSection:(NSInteger)section {
-    return [messages count];
-}
-
-- (UITableViewCell *)tableView:(UITableView *)_tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"0_CELLID";
-    RCChatCell *cell = (RCChatCell *)[_tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[[RCChatCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-    }
-	RCMessage *_message = [messages objectAtIndex:indexPath.row];
-	[cell setMessage:_message];
-	[cell setNeedsDisplay];
-	return cell;
-}
-
-- (void)tableView:(UITableView *)tableView willDisplayCell:(RCChatCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-		[cell _messageHasBeenSet];
-	// Configure the cell...
-	// this method above is heavy
-	// and is the reason for slow scrolling
-	// must work on a way around
 }
 
 - (float *)calculateHeightForLabel:(NSMutableAttributedString *)str {
@@ -243,14 +191,8 @@
 
 #pragma mark - Table view delegate
 
-- (void)tableView:(UITableView *)_tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	[tableView deselectRowAtIndexPath:indexPath animated:YES];
-	if ([field isFirstResponder]) [field resignFirstResponder];
-}
-
 - (void)dealloc {
 	[currentWord release];
-	[messages release];
 	[super dealloc];
 }
 

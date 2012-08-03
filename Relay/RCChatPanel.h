@@ -19,18 +19,15 @@
 @end
 
 @class RCChannel;
-@interface RCChatPanel : UIView <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate> {
-	NSMutableArray *messages;
+@interface RCChatPanel : UIView <UITextFieldDelegate> {
 	RCScrollView *mainView;
 	RCChannel *channel;
-	RCTableView *tableView;
 	NSMutableString *currentWord;
 	NSString *prev;
 	UITextField *field;
 	RCTextFieldBackgroundView *_bar;
 }
 @property (nonatomic, assign) RCChannel *channel;
-@property (nonatomic, retain) RCTableView *tableView;
 @property (nonatomic, readonly) NSMutableArray *messages;
 
 - (id)initWithStyle:(UITableViewStyle)style andChannel:(RCChannel *)chan;

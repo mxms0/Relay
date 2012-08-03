@@ -171,20 +171,17 @@
 	if (![network port]) [network setPort:6667];
 	if (![network sDescription]) [network setSDescription:[network server]];
 	//RCKeychainItem *wrapper = [[RCKeychainItem alloc] initWithIdentifier:[network _description] accessGroup:nil];
-    PDKeychainBindings *keychain = [PDKeychainBindings sharedKeychainBindings];
+	RCKeychainItem *keychain = [[RCKeychainItem alloc] initWithIdentifier:@"lolsomething" accessGroup:@"lolwtf"];
 
 	if (([network spass] == nil) || [[network spass] isEqualToString:@""]) [network setSpass:@""];
 	else {
-		//[wrapper setObject:[network spass] forKey:kSecValueData];
         [keychain setObject:[network spass] forKey:[NSString stringWithFormat:@"%@_spass",[network _description]]];
-
 	}
 	if (([network npass] == nil) || [[network npass] isEqualToString:@""]) [network setNpass:@""];
 	else {
-		//[wrapper setObject:[network npass] forKey:N_PASS_KEY];
         [keychain setObject:[network npass] forKey:[NSString stringWithFormat:@"%@_npass",[network _description]]];
-
 	}
+	[keychain release];
 	if (isNew) {
 		[network setupRooms:[NSArray arrayWithObject:@"IRC"]];
 		[[RCNetworkManager sharedNetworkManager] addNetwork:network];

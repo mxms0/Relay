@@ -333,7 +333,6 @@ static RCChannelBubble *questionabubble = nil;
 	[self setNeedsDisplay];
 	if (currentPanel) {
 		[currentPanel setFrame:[self frameForChatTable]];
-		[[currentPanel tableView] reloadData];
 	}
 	if (_isLandscape) {
 		bar.frame = CGRectMake(0, 0, 480, 32);
