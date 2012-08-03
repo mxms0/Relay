@@ -16,7 +16,7 @@ static NSMutableArray *networks = nil;
 
 - (void)ircNetworkWithInfo:(NSDictionary *)info isNew:(BOOL)n {
 	RCNetwork *network = nil;
-	if ([info objectForKey:SSL_KEY]) {
+	if ([[info objectForKey:SSL_KEY] boolValue]) {
 		network = [[RCSSLNetwork alloc] init];
 	}
 	else {

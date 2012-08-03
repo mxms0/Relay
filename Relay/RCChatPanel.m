@@ -49,6 +49,7 @@
 		mainView = [[RCScrollView alloc] initWithFrame:CGRectMake(0, 0, 320, 343)];
 		[self addSubview:mainView];
 		[mainView release];
+		self.tableView = nil;
 		//		self.tableView = [[RCTableView alloc] initWithFrame:CGRectMake(0, 0, 320, 343) style:style];
 		//self.tableView.delegate = self;
 		//self.tableView.dataSource = self;
@@ -153,7 +154,7 @@
 	[_bar setFrame:[self frameForInputField:key]];
 	field.frame = CGRectMake(15, 5, _bar.frame.size.width-30, 31);
 	if (anim) [UIView commitAnimations];
-	//	[self.tableView setFrame:CGRectMake(0, 0, _bar.frame.size.width, _bar.frame.origin.y)];
+		[mainView setFrame:CGRectMake(0, 0, _bar.frame.size.width, _bar.frame.origin.y)];
 	[_bar performSelectorOnMainThread:@selector(setNeedsDisplay) withObject:nil waitUntilDone:NO];
 	//if (key) if ([messages count] != 0) [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([messages count]-1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 }

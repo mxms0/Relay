@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		500DD85315BBD6FD00F2E59D /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = 500DD85215BBD6FD00F2E59D /* TODO */; };
 		500DD85615BBDBC700F2E59D /* RCPasswordRequestAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 500DD85515BBDBC700F2E59D /* RCPasswordRequestAlert.m */; };
 		50136C0615C3668E0044666F /* RCScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50136C0515C3668E0044666F /* RCScrollView.m */; };
 		501D895015AD08C100366019 /* PDKeychainBindings.m in Sources */ = {isa = PBXBuildFile; fileRef = 501D894D15AD08C100366019 /* PDKeychainBindings.m */; };
@@ -166,7 +165,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		500DD85215BBD6FD00F2E59D /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
 		500DD85415BBDBC700F2E59D /* RCPasswordRequestAlert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCPasswordRequestAlert.h; sourceTree = "<group>"; };
 		500DD85515BBDBC700F2E59D /* RCPasswordRequestAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCPasswordRequestAlert.m; sourceTree = "<group>"; };
 		50136C0415C3668E0044666F /* RCScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCScrollView.h; sourceTree = "<group>"; };
@@ -538,7 +536,6 @@
 		50A7FB8614C0F0A800ABADEA /* Relay */ = {
 			isa = PBXGroup;
 			children = (
-				500DD85215BBD6FD00F2E59D /* TODO */,
 				506944C6152813530096140C /* Relay.entitlements */,
 				50E77A8B1505A27800E75C64 /* Relay.h */,
 				50A7FBA914C0F7DC00ABADEA /* UI */,
@@ -849,7 +846,6 @@
 				506F796A159A91B6002266C9 /* 0_plusbtn@2x.png in Resources */,
 				506F796E159A91C2002266C9 /* 0_listrbtn@2x.png in Resources */,
 				506F796F159A91C2002266C9 /* 0_listrbtn.png in Resources */,
-				500DD85315BBD6FD00F2E59D /* TODO in Resources */,
 				502A66D215BCC3C30009C890 /* 0_alertview.png in Resources */,
 				502A66D315BCC3C30009C890 /* 0_alertview@2x.png in Resources */,
 				502A66D615BCC79F0009C890 /* 0_alertview_mask.png in Resources */,
@@ -1011,8 +1007,8 @@
 				);
 				OTHER_LDFLAGS = "-Wl,-no_implicit_dylibs";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "B78FC59A-73AD-4723-BD95-C44907080213";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "B78FC59A-73AD-4723-BD95-C44907080213";
+				PROVISIONING_PROFILE = "CD31F4C8-65DA-414B-BC43-7161F8F2D17A";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "CD31F4C8-65DA-414B-BC43-7161F8F2D17A";
 				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};
@@ -1092,8 +1088,8 @@
 				);
 				OTHER_LDFLAGS = "-Wl,-no_implicit_dylibs";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "B78FC59A-73AD-4723-BD95-C44907080213";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "B78FC59A-73AD-4723-BD95-C44907080213";
+				PROVISIONING_PROFILE = "CD31F4C8-65DA-414B-BC43-7161F8F2D17A";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "CD31F4C8-65DA-414B-BC43-7161F8F2D17A";
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				WRAPPER_EXTENSION = app;
 			};
@@ -1123,8 +1119,8 @@
 				);
 				OTHER_LDFLAGS = "-Wl,-no_implicit_dylibs";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "B78FC59A-73AD-4723-BD95-C44907080213";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "B78FC59A-73AD-4723-BD95-C44907080213";
+				PROVISIONING_PROFILE = "CD31F4C8-65DA-414B-BC43-7161F8F2D17A";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "CD31F4C8-65DA-414B-BC43-7161F8F2D17A";
 				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};

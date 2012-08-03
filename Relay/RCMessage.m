@@ -38,6 +38,9 @@
 		_string = [[RCAttributedString alloc] initWithString:_message];
 		flavor = _flavor;
 	}
+	self.minificationFilter = kCAFilterNearest;
+	self.contentsScale = [[UIScreen mainScreen] scale];
+	self.rasterizationScale = [[UIScreen mainScreen] scale];
 	[_string setFont:[UIFont fontWithName:@"Helvetica" size:12]];
 	UIColor *normalColor = UIColorFromRGB(0x3F4040);
 	if (old)
