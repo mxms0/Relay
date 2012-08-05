@@ -11,6 +11,7 @@
 @class RCMessage;
 @interface RCScrollView : UIScrollView {
 	float y;
+	NSMutableAttributedString *stringToDraw;
 }
 
 - (void)layoutMessage:(RCMessage *)ms;

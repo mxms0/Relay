@@ -15,6 +15,7 @@
 		[net setNamesCallback:self];
 		network = net;
 		_rEditing = NO;
+		NSLog(@"MEH %@", [net _channels]);
 		channels = [[NSMutableArray alloc] initWithArray:[[net _channels] allKeys]];
 		[channels removeObject:@"IRC"];
     }

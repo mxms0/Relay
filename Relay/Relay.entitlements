@@ -4,5 +4,9 @@
 <dict>
 	<key>get-task-allow</key>
 	<true/>
+	<key>keychain-access-groups</key>
+	<array>
+		<string>us.mxms.relay</string>
+	</array>
 </dict>
 </plist>

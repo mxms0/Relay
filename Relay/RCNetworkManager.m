@@ -37,18 +37,18 @@ static NSMutableArray *networks = nil;
 			return;
 		}
 	}
-	RCKeychainItem *item = [[RCKeychainItem alloc] initWithIdentifier:@"somethinghere" accessGroup:@"lolwtf"];
+	RCKeychainItem *item = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@pass", [network _description]] accessGroup:@"us.mxms.relay"];
 
 	if ([[info objectForKey:S_PASS_KEY] boolValue]) {
         //[network setSpass:([wrapper objectForKey:S_PASS_KEY] ?: @"")];
-		[network setSpass:([item objectForKey:[NSString stringWithFormat:@"%@_spass",[network _description]]] ?: @"")];
+		[network setSpass:([item objectForKey:@"spass"] ?: @"")];
 		if ([network spass] == nil || [[network spass] length] == 0) {
 			[network setShouldRequestSPass:YES];
 		}
 	}
 	if ([[info objectForKey:N_PASS_KEY] boolValue]) {
 		//[network setNpass:([wrapper objectForKey:N_PASS_KEY] ?: @"")];
-        [network setNpass:([item objectForKey:[NSString stringWithFormat:@"%@_npass",[network _description]]] ?: @"")];
+        [network setNpass:([item objectForKey:@"npass"] ?: @"")];
 		if ([network npass] == nil || [[network npass] length] == 0) {
 			[network setShouldRequestNPass:YES];
 		}

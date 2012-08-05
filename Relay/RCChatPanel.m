@@ -150,7 +150,6 @@
 	field.frame = CGRectMake(15, 5, _bar.frame.size.width-30, 31);
 	if (anim) [UIView commitAnimations];
 		[mainView setFrame:CGRectMake(0, 0, _bar.frame.size.width, _bar.frame.origin.y)];
-	[mainView performSelectorInBackground:@selector(prepareToRelaySubviews) withObject:nil];
 	[_bar performSelectorOnMainThread:@selector(setNeedsDisplay) withObject:nil waitUntilDone:NO];
 }
 
@@ -167,15 +166,12 @@
 
 - (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor highlight:(BOOL)high isMine:(BOOL)mine {
 	RCMessage *message = [[RCMessage alloc] initWithMessage:_message isOld:NO isMine:mine isHighlight:high flavor:flavor];
-	float *heights = [self calculateHeightForLabel:[message string]];
-	[message setMessageHeight:heights[0]];
-	[message setMessageHeightLandscape:heights[1]];
-	free(heights);
 	[self performSelectorOnMainThread:@selector(_correctThreadPost:) withObject:message waitUntilDone:NO];
 }
 
 - (void)_correctThreadPost:(RCMessage *)_m {
 	[mainView layoutMessage:_m];
+	[mainView setNeedsDisplay];
 }
 
 - (float *)calculateHeightForLabel:(NSMutableAttributedString *)str {
@@ -188,8 +184,6 @@
 	heights[1] = faker + (multiplier * 3);
 	return ((float *)heights);
 }
-
-#pragma mark - Table view delegate
 
 - (void)dealloc {
 	[currentWord release];

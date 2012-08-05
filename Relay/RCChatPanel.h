@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "RCChatCell.h"
 #import "RCTableView.h"
 #import "RCTextField.h"
 #import "RCMessage.h"

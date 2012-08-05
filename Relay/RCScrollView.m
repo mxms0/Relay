@@ -17,27 +17,57 @@
 	if ((self = [super initWithFrame:frame])) {
 		[self setBackgroundColor:[UIColor clearColor]];
 		y = 4;
+		stringToDraw = [[NSMutableAttributedString alloc] init];
+		self.backgroundColor = [UIColor clearColor];
+        self.contentMode = UIViewContentModeRedraw;
 		[self setScrollEnabled:YES];
 	}
 	return self;
 }
 
-- (void)prepareToRelaySubviews {
+- (void)layoutMessage:(RCMessage *)ms {
+	[stringToDraw appendAttributedString:[ms string]];
+	[ms release];
+	ms = nil;
+	[self resetContentSize];
+}
+
+- (void)resetContentSize {
+	if (!stringToDraw) return;
+	CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString(stringToDraw);
+	CFRange destRange = CFRangeMake(0, 0);
+    CFRange sourceRange = CFRangeMake(0, stringToDraw.length);
+	CGSize frameSize = CTFramesetterSuggestFrameSizeWithConstraints(framesetter, sourceRange, NULL, CGSizeMake(self.frame.size.width, CGFLOAT_MAX), &destRange);
+	self.contentSize = CGSizeMake(self.bounds.size.width, frameSize.height);
+    CFRelease(framesetter);
 	
 }
 
-- (void)layoutMessage:(RCMessage *)ms {
-	[ms setFrame:CGRectMake(2, y, 316, (self.frame.size.width == 320 ? [ms messageHeight] : [ms messageHeightLandscape])+2)];
-	[ms setWrapped:YES];
-	[self.layer addSublayer:ms];
-	[ms setBackgroundColor:[UIColor clearColor].CGColor];
-	[ms release];
-	y = ms.frame.size.height + ms.frame.origin.y;
-	[self setContentSize:CGSizeMake(320, y)];	
-}
-
-- (void)drawRect:(CGRect)rect {
+- (void) drawRect:(CGRect)rect {
 	[super drawRect:rect];
+	if (!stringToDraw) return;
+	CGContextRef context = UIGraphicsGetCurrentContext();
+	
+    // Flip the context
+	CGContextSetTextMatrix(context, CGAffineTransformIdentity);
+    CGContextTranslateCTM(context, 0, self.contentSize.height);
+	CGContextScaleCTM(context, 1.0, -1.0);
+	
+	CGMutablePathRef path = CGPathCreateMutable();
+    CGRect destRect = (CGRect){.size = self.contentSize};
+	CGPathAddRect(path, NULL, destRect);
+	
+    // Create framesetter
+    CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString(stringToDraw);
+	
+	// Draw the text
+	CTFrameRef theFrame = CTFramesetterCreateFrame(framesetter, CFRangeMake(0, stringToDraw.length), path, NULL);
+	CTFrameDraw(theFrame, context);
+	
+    // Clean up
+	CFRelease(path);
+	CFRelease(theFrame);
+	CFRelease(framesetter);
 }
 
 @end

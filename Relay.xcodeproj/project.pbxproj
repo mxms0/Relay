@@ -62,7 +62,6 @@
 		5045752B159570460092CB31 /* RCNetworkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5045752A159570450092CB31 /* RCNetworkCell.m */; };
 		50468A8D1527E46D0025F405 /* 0_input_l.png in Resources */ = {isa = PBXBuildFile; fileRef = 50468A8B1527E46D0025F405 /* 0_input_l.png */; };
 		50468A8E1527E46D0025F405 /* 0_input_l@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50468A8C1527E46D0025F405 /* 0_input_l@2x.png */; };
-		50468D8515B792B9005BC3EA /* RCChatCellContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50468D8415B792B9005BC3EA /* RCChatCellContentView.m */; };
 		504706E5159FBA2000C3E256 /* RCWelcomeChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 504706E4159FBA2000C3E256 /* RCWelcomeChannel.m */; };
 		5049385914FAAAD3003221FC /* 0_chatcell.png in Resources */ = {isa = PBXBuildFile; fileRef = 5049385714FAAAD3003221FC /* 0_chatcell.png */; };
 		5049385A14FAAAD3003221FC /* 0_chatcell@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5049385814FAAAD3003221FC /* 0_chatcell@2x.png */; };
@@ -133,7 +132,6 @@
 		50E77A8F1505A29100E75C64 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A8E1505A29100E75C64 /* main.m */; };
 		50E77A921505A30400E75C64 /* RCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A651505A17800E75C64 /* RCViewController.m */; };
 		50E77A931505A30400E75C64 /* RCChatPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A671505A18700E75C64 /* RCChatPanel.m */; };
-		50E77A941505A30400E75C64 /* RCChatCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A691505A1AC00E75C64 /* RCChatCell.m */; };
 		50E77A951505A30400E75C64 /* RCChannelBubble.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A6B1505A1B500E75C64 /* RCChannelBubble.m */; };
 		50E77A961505A30400E75C64 /* RCChannelScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A6D1505A1BE00E75C64 /* RCChannelScrollView.m */; };
 		50E77A971505A30400E75C64 /* RCNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A6F1505A1CF00E75C64 /* RCNavigationBar.m */; };
@@ -237,8 +235,6 @@
 		5045752A159570450092CB31 /* RCNetworkCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCNetworkCell.m; sourceTree = "<group>"; };
 		50468A8B1527E46D0025F405 /* 0_input_l.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_input_l.png; sourceTree = "<group>"; };
 		50468A8C1527E46D0025F405 /* 0_input_l@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_input_l@2x.png"; sourceTree = "<group>"; };
-		50468D8315B792B9005BC3EA /* RCChatCellContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCChatCellContentView.h; sourceTree = "<group>"; };
-		50468D8415B792B9005BC3EA /* RCChatCellContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCChatCellContentView.m; sourceTree = "<group>"; };
 		504706E3159FBA2000C3E256 /* RCWelcomeChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCWelcomeChannel.h; sourceTree = "<group>"; };
 		504706E4159FBA2000C3E256 /* RCWelcomeChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCWelcomeChannel.m; sourceTree = "<group>"; };
 		5049385714FAAAD3003221FC /* 0_chatcell.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_chatcell.png; sourceTree = "<group>"; };
@@ -324,8 +320,6 @@
 		50E77A651505A17800E75C64 /* RCViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCViewController.m; sourceTree = "<group>"; };
 		50E77A661505A18700E75C64 /* RCChatPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCChatPanel.h; sourceTree = "<group>"; };
 		50E77A671505A18700E75C64 /* RCChatPanel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCChatPanel.m; sourceTree = "<group>"; };
-		50E77A681505A1AC00E75C64 /* RCChatCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCChatCell.h; sourceTree = "<group>"; };
-		50E77A691505A1AC00E75C64 /* RCChatCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCChatCell.m; sourceTree = "<group>"; };
 		50E77A6A1505A1B500E75C64 /* RCChannelBubble.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCChannelBubble.h; sourceTree = "<group>"; };
 		50E77A6B1505A1B500E75C64 /* RCChannelBubble.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCChannelBubble.m; sourceTree = "<group>"; };
 		50E77A6C1505A1BE00E75C64 /* RCChannelScrollView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCChannelScrollView.h; sourceTree = "<group>"; };
@@ -465,10 +459,6 @@
 				5045752A159570450092CB31 /* RCNetworkCell.m */,
 				50AAE7E8151AD8B900E631FD /* RCAddCell.h */,
 				50AAE7E9151AD8B900E631FD /* RCAddCell.m */,
-				50E77A681505A1AC00E75C64 /* RCChatCell.h */,
-				50E77A691505A1AC00E75C64 /* RCChatCell.m */,
-				50468D8315B792B9005BC3EA /* RCChatCellContentView.h */,
-				50468D8415B792B9005BC3EA /* RCChatCellContentView.m */,
 				503790F81512BD4100EE2A7E /* RCUserTableCell.h */,
 				503790F91512BD4100EE2A7E /* RCUserTableCell.m */,
 			);
@@ -885,7 +875,6 @@
 				504C9B6B152D1E0E00F091B2 /* RCKeychainItem.m in Sources */,
 				50E77A921505A30400E75C64 /* RCViewController.m in Sources */,
 				50E77A931505A30400E75C64 /* RCChatPanel.m in Sources */,
-				50E77A941505A30400E75C64 /* RCChatCell.m in Sources */,
 				50E77A951505A30400E75C64 /* RCChannelBubble.m in Sources */,
 				50E77A961505A30400E75C64 /* RCChannelScrollView.m in Sources */,
 				50E77A971505A30400E75C64 /* RCNavigationBar.m in Sources */,
@@ -920,7 +909,6 @@
 				AA503EEF15AD2C5A00EF223E /* RCAlternateNicknamesManager.m in Sources */,
 				50376D2A15B3CCAD00E13006 /* RCDateManager.m in Sources */,
 				50376D2E15B3D1D700E13006 /* RCTextFieldBackgroundView.m in Sources */,
-				50468D8515B792B9005BC3EA /* RCChatCellContentView.m in Sources */,
 				500DD85615BBDBC700F2E59D /* RCPasswordRequestAlert.m in Sources */,
 				50E0C34A15BCBD8100B79C50 /* RCPrettyAlertView.m in Sources */,
 				50136C0615C3668E0044666F /* RCScrollView.m in Sources */,

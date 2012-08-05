@@ -12,14 +12,13 @@
 
 - (id)initWithIdentifier:(NSString *)ident accessGroup:(NSString *)group {
 	if ((self = [super init])) {
-		genericQuery = [[NSMutableDictionary alloc] initWithObjectsAndKeys:(id)kSecClassGenericPassword, (id)kSecClass, ident, (id)kSecAttrGeneric, (id)kSecMatchLimitOne, (id)kSecMatchLimit,
-						(id)kCFBooleanTrue, (id)kSecReturnAttributes, nil];
+		genericQuery = [[NSMutableDictionary alloc] initWithObjectsAndKeys:(id)kSecClassGenericPassword, (id)kSecClass, ident, (id)kSecAttrGeneric, (id)kSecMatchLimitOne, (id)kSecMatchLimit, (id)kCFBooleanTrue, (id)kSecReturnAttributes, nil];
 #if !TARGET_IPHONE_SIMULATOR
 		if (group) {
 			[genericQuery setObject:group forKey:(id)kSecAttrAccessGroup];
 		}
 #endif
-		NSDictionary *tmp = [[genericQuery copy] autorelease];
+		NSDictionary *tmp = [NSMutableDictionary dictionaryWithDictionary:genericQuery];
 		NSMutableDictionary *output = nil;
 		if (!SecItemCopyMatching((CFDictionaryRef)tmp, (CFTypeRef *)&output) == noErr) {
 			[self resetKeychain];
@@ -39,7 +38,7 @@
 }
 
 - (NSMutableDictionary *)basicDictionaryToSecDictionary:(NSDictionary *)oo {
-	NSMutableDictionary *ret = [[oo mutableCopy] autorelease];
+	NSMutableDictionary *ret = [NSMutableDictionary dictionaryWithDictionary:oo];
 	[ret setObject:(id)kSecClassGenericPassword forKey:(id)kSecClass];
 	NSString *pass = [oo objectForKey:(id)kSecValueData];
 	[ret setObject:[pass dataUsingEncoding:NSUTF8StringEncoding] forKey:(id)kSecValueData];
@@ -47,13 +46,13 @@
 }
 
 - (NSMutableDictionary *)secDictionaryToBasicDictionary:(NSDictionary *)oo {
-	NSMutableDictionary *ret = [[oo mutableCopy] autorelease];
+	NSMutableDictionary *ret = [NSMutableDictionary dictionaryWithDictionary:oo];
 	[ret setObject:(id)kCFBooleanTrue forKey:(id)kSecReturnData];
 	[ret setObject:(id)kSecClassGenericPassword forKey:(id)kSecClass];
 	NSData *passData = nil;
 	if (SecItemCopyMatching((CFDictionaryRef)ret, (CFTypeRef *)&passData) == noErr) {
 		[ret removeObjectForKey:(id)kSecReturnData];
-		NSString *pass = [[NSString alloc] initWithData:passData encoding:NSUTF8StringEncoding];
+		NSString *pass = [[NSString alloc] initWithBytes:[passData bytes] length:[passData length] encoding:NSUTF8StringEncoding];
 		[ret setObject:pass forKey:(id)kSecValueData];
 		[pass release];
 	}
@@ -70,15 +69,13 @@
 }
 
 - (void)setObject:(NSString *)value forKey:(NSString *)key {
-	if (!value || !key) {
-		NSLog(@"what the fuck is wrong with you!");
-		return;
-	}
+	if (!value) return;
 	id _current = [data objectForKey:key];
 	if (![_current isEqual:value]) {
 		[data setObject:value forKey:key];
 		[self writeKeychain];
 	}
+NSLog(@"BLEH %@", data);
 }
 
 - (void)writeKeychain {
@@ -86,7 +83,7 @@
 	NSMutableDictionary *upd = nil;
 	OSStatus st;
 	if (SecItemCopyMatching((CFDictionaryRef)genericQuery, (CFTypeRef *)&attributes) == noErr) {
-		upd = [[attributes copy] autorelease];
+		upd = [NSMutableDictionary dictionaryWithDictionary:attributes];
 		[upd setObject:[genericQuery objectForKey:(id)kSecClass] forKey:(id)kSecClass];
 		NSMutableDictionary *tmp = [self basicDictionaryToSecDictionary:data];
 		[tmp removeObjectForKey:(id)kSecClass];

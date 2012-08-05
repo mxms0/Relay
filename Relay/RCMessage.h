@@ -21,12 +21,9 @@ typedef enum RCMessageFlavor {
 	RCMessageFlavorNormalE
 } RCMessageFlavor;
 
-@interface RCMessage : CATextLayer {
-	RCMessageFlavor flavor;
-	float messageHeight;
-	float messageHeightLandscape;
+@interface RCMessage : NSObject {
+	NSMutableAttributedString *string;
 }
-@property (nonatomic, assign) float messageHeight;
-@property (nonatomic, assign) float messageHeightLandscape;
 - (id)initWithMessage:(NSString *)msg isOld:(BOOL)old isMine:(BOOL)m isHighlight:(BOOL)hh flavor:(RCMessageFlavor)flavor;
+- (NSMutableAttributedString *)string;
 @end

@@ -151,9 +151,11 @@
 			[network setRealname:[textField text]];
 			break;
 		case 7:
+			MARK;
 			[network setNpass:[textField text]];
 			break;
 		case 8:
+			MARK;
 			[network setSpass:[textField text]];
 			break;
 		default:
@@ -162,6 +164,7 @@
 }
 
 - (void)doneConnection {
+	[self.view findAndResignFirstResponder];
 	if (![network server]) return;
 	if (![network realname]) [network setRealname:@"Guest01"];
 	if (![network nick]) [network setNick:@"Guest01"];
@@ -170,16 +173,20 @@
 	}
 	if (![network port]) [network setPort:6667];
 	if (![network sDescription]) [network setSDescription:[network server]];
-	//RCKeychainItem *wrapper = [[RCKeychainItem alloc] initWithIdentifier:[network _description] accessGroup:nil];
-	RCKeychainItem *keychain = [[RCKeychainItem alloc] initWithIdentifier:@"lolsomething" accessGroup:@"lolwtf"];
-
-	if (([network spass] == nil) || [[network spass] isEqualToString:@""]) [network setSpass:@""];
-	else {
-        [keychain setObject:[network spass] forKey:[NSString stringWithFormat:@"%@_spass",[network _description]]];
+	RCKeychainItem *keychain = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@pass", [network _description]] accessGroup:@"us.mxms.relay"];
+	NSLog(@"HELLO %@", network);
+	if (([network spass] == nil) || [[network spass] isEqualToString:@""]) {
+		[network setSpass:@""];
 	}
-	if (([network npass] == nil) || [[network npass] isEqualToString:@""]) [network setNpass:@""];
 	else {
-        [keychain setObject:[network npass] forKey:[NSString stringWithFormat:@"%@_npass",[network _description]]];
+        [keychain setObject:[network spass] forKey:@"spass"];
+	}
+	if (([network npass] == nil) || [[network npass] isEqualToString:@""]) {
+		[network setNpass:@""];
+	}
+	else {
+		NSLog(@"MEEE %@", [network npass]);
+        [keychain setObject:[network npass] forKey:@"npass"];
 	}
 	[keychain release];
 	if (isNew) {
