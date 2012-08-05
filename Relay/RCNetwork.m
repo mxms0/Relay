@@ -510,7 +510,7 @@ char *RCIPForURL(NSString *URL) {
 	[_scanner scanUpToString:@" " intoString:&room];
 	[_scanner scanUpToString:@"\r\n" intoString:&_topic];
 	_topic = [_topic substringFromIndex:1];
-	[[self channelWithChannelName:room] recievedEvent:RCEventTypeTopic from:nil message:_topic];
+	[[self channelWithChannelName:room] recievedMessage:_topic from:nil type:RCMessageTypeTopic];
 	// :irc.saurik.com 332 _m #bacon :Bacon | where2start? kitchen | Canadian Bacon? get out. | WE SPEAK: BACON, ENGLISH, PORTUGUESE, DEUTSCH. | http://blog.craftzine.com/bacon-starry-night.jpg THIS IS YOU ¬†
 	[_scanner release];
 }
@@ -543,7 +543,7 @@ char *RCIPForURL(NSString *URL) {
 	NSLog(@"Implying this is a znc.");
 	NSLog(@"YAY I'M NO LONGER AWAY.");
 	if ([[[[[RCNavigator sharedNavigator] currentPanel] channel] delegate] isEqual:self]) {
-		[[[RCNavigator sharedNavigator] currentPanel] postMessage:@"You are no longer being marked as away" withFlavor:RCMessageFlavorTopic	highlight:NO];
+		[[[RCNavigator sharedNavigator] currentPanel] postMessage:@"You are no longer being marked as away" withType:RCMessageTypeTopic	highlight:NO];
 	}
 
 }
@@ -660,7 +660,18 @@ char *RCIPForURL(NSString *URL) {
 }
 
 - (void)handle421:(NSString *)unknown {
+	// means we sent a message that is so illogical, fuck you
+	NSString *crap = NULL;
+	NSString *msg = nil;
+	NSScanner *scan = [[NSScanner alloc] initWithString:unknown];
+	[scan scanUpToString:@"421" intoString:&crap];
+	[scan scanUpToString:@" " intoString:&crap];
+	[scan scanUpToString:@" " intoString:&crap];
+	[scan scanUpToString:@":" intoString:&msg];
+	RCChannel *chan = [_channels objectForKey:@"IRC"];
+	[chan recievedMessage:[NSString stringWithFormat:@"Error(421): %@ Unknown Command", [msg uppercaseString]] from:nil type:RCMessageTypeError];
 	NSLog(@"Unknown : %@ BYTES: %@", unknown, [unknown dataUsingEncoding:NSUTF8StringEncoding]);
+	[scan release];
 }
 
 - (void)handle422:(NSString *)motd {
@@ -833,7 +844,7 @@ char *RCIPForURL(NSString *URL) {
 		return;
 	}
 	else {
-		[[self channelWithChannelName:room] recievedEvent:RCEventTypePart from:_nick message:nil];
+		[[self channelWithChannelName:room] recievedMessage:nil from:_nick type:RCMessageTypePart];
 	}
 	[_scanner release];
 }
@@ -859,7 +870,7 @@ char *RCIPForURL(NSString *URL) {
 		[[self channelWithChannelName:room] setSuccessfullyJoined:YES];
 	}
 	else {
-		[[self channelWithChannelName:room] recievedEvent:RCEventTypeJoin from:_nick message:nil];
+		[[self channelWithChannelName:room] recievedMessage:nil from:_nick type:RCMessageTypeJoin];
 	}
 	[_scanner release];
 }
@@ -880,7 +891,7 @@ char *RCIPForURL(NSString *URL) {
 	RCParseUserMask(fullHost, &user, nil, nil);
 	for (NSString *channel in [_channels allKeys]) {
 		RCChannel *chan = [self channelWithChannelName:channel];
-		[chan recievedEvent:RCEventTypeQuit from:user message:msg];
+		[chan recievedMessage:msg from:user type:RCMessageTypeQuit];
 	}
 	[scannr release];
 }
@@ -907,11 +918,11 @@ char *RCIPForURL(NSString *URL) {
 			return;
 		}
 		if (!user) {
-			[chan recievedEvent:RCEventTypeMode from:settr message:[NSString stringWithFormat:@"sets mode %@", modes]];
+			[chan recievedMessage:[NSString stringWithFormat:@"sets mode %@", modes] from:settr type:RCMessageTypeMode];
 			[scanr release];
 			return;
 		}
-		[chan recievedEvent:RCEventTypeMode from:settr message:[NSString stringWithFormat:@"sets mode %@ %@", modes, user]];
+		[chan recievedMessage:[NSString stringWithFormat:@"sets mode %@ %@", modes, user] from:settr type:RCMessageTypeMode];
 		[chan setMode:modes forUser:user];
 		
 	}
@@ -965,7 +976,7 @@ char *RCIPForURL(NSString *URL) {
 	newTopic = [newTopic substringFromIndex:1];
 	from = [from substringFromIndex:1];
 	RCParseUserMask(from, &from, nil, nil);
-	[[self channelWithChannelName:room] recievedEvent:RCEventTypeTopic from:from message:newTopic];
+	[[self channelWithChannelName:room] recievedMessage:newTopic from:from type:RCMessageTypeTopic];
 	[_scan release];
 }
 

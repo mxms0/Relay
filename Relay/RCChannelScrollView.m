@@ -22,7 +22,7 @@
 		[self.layer setMasksToBounds:NO];
 		[self setShowsHorizontalScrollIndicator:NO];
 		UIImage *shadow = [UIImage imageNamed:@"0_r_shadow"];
-		CALayer *sLayer = [[CALayer alloc] init];
+		RCShadowLayer *sLayer = [[RCShadowLayer alloc] init];
 		sLayer.contents = (id)shadow.CGImage;
 		sLayer.opacity = 0.3;
 		sLayer.frame = CGRectMake(0, 32, 320, 15);

@@ -21,23 +21,20 @@
 }
 
 - (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type {
-	RCMessageFlavor flavor = RCMessageFlavorNormal;
 	NSString *msg = @"";
 	switch (type) {
 		case RCMessageTypeAction:
 			msg = [NSString stringWithFormat:@"\u2022 %@ %@", from, message];
-			flavor = RCMessageTypeAction;
 			break;
 		case RCMessageTypeNormal:
-			msg = [NSString stringWithFormat:@" %@", message];
-			flavor = RCMessageFlavorNormalE;
+			msg = [NSString stringWithFormat:@"%@", message];
+			type = RCMessageTypeNormalE;
 			break;
 		case RCMessageTypeNotice:
-			flavor = RCMessageFlavorNotice;
 			msg = [NSString stringWithFormat:@"-%@- %@", from, message];
 			break;
 	}
-	[panel postMessage:msg withFlavor:flavor highlight:NO];
+	[panel postMessage:msg withType:type highlight:NO];
 	return;
 }
 

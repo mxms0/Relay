@@ -8,8 +8,8 @@
 
 #import "RCScrollView.h"
 #import <CoreText/CoreText.h>
-#import "CHAttributedString.h"
-#import "RCMessage.h"
+#import "RCAttributedString.h"
+#import "RCMessageFormatter.h"
 
 @implementation RCScrollView
 
@@ -25,7 +25,7 @@
 	return self;
 }
 
-- (void)layoutMessage:(RCMessage *)ms {
+- (void)layoutMessage:(RCMessageFormatter *)ms {
 	[stringToDraw appendAttributedString:[ms string]];
 	[ms release];
 	ms = nil;
@@ -34,7 +34,7 @@
 
 - (void)resetContentSize {
 	if (!stringToDraw) return;
-	CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString(stringToDraw);
+	CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString((CFAttributedStringRef)stringToDraw);
 	CFRange destRange = CFRangeMake(0, 0);
     CFRange sourceRange = CFRangeMake(0, stringToDraw.length);
 	CGSize frameSize = CTFramesetterSuggestFrameSizeWithConstraints(framesetter, sourceRange, NULL, CGSizeMake(self.frame.size.width, CGFLOAT_MAX), &destRange);
@@ -49,6 +49,7 @@
 	CGContextRef context = UIGraphicsGetCurrentContext();
 	
     // Flip the context
+	CGContextSetShadowWithColor(context, CGSizeMake(0, 0.5), 0, [UIColor colorWithWhite:1 alpha:0.5].CGColor);
 	CGContextSetTextMatrix(context, CGAffineTransformIdentity);
     CGContextTranslateCTM(context, 0, self.contentSize.height);
 	CGContextScaleCTM(context, 1.0, -1.0);
@@ -58,7 +59,7 @@
 	CGPathAddRect(path, NULL, destRect);
 	
     // Create framesetter
-    CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString(stringToDraw);
+    CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString((CFAttributedStringRef)stringToDraw);
 	
 	// Draw the text
 	CTFrameRef theFrame = CTFramesetterCreateFrame(framesetter, CFRangeMake(0, stringToDraw.length), path, NULL);

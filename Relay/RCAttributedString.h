@@ -10,16 +10,8 @@
 #import <CoreText/CoreText.h>
 #import <objc/runtime.h>
 
-@interface NSAttributedString (Stuff)
-+ (id)attributedStringWithString:(NSString *)string;
-+ (id)attributedStringWithAttributedString:(NSAttributedString *)attrStr;
-- (CGFloat)boundingHeightForWidth:(CGFloat)inWidth;
-//! Commodity method that call the following sizeConstrainedToSize:fitRange: method with NULL for the fitRange parameter
-- (CGSize)sizeConstrainedToSize:(CGSize)maxSize;
-//! if fitRange is not NULL, on return it will contain the used range that actually fits the constrained size.
-//! Note: Use CGFLOAT_MAX for the CGSize's height if you don't want a constraint for the height.
-- (CGSize)sizeConstrainedToSize:(CGSize)maxSize fitRange:(NSRange *)fitRange;
-@end
+CTTextAlignment CTTextAlignmentFromUITextAlignment(UITextAlignment alignment);
+CTLineBreakMode CTLineBreakModeFromUILineBreakMode(UILineBreakMode lineBreakMode);
 
 @interface NSMutableAttributedString (Moar_Stuff)
 - (void)setFont:(UIFont *)font;
@@ -36,6 +28,5 @@
 - (void)setTextAlignment:(CTTextAlignment)alignment lineBreakMode:(CTLineBreakMode)lineBreakMode;
 - (void)setTextAlignment:(CTTextAlignment)alignment lineBreakMode:(CTLineBreakMode)lineBreakMode range:(NSRange)range;
 - (void)setTextHeight:(CGFloat)height forOrientation:(BOOL)isLandscape;
-- (CGFloat)heightForOrientation:(BOOL)isLandscape;
 
 @end

@@ -6,11 +6,11 @@
 //  Copyright (c) 2012 American Heritage School. All rights reserved.
 //
 
-#import "RCMessage.h"
+#import "RCMessageFormatter.h"
 
-@implementation RCMessage
+@implementation RCMessageFormatter
 
-- (id)initWithMessage:(NSString *)_message isOld:(BOOL)old isMine:(BOOL)m isHighlight:(BOOL)hh flavor:(RCMessageFlavor)_flavor {
+- (id)initWithMessage:(NSString *)_message isOld:(BOOL)old isMine:(BOOL)m isHighlight:(BOOL)hh type:(RCMessageType)_flavor {
 	if (![_message hasSuffix:@"\n"])
 		_message = [_message stringByAppendingString:@"\n"];
 	if ((self = [super init])) {
@@ -24,13 +24,14 @@
 		normalColor = UIColorFromRGB(0xB6BCCC);
 	[string setTextColor:normalColor];
 	switch (_flavor) {
-		case RCMessageFlavorAction:
+		case RCMessageTypeAction:
 			[string setTextIsUnderlined:NO range:NSMakeRange(0, _message.length)];
 			[string setTextBold:YES range:NSMakeRange(0, _message.length)];
 			[string setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeClip)];
 			centerAlign = YES;
 			break;
-		case RCMessageFlavorNormal: {
+		case RCMessageTypeNormal: {
+			NSLog(@"hello %@", _message);
 			if (hh) {
 				if (!old)
 					[string setTextColor:UIColorFromRGB(0xDA4156)];
@@ -41,25 +42,25 @@
 			[string setTextBold:YES range:NSMakeRange(0, r.location)];
 			break;
 		}
-		case RCMessageFlavorNotice:
+		case RCMessageTypeNotice:
 			[string setTextBold:YES range:NSMakeRange(0, _message.length)];
 			// do something.
 			break;
-		case RCMessageFlavorTopic:
+		case RCMessageTypeTopic:
 			[string setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeWordWrap)];
 			centerAlign = YES;
 			break;
-		case RCMessageFlavorJoin:
+		case RCMessageTypeJoin:
 			[string setFont:[UIFont fontWithName:@"Helvetica" size:11]];
 			[string setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeWordWrap)];
 			centerAlign = YES;
 			break;
-		case RCMessageFlavorPart:
+		case RCMessageTypePart:
 			[string setFont:[UIFont fontWithName:@"Helvetica" size:11]];
 			[string setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeWordWrap)];
 			centerAlign = YES;
 			break;
-		case RCMessageFlavorNormalE:
+		case RCMessageTypeNormalE:
 			//	[attr setTextBold:YES range:NSMakeRange(0, _message.length)];
 			break;
 	}

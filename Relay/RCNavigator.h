@@ -17,6 +17,8 @@
 #import "RCPopoverWindow.h"
 #import "RCBarButton.h"
 #import "RCPrettyAlertView.h"
+#import <CoreGraphics/CoreGraphics.h>
+#import <QuartzCore/QuartzCore.h>
 
 @interface RCNavigator : UIView <UIAlertViewDelegate, UIActionSheetDelegate> {
 	RCNetwork *currentNetwork;

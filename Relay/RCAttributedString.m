@@ -6,9 +6,38 @@
 //  Copyright (c) 2012 American Heritage School. All rights reserved.
 //
 
-#import "CHAttributedString.h"
+#import "RCAttributedString.h"
 
 @implementation NSMutableAttributedString (Moar_Stuff)
+
+CGPoint CGPointFlipped(CGPoint point, CGRect bounds);
+CGRect CGRectFlipped(CGRect rect, CGRect bounds);
+NSRange NSRangeFromCFRange(CFRange range);
+CGRect CTLineGetTypographicBoundsAsRect(CTLineRef line, CGPoint lineOrigin);
+CGRect CTRunGetTypographicBoundsAsRect(CTRunRef run, CTLineRef line, CGPoint lineOrigin);
+BOOL CTLineContainsCharactersFromStringRange(CTLineRef line, NSRange range);
+BOOL CTRunContainsCharactersFromStringRange(CTRunRef run, NSRange range);
+
+CTTextAlignment CTTextAlignmentFromUITextAlignment(UITextAlignment alignment) {
+	switch (alignment) {
+		case UITextAlignmentLeft: return kCTLeftTextAlignment;
+		case UITextAlignmentCenter: return kCTCenterTextAlignment;
+		case UITextAlignmentRight: return kCTRightTextAlignment;
+		default: return kCTNaturalTextAlignment;
+	}
+}
+
+CTLineBreakMode CTLineBreakModeFromUILineBreakMode(UILineBreakMode lineBreakMode) {
+	switch (lineBreakMode) {
+		case UILineBreakModeWordWrap: return kCTLineBreakByWordWrapping;
+		case UILineBreakModeCharacterWrap: return kCTLineBreakByCharWrapping;
+		case UILineBreakModeClip: return kCTLineBreakByClipping;
+		case UILineBreakModeHeadTruncation: return kCTLineBreakByTruncatingHead;
+		case UILineBreakModeTailTruncation: return kCTLineBreakByTruncatingTail;
+		case UILineBreakModeMiddleTruncation: return kCTLineBreakByTruncatingMiddle;
+		default: return 0;
+	}
+}
 
 - (CGFloat)heightForOrientation:(BOOL)isLandscape {
 	return [(NSNumber *)objc_getAssociatedObject(self, (const void *)(isLandscape ? "_landscapeHeight" : "_portraitHeight")) floatValue];

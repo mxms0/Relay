@@ -21,7 +21,6 @@
 
 - (void)addSubview:(UIView *)view {
 	[super addSubview:view];
-	NSLog(@"Subview: %@",view);
 }
 
 @end

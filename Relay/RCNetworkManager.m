@@ -135,7 +135,7 @@ static NSMutableArray *networks = nil;
 	[net setServer:@"irc.nightcoast.net"];
 	[net addChannel:@"#Relay" join:YES];
 	RCChannel *chan = [[net _channels] objectForKey:@"#Relay"];
-	[chan recievedEvent:RCEventTypeTopic from:@"" message:@"Welcome to Relay!"];
+	[chan recievedMessage:@"Welcome to Relay!" from:@"" type:RCMessageTypeTopic];
 	[[chan panel] setHidesEntryField:YES];
 	[chan recievedMessage:@"Try out some cool features! :D" from:@"" type:RCMessageTypeNormal];
 	[chan recievedMessage:@"Blah, Blah, more blah!" from:@"" type:RCMessageTypeNormal];

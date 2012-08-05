@@ -46,7 +46,7 @@
 	if ((self = [super init])) {
 		[self setBackgroundColor:[UIColor clearColor]];
 		[self setChannel:chan];
-		mainView = [[RCScrollView alloc] initWithFrame:CGRectMake(0, 0, 320, 343)];
+		mainView = [[RCScrollView alloc] initWithFrame:CGRectMake(0, 0, 320, 344)];
 		[self addSubview:mainView];
 		[mainView release];
 		//		self.tableView = [[RCTableView alloc] initWithFrame:CGRectMake(0, 0, 320, 343) style:style];
@@ -149,7 +149,8 @@
 	[_bar setFrame:[self frameForInputField:key]];
 	field.frame = CGRectMake(15, 5, _bar.frame.size.width-30, 31);
 	if (anim) [UIView commitAnimations];
-		[mainView setFrame:CGRectMake(0, 0, _bar.frame.size.width, _bar.frame.origin.y)];
+	[mainView setFrame:CGRectMake(0, 0, _bar.frame.size.width, _bar.frame.origin.y)];
+	[mainView setNeedsDisplay];
 	[_bar performSelectorOnMainThread:@selector(setNeedsDisplay) withObject:nil waitUntilDone:NO];
 }
 
@@ -160,29 +161,20 @@
 	return CGRectMake(0, (activ ? 127 : 345), 320, 40);
 }
 
-- (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor highlight:(BOOL)high {
-	[self postMessage:_message withFlavor:flavor highlight:high isMine:NO];
+- (void)postMessage:(NSString *)_message withType:(RCMessageType)type highlight:(BOOL)high {
+	[self postMessage:_message withType:type highlight:high isMine:NO];
 }
 
-- (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor highlight:(BOOL)high isMine:(BOOL)mine {
-	RCMessage *message = [[RCMessage alloc] initWithMessage:_message isOld:NO isMine:mine isHighlight:high flavor:flavor];
+- (void)postMessage:(NSString *)_message withType:(RCMessageType)type highlight:(BOOL)high isMine:(BOOL)mine {
+	RCMessageFormatter *message = [[RCMessageFormatter alloc] initWithMessage:_message isOld:NO isMine:mine isHighlight:high type:type];
 	[self performSelectorOnMainThread:@selector(_correctThreadPost:) withObject:message waitUntilDone:NO];
+	/* would just pass the message here, but i'm switching threads. so it's offlimits 
+	 to end up releasing the message after the call. will just have the scrollview release it. */
 }
 
-- (void)_correctThreadPost:(RCMessage *)_m {
+- (void)_correctThreadPost:(RCMessageFormatter *)_m {
 	[mainView layoutMessage:_m];
 	[mainView setNeedsDisplay];
-}
-
-- (float *)calculateHeightForLabel:(NSMutableAttributedString *)str {
-	float *heights = (float *)malloc(sizeof(float *));
-	float fake = [str boundingHeightForWidth:316];
-	float faker = [str boundingHeightForWidth:476];
-	float multiplier = fake/12;
-	heights[0] = fake + (multiplier * 3);
-	multiplier = faker/12;
-	heights[1] = faker + (multiplier * 3);
-	return ((float *)heights);
 }
 
 - (void)dealloc {

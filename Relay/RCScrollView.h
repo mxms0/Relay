@@ -8,12 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@class RCMessage;
+@class RCMessageFormatter;
 @interface RCScrollView : UIScrollView {
 	float y;
 	NSMutableAttributedString *stringToDraw;
 }
 
-- (void)layoutMessage:(RCMessage *)ms;
+- (void)layoutMessage:(RCMessageFormatter *)ms;
 
 @end

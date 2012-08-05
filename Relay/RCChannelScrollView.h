@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "RCChannelBubble.h"
+#import "RCShadowLayer.h"
 
 @interface RCChannelScrollView : UIScrollView {
 	BOOL shouldDrawBG;

@@ -169,39 +169,54 @@ UIImage *RCImageForRank(NSString *rank) {
 }
 
 - (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type {
+#if LOGALL
 	NSLog(@"%s:%d", (char *)_cmd, type);
-	
+#endif
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	message = [message stringByReplacingOccurrencesOfString:@"\t" withString:@""];
-	RCMessageFlavor flavor;
 	NSString *msg = @"";
 	NSString *time = @"";
 	time = [[RCDateManager sharedInstance] currentDateAsString];
 	if ([time hasSuffix:@" "])
 		time = [time substringToIndex:time.length-1];
 	switch (type) {
+		case RCMessageTypeKick:
+			break;
+		case RCMessageTypeBan:
+			break;
+		case RCMessageTypePart:
+			break;
+		case RCMessageTypeJoin:
+			break;
+		case RCMessageTypeTopic:
+			break;
+		case RCMessageTypeQuit:
+			break;
+		case RCMessageTypeMode:
+			break;
+		case RCMessageTypeError:
+			break;
 		case RCMessageTypeAction:
 			msg = [[NSString stringWithFormat:@"[%@] \u2022 %@ %@", time, from, message] copy];
-			flavor = RCMessageTypeAction;
 			break;
 		case RCMessageTypeNormal:
 			if (![from isEqualToString:@""]) {
 				msg = [[NSString stringWithFormat:@"[%@] %@: %@", time, from, message] copy];
-				flavor = RCMessageFlavorNormal;
 			}
 			else {
 				msg = [message copy];
-				flavor = RCMessageFlavorNormalE;
+				type = RCMessageTypeNormalE;
 			}
 			break;
 		case RCMessageTypeNotice:
-			flavor = RCMessageFlavorNotice;
 			msg = [[NSString stringWithFormat:@"-%@- %@", from, message] copy];
+			break;
+		case RCMessageTypeNormalE:
 			break;
 	}
 	BOOL isHighlight = NO;
-	if (flavor != RCMessageFlavorNormalE && flavor != RCMessageFlavorNotice) isHighlight = ([message rangeOfString:[delegate useNick] options:NSCaseInsensitiveSearch].location != NSNotFound);
-	[panel postMessage:msg withFlavor:flavor highlight:isHighlight isMine:([from isEqualToString:[delegate useNick]])];
+	if (type != RCMessageTypeNormalE && type != RCMessageTypeNotice) isHighlight = ([message rangeOfString:[delegate useNick] options:NSCaseInsensitiveSearch].location != NSNotFound);
+	[panel postMessage:msg withType:type highlight:isHighlight isMine:([from isEqualToString:[delegate useNick]])];
 	[self shouldPost:isHighlight withMessage:msg];
 	[msg release];
 	[p drain];
@@ -257,7 +272,7 @@ UIImage *RCImageForRank(NSString *rank) {
 
 - (void)setMyselfParted {
 	[users removeAllObjects];
-	[self recievedEvent:RCEventTypeTopic from:@"" message:@"Disconnected."];
+	[self recievedMessage:@"Disconnected." from:@"" type:RCMessageTypeTopic];
 	joined = NO;
 }
 
@@ -463,7 +478,7 @@ UIImage *RCImageForRank(NSString *rank) {
 	[delegate sendMessage:msg];
 	[self recievedMessage:cmd from:[delegate useNick] type:RCMessageTypeAction];
 }
-
+/*
 - (void)recievedEvent:(RCEventType)type from:(NSString *)from message:(NSString *)msg {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	switch (type) {
@@ -505,6 +520,6 @@ UIImage *RCImageForRank(NSString *rank) {
 			break;
 	}
 	[pool drain];
-}
+}*/
 
 @end

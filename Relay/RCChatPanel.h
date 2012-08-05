@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "RCTableView.h"
 #import "RCTextField.h"
-#import "RCMessage.h"
+#import "RCMessageFormatter.h"
 #import "RCTextFieldBackgroundView.h"
 #import "RCScrollView.h"
 
@@ -30,8 +30,8 @@
 @property (nonatomic, readonly) NSMutableArray *messages;
 
 - (id)initWithStyle:(UITableViewStyle)style andChannel:(RCChannel *)chan;
-- (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor highlight:(BOOL)high;
-- (void)postMessage:(NSString *)_message withFlavor:(RCMessageFlavor)flavor highlight:(BOOL)high isMine:(BOOL)mine;
+- (void)postMessage:(NSString *)_message withType:(RCMessageType)tr highlight:(BOOL)high;
+- (void)postMessage:(NSString *)_message withType:(RCMessageType)rr highlight:(BOOL)high isMine:(BOOL)mine;
 - (void)repositionKeyboardForUse:(BOOL)key animated:(BOOL)an;
 - (void)setHidesEntryField:(BOOL)entry;
 - (void)becomeFirstResponderNoAnimate;

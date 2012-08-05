@@ -15,22 +15,6 @@
 #import "RCUserTableCell.h"
 #import "RCDateManager.h"
 
-typedef enum RCMessageType {
-	RCMessageTypeAction = 0,
-	RCMessageTypeNormal,
-	RCMessageTypeNotice,
-} RCMessageType;
-
-typedef enum RCEventType {
-	RCEventTypeKick,
-	RCEventTypeBan,
-	RCEventTypePart,
-	RCEventTypeJoin,
-	RCEventTypeTopic,
-	RCEventTypeQuit,
-	RCEventTypeMode,
-} RCEventType;
-
 @class RCNetwork;
 @class RCNavigator;
 @interface RCChannel : NSObject <UITableViewDelegate, UITableViewDataSource> {
@@ -54,7 +38,6 @@ typedef enum RCEventType {
 - (void)setDelegate:(RCNetwork *)delegate;
 - (RCNetwork *)delegate;
 - (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type;
-- (void)recievedEvent:(RCEventType)type from:(NSString *)from message:(NSString *)msg;
 - (void)setUserJoined:(NSString *)joined;
 - (void)setSuccessfullyJoined:(BOOL)success;
 - (void)setUserLeft:(NSString *)left;

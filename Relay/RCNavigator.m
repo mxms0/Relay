@@ -339,11 +339,22 @@ static RCChannelBubble *questionabubble = nil;
 		bar.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"0_navbar_landscape"]];
 		scrollBar.frame = CGRectMake(240, 0, 233, 33); // 233, for the hell of it.
 		[scrollBar clearBG];
+		for (CALayer *lv in [scrollBar.layer sublayers]) {
+			if ([lv isKindOfClass:[RCShadowLayer class]]) {
+				[lv setFrame:CGRectMake((bar.frame.size.width/2)*-1, lv.frame.origin.y, 480, lv.frame.size.height)];
+				break;
+			}
+		}
 	}
 	else {
 		bar.frame = CGRectMake(0, 0, 320, 45);
 		bar.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"0_navbar"]];
 		scrollBar.frame = CGRectMake(0, 45, 320, 32);
+		for (CALayer *lv in [scrollBar.layer sublayers]) {
+			if ([lv isKindOfClass:[RCShadowLayer class]]) {
+				[lv setFrame:CGRectMake(0, lv.frame.origin.y, 320, lv.frame.size.height)];
+			}
+		}
 	}
 	[plus setFrame:[self frameForPlusButton]];
 	[listr setFrame:[self frameForListButton]];

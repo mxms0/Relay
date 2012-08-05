@@ -34,10 +34,24 @@
 	#define USE_PRIVATE 1
 	#define _deg(x) ((x * M_PI)/180.0)
 	#define UIApp [UIApplication sharedApplication]
-	#define LOGALL 1
+	#define LOGALL 0
 	#define CMLog(format, ...) NSLog(@"(%s) in [%s:%d] ::: %@", __PRETTY_FUNCTION__, __FILE__, __LINE__, [NSString stringWithFormat:format, ## __VA_ARGS__])
 	#define MARK CMLog(@"%s", __PRETTY_FUNCTION__);
 	typedef NSMutableAttributedString RCAttributedString;
+	typedef enum RCMessageType {
+		RCMessageTypeAction = 0,
+		RCMessageTypeNormal,
+		RCMessageTypeNotice,
+		RCMessageTypeKick,
+		RCMessageTypeBan,
+		RCMessageTypePart,
+		RCMessageTypeJoin,
+		RCMessageTypeTopic,
+		RCMessageTypeQuit,
+		RCMessageTypeMode,
+		RCMessageTypeError,
+		RCMessageTypeNormalE
+	} RCMessageType;
 #endif
 
 /* NOTES
