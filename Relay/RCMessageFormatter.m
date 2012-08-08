@@ -18,7 +18,7 @@
 	}
 	[string setFont:[UIFont fontWithName:@"Helvetica" size:12]];
 	//	UIColor *normalColor = UIColorFromRGB(0x3F4040);
-	UIColor *normalColor = UIColorFromRGB(0x000000);
+	UIColor *normalColor = UIColorFromRGB(0xF2F2F2);
 	BOOL centerAlign = NO;
 	if (old)
 		normalColor = UIColorFromRGB(0xB6BCCC);
@@ -27,11 +27,10 @@
 		case RCMessageTypeAction:
 			[string setTextIsUnderlined:NO range:NSMakeRange(0, _message.length)];
 			[string setTextBold:YES range:NSMakeRange(0, _message.length)];
-			[string setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeClip)];
+			//		[string setTextAlignment:CTTextAlignmentFromUITextAlignment(UITextAlignmentCenter) lineBreakMode:CTLineBreakModeFromUILineBreakMode(UILineBreakModeClip)];
 			centerAlign = YES;
 			break;
 		case RCMessageTypeNormal: {
-			NSLog(@"hello %@", _message);
 			if (hh) {
 				if (!old)
 					[string setTextColor:UIColorFromRGB(0xDA4156)];

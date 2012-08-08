@@ -128,6 +128,7 @@
 		50AAE7ED151ADDAB00E631FD /* 0_r_shadow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50AAE7EB151ADDAB00E631FD /* 0_r_shadow@2x.png */; };
 		50AAE7EE151ADDAB00E631FD /* 0_r_shadow.png in Resources */ = {isa = PBXBuildFile; fileRef = 50AAE7EC151ADDAB00E631FD /* 0_r_shadow.png */; };
 		50E0C34A15BCBD8100B79C50 /* RCPrettyAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E0C34915BCBD8100B79C50 /* RCPrettyAlertView.m */; };
+		50E3694115D0E4DD005DD077 /* RCChannelManagementViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E3694015D0E4DD005DD077 /* RCChannelManagementViewController.m */; };
 		50E492341522A27A00EF676B /* 0_navbar_landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E492321522A27300EF676B /* 0_navbar_landscape.png */; };
 		50E492351522A27A00EF676B /* 0_navbar_landscape@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E492331522A27500EF676B /* 0_navbar_landscape@2x.png */; };
 		50E77A8F1505A29100E75C64 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A8E1505A29100E75C64 /* main.m */; };
@@ -154,6 +155,8 @@
 		50EEDA2A1512C8540011618C /* 0_ops@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50EEDA281512C8540011618C /* 0_ops@2x.png */; };
 		50EEDA2D1512C92F0011618C /* 0_mListr.png in Resources */ = {isa = PBXBuildFile; fileRef = 50EEDA2B1512C92F0011618C /* 0_mListr.png */; };
 		50EEDA301512CA520011618C /* 0_mListr@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50EEDA2F1512CA520011618C /* 0_mListr@2x.png */; };
+		50F1A65815D215E50013CD13 /* RCBasicTextInputCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 50F1A65715D215E50013CD13 /* RCBasicTextInputCell.m */; };
+		50F1A65C15D216CA0013CD13 /* RCBasicTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 50F1A65B15D216CA0013CD13 /* RCBasicTableViewCell.m */; };
 		50F9036E15C5B105001BC6F0 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 50F9036C15C5B105001BC6F0 /* libcrypto.a */; };
 		50F9036F15C5B105001BC6F0 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 50F9036D15C5B105001BC6F0 /* libssl.a */; };
 		50F9037215C5B126001BC6F0 /* openssl in Resources */ = {isa = PBXBuildFile; fileRef = 50F9037115C5B126001BC6F0 /* openssl */; };
@@ -316,6 +319,8 @@
 		50B0DB21154233EB00689EDC /* RCKeychainItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCKeychainItem.h; sourceTree = "<group>"; };
 		50E0C34815BCBD8100B79C50 /* RCPrettyAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCPrettyAlertView.h; sourceTree = "<group>"; };
 		50E0C34915BCBD8100B79C50 /* RCPrettyAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCPrettyAlertView.m; sourceTree = "<group>"; };
+		50E3693F15D0E4DD005DD077 /* RCChannelManagementViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCChannelManagementViewController.h; sourceTree = "<group>"; };
+		50E3694015D0E4DD005DD077 /* RCChannelManagementViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCChannelManagementViewController.m; sourceTree = "<group>"; };
 		50E492321522A27300EF676B /* 0_navbar_landscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_navbar_landscape.png; sourceTree = "<group>"; };
 		50E492331522A27500EF676B /* 0_navbar_landscape@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_navbar_landscape@2x.png"; sourceTree = "<group>"; };
 		50E77A641505A17800E75C64 /* RCViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCViewController.h; sourceTree = "<group>"; };
@@ -362,6 +367,10 @@
 		50EEDA281512C8540011618C /* 0_ops@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_ops@2x.png"; sourceTree = "<group>"; };
 		50EEDA2B1512C92F0011618C /* 0_mListr.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_mListr.png; sourceTree = "<group>"; };
 		50EEDA2F1512CA520011618C /* 0_mListr@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_mListr@2x.png"; sourceTree = "<group>"; };
+		50F1A65615D215E50013CD13 /* RCBasicTextInputCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCBasicTextInputCell.h; sourceTree = "<group>"; };
+		50F1A65715D215E50013CD13 /* RCBasicTextInputCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCBasicTextInputCell.m; sourceTree = "<group>"; };
+		50F1A65A15D216CA0013CD13 /* RCBasicTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCBasicTableViewCell.h; sourceTree = "<group>"; };
+		50F1A65B15D216CA0013CD13 /* RCBasicTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCBasicTableViewCell.m; sourceTree = "<group>"; };
 		50F9036C15C5B105001BC6F0 /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libcrypto.a; sourceTree = "<group>"; };
 		50F9036D15C5B105001BC6F0 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libssl.a; sourceTree = "<group>"; };
 		50F9037115C5B126001BC6F0 /* openssl */ = {isa = PBXFileReference; lastKnownFileType = folder; path = openssl; sourceTree = "<group>"; };
@@ -400,8 +409,6 @@
 			children = (
 				50F9037115C5B126001BC6F0 /* openssl */,
 				5052343D1556D77C002EC9AC /* TestFlight.h */,
-				5000C73C15CED179003A635F /* RCAttributedString.h */,
-				504D6EDB156B2B9E0004D7D7 /* RCAttributedString.m */,
 			);
 			name = Imports;
 			sourceTree = "<group>";
@@ -421,6 +428,8 @@
 				50929EB9151E86FA007E23D3 /* RCiPadViewController.m */,
 				50E77A641505A17800E75C64 /* RCViewController.h */,
 				50E77A651505A17800E75C64 /* RCViewController.m */,
+				50E3693F15D0E4DD005DD077 /* RCChannelManagementViewController.h */,
+				50E3694015D0E4DD005DD077 /* RCChannelManagementViewController.m */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -459,6 +468,10 @@
 				50AAE7E9151AD8B900E631FD /* RCAddCell.m */,
 				503790F81512BD4100EE2A7E /* RCUserTableCell.h */,
 				503790F91512BD4100EE2A7E /* RCUserTableCell.m */,
+				50F1A65615D215E50013CD13 /* RCBasicTextInputCell.h */,
+				50F1A65715D215E50013CD13 /* RCBasicTextInputCell.m */,
+				50F1A65A15D216CA0013CD13 /* RCBasicTableViewCell.h */,
+				50F1A65B15D216CA0013CD13 /* RCBasicTableViewCell.m */,
 			);
 			name = "Table View Crap";
 			sourceTree = "<group>";
@@ -691,6 +704,8 @@
 				504706E4159FBA2000C3E256 /* RCWelcomeChannel.m */,
 				50B0DB21154233EB00689EDC /* RCKeychainItem.h */,
 				504349FC152CEEDD0037BD12 /* RCKeychainItem.m */,
+				5000C73C15CED179003A635F /* RCAttributedString.h */,
+				504D6EDB156B2B9E0004D7D7 /* RCAttributedString.m */,
 			);
 			name = Backend;
 			sourceTree = "<group>";
@@ -913,6 +928,9 @@
 				50136C0615C3668E0044666F /* RCScrollView.m in Sources */,
 				502F788E15C51526009E39F1 /* RCSSLNetwork.m in Sources */,
 				502BFDFF15CEE25100AD237D /* RCShadowLayer.m in Sources */,
+				50E3694115D0E4DD005DD077 /* RCChannelManagementViewController.m in Sources */,
+				50F1A65815D215E50013CD13 /* RCBasicTextInputCell.m in Sources */,
+				50F1A65C15D216CA0013CD13 /* RCBasicTableViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -974,7 +992,7 @@
 		5089B89215040D9F00609381 /* Release copy */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALTERNATE_MODE = Entitlements.plist;
+				ALTERNATE_MODE = "";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Evolse Limited";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Evolse Limited";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1057,7 +1075,7 @@
 		50A7FB9E14C0F0A800ABADEA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALTERNATE_MODE = Entitlements.plist;
+				ALTERNATE_MODE = "";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Evolse Limited";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Evolse Limited";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1088,7 +1106,7 @@
 		50A7FB9F14C0F0A800ABADEA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALTERNATE_MODE = Entitlements.plist;
+				ALTERNATE_MODE = "";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Evolse Limited";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Evolse Limited";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

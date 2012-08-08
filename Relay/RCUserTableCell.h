@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "RCBasicTableViewCell.h"
 
-@interface RCUserTableCell : UITableViewCell
+@interface RCUserTableCell : RCBasicTableViewCell
 
 @end

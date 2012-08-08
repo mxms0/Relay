@@ -64,7 +64,6 @@
 }
 
 - (id)objectForKey:(NSString *)key {
-	NSLog(@"MEH %@", data);
 	return [data objectForKey:key];
 }
 
@@ -75,7 +74,6 @@
 		[data setObject:value forKey:key];
 		[self writeKeychain];
 	}
-NSLog(@"BLEH %@", data);
 }
 
 - (void)writeKeychain {
@@ -91,21 +89,19 @@ NSLog(@"BLEH %@", data);
 		[tmp removeObjectForKey:(id)kSecAttrAccessGroup];
 #endif
 		st = SecItemUpdate((CFDictionaryRef)upd, (CFDictionaryRef)tmp);
-		[self logStatus:st];
 	}
 	else {
 		st = SecItemAdd((CFDictionaryRef)[self basicDictionaryToSecDictionary:data], NULL);
-		[self logStatus:st];
 	}
 }
 - (void)logStatus:(OSStatus)st {
-	NSLog(@"LOGG STATUS %@", [NSError errorWithDomain:NSOSStatusErrorDomain code:st userInfo:nil]);
+	NSLog(@"ERR-OR %@", [NSError errorWithDomain:NSOSStatusErrorDomain code:st userInfo:nil]);
 }
 
 - (void)resetKeychain {
 	OSStatus st = noErr;
 	if (!data) {
-		data = [[NSMutableDictionary alloc] init];
+		data = [[[NSMutableDictionary alloc] init] autorelease];
 	}
 	else {
 		NSMutableDictionary *tmpDict = [self basicDictionaryToSecDictionary:data];
@@ -119,7 +115,6 @@ NSLog(@"BLEH %@", data);
 }
 
 - (void)dealloc {
-	[data release];
 	[genericQuery release];
 	[super dealloc];
 }

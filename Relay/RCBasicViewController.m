@@ -8,10 +8,6 @@
 
 #import "RCBasicViewController.h"
 
-@interface RCBasicViewController ()
-
-@end
-
 @implementation RCBasicViewController
 
 - (id)initWithStyle:(UITableViewStyle)style {

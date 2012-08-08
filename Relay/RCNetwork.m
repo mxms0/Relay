@@ -563,6 +563,25 @@ char *RCIPForURL(NSString *URL) {
 	// :fr.ac3xx.com 305 MaxZNC :You are no longer marked as being away
 }
 
+- (void)handle322:(NSString *)threetwotwo {
+	if (!namesCallback) return;
+	NSScanner *hi = [[NSScanner alloc] initWithString:threetwotwo];
+	NSString *crap = NULL;
+	NSString *chan = NULL;
+	NSString *count = NULL;
+	NSString *topicModes = NULL;
+	[hi scanUpToString:useNick intoString:&crap];
+	[hi scanUpToString:@" " intoString:&crap];
+	[hi scanUpToString:@" " intoString:&chan];
+	[hi scanUpToString:@" " intoString:&count];
+	[hi scanUpToString:@"\r\n" intoString:&topicModes];
+	chan = [chan stringByReplacingOccurrencesOfString:@" " withString:@""];
+	count = [chan stringByReplacingOccurrencesOfString:@" " withString:@""];
+	NSLog(@"eeee %@:%@:%@",chan,count,topicModes);
+	[hi release];
+	// :irc.saurik.com 322 mx_ #testing 1 :[+nt]
+}
+
 - (void)handle331:(NSString *)noTopic {
 	// Relay[18195:707] MSG: :irc.saurik.com 331 _m #kk :No topic is set.
 }

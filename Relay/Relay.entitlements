@@ -3,10 +3,6 @@
 <plist version="1.0">
 <dict>
 	<key>get-task-allow</key>
-	<true/>
-	<key>keychain-access-groups</key>
-	<array>
-		<string>us.mxms.relay</string>
-	</array>
+	<false/>
 </dict>
 </plist>

@@ -9,6 +9,7 @@
 #import "RCAddCell.h"
 #import "RCNetwork.h"
 #import "RCBasicViewController.h"
+#import "RCChannelManagementViewController.h"
 
 @interface RCChannelManager : RCBasicViewController <UIAlertViewDelegate> {
     RCNetwork *network;

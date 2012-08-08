@@ -16,6 +16,7 @@
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
 		[self setBackgroundColor:[UIColor clearColor]];
+		[self setCanCancelContentTouches:YES];
 		y = 4;
 		stringToDraw = [[NSMutableAttributedString alloc] init];
 		self.backgroundColor = [UIColor clearColor];
@@ -49,7 +50,7 @@
 	CGContextRef context = UIGraphicsGetCurrentContext();
 	
     // Flip the context
-	CGContextSetShadowWithColor(context, CGSizeMake(0, 0.5), 0, [UIColor colorWithWhite:1 alpha:0.5].CGColor);
+	CGContextSetShadowWithColor(context, CGSizeMake(0, 1.0), 0, [UIColor colorWithWhite:0 alpha:0.5].CGColor);
 	CGContextSetTextMatrix(context, CGAffineTransformIdentity);
     CGContextTranslateCTM(context, 0, self.contentSize.height);
 	CGContextScaleCTM(context, 1.0, -1.0);

@@ -16,10 +16,17 @@
 		network = net;
 		_rEditing = NO;
 		NSLog(@"MEH %@", [net _channels]);
+		self.tableView.allowsSelectionDuringEditing = YES;
 		channels = [[NSMutableArray alloc] initWithArray:[[net _channels] allKeys]];
 		[channels removeObject:@"IRC"];
     }
     return self;
+}
+
+- (void)dealloc {
+	[channels release];
+	[network setNamesCallback:nil];
+	[super dealloc]; 
 }
 
 - (NSString *)titleText {
@@ -28,12 +35,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-	[self.tableView reloadData];
 	UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(edit)];
 	[self.navigationItem setRightBarButtonItem:edit];
 	[edit release];
-	self.tableView.allowsSelectionDuringEditing = YES;
 	if ([network isConnected]) {
+		[network sendMessage:@"LIST"];
 		[self addStupidWarningView];
 	}
 }
@@ -64,13 +70,15 @@
 
 - (void)edit {
 	_rEditing = !_rEditing;
+	NSLog(@"CHANNELS %@", channels);
 	[((UITableView *)self.tableView) setEditing:!_rEditing animated:NO];
 	[((UITableView *)self.tableView) setEditing:_rEditing animated:YES];
-	
+		NSLog(@"CHANNELS %@", channels);
 	UIBarButtonItem *rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:([((UITableView *)self.view) isEditing] ? UIBarButtonSystemItemDone : UIBarButtonSystemItemEdit) target:self action:@selector(edit)];
 	[self.navigationItem setRightBarButtonItem:rightBarButtonItem animated:YES];
 	[rightBarButtonItem release];
 	[((UITableView *)self.view) beginUpdates];
+	NSLog(@"CHANNELS %@", channels);
 	if (_rEditing)
 		[((UITableView *)self.view) insertRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:[channels count] inSection:0]] withRowAnimation:UITableViewRowAnimationTop];
 	else [((UITableView *)self.view) deleteRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:[channels count] inSection:0]] withRowAnimation:UITableViewRowAnimationTop];
@@ -121,6 +129,9 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+	NSLog(@"WHAT THE FUCK %@", channels);
+	if (_rEditing) return [channels count]+1;
+	return [channels count];
 	return ([channels count] + (_rEditing ? 1 : 0));
 }
 
@@ -129,7 +140,7 @@
     RCAddCell *cell = (RCAddCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[RCAddCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-		cell.selectionStyle = UITableViewCellSelectionStyleNone;
+		cell.selectionStyle = UITableViewCellSelectionStyleBlue;
 		cell.textLabel.font = [UIFont boldSystemFontOfSize:14];
 		cell.textLabel.textColor = UIColorFromRGB(0x545758);
 	}
@@ -155,38 +166,18 @@
     }   
 }
 
-- (void)addNewItem {
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Add New Channel" message:@"Enter the channel name below" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Add channel", nil];
-    [av setAlertViewStyle:UIAlertViewStylePlainTextInput];
-    [av show];
-    [av release];                           
-}
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {  
-    if (buttonIndex == 1) {
-        UITextField *textField = [alertView textFieldAtIndex:0];
-        NSString *tempString = @"#";
-		if (![textField.text hasPrefix:@"#"])
-			tempString = [tempString stringByAppendingString:textField.text];  
-        else 
-            tempString = textField.text;
-        [channels addObject:tempString];
-		//   [pendingChannels addObject:tempString];
-        [self.tableView reloadData];
-    }
-}
-
-- (BOOL)alertViewShouldEnableFirstOtherButton:(UIAlertView *)alertView {
-    NSString *inputText = [[alertView textFieldAtIndex:0] text];
-    if([inputText length] > 0) {
-        return YES;
-    }
-    else {
-        return NO;
-    }
-}
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	NSString *chan = nil;
+	if ([channels count] == indexPath.row) {
+		chan = @"";
+	}
+	else {
+		chan = [channels objectAtIndex:indexPath.row];
+	}
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+	RCChannelManagementViewController *management = [[RCChannelManagementViewController alloc] initWithStyle:UITableViewStyleGrouped network:network channel:chan];
+	[self.navigationController pushViewController:management animated:YES];
+	[management release];
 }
 
 @end

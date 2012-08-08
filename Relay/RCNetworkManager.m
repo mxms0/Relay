@@ -37,23 +37,25 @@ static NSMutableArray *networks = nil;
 			return;
 		}
 	}
-	RCKeychainItem *item = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@pass", [network _description]] accessGroup:@"us.mxms.relay"];
 
 	if ([[info objectForKey:S_PASS_KEY] boolValue]) {
         //[network setSpass:([wrapper objectForKey:S_PASS_KEY] ?: @"")];
-		[network setSpass:([item objectForKey:@"spass"] ?: @"")];
+		RCKeychainItem *item = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@spass", [network _description]] accessGroup:nil];
+		[network setSpass:([item objectForKey:(id)kSecValueData] ?: @"")];
 		if ([network spass] == nil || [[network spass] length] == 0) {
 			[network setShouldRequestSPass:YES];
 		}
+		[item release];
 	}
 	if ([[info objectForKey:N_PASS_KEY] boolValue]) {
 		//[network setNpass:([wrapper objectForKey:N_PASS_KEY] ?: @"")];
-        [network setNpass:([item objectForKey:@"npass"] ?: @"")];
+		RCKeychainItem *item = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@npass", [network _description]] accessGroup:nil];
+        [network setNpass:([item objectForKey:(id)kSecValueData] ?: @"")];
 		if ([network npass] == nil || [[network npass] length] == 0) {
 			[network setShouldRequestNPass:YES];
 		}
+		[item release];
 	}
-	[item release];
 	NSMutableArray *rooms = [[[info objectForKey:CHANNELS_KEY] mutableCopy] autorelease];
 	if (!rooms) rooms = [[NSMutableArray alloc] init];
 	if (![rooms containsObject:@"IRC"]) [rooms addObject:@"IRC"];

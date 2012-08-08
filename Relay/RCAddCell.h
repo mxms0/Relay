@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "RCBasicTableViewCell.h"
 
-@interface RCAddCell : UITableViewCell {
-}
+@interface RCAddCell : RCBasicTableViewCell
 @end

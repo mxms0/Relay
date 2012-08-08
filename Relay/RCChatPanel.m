@@ -10,35 +10,6 @@
 #import "RCChannel.h"
 #import "RCNavigator.h"
 
-@implementation NSObject (Stuff)
-
-- (id)performSelector:(SEL)selector onThread:(NSThread *)aThread withObject:(id)p1 withObject:(id)p2 withObject:(id)p3 withObject:(id)p4 {
-    NSMethodSignature *sig = [self methodSignatureForSelector:selector];
-    if (sig) {
-        NSInvocation* invo = [NSInvocation invocationWithMethodSignature:sig];
-        [invo setTarget:self];
-        [invo setSelector:selector];
-        [invo setArgument:&p1 atIndex:2];
-        [invo setArgument:&p2 atIndex:3];
-        [invo setArgument:&p3 atIndex:4];
-        [invo setArgument:&p4 atIndex:5];
-        [invo performSelector:@selector(invoke) onThread:aThread withObject:nil waitUntilDone:NO];
-        if (sig.methodReturnLength) {
-            id anObject;
-            [invo getReturnValue:&anObject];
-            return anObject;
-		}
-		else {
-			return nil;
-        }
-	}
-	else {
-        return nil;
-    }
-}
-
-@end
-
 @implementation RCChatPanel
 @synthesize messages, channel;
 
@@ -46,25 +17,19 @@
 	if ((self = [super init])) {
 		[self setBackgroundColor:[UIColor clearColor]];
 		[self setChannel:chan];
-		mainView = [[RCScrollView alloc] initWithFrame:CGRectMake(0, 0, 320, 344)];
+		mainView = [[RCScrollView alloc] initWithFrame:CGRectMake(2, 0, 316, 344)];
 		[self addSubview:mainView];
+		UITapGestureRecognizer *tapper = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(resignFirstResponder)];
+		[tapper setNumberOfTapsRequired:2];
+		[tapper setNumberOfTouchesRequired:1];
+		[tapper setCancelsTouchesInView:NO];
+		[mainView addGestureRecognizer:tapper];
+		[tapper release];
 		[mainView release];
-		//		self.tableView = [[RCTableView alloc] initWithFrame:CGRectMake(0, 0, 320, 343) style:style];
-		//self.tableView.delegate = self;
-		//self.tableView.dataSource = self;
-		//[self.tableView setBackgroundColor:[UIColor clearColor]];
-		//[self addSubview:tableView];
-		//[tableView release];
-		//[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 		currentWord = [[NSMutableString alloc] init];
 		prev = @"";
 		_bar = [[RCTextFieldBackgroundView alloc] initWithFrame:CGRectMake(0, 343, 320, 40)];
 		[_bar setOpaque:NO];
-		//	UIImage *bg = [UIImage imageNamed:@"0_input"];
-		//NSLog(@"Meh %@", bg);
-		//UIColor *cc = [UIColor colorWithPatternImage:bg];
-		//NSLog(@"meh_ %@", cc);
-		//[_bar performSelectorOnMainThread:@selector(setBackgroundColor:) withObject:cc waitUntilDone:NO];
 		field = [[RCTextField alloc] initWithFrame:CGRectMake(15, 5, 295, 31)];
 		[field setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
 		[field setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
@@ -149,7 +114,7 @@
 	[_bar setFrame:[self frameForInputField:key]];
 	field.frame = CGRectMake(15, 5, _bar.frame.size.width-30, 31);
 	if (anim) [UIView commitAnimations];
-	[mainView setFrame:CGRectMake(0, 0, _bar.frame.size.width, _bar.frame.origin.y)];
+	[mainView setFrame:CGRectMake(2, 0, _bar.frame.size.width-2, _bar.frame.origin.y)];
 	[mainView setNeedsDisplay];
 	[_bar performSelectorOnMainThread:@selector(setNeedsDisplay) withObject:nil waitUntilDone:NO];
 }

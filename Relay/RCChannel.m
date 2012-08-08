@@ -215,7 +215,7 @@ UIImage *RCImageForRank(NSString *rank) {
 			break;
 	}
 	BOOL isHighlight = NO;
-	if (type != RCMessageTypeNormalE && type != RCMessageTypeNotice) isHighlight = ([message rangeOfString:[delegate useNick] options:NSCaseInsensitiveSearch].location != NSNotFound);
+	if (type != RCMessageTypeNormalE && type != RCMessageTypeNotice && type != RCMessageTypeTopic) isHighlight = ([message rangeOfString:[delegate useNick] options:NSCaseInsensitiveSearch].location != NSNotFound);
 	[panel postMessage:msg withType:type highlight:isHighlight isMine:([from isEqualToString:[delegate useNick]])];
 	[self shouldPost:isHighlight withMessage:msg];
 	[msg release];

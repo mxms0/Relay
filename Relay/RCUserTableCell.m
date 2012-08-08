@@ -14,7 +14,6 @@
 	if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
         // Initialization code
 		self.textLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:11];
-		self.textLabel.backgroundColor = [UIColor clearColor];
 		self.textLabel.textColor = UIColorFromRGB(0x3F4040);
 		self.textLabel.shadowColor = [UIColor whiteColor];
 		self.textLabel.shadowOffset = CGSizeMake(0, 1);

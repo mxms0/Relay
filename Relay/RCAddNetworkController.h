@@ -10,7 +10,7 @@
 #import "RCNetwork.h"
 #import "RCNetworkManager.h"
 #import "RCTextField.h"
-#import "RCAddCell.h"
+#import "RCBasicTextInputCell.h"
 #import "RCChannelManager.h"
 #import "RCBasicViewController.h"
 #import "PDKeychainBindings.h"

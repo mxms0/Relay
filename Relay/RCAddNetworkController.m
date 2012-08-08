@@ -173,22 +173,23 @@
 	}
 	if (![network port]) [network setPort:6667];
 	if (![network sDescription]) [network setSDescription:[network server]];
-	RCKeychainItem *keychain = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@pass", [network _description]] accessGroup:@"us.mxms.relay"];
 	NSLog(@"HELLO %@", network);
 	if (([network spass] == nil) || [[network spass] isEqualToString:@""]) {
 		[network setSpass:@""];
 	}
 	else {
-        [keychain setObject:[network spass] forKey:@"spass"];
+		RCKeychainItem *keychain = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@spass", [network _description]] accessGroup:nil];
+        [keychain setObject:[network spass] forKey:(id)kSecValueData];
+		[keychain release];
 	}
 	if (([network npass] == nil) || [[network npass] isEqualToString:@""]) {
 		[network setNpass:@""];
 	}
 	else {
-		NSLog(@"MEEE %@", [network npass]);
-        [keychain setObject:[network npass] forKey:@"npass"];
+		RCKeychainItem *keychain = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@npass", [network _description]] accessGroup:nil];
+        [keychain setObject:[network npass] forKey:(id)kSecValueData];
+		[keychain release];
 	}
-	[keychain release];
 	if (isNew) {
 		[network setupRooms:[NSArray arrayWithObject:@"IRC"]];
 		[[RCNetworkManager sharedNetworkManager] addNetwork:network];
@@ -269,193 +270,177 @@
 - (UITableViewCell *)tableView:(UITableView *)_tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString *CellIdentifier = [NSString stringWithFormat:@"CELL_%d_%d", indexPath.section, indexPath.row];
     
-    RCAddCell *cell = (RCAddCell *)[_tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    RCBasicTextInputCell *cell = (RCBasicTextInputCell *)[_tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[RCAddCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[[RCBasicTextInputCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
 		cell.selectionStyle = UITableViewCellSelectionStyleNone;
 		cell.textLabel.font = [UIFont boldSystemFontOfSize:14];
 		cell.textLabel.textColor = UIColorFromRGB(0x545758);
-	}
-    switch (indexPath.section) {
-		case 0:
-			switch (indexPath.row) {
-				case 0:
-					cell.textLabel.text = @"Description";
-					cell.textLabel.font = [UIFont boldSystemFontOfSize:14];
-					RCTextField *dField = [[RCTextField alloc] initWithFrame:CGRectMake(0, 0, 170, 16)];
-					[dField setAdjustsFontSizeToFitWidth:YES];
-					[dField setPlaceholder:@"Enter a description"];
-					[dField setTag:1];
-					[dField setText:[network sDescription]];
-					[dField setDelegate:self];
-					[dField setKeyboardAppearance:UIKeyboardAppearanceDefault];
-					[dField setReturnKeyType:UIReturnKeyNext];
-					[dField setTextColor:UIColorFromRGB(FONT_COLOR)];
-					[dField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
-					[cell setAccessoryView:dField];
-					[dField release];
-					break;
-				case 1:
-					cell.textLabel.text = @"Address";
-                    RCTextField *address = [[RCTextField alloc] initWithFrame:CGRectMake(0, 0, 170, 16)];
-                    address.adjustsFontSizeToFitWidth = YES;
-                    address.placeholder = @"irc.network.tld";
-                    address.keyboardType = UIKeyboardTypeURL;
-					address.text = [network server];
-					address.autocorrectionType = UITextAutocorrectionTypeNo;
-					address.autocapitalizationType = UITextAutocapitalizationTypeNone;
-                    address.returnKeyType = UIReturnKeyNext;
-                    address.tag = 2;
-                    address.keyboardAppearance = UIKeyboardAppearanceDefault;
-                    [address setDelegate:self];
-					[address setTextColor:UIColorFromRGB(FONT_COLOR)];
-					[address setFont:[UIFont systemFontOfSize:FONT_SIZE]];
-                    [cell setAccessoryView:address];
-                    [address release];
-					break;
-				case 2:
-					cell.textLabel.text = @"Port";
-					RCTextField *pField = [[RCTextField alloc] initWithFrame:CGRectMake(0, 0, 170, 16)];
-					[pField setAdjustsFontSizeToFitWidth:YES];
-					[pField setPlaceholder:@"6667"];
-					[pField setKeyboardType:UIKeyboardTypeNumberPad];
-					[pField setReturnKeyType:UIReturnKeyNext];
-					[pField setTag:3];
-					[pField setText:([network port] ? [NSString stringWithFormat:@"%d", [network port]] : nil)];
-					[pField setKeyboardAppearance:UIKeyboardAppearanceDefault];
-					[pField setDelegate:self];
-					[pField setTextColor:UIColorFromRGB(FONT_COLOR)];
-					[pField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
-                    [cell setAccessoryView:pField];
-                    [pField release];
-					break;
-				case 3:
-					cell.textLabel.text = @"Use SSL";
-					UISwitch *cnt = [[UISwitch alloc] init];
-					[cnt setOn:[network useSSL]];
-					[cnt addTarget:self action:@selector(sslSwitched:) forControlEvents:UIControlEventValueChanged];
-					[cell setAccessoryView:cnt];
-					[cnt release];
-					break;
-			}
-			break;
-		case 1:
-			switch (indexPath.row) {
-				case 0:
-					cell.textLabel.text = @"Username";
-					RCTextField *uField = [[RCTextField alloc] initWithFrame:CGRectMake(0, 0, 170, 16)];
-					[uField setAdjustsFontSizeToFitWidth:YES];
-					[uField setPlaceholder:@"John"];
-					[uField setTag:4];
-					[uField setText:[network username]];
-					[uField setDelegate:self];
-					[uField setKeyboardAppearance:UIKeyboardAppearanceDefault];
-					[uField setReturnKeyType:UIReturnKeyNext];
-					[uField setTextColor:UIColorFromRGB(FONT_COLOR)];
-					[uField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
-					[cell setAccessoryView:uField];
-					[uField release];
-					break;
-				case 1:
-					cell.textLabel.text = @"Nickname";
-					RCTextField *nField = [[RCTextField alloc] initWithFrame:CGRectMake(0, 0, 170, 16)];
-					[nField setAdjustsFontSizeToFitWidth:YES];
-					@try {
-						[nField setPlaceholder:[[UIDevice currentDevice] name]];
-					}
-					@catch (id bs) {
-						[nField setPlaceholder:@"John_iPhone"];	
-					}
-					[nField setTag:5];
-					[nField setText:[network nick]];
-					[nField setDelegate:self];
-					[nField setKeyboardAppearance:UIKeyboardAppearanceDefault];
-					[nField setReturnKeyType:UIReturnKeyNext];
-					[nField setTextColor:UIColorFromRGB(FONT_COLOR)];
-					[nField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
-					[cell setAccessoryView:nField];
-					[nField release];
-					break;
-				case 2:
-					cell.textLabel.text = @"Real Name";
-					RCTextField *rField = [[RCTextField alloc] initWithFrame:CGRectMake(0, 0, 170, 16)];
-					[rField setAdjustsFontSizeToFitWidth:YES];
-					[rField setPlaceholder:@"Johnathan"];
-					[rField setTag:6];
-					[rField setText:[network realname]];
-					[rField setDelegate:self];
-					[rField setTextColor:UIColorFromRGB(FONT_COLOR)];
-					[rField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
-					[rField setKeyboardAppearance:UIKeyboardAppearanceDefault];
-					[rField setReturnKeyType:UIReturnKeyNext];
-					[cell setAccessoryView:rField];
-					[rField release];
-					break;
-			}
-			break;
-		case 2:
-			switch (indexPath.row) {
-				case 0:
-					cell.textLabel.text = @"NickServ";
-					RCTextField *nsField = [[RCTextField alloc] initWithFrame:CGRectMake(0, 0, 170, 16)];
-					[nsField setAdjustsFontSizeToFitWidth:YES];
-					[nsField setPlaceholder:@"a-password"];
-					[nsField setTag:7];
-					[nsField setSecureTextEntry:YES];
-					[nsField setText:[network npass]];
-					[nsField setDelegate:self];
-					[nsField setTextColor:UIColorFromRGB(FONT_COLOR)];
-					[nsField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
-					[nsField setKeyboardAppearance:UIKeyboardAppearanceDefault];
-					[nsField setReturnKeyType:UIReturnKeyNext];
-					[cell setAccessoryView:nsField];
-					[nsField release];	
-					break;
-				case 1:
-					cell.textLabel.text = @"Server";
-					RCTextField *seField = [[RCTextField alloc] initWithFrame:CGRectMake(0, 0, 170, 16)];
-					[seField setAdjustsFontSizeToFitWidth:YES];
-					[seField setPlaceholder:@"privateircftw"];
-					[seField setTag:8];
-					[seField setSecureTextEntry:YES];
-					[seField setText:[network spass]];
-					[seField setDelegate:self];
-					[seField setTextColor:UIColorFromRGB(FONT_COLOR)];
-					[seField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
-					[seField setKeyboardAppearance:UIKeyboardAppearanceDefault];
-					[seField setReturnKeyType:UIReturnKeyNext];
-					[cell setAccessoryView:seField];
-					[seField release];
-					break;
-			}
-			break;
-		case 3:
-			switch (indexPath.row) {
-				case 0:
-					cell.textLabel.text = @"Connect At Launch";
-					UISwitch *cnt = [[UISwitch alloc] init];
-					[cnt setOn:[network COL]];
-					[cnt setOnTintColor:UIColorFromRGB(0x5296ea)];
-					[cnt addTarget:self action:@selector(launchSwitched:) forControlEvents:UIControlEventValueChanged];
-					[cell setAccessoryView:cnt];
-					[cnt release];
-					break;
-				case 1:
-					cell.textLabel.text = @"Alternate Nicknames";
-					cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-					cell.selectionStyle = UITableViewCellSelectionStyleBlue;
-					break;
-				case 2:
-					cell.textLabel.text = @"Auto Commands";
-					cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-					cell.selectionStyle = UITableViewCellSelectionStyleBlue;
-					break;
-				case 3:
-					cell.textLabel.text = @"Channels";
-					cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-					cell.selectionStyle = UITableViewCellSelectionStyleBlue;
-			}
-			break;
+		switch (indexPath.section) {
+			case 0:
+				switch (indexPath.row) {
+					case 0:
+						cell.textLabel.text = @"Description";
+						cell.textLabel.font = [UIFont boldSystemFontOfSize:14];
+						RCTextField *dField = (RCTextField *)[cell accessoryView];
+						[dField setAdjustsFontSizeToFitWidth:YES];
+						[dField setPlaceholder:@"Enter a description"];
+						[dField setTag:1];
+						[dField setText:[network sDescription]];
+						[dField setDelegate:self];
+						[dField setKeyboardAppearance:UIKeyboardAppearanceDefault];
+						[dField setReturnKeyType:UIReturnKeyNext];
+						[dField setTextColor:UIColorFromRGB(FONT_COLOR)];
+						[dField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
+						break;
+					case 1:
+						cell.textLabel.text = @"Address";
+						RCTextField *address = (RCTextField *)[cell accessoryView];
+						address.adjustsFontSizeToFitWidth = YES;
+						address.placeholder = @"irc.network.tld";
+						address.keyboardType = UIKeyboardTypeURL;
+						address.text = [network server];
+						address.autocorrectionType = UITextAutocorrectionTypeNo;
+						address.autocapitalizationType = UITextAutocapitalizationTypeNone;
+						address.returnKeyType = UIReturnKeyNext;
+						address.tag = 2;
+						address.keyboardAppearance = UIKeyboardAppearanceDefault;
+						[address setDelegate:self];
+						[address setTextColor:UIColorFromRGB(FONT_COLOR)];
+						[address setFont:[UIFont systemFontOfSize:FONT_SIZE]];
+						break;
+					case 2:
+						cell.textLabel.text = @"Port";
+						RCTextField *pField = (RCTextField *)[cell accessoryView];
+						[pField setAdjustsFontSizeToFitWidth:YES];
+						[pField setPlaceholder:@"6667"];
+						[pField setKeyboardType:UIKeyboardTypeNumberPad];
+						[pField setReturnKeyType:UIReturnKeyNext];
+						[pField setTag:3];
+						[pField setText:([network port] ? [NSString stringWithFormat:@"%d", [network port]] : nil)];
+						[pField setKeyboardAppearance:UIKeyboardAppearanceDefault];
+						[pField setDelegate:self];
+						[pField setTextColor:UIColorFromRGB(FONT_COLOR)];
+						[pField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
+						break;
+					case 3:
+						cell.textLabel.text = @"Use SSL";
+						UISwitch *cnt = [[UISwitch alloc] init];
+						[cnt setOn:[network useSSL]];
+						[cnt addTarget:self action:@selector(sslSwitched:) forControlEvents:UIControlEventValueChanged];
+						[cell setAccessoryView:cnt];
+						[cnt release];
+						break;
+				}
+				break;
+			case 1:
+				switch (indexPath.row) {
+					case 0:
+						cell.textLabel.text = @"Username";
+						RCTextField *uField = (RCTextField *)[cell accessoryView];
+						[uField setAdjustsFontSizeToFitWidth:YES];
+						[uField setPlaceholder:@"John"];
+						[uField setTag:4];
+						[uField setText:[network username]];
+						[uField setDelegate:self];
+						[uField setKeyboardAppearance:UIKeyboardAppearanceDefault];
+						[uField setReturnKeyType:UIReturnKeyNext];
+						[uField setTextColor:UIColorFromRGB(FONT_COLOR)];
+						[uField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
+						break;
+					case 1:
+						cell.textLabel.text = @"Nickname";
+						RCTextField *nField = (RCTextField *)[cell accessoryView];
+						[nField setAdjustsFontSizeToFitWidth:YES];
+						@try {
+							[nField setPlaceholder:[[UIDevice currentDevice] name]];
+						}
+						@catch (id bs) {
+							[nField setPlaceholder:@"John_iPhone"];
+						}
+						[nField setTag:5];
+						[nField setText:[network nick]];
+						[nField setDelegate:self];
+						[nField setKeyboardAppearance:UIKeyboardAppearanceDefault];
+						[nField setReturnKeyType:UIReturnKeyNext];
+						[nField setTextColor:UIColorFromRGB(FONT_COLOR)];
+						[nField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
+						break;
+					case 2:
+						cell.textLabel.text = @"Real Name";
+						RCTextField *rField = (RCTextField *)[cell accessoryView];
+						[rField setAdjustsFontSizeToFitWidth:YES];
+						[rField setPlaceholder:@"Johnathan"];
+						[rField setTag:6];
+						[rField setText:[network realname]];
+						[rField setDelegate:self];
+						[rField setTextColor:UIColorFromRGB(FONT_COLOR)];
+						[rField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
+						[rField setKeyboardAppearance:UIKeyboardAppearanceDefault];
+						[rField setReturnKeyType:UIReturnKeyNext];
+						break;
+				}
+				break;
+			case 2:
+				switch (indexPath.row) {
+					case 0:
+						cell.textLabel.text = @"NickServ";
+						RCTextField *nsField = (RCTextField *)[cell accessoryView];
+						[nsField setAdjustsFontSizeToFitWidth:YES];
+						[nsField setPlaceholder:@"a-password"];
+						[nsField setTag:7];
+						[nsField setSecureTextEntry:YES];
+						[nsField setText:[network npass]];
+						[nsField setDelegate:self];
+						[nsField setTextColor:UIColorFromRGB(FONT_COLOR)];
+						[nsField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
+						[nsField setKeyboardAppearance:UIKeyboardAppearanceDefault];
+						[nsField setReturnKeyType:UIReturnKeyNext];
+						break;
+					case 1:
+						cell.textLabel.text = @"Server";
+						RCTextField *seField = (RCTextField *)[cell accessoryView];
+						[seField setAdjustsFontSizeToFitWidth:YES];
+						[seField setPlaceholder:@"privateircftw"];
+						[seField setTag:8];
+						[seField setSecureTextEntry:YES];
+						[seField setText:[network spass]];
+						[seField setDelegate:self];
+						[seField setTextColor:UIColorFromRGB(FONT_COLOR)];
+						[seField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
+						[seField setKeyboardAppearance:UIKeyboardAppearanceDefault];
+						[seField setReturnKeyType:UIReturnKeyNext];
+						break;
+				}
+				break;
+			case 3:
+				switch (indexPath.row) {
+					case 0:
+						cell.textLabel.text = @"Connect At Launch";
+						UISwitch *cnt = [[UISwitch alloc] init];
+						[cnt setOn:[network COL]];
+						[cnt setOnTintColor:UIColorFromRGB(0x5296ea)];
+						[cnt addTarget:self action:@selector(launchSwitched:) forControlEvents:UIControlEventValueChanged];
+						[cell setAccessoryView:cnt];
+						[cnt release];
+						break;
+					case 1:
+						cell.textLabel.text = @"Alternate Nicknames";
+						cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+						cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+						break;
+					case 2:
+						cell.textLabel.text = @"Auto Commands";
+						cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+						cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+						break;
+					case 3:
+						cell.textLabel.text = @"Channels";
+						cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+						cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+				}
+				break;
+		}
 	}
     // Configure the cell...
     return cell;
@@ -471,7 +456,6 @@
 
 - (void)dealloc {
 	[super dealloc];
-	// RELEASE TABLE VIEW.
 }
 
 - (void)tableView:(UITableView *)_tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -491,11 +475,8 @@
 			break;
 		default:
 			break;
-			
 	}
-    
 	[_tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
-
 
 @end
