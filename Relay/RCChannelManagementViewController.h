@@ -7,10 +7,18 @@
 //
 
 #import "RCBasicViewController.h"
+#import "RCBasicTextInputCell.h"
+#import "RCBasicTableViewCell.h"
+#import "RCChannelManager.h"
+#import "RCKeychainItem.h"
+
 @class RCNetwork;
-@interface RCChannelManagementViewController : RCBasicViewController {
+@interface RCChannelManagementViewController : RCBasicViewController <UITextFieldDelegate> {
 	RCNetwork *net;
 	NSString *chan;
+	NSString *orig;
+	NSString *pass;
+	BOOL jOC;
 }
 
 - (id)initWithStyle:(UITableViewStyle)style network:(RCNetwork *)net channel:(NSString *)chan;

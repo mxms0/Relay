@@ -9,9 +9,6 @@
 #import "RCAddNetworkController.h"
 #import "RCKeychainItem.h"
 
-#define FONT_SIZE 12
-#define FONT_COLOR 0x56595A
-
 @implementation UIView (FindAndResignFirstResponder)
 - (BOOL)findAndResignFirstResponder {
     if (self.isFirstResponder) {
@@ -93,22 +90,6 @@
 	[self.navigationItem setLeftBarButtonItem:cancel];
 	[cancel release];
 	// Do any additional setup after loading the view, typically from a nib.
-}
-
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-	UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, 240, 20)];
-	label.text = [self tableView:tableView titleForHeaderInSection:section];
-	label.backgroundColor = [UIColor clearColor];
-	label.textColor = [UIColor whiteColor];
-	label.shadowColor = [UIColor blackColor];
-	label.shadowOffset = CGSizeMake(0, 1);
-	label.font = [UIFont boldSystemFontOfSize:14];
-	return [label autorelease];
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-	if (section == 0) return 35.0;
-	return 25.0;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -273,9 +254,6 @@
     RCBasicTextInputCell *cell = (RCBasicTextInputCell *)[_tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[RCBasicTextInputCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-		cell.selectionStyle = UITableViewCellSelectionStyleNone;
-		cell.textLabel.font = [UIFont boldSystemFontOfSize:14];
-		cell.textLabel.textColor = UIColorFromRGB(0x545758);
 		switch (indexPath.section) {
 			case 0:
 				switch (indexPath.row) {
@@ -290,8 +268,6 @@
 						[dField setDelegate:self];
 						[dField setKeyboardAppearance:UIKeyboardAppearanceDefault];
 						[dField setReturnKeyType:UIReturnKeyNext];
-						[dField setTextColor:UIColorFromRGB(FONT_COLOR)];
-						[dField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
 						break;
 					case 1:
 						cell.textLabel.text = @"Address";
@@ -306,8 +282,6 @@
 						address.tag = 2;
 						address.keyboardAppearance = UIKeyboardAppearanceDefault;
 						[address setDelegate:self];
-						[address setTextColor:UIColorFromRGB(FONT_COLOR)];
-						[address setFont:[UIFont systemFontOfSize:FONT_SIZE]];
 						break;
 					case 2:
 						cell.textLabel.text = @"Port";
@@ -320,8 +294,6 @@
 						[pField setText:([network port] ? [NSString stringWithFormat:@"%d", [network port]] : nil)];
 						[pField setKeyboardAppearance:UIKeyboardAppearanceDefault];
 						[pField setDelegate:self];
-						[pField setTextColor:UIColorFromRGB(FONT_COLOR)];
-						[pField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
 						break;
 					case 3:
 						cell.textLabel.text = @"Use SSL";
@@ -345,8 +317,6 @@
 						[uField setDelegate:self];
 						[uField setKeyboardAppearance:UIKeyboardAppearanceDefault];
 						[uField setReturnKeyType:UIReturnKeyNext];
-						[uField setTextColor:UIColorFromRGB(FONT_COLOR)];
-						[uField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
 						break;
 					case 1:
 						cell.textLabel.text = @"Nickname";
@@ -363,8 +333,6 @@
 						[nField setDelegate:self];
 						[nField setKeyboardAppearance:UIKeyboardAppearanceDefault];
 						[nField setReturnKeyType:UIReturnKeyNext];
-						[nField setTextColor:UIColorFromRGB(FONT_COLOR)];
-						[nField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
 						break;
 					case 2:
 						cell.textLabel.text = @"Real Name";
@@ -374,8 +342,6 @@
 						[rField setTag:6];
 						[rField setText:[network realname]];
 						[rField setDelegate:self];
-						[rField setTextColor:UIColorFromRGB(FONT_COLOR)];
-						[rField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
 						[rField setKeyboardAppearance:UIKeyboardAppearanceDefault];
 						[rField setReturnKeyType:UIReturnKeyNext];
 						break;
@@ -392,8 +358,6 @@
 						[nsField setSecureTextEntry:YES];
 						[nsField setText:[network npass]];
 						[nsField setDelegate:self];
-						[nsField setTextColor:UIColorFromRGB(FONT_COLOR)];
-						[nsField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
 						[nsField setKeyboardAppearance:UIKeyboardAppearanceDefault];
 						[nsField setReturnKeyType:UIReturnKeyNext];
 						break;
@@ -406,8 +370,6 @@
 						[seField setSecureTextEntry:YES];
 						[seField setText:[network spass]];
 						[seField setDelegate:self];
-						[seField setTextColor:UIColorFromRGB(FONT_COLOR)];
-						[seField setFont:[UIFont systemFontOfSize:FONT_SIZE]];
 						[seField setKeyboardAppearance:UIKeyboardAppearanceDefault];
 						[seField setReturnKeyType:UIReturnKeyNext];
 						break;
@@ -428,16 +390,19 @@
 						cell.textLabel.text = @"Alternate Nicknames";
 						cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 						cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+						[cell setAccessoryView:nil];
 						break;
 					case 2:
 						cell.textLabel.text = @"Auto Commands";
 						cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 						cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+						[cell setAccessoryView:nil];
 						break;
 					case 3:
 						cell.textLabel.text = @"Channels";
 						cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 						cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+						[cell setAccessoryView:nil];
 				}
 				break;
 		}

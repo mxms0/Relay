@@ -22,6 +22,7 @@
 	#define COL_KEY @"0_CONNECT_ON_LAUNCH"
 	#define RELOAD_KEY @"0_RELOAD_LIST"
 	#define BG_NOTIF @"0_BGNOTIF"
+	#define CHANNAMEKEY @"0_CHANKEYNAME"
 	#ifndef kCFCoreFoundationVersionNumber_iPhoneOS_4_0
 		#define kCFCoreFoundationVersionNumber_iPhoneOS_4_0 550.32
 	#endif

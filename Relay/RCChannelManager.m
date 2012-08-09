@@ -17,10 +17,20 @@
 		_rEditing = NO;
 		NSLog(@"MEH %@", [net _channels]);
 		self.tableView.allowsSelectionDuringEditing = YES;
-		channels = [[NSMutableArray alloc] initWithArray:[[net _channels] allKeys]];
-		[channels removeObject:@"IRC"];
+		[self reloadData];
     }
     return self;
+}
+
+- (void)reloadData {
+	if (channels) [channels release];
+	channels = [[NSMutableArray alloc] initWithArray:[[network _channels] allKeys]];
+	[channels removeObject:@"IRC"];
+	[self.tableView reloadData];
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+	return 10;
 }
 
 - (void)dealloc {
@@ -70,15 +80,12 @@
 
 - (void)edit {
 	_rEditing = !_rEditing;
-	NSLog(@"CHANNELS %@", channels);
 	[((UITableView *)self.tableView) setEditing:!_rEditing animated:NO];
 	[((UITableView *)self.tableView) setEditing:_rEditing animated:YES];
-		NSLog(@"CHANNELS %@", channels);
 	UIBarButtonItem *rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:([((UITableView *)self.view) isEditing] ? UIBarButtonSystemItemDone : UIBarButtonSystemItemEdit) target:self action:@selector(edit)];
 	[self.navigationItem setRightBarButtonItem:rightBarButtonItem animated:YES];
 	[rightBarButtonItem release];
 	[((UITableView *)self.view) beginUpdates];
-	NSLog(@"CHANNELS %@", channels);
 	if (_rEditing)
 		[((UITableView *)self.view) insertRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:[channels count] inSection:0]] withRowAnimation:UITableViewRowAnimationTop];
 	else [((UITableView *)self.view) deleteRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:[channels count] inSection:0]] withRowAnimation:UITableViewRowAnimationTop];
@@ -96,11 +103,6 @@
 		NSMutableArray *items = [[self.navigationItem.rightBarButtonItems mutableCopy] autorelease];
 		[items removeObject: addBtn];
 		self.navigationItem.rightBarButtonItems = items;
-
-		//        for (NSString *channel in pendingChannels) {
-		//   [network addChannel:channel join:NO];
-        //}
-        //[pendingChannels removeAllObjects];
 	}
 }
 

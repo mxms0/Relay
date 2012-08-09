@@ -57,9 +57,10 @@ static NSMutableArray *networks = nil;
 		[item release];
 	}
 	NSMutableArray *rooms = [[[info objectForKey:CHANNELS_KEY] mutableCopy] autorelease];
-	if (!rooms) rooms = [[NSMutableArray alloc] init];
-	if (![rooms containsObject:@"IRC"]) [rooms addObject:@"IRC"];
-	[network setupRooms:rooms];
+	if (!rooms) {
+		[network addChannel:@"IRC" join:NO];
+	}
+	[network _setupRooms:rooms];
 	[networks addObject:network];
 	[[RCNavigator sharedNavigator] addNetwork:network];
 	[network release];

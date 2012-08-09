@@ -21,6 +21,7 @@
 	NSMutableDictionary *users;
 	NSString *channelName;
 	NSString *topic;
+	NSString *password;
 	RCChatPanel *panel;
 	RCUserListPanel *usersPanel;
 	BOOL joined;
@@ -32,6 +33,7 @@
 @property (nonatomic, assign) BOOL joinOnConnect;
 @property (nonatomic, assign) RCChatPanel *panel;
 @property (nonatomic, readonly) NSString *topic;
+@property (nonatomic, retain) NSString *password;
 @property (nonatomic, assign) RCChannelBubble *bubble;
 @property (nonatomic, assign) RCUserListPanel *usersPanel;
 - (id)initWithChannelName:(NSString *)_name;

@@ -14,7 +14,7 @@
 
 @implementation RCChannel
 
-@synthesize channelName, joinOnConnect, panel, topic, bubble, usersPanel;
+@synthesize channelName, joinOnConnect, panel, topic, bubble, usersPanel, password;
 
 NSString *RCMergeModes(NSString *arg1, NSString *arg2) {
 	if (arg1 == nil || arg2 == nil) return nil;
@@ -189,6 +189,7 @@ UIImage *RCImageForRank(NSString *rank) {
 		case RCMessageTypeJoin:
 			break;
 		case RCMessageTypeTopic:
+			msg = [message copy];
 			break;
 		case RCMessageTypeQuit:
 			break;

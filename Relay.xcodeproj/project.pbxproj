@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		500B82D715D3461A00C968F5 /* 0_tminusbtn.png in Resources */ = {isa = PBXBuildFile; fileRef = 500B82D315D3461A00C968F5 /* 0_tminusbtn.png */; };
+		500B82D815D3461A00C968F5 /* 0_tminusbtn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 500B82D415D3461A00C968F5 /* 0_tminusbtn@2x.png */; };
+		500B82D915D3461A00C968F5 /* 0_tplusbtn.png in Resources */ = {isa = PBXBuildFile; fileRef = 500B82D515D3461A00C968F5 /* 0_tplusbtn.png */; };
+		500B82DA15D3461A00C968F5 /* 0_tplusbtn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 500B82D615D3461A00C968F5 /* 0_tplusbtn@2x.png */; };
 		500DD85615BBDBC700F2E59D /* RCPasswordRequestAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 500DD85515BBDBC700F2E59D /* RCPasswordRequestAlert.m */; };
 		50136C0615C3668E0044666F /* RCScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50136C0515C3668E0044666F /* RCScrollView.m */; };
 		501D895015AD08C100366019 /* PDKeychainBindings.m in Sources */ = {isa = PBXBuildFile; fileRef = 501D894D15AD08C100366019 /* PDKeychainBindings.m */; };
@@ -167,6 +171,10 @@
 
 /* Begin PBXFileReference section */
 		5000C73C15CED179003A635F /* RCAttributedString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCAttributedString.h; sourceTree = "<group>"; };
+		500B82D315D3461A00C968F5 /* 0_tminusbtn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_tminusbtn.png; sourceTree = "<group>"; };
+		500B82D415D3461A00C968F5 /* 0_tminusbtn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_tminusbtn@2x.png"; sourceTree = "<group>"; };
+		500B82D515D3461A00C968F5 /* 0_tplusbtn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_tplusbtn.png; sourceTree = "<group>"; };
+		500B82D615D3461A00C968F5 /* 0_tplusbtn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_tplusbtn@2x.png"; sourceTree = "<group>"; };
 		500DD85415BBDBC700F2E59D /* RCPasswordRequestAlert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCPasswordRequestAlert.h; sourceTree = "<group>"; };
 		500DD85515BBDBC700F2E59D /* RCPasswordRequestAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCPasswordRequestAlert.m; sourceTree = "<group>"; };
 		50136C0415C3668E0044666F /* RCScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCScrollView.h; sourceTree = "<group>"; };
@@ -564,6 +572,10 @@
 				506F796D159A91C2002266C9 /* 0_listrbtn.png */,
 				506F7967159A91B6002266C9 /* 0_plusbtn.png */,
 				506F7968159A91B6002266C9 /* 0_plusbtn@2x.png */,
+				500B82D315D3461A00C968F5 /* 0_tminusbtn.png */,
+				500B82D415D3461A00C968F5 /* 0_tminusbtn@2x.png */,
+				500B82D515D3461A00C968F5 /* 0_tplusbtn.png */,
+				500B82D615D3461A00C968F5 /* 0_tplusbtn@2x.png */,
 				5050BFE9158ED168003A238B /* 0_popover.png */,
 				5050BFEA158ED168003A238B /* 0_popover@2x.png */,
 				50AAE7EB151ADDAB00E631FD /* 0_r_shadow@2x.png */,
@@ -654,8 +666,6 @@
 				50A7FB9814C0F0A800ABADEA /* RCViewController_iPad.xib */,
 				50E77A8C1505A28400E75C64 /* Relay-Info.plist */,
 				50A7FB8914C0F0A800ABADEA /* InfoPlist.strings */,
-				50E77A8E1505A29100E75C64 /* main.m */,
-				50E77A901505A2C300E75C64 /* Relay-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -706,6 +716,8 @@
 				504349FC152CEEDD0037BD12 /* RCKeychainItem.m */,
 				5000C73C15CED179003A635F /* RCAttributedString.h */,
 				504D6EDB156B2B9E0004D7D7 /* RCAttributedString.m */,
+				50E77A8E1505A29100E75C64 /* main.m */,
+				50E77A901505A2C300E75C64 /* Relay-Prefix.pch */,
 			);
 			name = Backend;
 			sourceTree = "<group>";
@@ -860,6 +872,10 @@
 				502A66DE15BCCD600009C890 /* 0_plusbtn_pressed.png in Resources */,
 				502A66DF15BCCD600009C890 /* 0_plusbtn_pressed@2x.png in Resources */,
 				50F9037215C5B126001BC6F0 /* openssl in Resources */,
+				500B82D715D3461A00C968F5 /* 0_tminusbtn.png in Resources */,
+				500B82D815D3461A00C968F5 /* 0_tminusbtn@2x.png in Resources */,
+				500B82D915D3461A00C968F5 /* 0_tplusbtn.png in Resources */,
+				500B82DA15D3461A00C968F5 /* 0_tplusbtn@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

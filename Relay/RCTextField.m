@@ -12,7 +12,9 @@
 
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
-#if USE_PRIVATE 
+		[self setTextColor:UIColorFromRGB(0x56595A)];
+		[self setFont:[UIFont systemFontOfSize:12]];
+#if USE_PRIVATE
 		if ([self respondsToSelector:@selector(setInsertionPointColor:)])
 			[self setInsertionPointColor:UIColorFromRGB(0x4F94EA)];
 #endif

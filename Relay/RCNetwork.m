@@ -30,6 +30,17 @@
 }
 
 - (id)infoDictionary {
+	NSMutableArray *chanArray = [[NSMutableArray alloc] init];
+	for (NSString *_chan in [_channels allKeys]) {
+		RCChannel *chan = [self channelWithChannelName:_chan];
+		NSDictionary *dict = [[NSDictionary alloc] initWithObjectsAndKeys:
+							  _chan, CHANNAMEKEY,
+							  ([chan joinOnConnect] ? (id)kCFBooleanTrue : (id)kCFBooleanFalse), @"0_CHANJOC",
+							  ([[chan password] length] > 0 ? (id)kCFBooleanTrue : (id)kCFBooleanFalse), @"0_CHANPASS", nil];
+		[chanArray addObject:dict];
+		[dict release];
+	}
+	[chanArray autorelease];
 	return [NSDictionary dictionaryWithObjectsAndKeys:
 			username, USER_KEY,
 			nick, NICK_KEY,
@@ -40,7 +51,7 @@
 			server, SERVR_ADDR_KEY,
 			[NSNumber numberWithInt:port], PORT_KEY,
 			[NSNumber numberWithBool:useSSL], SSL_KEY,
-			[_channels allKeys], CHANNELS_KEY,
+			chanArray, CHANNELS_KEY,
 			[NSNumber numberWithBool:COL], COL_KEY,
 			nil];
 }
@@ -68,6 +79,22 @@
 
 - (NSString *)description {
 	return [NSString stringWithFormat:@"<%@: %p; %@;>", NSStringFromClass([self class]), self, [self infoDictionary]];
+}
+
+- (void)_setupRooms:(NSArray *)rooms {
+	[rooms retain];
+	for (NSDictionary *dict in rooms) {
+		NSString *chan = [dict objectForKey:CHANNAMEKEY];
+		if (!chan) continue;
+		BOOL jOC = ([dict objectForKey:@"0_CHANJOC"] ? [[dict objectForKey:@"0_CHANJOC"] boolValue] : YES);
+		[self addChannel:chan join:NO];
+		RCChannel *_chan = [self channelWithChannelName:chan];
+		[_chan setJoinOnConnect:jOC];
+		RCKeychainItem *item = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@%@rpass", [self _description], chan] accessGroup:nil];
+		[_chan setPassword:[item objectForKey:(id)kSecValueData]];
+		[item release];		
+	}
+	[rooms release];
 }
 
 - (void)setupRooms:(NSArray *)rooms {
@@ -117,6 +144,7 @@
 }
 
 - (void)removeChannel:(RCChannel *)chan withMessage:(NSString *)quitter {
+	if (!chan) return;
 	[chan setJoined:NO withArgument:quitter];
 	[[RCNavigator sharedNavigator] removeChannel:chan fromServer:self];
 	[_channels removeObjectForKey:[chan channelName]];

@@ -12,7 +12,7 @@
 
 - (id)initWithStyle:(UITableViewStyle)style {
 	if ((self = [super initWithStyle:style])) {
-		titleView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 160, 40)];
+		titleView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 180, 40)];
 		titleView.backgroundColor = [UIColor clearColor];
 		titleView.textAlignment = UITextAlignmentCenter;
 		titleView.font = [UIFont boldSystemFontOfSize:22];
@@ -23,6 +23,22 @@
 		[titleView release];
     }
     return self;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+	if (section == 0) return 35.0;
+	return 25.0;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+	UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, 240, 20)];
+	label.text = [self tableView:tableView titleForHeaderInSection:section];
+	label.backgroundColor = [UIColor clearColor];
+	label.textColor = [UIColor whiteColor];
+	label.shadowColor = [UIColor blackColor];
+	label.shadowOffset = CGSizeMake(0, 1);
+	label.font = [UIFont boldSystemFontOfSize:14];
+	return [label autorelease];
 }
 
 - (NSString *)titleText {
