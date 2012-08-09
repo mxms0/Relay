@@ -17,16 +17,18 @@
 		self.selectionStyle = UITableViewCellSelectionStyleNone;
 		self.textLabel.font = [UIFont boldSystemFontOfSize:14];
 		self.textLabel.textColor = UIColorFromRGB(0x545758);
+        transform = 0;
         // Initialization code
     }
     return self;
 }
 
 - (void)addSubview:(UIView *)view {
-	NSLog(@"hello %@",view);
 	if ([view isKindOfClass:[objc_getClass("UITableViewCellEditControl") class]]) {
 		for (UIView *suv in [view subviews]) {
 			if ([suv isKindOfClass:[UIImageView class]]) {
+                suv.tag = 500;
+                [suv setFrame:CGRectMake(6, 8, suv.frame.size.height, suv.frame.size.width)];
 				UIImage *gg = [UIImage imageNamed:@"0_tplusbtn"];
 				if (self.editingStyle == UITableViewCellEditingStyleDelete)
 					gg = [UIImage imageNamed:@"0_tminusbtn"];
@@ -35,24 +37,45 @@
 			}
 		}
 	}
-	else if ([view isKindOfClass:[objc_getClass("UITableViewCellDeleteConfirmationControl") class]]) {
-		NSLog(@"MEH %@", [self subviews]);
-		for (UIView *subv in [self subviews]) {
-			if ([subv isKindOfClass:[objc_getClass("UITableViewCellEditControl") class]]) {
-				for (UIView *suv in [subv subviews]) {
-					if ([suv isKindOfClass:[UIImageView class]]) {
-						UIImage *gg = [UIImage imageNamed:@"0_tplusbtn"];
-						if (self.editingStyle == UITableViewCellEditingStyleDelete)
-							gg = [UIImage imageNamed:@"0_tminusbtn"];
-						[(UIImageView *)suv setImage:gg];
-						break;
-					}
-				}
-				break;
-			}
-		}
-	}
 	[super addSubview:view];
+}
+
+- (void)willTransitionToState:(UITableViewCellStateMask)state {
+    [super willTransitionToState:state];
+    _state = state;
+    if (state == 1) {
+        for (UIView *subv in [self subviews]) {
+            if ([subv isKindOfClass:[objc_getClass("UITableViewCellEditControl") class]]) {
+                [UIView beginAnimations:nil context:nil];
+                [[self viewWithTag:500] setTransform:CGAffineTransformMakeRotation(-transform)];
+                [UIView commitAnimations];
+                if ((int)transform == (int)(M_PI/2)) {
+                    transform = 0;
+                }
+                else {
+                    transform = (M_PI/2);
+                }
+                break;
+            }
+        }
+    }
+    NSLog(@"BLEH %d", state);
+    if (state == UITableViewCellStateShowingDeleteConfirmationMask) {
+        
+    }
+}
+
+- (void)editControlWasClicked:(id)arg1 {
+    [super editControlWasClicked:arg1];
+    [UIView beginAnimations:nil context:nil];
+    [[self viewWithTag:500] setTransform:CGAffineTransformMakeRotation(-transform)];
+    [UIView commitAnimations];
+    if ((int)transform == (int)(M_PI/2)) {
+        transform = 0;
+    }
+    else {
+        transform = (M_PI/2);
+    }
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
