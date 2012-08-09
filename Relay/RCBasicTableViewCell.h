@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
 
-@interface RCBasicTableViewCell : UITableViewCell
-
+@interface RCBasicTableViewCell : UITableViewCell {
+    CGFloat transform;
+    int _state;
+}
 @end
