@@ -15,7 +15,6 @@
 		[net setNamesCallback:self];
 		network = net;
 		_rEditing = NO;
-		NSLog(@"MEH %@", [net _channels]);
 		self.tableView.allowsSelectionDuringEditing = YES;
 		[self reloadData];
     }
@@ -36,7 +35,7 @@
 - (void)dealloc {
 	[channels release];
 	[network setNamesCallback:nil];
-	[super dealloc]; 
+	[super dealloc];
 }
 
 - (NSString *)titleText {
@@ -94,16 +93,7 @@
 
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated { 
     [super setEditing:editing animated:animated];
-	if (editing) {
-		NSMutableArray *items = [[self.navigationItem.rightBarButtonItems mutableCopy] autorelease];
-		[items addObject: addBtn];
-		self.navigationItem.rightBarButtonItems = items;
-	}
-	else {
-		NSMutableArray *items = [[self.navigationItem.rightBarButtonItems mutableCopy] autorelease];
-		[items removeObject: addBtn];
-		self.navigationItem.rightBarButtonItems = items;
-	}
+
 }
 
 - (void)viewDidUnload {
@@ -131,7 +121,6 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	NSLog(@"WHAT THE FUCK %@", channels);
 	if (_rEditing) return [channels count]+1;
 	return [channels count];
 	return ([channels count] + (_rEditing ? 1 : 0));

@@ -46,6 +46,7 @@
     if (state == 1) {
         for (UIView *subv in [self subviews]) {
             if ([subv isKindOfClass:[objc_getClass("UITableViewCellEditControl") class]]) {
+				if (self.editingStyle == UITableViewCellEditingStyleInsert) return;
                 [UIView beginAnimations:nil context:nil];
                 [[self viewWithTag:500] setTransform:CGAffineTransformMakeRotation(-transform)];
                 [UIView commitAnimations];
@@ -58,10 +59,6 @@
                 break;
             }
         }
-    }
-    NSLog(@"BLEH %d", state);
-    if (state == UITableViewCellStateShowingDeleteConfirmationMask) {
-        
     }
 }
 
@@ -80,8 +77,6 @@
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
 }
 
 @end
