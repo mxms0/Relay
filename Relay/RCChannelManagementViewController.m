@@ -64,6 +64,7 @@
 			case 2: {
 				[cell setAccessoryView:nil];
 				UISwitch *jocSwitch = [[UISwitch alloc] init];
+				[jocSwitch setOn:jOC];
 				[jocSwitch addTarget:self action:@selector(jocSwitched:) forControlEvents:UIControlEventValueChanged];
 				[cell setAccessoryView:jocSwitch];
 				[jocSwitch release];

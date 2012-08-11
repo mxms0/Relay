@@ -18,16 +18,21 @@
 		[self setBackgroundColor:[UIColor clearColor]];
 		[self setCanCancelContentTouches:YES];
 		y = 4;
+		self.pagingEnabled = NO;
+		shouldScroll = YES;
 		stringToDraw = [[NSMutableAttributedString alloc] init];
 		self.backgroundColor = [UIColor clearColor];
         self.contentMode = UIViewContentModeRedraw;
 		[self setScrollEnabled:YES];
+		[self setDelegate:self];
 	}
 	return self;
 }
 
 - (void)layoutMessage:(RCMessageFormatter *)ms {
-	[stringToDraw appendAttributedString:[ms string]];
+	if (![[[ms string] string] isEqualToString:@""]) {
+		[stringToDraw appendAttributedString:[ms string]];
+	}
 	[ms release];
 	ms = nil;
 	[self resetContentSize];
@@ -41,7 +46,19 @@
 	CGSize frameSize = CTFramesetterSuggestFrameSizeWithConstraints(framesetter, sourceRange, NULL, CGSizeMake(self.frame.size.width, CGFLOAT_MAX), &destRange);
 	self.contentSize = CGSizeMake(self.bounds.size.width, frameSize.height);
     CFRelease(framesetter);
-	
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+	shouldScroll = NO;
+	MARK;	
+}
+
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
+	MARK;
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+	MARK;
 }
 
 - (void) drawRect:(CGRect)rect {

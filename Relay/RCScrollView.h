@@ -9,9 +9,10 @@
 #import <UIKit/UIKit.h>
 
 @class RCMessageFormatter;
-@interface RCScrollView : UIScrollView {
+@interface RCScrollView : UIScrollView <UIScrollViewDelegate> {
 	float y;
 	NSMutableAttributedString *stringToDraw;
+	BOOL shouldScroll;
 }
 
 - (void)layoutMessage:(RCMessageFormatter *)ms;

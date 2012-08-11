@@ -168,6 +168,10 @@ UIImage *RCImageForRank(NSString *rank) {
 	return [NSString stringWithFormat:@"[%@ %@]", [super description], channelName];
 }
 
+- (void)recievedKick:(NSString *)kick from:(NSString *)from reason:(NSString *)rsn {
+	
+}
+
 - (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type {
 #if LOGALL
 	NSLog(@"%s:%d", (char *)_cmd, type);
@@ -183,10 +187,18 @@ UIImage *RCImageForRank(NSString *rank) {
 		case RCMessageTypeKick:
 			break;
 		case RCMessageTypeBan:
+			msg = [[NSString stringWithFormat:@"%@ sets mode +b %@",from, message] copy];
 			break;
 		case RCMessageTypePart:
+			if (![message isEqualToString:@""]) {
+				msg = [[NSString stringWithFormat:@"%@ left the channel. (%@)", from, message] copy];
+			}
+			else {
+				msg = [[NSString stringWithFormat:@"%@ left the channel.", from] copy];
+			}
 			break;
 		case RCMessageTypeJoin:
+			msg = [[NSString stringWithFormat:@"%@ joined the channel.", from] copy];
 			break;
 		case RCMessageTypeTopic:
 			msg = [message copy];
@@ -295,6 +307,7 @@ UIImage *RCImageForRank(NSString *rank) {
 	// then he will lose +a, and it'll just say he's normal
 	// so i need to refresh al users
 	// so i guess i'll just re-index everytime.
+	return;
 	NSRange plus;
 	NSRange minus;
 	plus = [modes rangeOfString:@"+"];

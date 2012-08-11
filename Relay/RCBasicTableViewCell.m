@@ -28,7 +28,7 @@
 		for (UIView *suv in [view subviews]) {
 			if ([suv isKindOfClass:[UIImageView class]]) {
                 suv.tag = 500;
-                [suv setFrame:CGRectMake(6, 8, suv.frame.size.height, suv.frame.size.width)];
+                [suv setFrame:CGRectMake(7, 8, suv.frame.size.height, suv.frame.size.width)];
 				UIImage *gg = [UIImage imageNamed:@"0_tplusbtn"];
 				if (self.editingStyle == UITableViewCellEditingStyleDelete)
 					gg = [UIImage imageNamed:@"0_tminusbtn"];
@@ -42,7 +42,7 @@
 
 - (void)willTransitionToState:(UITableViewCellStateMask)state {
     [super willTransitionToState:state];
-    _state = state;
+	if (_state == state) return;
     if (state == 1) {
         for (UIView *subv in [self subviews]) {
             if ([subv isKindOfClass:[objc_getClass("UITableViewCellEditControl") class]]) {
@@ -50,6 +50,7 @@
                 [UIView beginAnimations:nil context:nil];
                 [[self viewWithTag:500] setTransform:CGAffineTransformMakeRotation(-transform)];
                 [UIView commitAnimations];
+				
                 if ((int)transform == (int)(M_PI/2)) {
                     transform = 0;
                 }
@@ -60,10 +61,12 @@
             }
         }
     }
+	_state = state;
 }
 
 - (void)editControlWasClicked:(id)arg1 {
     [super editControlWasClicked:arg1];
+	if (self.editingStyle == UITableViewCellEditingStyleInsert) return;
     [UIView beginAnimations:nil context:nil];
     [[self viewWithTag:500] setTransform:CGAffineTransformMakeRotation(-transform)];
     [UIView commitAnimations];

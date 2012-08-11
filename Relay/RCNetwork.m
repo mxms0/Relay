@@ -879,11 +879,20 @@ char *RCIPForURL(NSString *URL) {
 	NSString *cmd = user;
 	NSString *room = cmd;
 	NSString *_nick = room;
+	NSString *msg = _nick;
 	[_scanner scanUpToString:@" " intoString:&user];
 	[_scanner scanUpToString:@" " intoString:&cmd];
 	[_scanner scanUpToString:@" " intoString:&room];
+	[_scanner scanUpToString:@"\r\n" intoString:&msg];
 	user = [user substringFromIndex:1];
-	room = [room stringByReplacingOccurrencesOfString:@"\r\n" withString:@""];
+	if ([msg hasPrefix:@":"]) {
+		msg = [msg substringFromIndex:1];
+	}
+	if ([msg isEqualToString:@"_"]) {
+		msg = @"";
+	}
+	msg = [msg stringByReplacingOccurrencesOfString:@"\r\n" withString:@""];
+	NSLog(@"fuck fuck //%@ //%@ //%@\\//%@\\//%@ ", parted, user, cmd, room, msg);
 	RCParseUserMask(user, &_nick, nil, nil);
 	if ([_nick isEqualToString:useNick]) {
 		NSLog(@"I went byebye. Notify the police");
@@ -891,7 +900,7 @@ char *RCIPForURL(NSString *URL) {
 		return;
 	}
 	else {
-		[[self channelWithChannelName:room] recievedMessage:nil from:_nick type:RCMessageTypePart];
+		[[self channelWithChannelName:room] recievedMessage:msg from:_nick type:RCMessageTypePart];
 	}
 	[_scanner release];
 }
@@ -944,7 +953,6 @@ char *RCIPForURL(NSString *URL) {
 }
 
 - (void)handleMODE:(NSString *)_modes {
-	NSLog(@"Hello. %@", _modes);
 	_modes = [_modes substringFromIndex:1];
 	NSScanner *scanr = [[NSScanner alloc] initWithString:_modes];
 	NSString *settr;
