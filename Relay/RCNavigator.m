@@ -300,6 +300,7 @@ static RCChannelBubble *questionabubble = nil;
 			[currentPanel removeFromSuperview];
 		}
 		[[chan panel] setFrame:(currentPanel ? [currentPanel frame] : [self frameForChatTable])];
+        [[chan panel] didPresentView];
 		[self insertSubview:[chan panel] belowSubview:scrollBar];
 		currentPanel = [chan panel];
 		// if this fails, UIApplication->statusBarOrientation

@@ -51,6 +51,11 @@
     return self;
 }
 
+- (void)didPresentView
+{
+    [mainView scrollToBottom];
+}
+
 - (void)suggestNick:(UIGestureRecognizer *)gestr {
 	prev = [channel userWithPrefix:currentWord pastUser:prev];
 }
@@ -104,6 +109,7 @@
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
 	[textField setEnablesReturnKeyAutomatically:!(textField.text != nil && ![textField.text isEqualToString:@""])];
 	[self repositionKeyboardForUse:YES animated:YES];
+    [mainView scrollToBottom];
 }
 
 - (void)repositionKeyboardForUse:(BOOL)key animated:(BOOL)anim {
@@ -132,15 +138,15 @@
 
 - (void)postMessage:(NSString *)_message withType:(RCMessageType)type highlight:(BOOL)high isMine:(BOOL)mine {
 	RCMessageFormatter *message = [[RCMessageFormatter alloc] initWithMessage:_message isOld:NO isMine:mine isHighlight:high type:type];
-	[self performSelectorOnMainThread:@selector(_correctThreadPost:) withObject:message waitUntilDone:NO];
+    dispatch_async(dispatch_get_main_queue(), ^(void)
+    {
+        [mainView layoutMessage:message];
+        [mainView setNeedsDisplay];
+    });
 	/* would just pass the message here, but i'm switching threads. so it's offlimits 
 	 to end up releasing the message after the call. will just have the scrollview release it. */
 }
 
-- (void)_correctThreadPost:(RCMessageFormatter *)_m {
-	[mainView layoutMessage:_m];
-	[mainView setNeedsDisplay];
-}
 
 - (void)dealloc {
 	[currentWord release];

@@ -135,7 +135,7 @@ static NSMutableArray *networks = nil;
 - (void)setupWelcomeView {
 	RCWelcomeNetwork *net = [[RCWelcomeNetwork alloc] init];
 	[net setSDescription:@"Welcome!"];	
-	[net setServer:@"irc.nightcoast.net"];
+	[net setServer:@"irc.nightcoast.net"]; // olol.
 	[net addChannel:@"#Relay" join:YES];
 	RCChannel *chan = [[net _channels] objectForKey:@"#Relay"];
 	[chan recievedMessage:@"Welcome to Relay!" from:@"" type:RCMessageTypeTopic];

@@ -230,7 +230,8 @@
 				}
 			}
 			else {
-				msg = [msg mutableCopy];
+                [msg autorelease];
+				msg = [msg mutableCopy]; // LEAK LEAK LEAK.
 				// meh. i know i'm going to regret this.
 				// so. so. so. much.
 				// for some reason, data is becoming an NSString for one reason or another,
@@ -1004,7 +1005,7 @@ char *RCIPForURL(NSString *URL) {
 		[scannr scanUpToString:@" " intoString:&to];
 		[scannr scanUpToString:@" :" intoString:&msg];
 		RCParseUserMask(from, &user, nil, nil);
-		[self sendMessage:[@"PRIVMSG " stringByAppendingFormat:@"%@ \x01%@ %@\x01", user, @"PING", [msg substringWithRange:NSMakeRange(8, msg.length-9)]]];
+		[self sendMessage:[@"PRIVMSG " stringByAppendingFormat:@"%@ \x01%@ %@\x01", user, @"PING", msg]];
 		[scannr release];
 	}
 }

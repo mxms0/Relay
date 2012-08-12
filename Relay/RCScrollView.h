@@ -13,8 +13,12 @@
 	float y;
 	NSMutableAttributedString *stringToDraw;
 	BOOL shouldScroll;
+    dispatch_queue_t scrollViewMessageQueue;
+    int msgs;
+    BOOL isModifying;
+    BOOL canModify;
 }
 
 - (void)layoutMessage:(RCMessageFormatter *)ms;
-
+- (void)scrollToBottom;
 @end
