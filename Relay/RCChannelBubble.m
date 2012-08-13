@@ -63,7 +63,7 @@ static UIImage* image = nil;
 		[longPress setMinimumPressDuration:0.5];
 		[self addGestureRecognizer:longPress];
 		[longPress release];
-		if ([channel isPrivate]) {
+		if (![channel isPrivate]) {
 			UILongPressGestureRecognizer *longHold = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(showUserList:)];
 			[longHold setNumberOfTapsRequired:0];
 			[longHold setMinimumPressDuration:0.5];
