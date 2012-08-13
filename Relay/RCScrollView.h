@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+static BOOL readNumber(int* num, BOOL* isThereComma, unsigned int* size_of_num, NSString* istring);
+
 enum RCIRCAttribute {
     RCIRCAttributeColor = 0x03,
     RCIRCAttributeBold = 0x02,

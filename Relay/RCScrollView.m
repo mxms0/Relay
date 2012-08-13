@@ -100,8 +100,7 @@ if (!([ms string] && ms)) {\
 }\
 lpos = cpos;    
 
-BOOL readNumber(int* num, BOOL* isThereComma, unsigned int* size_of_num, NSString* istring);
-BOOL readNumber(int* num, BOOL* isThereComma, unsigned int* size_of_num, NSString* istring)
+static BOOL readNumber(int* num, BOOL* isThereComma, unsigned int* size_of_num, NSString* istring)
 {
     if ([istring length] - *size_of_num) {
         unichar n1 = [istring characterAtIndex:*size_of_num];
