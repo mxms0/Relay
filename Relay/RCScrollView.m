@@ -11,6 +11,7 @@
 #import "RCAttributedString.h"
 #import "RCMessageFormatter.h"
 #import "NSString+IRCStringSupport.h"
+#import "RCChannel.h"
 static NSString* template = nil;
 
 static NSString* str2col[] = {
@@ -65,7 +66,7 @@ NSString* colorForIRCColor(char irccolor)
          */
         scrollViewMessageQueue = dispatch_queue_create([[@"SCDISPATCHQUEUE_MSGHANDLE" stringByAppendingString:[self description]] UTF8String], 0ul);
         if (!template) {
-            template = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"chatview" ofType:@"html"] encoding:NSUTF8StringEncoding error:nil];
+            template = [[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"chatview" ofType:@"html"] encoding:NSUTF8StringEncoding error:nil] retain];
         }
         self.opaque = NO;
         self.dataDetectorTypes = UIDataDetectorTypeNone;
@@ -85,27 +86,38 @@ NSString* colorForIRCColor(char irccolor)
 cstr = [NSString stringWithFormat:@"addToMessage('%@','%@','%@','%@','%@','%@','%@', 'YES');", name, isBold ? @"YES" : @"NO", isUnderline ? @"YES" : @"NO", isItalic ? @"YES" : @"NO", bgcolor, fgcolor, [istring substringWithRange:NSMakeRange(lpos, cpos-lpos)]]; \
 if (![[self stringByEvaluatingJavaScriptFromString:cstr] isEqualToString:@"SUCCESS"]) { \
 NSLog(@"Could not exec: %@", cstr); \
-} \
+} else { \
+if (![[[[self chatpanel] channel] bubble] isSelected]) {\
+if ([ms  highlight]) {\
+    [[(RCChannel*)[[self chatpanel] channel] bubble] setHighlighted:YES];\
+} else {\
+    [[(RCChannel*)[[self chatpanel] channel] bubble] setHasNewMessage:YES];\
+}\
+if (!([ms string] && ms)) {\
+    return;\
+}\
+}\
+}\
 lpos = cpos;    
 
 BOOL readNumber(int* num, BOOL* isThereComma, unsigned int* size_of_num, NSString* istring);
 BOOL readNumber(int* num, BOOL* isThereComma, unsigned int* size_of_num, NSString* istring)
 {
     if ([istring length] - *size_of_num) {
-        char n1 = [istring characterAtIndex:*size_of_num];
+        unichar n1 = [istring characterAtIndex:*size_of_num];
         NSLog(@"%c!", n1);
-        if ('0' <= n1 && n1 <= '9') {
+        if ('0' <= n1 && n1 <= '9' && (n1 & 0xFF00) == 0) {
             NSLog(@"-> %c!", n1);
             *size_of_num = (*size_of_num) + 1;
             *num = n1 - '0';
             if ([istring length] - *size_of_num) {
-                char n2 = [istring characterAtIndex:*size_of_num];
-                if ('0' <= n2 && n2 <= '9') {
+                unichar n2 = [istring characterAtIndex:*size_of_num];
+                if ('0' <= n2 && n2 <= '9' && (n2 & 0xFF00) == 0) {
                     *size_of_num = (*size_of_num) + 1;
                     *num =  (n1 - '0') * 10 +  (n2 - '0');
                     if ([istring length] - *size_of_num) {
-                        char n3 = [istring characterAtIndex:*size_of_num];
-                        if ( n3 == ',' && *isThereComma == YES )
+                        unichar n3 = [istring characterAtIndex:*size_of_num];
+                        if ( n3 == ','  && (n3 & 0xFF00) == 0 && *isThereComma == YES )
                         {
                             *size_of_num = (*size_of_num) + 1;
                             *isThereComma = YES; // nullop basically.
@@ -190,7 +202,7 @@ BOOL readNumber(int* num, BOOL* isThereComma, unsigned int* size_of_num, NSStrin
                     itc = NO;
                     readNumber(&number2, &itc, &cpos, istring);
                 } 
-                NSLog(@"Using %d and %d", number1, number2);
+                NSLog(@"Using %d and %d (%d,%d) [%@]", number1, number2, cpos, lpos, [istring substringFromIndex:cpos]);
                 // BOOL readNumber(int* num, BOOL* isThereComma, int* size_of_num, char* data, int size);
                 fgcolor = colorForIRCColor(number1);
                 bgcolor = colorForIRCColor(number2);

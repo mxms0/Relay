@@ -85,7 +85,8 @@
 	_selected = selected;
 	hasNew = NO;
 	_highlighted = NO;
-	
+	[self setHasNewMessage:NO];
+    [self setMentioned:NO];
 	if (selected) {
 		@autoreleasepool {
 			UIImage *image = [[UIImage imageNamed:@"0_bble"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 9, 0, 9)];
@@ -105,6 +106,9 @@
 }
 
 - (void)setMentioned:(BOOL)mentioned {
+    if (_selected) {
+        return;
+    }
 	if (_highlighted == mentioned) return;
 	_highlighted = mentioned;
 	if (_highlighted) {
@@ -118,6 +122,9 @@
 }
 
 - (void)setHasNewMessage:(BOOL)msgs {
+    if (_selected) {
+        return;
+    }
 	if (msgs == hasNew) return;
 	hasNew = msgs;
 	if (hasNew) {
@@ -133,15 +140,6 @@
 	else {
 		if (_selected) [[self titleLabel] setShadowColor:[UIColor whiteColor]];		
 	}
-}
-
-- (void)dispatchMessageOnMainThread:(SEL)fds withBool:(BOOL)Bb {
-	NSInvocation *invc = [[NSInvocation alloc] init];
-	[invc setTarget:self];
-	[invc setSelector:fds];
-	[invc setArgument:(void *)Bb atIndex:2];
-	[invc performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
-	[invc release];
 }
 
 @end

@@ -51,6 +51,7 @@
 - (void)parseAndHandleSlashCommand:(NSString *)cmd;
 - (void)setMyselfParted;	
 - (NSString *)userWithPrefix:(NSString *)prefix pastUser:(NSString *)user;
+- (BOOL)isUserInChannel:(NSString*)user;
 - (void)setSuccessfullyJoined:(BOOL)success;
 NSString *RCUserRank(NSString *user);
 UIImage *RCImageForRank(NSString *rank);

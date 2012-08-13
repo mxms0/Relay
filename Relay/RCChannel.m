@@ -186,36 +186,49 @@ UIImage *RCImageForRank(NSString *rank) {
 		time = [time substringToIndex:time.length-1];
 	switch (type) {
 		case RCMessageTypeKick:
+            msg = @"== KICK == fixme";
 			break;
 		case RCMessageTypeBan:
-			msg = [[NSString stringWithFormat:@"%@ sets mode +b %@",from, message] copy];
+			msg = [[NSString stringWithFormat:@"%@ sets mode +b %@",from, message] retain];
 			break;
 		case RCMessageTypePart:
 			if (![message isEqualToString:@""]) {
-				msg = [[NSString stringWithFormat:@"%@ left the channel. (%@)", from, message] copy];
+				msg = [[NSString stringWithFormat:@"%@ left the channel. (%@)", from, message] retain];
 			}
 			else {
-				msg = [[NSString stringWithFormat:@"%@ left the channel.", from] copy];
+				msg = [[NSString stringWithFormat:@"%@ left the channel.", from] retain];
 			}
 			break;
 		case RCMessageTypeJoin:
-			msg = [[NSString stringWithFormat:@"%@ joined the channel.", from] copy];
+			msg = [[NSString stringWithFormat:@"%@ joined the channel.", from] retain];
 			break;
 		case RCMessageTypeTopic:
 			msg = [message copy];
 			break;
 		case RCMessageTypeQuit:
+            if ([self isUserInChannel:from]) {
+                if (![message isEqualToString:@""]) {
+                    msg = [[NSString stringWithFormat:@"%@ left IRC. (%@)", from, message] retain];
+                }
+                else {
+                    msg = [[NSString stringWithFormat:@"%@ left IRC.", from] retain];
+                }
+            } else {
+                return;
+            }
 			break;
 		case RCMessageTypeMode:
+            msg = @"== TYPE: MODE < fixme! ==";
 			break;
 		case RCMessageTypeError:
+            msg = @"== TYPE: ERROR < fixme! ==";
 			break;
 		case RCMessageTypeAction:
-			msg = [[NSString stringWithFormat:@"%c[%@] \u2022 %@%c %@", RCIRCAttributeBold, time, from, RCIRCAttributeBold, message] copy];
+			msg = [[NSString stringWithFormat:@"%c[%@] \u2022 %@%c %@", RCIRCAttributeBold, time, from, RCIRCAttributeBold, message] retain];
 			break;
 		case RCMessageTypeNormal:
 			if (![from isEqualToString:@""]) {
-				msg = [[NSString stringWithFormat:@"%c[%@] %@:%c %@", RCIRCAttributeBold, time, from, RCIRCAttributeBold, message] copy];
+				msg = [[NSString stringWithFormat:@"%c[%@] %@:%c %@", RCIRCAttributeBold, time, from, RCIRCAttributeBold, message] retain];
 			}
 			else {
 				msg = [message copy];
@@ -223,10 +236,14 @@ UIImage *RCImageForRank(NSString *rank) {
 			}
 			break;
 		case RCMessageTypeNotice:
-			msg = [[NSString stringWithFormat:@"-%@- %@", from, message] copy];
+			msg = [[NSString stringWithFormat:@"-%@- %@", from, message] retain];
 			break;
 		case RCMessageTypeNormalE:
+            msg = @"== TYPE: EXC < fixme! ==";
 			break;
+        default:
+            msg = @"unk_event";
+            break;
 	}
 	BOOL isHighlight = NO;
 	if (type != RCMessageTypeNormalE && type != RCMessageTypeNotice && type != RCMessageTypeTopic) isHighlight = ([message rangeOfString:[delegate useNick] options:NSCaseInsensitiveSearch].location != NSNotFound);
@@ -238,6 +255,11 @@ UIImage *RCImageForRank(NSString *rank) {
 
 - (void)peopleParticipateInConversationsNotPartake:(id)hai wtfWasIThinking:(BOOL)thinking {
 	NSLog(@"i"); // what the fuck
+}
+
+- (BOOL)isUserInChannel:(NSString*)user
+{
+    return !!([users objectForKey:user]);
 }
 
 - (void)shouldPost:(BOOL)isHighlight withMessage:(NSString *)msg {

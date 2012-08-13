@@ -32,5 +32,9 @@
 		[nc release];
 	}
 }
+- (BOOL)isUserInChannel:(NSString*)user
+{
+    return [user isEqualToString:channelName];
+}
 
 @end

@@ -211,6 +211,7 @@ static id _sharedNavigator = nil;
 		if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Disconnect"]) [currentNetwork disconnect];
 		else {
 			[currentNetwork connect];
+            [self channelSelected:[[currentNetwork channelWithChannelName:@"IRC"] bubble]];
 		}
 		//connect
 	}
@@ -257,6 +258,7 @@ static id _sharedNavigator = nil;
 	currentNetwork = net;
 	titleLabel.text = [net _description];
 	[scrollBar layoutChannels:[net _bubbles]];
+    [self channelSelected:[[net channelWithChannelName:@"IRC"] bubble]];
 }
 
 static RCChannelBubble *questionabubble = nil;
@@ -292,7 +294,7 @@ static RCChannelBubble *questionabubble = nil;
 	if (currentPanel != nil) if ([[[currentPanel channel] bubble] isEqual:bubble]) return;
 	[[[currentPanel channel] bubble] _setSelected:NO];
 	[bubble _setSelected:YES];
-	RCChannel *chan = [currentNetwork channelWithChannelName:bubble.titleLabel.text];
+	RCChannel *chan = [currentNetwork channelWithChannelName:bubble.titleLabel.text]; // unneeded. <.<
 	if (chan) {
 		if ([currentPanel isFirstResponder])
 			[[chan panel] becomeFirstResponderNoAnimate];

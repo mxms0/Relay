@@ -13,8 +13,10 @@
 
 @interface RCMessageFormatter : NSObject {
 	NSString *string;
+    BOOL highlight;
 }
 @property(retain) NSString* string;
+@property(assign) BOOL highlight;
 - (id)initWithMessage:(NSString *)msg isOld:(BOOL)old isMine:(BOOL)m isHighlight:(BOOL)hh type:(RCMessageType)flavor;
 - (NSString *)string;
 @end

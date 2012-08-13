@@ -137,14 +137,14 @@ static NSMutableArray *networks = nil;
 	[net setSDescription:@"Welcome!"];	
 	[net setServer:@"irc.nightcoast.net"]; // olol.
 	[net addChannel:@"#Relay" join:YES];
+    [[self networks] addObject:net];
+	[[RCNavigator sharedNavigator] addNetwork:net];
 	RCChannel *chan = [[net _channels] objectForKey:@"#Relay"];
+    [[RCNavigator sharedNavigator] channelSelected:[chan bubble]];
 	[chan recievedMessage:@"Welcome to Relay!" from:@"" type:RCMessageTypeTopic];
 	[[chan panel] setHidesEntryField:YES];
 	[chan recievedMessage:@"Try out some cool features! :D" from:@"" type:RCMessageTypeNormal];
 	[chan recievedMessage:@"Blah, Blah, more blah!" from:@"" type:RCMessageTypeNormal];
-	[[self networks] addObject:net];
-	[[RCNavigator sharedNavigator] addNetwork:net];
-	[[RCNavigator sharedNavigator] channelSelected:[chan bubble]];
 	[net release];
 }
 
