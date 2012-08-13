@@ -245,7 +245,7 @@ UIImage *RCImageForRank(NSString *rank) {
 				msg = [[NSString stringWithFormat:@"%c[%@] %@:%c %@", RCIRCAttributeBold, time, from, RCIRCAttributeBold, message] retain];
 			}
 			else {
-				msg = [message copy];
+				msg = @"";
 				type = RCMessageTypeNormalE;
 			}
 			break;
