@@ -9,23 +9,26 @@
 #import "RCMessageFormatter.h"
 #import "NSString+IRCStringSupport.h"
 @implementation RCMessageFormatter
-@synthesize string, highlight;
+@synthesize string, highlight, shouldColor;
 - (id)initWithMessage:(NSString *)_message isOld:(BOOL)old isMine:(BOOL)m isHighlight:(BOOL)hh type:(RCMessageType)_flavor {
     if ((self = [super init])) {
+        shouldColor = NO;
         if (![_message hasSuffix:@"\n"])
             _message = [_message stringByAppendingString:@"\n"];
-        self.highlight = hh;
         switch (_flavor) {
             case RCMessageTypeAction:
                 self.string = [@"ACTION-" stringByAppendingString:_message];
+                shouldColor = YES;
                 goto isMnt;
                 break;
             case RCMessageTypeNormal:
                 self.string = [@"NORMAL-" stringByAppendingString:_message];
+                shouldColor = YES;
                 goto isMnt;
                 break;
             case RCMessageTypeNotice:
                 self.string = [@"NOTICE-" stringByAppendingString:_message];
+                shouldColor = YES;
                 goto isMnt;
                 break;
             case RCMessageTypeTopic:
@@ -61,6 +64,7 @@
         goto out_;
     isMnt:
         if (hh) {
+            self.highlight = YES;
             [self setString:[@"H:" stringByAppendingString:[self string]]];
         }
         goto out_;

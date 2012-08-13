@@ -12,6 +12,7 @@
 
 @interface RCChannelScrollView : UIScrollView {
 	BOOL shouldDrawBG;
+    RCShadowLayer *sLayer;
 }
 - (void)layoutChannels:(NSArray *)channels;
 - (void)clearBG;

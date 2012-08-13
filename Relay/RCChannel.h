@@ -53,6 +53,7 @@
 - (NSString *)userWithPrefix:(NSString *)prefix pastUser:(NSString *)user;
 - (BOOL)isUserInChannel:(NSString*)user;
 - (void)setSuccessfullyJoined:(BOOL)success;
+- (BOOL)isPrivate;
 NSString *RCUserRank(NSString *user);
 UIImage *RCImageForRank(NSString *rank);
 UIImage *RCImageForRanks(NSString *ranks, NSString *possible);

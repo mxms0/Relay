@@ -37,4 +37,9 @@
     return [user isEqualToString:channelName];
 }
 
+- (BOOL)isPrivate
+{
+    return YES;
+}
+
 @end

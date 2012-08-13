@@ -7,18 +7,22 @@
 //
 
 #import <UIKit/UIKit.h>
-
+@class RCChannel;
 @interface RCChannelBubble : UIButton {
-	BOOL _selected;
-	BOOL hasNew;
-	BOOL _highlighted;
+	BOOL isSelected;
+	BOOL hasNewMessages;
+	BOOL hasNewHighlights;
 	id delegate;
 	int _rcount;
+    RCChannel* channel;
 }
-@property (nonatomic, readonly) BOOL _selected;
-@property (nonatomic, assign) BOOL _highlighted;
+@property (nonatomic, readonly) BOOL isSelected;
+@property (nonatomic, assign) BOOL hasNewHighlights;
 @property (nonatomic, readonly) int _rcount;
+- (id)initWithFrame:(CGRect)frame andChan:(RCChannel*)channel_;
 - (void)setMentioned:(BOOL)mentioned;
 - (void)setHasNewMessage:(BOOL)msgs;
 - (void)_setSelected:(BOOL)_selected;
+- (RCChannel*)channel;
+- (void) fixColors;
 @end

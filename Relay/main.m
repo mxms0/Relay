@@ -23,7 +23,7 @@
 	return [[UIImage imageNamed:@"0_removebtnpres"] stretchableImageWithLeftCapWidth:5 topCapHeight:5];
 }
 - (void)drawBackground {
-	BOOL selected = [self pressed];
+	BOOL selected = (BOOL)[self performSelector:@selector(pressed)];
 	UIImage *img = nil;
 	if (selected) {
 		img = [[UIImage imageNamed:@"0_navback_press"] stretchableImageWithLeftCapWidth:13 topCapHeight:3];

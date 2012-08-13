@@ -19,6 +19,4 @@
 }
 
 - (id)initWithStyle:(UITableViewStyle)style andNetwork:(RCNetwork *)net;
-- (void)addNewItem;
-- (void)reloadData;
 @end

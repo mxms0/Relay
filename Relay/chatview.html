@@ -16,6 +16,9 @@
             var cnt = 0;
             var nowrem = 0;
             var maxscrollback = 300;
+            document.ontouchmove = function(event) {
+                if (document.body.scrollHeight == document.body.clientHeight) event.preventDefault();
+            }
             function createMessage()
             {
                 if (cnt >= maxscrollback)
@@ -45,7 +48,7 @@
                     type = type.substr(pos+1);
                     if (flags.indexOf("H") != -1)
                     {
-                        olddiv.style.background = "#FF0000";
+                        olddiv.style.background = "#ea584f";
                     }
                 }
                 olddiv.type = type;

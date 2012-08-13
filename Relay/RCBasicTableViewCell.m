@@ -63,7 +63,7 @@
     }
 	_state = state;
 }
-
+#if USE_PRIVATE
 - (void)editControlWasClicked:(id)arg1 {
     [super editControlWasClicked:arg1];
 	if (self.editingStyle == UITableViewCellEditingStyleInsert) return;
@@ -77,7 +77,7 @@
         transform = (M_PI/2);
     }
 }
-
+#endif
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
 }

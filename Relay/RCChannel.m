@@ -12,6 +12,7 @@
 #import "TestFlight.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import "RCScrollView.h"
+#import "NSString+IRCStringSupport.h"
 
 @implementation RCChannel
 
@@ -267,18 +268,14 @@ UIImage *RCImageForRank(NSString *rank) {
 	if ([[RCNavigator sharedNavigator] currentPanel]) 
 		iAmCurrent = [[[[RCNavigator sharedNavigator] currentPanel] channel] isEqual:self];
 	if (isHighlight) {
-		if (!iAmCurrent) [bubble setMentioned:YES];
 		if ([[RCNetworkManager sharedNetworkManager] isBG]) {
 			UILocalNotification *nc = [[UILocalNotification alloc] init];
 			[nc setFireDate:[NSDate date]];
-			[nc setAlertBody:msg];
+			[nc setAlertBody:[msg stringByStrippingIRCMetadata]];
             [nc setSoundName:UILocalNotificationDefaultSoundName];
 			[[UIApplication sharedApplication] scheduleLocalNotification:nc];
 			[nc release];
 		}
-	}
-	else {
-		if (!iAmCurrent) [bubble setHasNewMessage:YES];
 	}
 }
 
@@ -456,6 +453,11 @@ UIImage *RCImageForRank(NSString *rank) {
 
 - (void)handleSlashJOIN:(NSString *)join {
     [delegate addChannel:join join:YES];
+}
+
+- (BOOL)isPrivate
+{
+    return NO;
 }
 
 - (void)handleSlashPRIVMSG:(NSString *)privmsg {

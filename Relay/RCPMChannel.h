@@ -9,5 +9,5 @@
 #import "RCChannel.h"
 
 @interface RCPMChannel : RCChannel
-
+- (BOOL)isPrivate;
 @end

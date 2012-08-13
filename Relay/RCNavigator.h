@@ -54,5 +54,5 @@
 - (void)selectNetwork:(RCNetwork *)net;
 - (CGRect)frameForListButton;
 - (CGRect)frameForPlusButton;
-- (RCChannelBubble *)channelBubbleWithChannelName:(NSString *)name;
+- (RCChannelBubble *)channelBubbleWithChannel:(id)channel;
 @end

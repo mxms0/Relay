@@ -22,14 +22,20 @@
 		[self.layer setMasksToBounds:NO];
 		[self setShowsHorizontalScrollIndicator:NO];
 		UIImage *shadow = [UIImage imageNamed:@"0_r_shadow"];
-		RCShadowLayer *sLayer = [[RCShadowLayer alloc] init];
+		sLayer = [[RCShadowLayer alloc] init];
 		sLayer.contents = (id)shadow.CGImage;
 		sLayer.opacity = 0.3;
 		sLayer.frame = CGRectMake(0, 32, 320, 15);
 		[self.layer addSublayer:sLayer];
+        self.delegate = (id<UIScrollViewDelegate>)self;
 		[sLayer release];
 	}
 	return self;
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    sLayer.frame = (CGRect){scrollView.contentOffset.x,sLayer.frame.origin.y,sLayer.frame.size.width,sLayer.frame.size.height};
 }
 
 - (void)layoutChannels:(NSArray *)channels {
@@ -78,6 +84,7 @@
 		if ([[self subviews] count] != 0) sub = [[self subviews] objectAtIndex:[[self subviews] count]-1];
 		[bb setFrame:CGRectMake((sub ? sub.frame.size.width+sub.frame.origin.x+2 : 10), 7, bb.frame.size.width, 20)];
 		[self addSubview:bb];
+        [bb fixColors];
 	}
 	if (reorder) [channels release];
 	[self fixLayout];

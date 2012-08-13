@@ -83,71 +83,17 @@ NSString* colorForIRCColor(char irccolor)
     [super dealloc];
 }
 #define RENDER_WITH_OPTS \
-cstr = [NSString stringWithFormat:@"addToMessage('%@','%@','%@','%@','%@','%@','%@', 'YES');", name, isBold ? @"YES" : @"NO", isUnderline ? @"YES" : @"NO", isItalic ? @"YES" : @"NO", bgcolor, fgcolor, [istring substringWithRange:NSMakeRange(lpos, cpos-lpos)]]; \
-if (![[self stringByEvaluatingJavaScriptFromString:cstr] isEqualToString:@"SUCCESS"]) { \
-NSLog(@"Could not exec: %@", cstr); \
-} else { \
-if (![[[[self chatpanel] channel] bubble] isSelected]) {\
-if ([ms  highlight]) {\
-    [[(RCChannel*)[[self chatpanel] channel] bubble] setHighlighted:YES];\
-} else {\
-    [[(RCChannel*)[[self chatpanel] channel] bubble] setHasNewMessage:YES];\
-}\
-if (!([ms string] && ms)) {\
-    return;\
-}\
-}\
-}\
-lpos = cpos;    
-
-static BOOL readNumber(int* num, BOOL* isThereComma, unsigned int* size_of_num, NSString* istring)
-{
-    if ([istring length] - *size_of_num) {
-        unichar n1 = [istring characterAtIndex:*size_of_num];
-        NSLog(@"%c!", n1);
-        if ('0' <= n1 && n1 <= '9' && (n1 & 0xFF00) == 0) {
-            NSLog(@"-> %c!", n1);
-            *size_of_num = (*size_of_num) + 1;
-            *num = n1 - '0';
-            if ([istring length] - *size_of_num) {
-                unichar n2 = [istring characterAtIndex:*size_of_num];
-                if ('0' <= n2 && n2 <= '9' && (n2 & 0xFF00) == 0) {
-                    *size_of_num = (*size_of_num) + 1;
-                    *num =  (n1 - '0') * 10 +  (n2 - '0');
-                    if ([istring length] - *size_of_num) {
-                        unichar n3 = [istring characterAtIndex:*size_of_num];
-                        if ( n3 == ','  && (n3 & 0xFF00) == 0 && *isThereComma == YES )
-                        {
-                            *size_of_num = (*size_of_num) + 1;
-                            *isThereComma = YES; // nullop basically.
-                            return YES;
-                        } else {
-                            *isThereComma = NO;
-                            return YES;
-                        }
-                    }
-                } else if ( n2 == ',' && *isThereComma == YES )
-                {
-                    *size_of_num = (*size_of_num) + 1;
-                    *isThereComma = YES; // nullop basically.
-                    return YES;
-                } else {
-                    *isThereComma = NO;
-                    return YES;
-                }
-            }
-        } else {
-            NSLog(@"no numbers here!");
-            *isThereComma = NO;
-            return NO;
-        }
-    } else {
-        NSLog(@"no numbers here!");
-        *isThereComma = NO;
-        return NO;
-    }
-    return NO;
-}
+        if (!([ms string] && ms)) {\
+            return;\
+        }\
+        cstr = [NSString stringWithFormat:@"addToMessage('%@','%@','%@','%@','%@','%@','%@', 'YES');", name, isBold ? @"YES" : @"NO", isUnderline ? @"YES" : @"NO", isItalic ? @"YES" : @"NO", bgcolor, fgcolor, [istring substringWithRange:NSMakeRange(lpos, cpos-lpos)]]; \
+        if (![[self stringByEvaluatingJavaScriptFromString:cstr] isEqualToString:@"SUCCESS"]) { \
+            NSLog(@"Could not exec: %@", cstr); \
+        } else if ([ms  shouldColor]) { \
+            [[(RCChannel*)[[self chatpanel] channel] bubble] setMentioned:[ms  highlight]];\
+            [[(RCChannel*)[[self chatpanel] channel] bubble] setHasNewMessage:![ms  highlight]];\
+        }\
+        lpos = cpos;    
 
 - (void)layoutMessage:(RCMessageFormatter *)ms {
     NSString* name = [self stringByEvaluatingJavaScriptFromString:@"createMessage();"];

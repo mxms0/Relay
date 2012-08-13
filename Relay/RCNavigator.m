@@ -92,10 +92,9 @@ static id _sharedNavigator = nil;
 
 - (void)addChannel:(NSString *)chan toServer:(RCNetwork *)net {
 	if (![chan isEqualToString:@""] && ![chan isEqualToString:@" "]) {
-		RCChannelBubble *bubble = [self channelBubbleWithChannelName:chan];
+		RCChannelBubble *bubble = [self channelBubbleWithChannel:[net channelWithChannelName:chan]];
 		[[net _bubbles] insertObject:bubble atIndex:([[net _bubbles] count])];
 		[bubble release];
-		[[net channelWithChannelName:chan] setBubble:bubble];
 	}
 	if (currentNetwork)
 		if ([[net description] isEqualToString:[currentNetwork description]])
@@ -105,7 +104,7 @@ static id _sharedNavigator = nil;
 - (void)removeChannel:(RCChannel *)chan fromServer:(RCNetwork *)net {
 	for (RCChannelBubble *bb in [net _bubbles]) {
 		if ([[[chan channelName] lowercaseString] isEqualToString:[[[bb titleLabel] text] lowercaseString]]) {
-			if ([bb _selected]) {
+			if ([bb isSelected]) {
 				[currentPanel removeFromSuperview];
 				currentPanel = nil;
 			}
@@ -233,11 +232,15 @@ static id _sharedNavigator = nil;
 	}
 }
 
-- (RCChannelBubble *)channelBubbleWithChannelName:(NSString *)name {
-	CGSize size = [name sizeWithFont:[UIFont boldSystemFontOfSize:14]];
-	RCChannelBubble *bubble = [[RCChannelBubble alloc] initWithFrame:CGRectMake(0, 0, size.width+=14, 18)];
+- (RCChannelBubble *)channelBubbleWithChannel:(RCChannel *)chan {
+    if ([chan bubble]) {
+        return [chan bubble];
+    }
+	CGSize size = [[chan channelName] sizeWithFont:[UIFont boldSystemFontOfSize:14]];
+	RCChannelBubble *bubble = [[RCChannelBubble alloc] initWithFrame:CGRectMake(0, 0, size.width+=14, 18) andChan:chan];
 	[bubble addTarget:self action:@selector(channelSelected:) forControlEvents:UIControlEventTouchUpInside];
-	[bubble setTitle:name forState:UIControlStateNormal];
+	[bubble setTitle:[chan channelName] forState:UIControlStateNormal];
+    [chan setBubble:bubble];
 	return bubble;
 }
 

@@ -9,7 +9,7 @@
 #import "NSString+IRCStringSupport.h"
 #import "RCAttributedString.h"
 #import <CoreText/CoreText.h>
-
+#import "RCScrollView.h"
 typedef struct {
 	NSString *escapeSequence;
 	unichar uchar;
@@ -815,169 +815,53 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
     return [finalString autorelease];
 	
 }
+#define RENDER_WITH_OPTS [ret appendString:[istring substringWithRange:NSMakeRange(lpos, cpos-lpos)]];
+- (NSString*)stringByStrippingIRCMetadata
+{
+    unsigned int cpos = 0;
+    unsigned int lpos = 0;
+    NSString* istring = self;
+    NSMutableString* ret = [NSMutableString stringWithCapacity:[self length]];
+    while (cpos - [istring length]) {
+        switch ([istring characterAtIndex:cpos++]) {
+            case RCIRCAttributeBold:
+                RENDER_WITH_OPTS;
+                lpos = cpos;
+                break;
+            case RCIRCAttributeItalic:;;
+                RENDER_WITH_OPTS;
+                lpos = cpos;
+                break;
+            case RCIRCAttributeUnderline:;;
+                RENDER_WITH_OPTS;
+                lpos = cpos;
+                break;
+            case RCIRCAttributeReset:;;
+                RENDER_WITH_OPTS;
+                lpos = cpos;
+                break;
+            case RCIRCAttributeColor:;;
+                RENDER_WITH_OPTS;
+                BOOL itc = YES;
+                int a=0,b=0;
+                if (readNumber(&a, &itc, &cpos, istring) && itc) {
+                    NSLog(@"comma!");
+                    itc = NO;
+                    readNumber(&b, &itc, &cpos, istring);
+                } 
+                NSLog(@"Using %d and %d (%d,%d) [%@]", a, b, cpos, lpos, [istring substringFromIndex:cpos]);
+                // BOOL readNumber(int* num, BOOL* isThereComma, int* size_of_num, char* data, int size);
+                lpos = cpos;
+                break;
+            default:
+                continue;
+                break;
+        }
+        continue;
+    }
+skcolor:
+    RENDER_WITH_OPTS;
+    return [[ret copy] autorelease];
+}
 
 @end
-/*
-static NSString* colorForCode(char code)
-{
-    switch (code) {
-        case 0:
-            return @"white";
-            break;
-            
-        case 1:
-            return @"black";
-            break;
-            
-        case 2:
-            return @"black";
-            break;
-            
-        case 3:
-            return [UIColor greenColor];
-            break;
-            
-        case 4:
-            return [UIColor redColor];
-            break;
-            
-        case 5:
-            return [UIColor brownColor];
-            break;
-            
-        case 6:
-            return [UIColor purpleColor];
-            break;
-            
-        case 7:
-            return [UIColor orangeColor];
-            break;
-            
-        case 8:
-            return [UIColor yellowColor];
-            break;
-            
-        case 9:
-            return [UIColor colorWithRed:144.0f/255.0f green:238.0f/255.0f blue:144.0f/255.0f alpha:1.0f];
-            break;
-            
-        case 10:
-            return [UIColor colorWithRed:0.0f/255.0f green:128.0f/255.0f blue:128.0f/255.0f alpha:1.0f];
-            break;
-            
-        case 11:
-            return [UIColor colorWithRed:224.0f/255.0f green:1.0f blue:1.0f alpha:1.0f];
-            break;
-            
-        case 12:
-            return [UIColor colorWithRed:0.0f green:183.0f/255.0f blue:235.0f/255.0f alpha:1.0f];
-            break;
-            
-        case 13:
-            return [UIColor colorWithRed:249.0f/255.0f green:132.0f/255.0f blue:229.0f/255.0f alpha:1.0f];
-            break;
-            
-        case 14:
-            return [UIColor grayColor];
-            break;
-            
-        case 15:
-            return [UIColor lightGrayColor];
-            break;
-            
-        default:
-            break;
-    }
-    return [UIColor whiteColor];
-}
-
-enum RCIRCAttribute {
-    RCIRCAttributeColor = 0x03,
-    RCIRCAttributeBold = 0x02,
-    RCIRCAttributeReset = 0x0F,
-    RCIRCAttributeItalic = 0x16,
-    RCIRCAttributeUnderline = 0x1F
-};
-
-@implementation NSString (IRCStringSupport)
--(NSAttributedString*)attributedStringFromIRCString
-{
-    UIColor* fgcolor = [UIColor whiteColor];
-    UIColor* bgcolor = [UIColor clearColor];
-    BOOL isBold = NO;
-    BOOL isUnderlined = NO;
-    BOOL isItalic = NO;
-    NSMutableAttributedString* ret = [[NSMutableAttributedString new] autorelease];
-    [ret setFont:[UIFont systemFontOfSize:11.0f]];
-    int pos = 0;
-    while (pos < [self length]) {
-        unichar chr = [self characterAtIndex:pos++];
-        if (chr == RCIRCAttributeBold) {
-            isBold = !isBold;
-            continue;
-        }
-        if (chr == RCIRCAttributeUnderline) {
-            isUnderlined = !isUnderlined;
-            continue;
-        }
-        if (chr == RCIRCAttributeItalic) {
-
-            continue;
-        }
-        if (chr == RCIRCAttributeReset) {
-            fgcolor = [UIColor whiteColor];
-            bgcolor = [UIColor clearColor];
-            isBold = NO;
-            isUnderlined = NO;
-            continue;
-        }
-        if (chr == RCIRCAttributeColor) {
-            
-             
-             BROKEN
-             
-             
-            NSData* ld = [[self substringWithRange:NSMakeRange(pos, MIN([self length]-pos, 5))] dataUsingEncoding:NSUTF8StringEncoding];
-            int len = [ld length];
-            int olen = len;
-            const char* bytes = [ld bytes];
-            int cc = 0;
-            BOOL isFgColor = YES;
-            NSLog(@"in");
-            while (len) {
-                NSLog(@"%d - %d (%d|%c)", cc, len, *bytes - '0', *bytes);
-                if ('0' <= *bytes <= '9') {
-                    cc *= 10;
-                    if (cc + *bytes - '0' >= 16) {
-                        len--; // wait what
-                        bytes++;
-                        break;
-                    }
-                    cc += *bytes - '0';
-                }
-                else if (*bytes == ',') {
-                    if (isFgColor) {
-                        fgcolor = colorForCode(cc);
-                        isFgColor = NO;
-                        cc = 0;
-                        bytes++;
-                    }
-                } else {
-                    bytes++;
-                    break;
-                }
-                len--;
-            }
-            NSLog(@"out %d %d", pos, olen);
-            if (isFgColor) {
-                fgcolor = colorForCode(cc);
-            } else {
-                bgcolor = colorForCode(cc);
-            }
-            pos += olen-len;
-        }
-        [ret setFont:isBold ? [UIFont boldSystemFontOfSize:11.0f] : [UIFont systemFontOfSize:11.0f]];
-    }
-    return ret;
-}
-@end*/
