@@ -154,6 +154,7 @@
 #pragma mark - SOCKET STUFF
 
 - (void)connect {
+    [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:[sDescription stringByAppendingFormat:@"-%@%@%@-%d%d", nick, username, server, port, useSSL]];
 	[self performSelectorInBackground:@selector(_connect) withObject:nil];
 }
 
@@ -303,6 +304,7 @@ char *RCIPForURL(NSString *URL) {
 }
 
 - (void)recievedMessage:(NSString *)msg {
+    NSLog(@"%@", msg);
 	if ([msg isEqualToString:@""] || msg == nil || [msg isEqualToString:@"\r\n"]) return;
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	msg = [msg stringByReplacingOccurrencesOfString:@"\r" withString:@""];
@@ -342,6 +344,11 @@ char *RCIPForURL(NSString *URL) {
 	}
 	[scanner release];
 	[p drain];
+}
+
+- (void)shouldAutoConnect
+{
+
 }
 
 - (BOOL)disconnect {
@@ -783,8 +790,9 @@ char *RCIPForURL(NSString *URL) {
 	msg = [msg substringFromIndex:1];
 	from = [from substringFromIndex:1];
 	RCParseUserMask(from, &from, nil, nil);
-	if ([msg hasPrefix:@"\x01"]) {
+	if ([msg hasPrefix:@"\x01"] && [msg hasSuffix:@"\x01"]) {
 		msg = [msg substringFromIndex:1];
+        msg = [msg substringToIndex:[msg length]-1];
 		if ([msg hasPrefix:@"PING"]) {
 			[self handlePING:privmsg];
 		}
@@ -858,19 +866,34 @@ char *RCIPForURL(NSString *URL) {
 	[_sc scanUpToString:@" " intoString:&to];
 	[_sc scanUpToString:@" " intoString:&request];
 	RCParseUserMask(_from, &_from, nil, nil);
-	request = [request substringWithRange:NSMakeRange(2, request.length-5)];
-	NSLog(@"Meh. %@", request);
-	if ([request isEqualToString:@"TIME"]) 
+    if ([request hasPrefix:@":"]) {
+        request = [request substringFromIndex:1];
+    }
+    if (![request hasPrefix:@"\x01"]) {
+        return;
+    }
+    if (![request hasSuffix:@"\x01"]) {
+        return;
+    }
+    request = [request substringFromIndex:1];
+    request = [request substringToIndex:[request length]-1];
+    int vdx = [request rangeOfString:@" "].location;
+    if (vdx == NSNotFound) {
+        vdx = [request length];
+    }
+    NSString* command = [request substringToIndex:vdx];
+	NSLog(@"Meh. %@", command);
+	if ([command isEqualToString:@"TIME"]) 
 		extra = [NSString stringWithFormat:@"%@", [NSDate date]];
-	else if ([request isEqualToString:@"VERSION"]) 
+	else if ([command isEqualToString:@"VERSION"]) 
 		extra = @"Relay 1.0";
-	else if ([request isEqualToString:@"USERINFO"]) 
+	else if ([command isEqualToString:@"USERINFO"]) 
 		extra = @"";
-	else if ([request isEqualToString:@"CLIENTINFO"]) 
+	else if ([command isEqualToString:@"CLIENTINFO"]) 
 		extra = @"CLIENTINFO VERSION CLIENTINFO USERINFO PING TIME UPTIME";
 	else 
-		NSLog(@"WTF?!?!! %@", request);
-	[self sendMessage:[@"NOTICE " stringByAppendingFormat:@"%@ :\x01%@ %@\x01", _from, request, extra]];
+		NSLog(@"WTF?!?!! %@", command);
+	[self sendMessage:[@"NOTICE " stringByAppendingFormat:@"%@ :\x01%@ %@\x01", _from, command, extra]];
 	[_sc release];
 }
 
@@ -989,8 +1012,8 @@ char *RCIPForURL(NSString *URL) {
 - (void)handlePING:(NSString *)pong {
 	NSLog(@"Ping");
 	NSLog(@"Pong");
-	if ([pong hasPrefix:@"PING"]) {
-		[self sendMessage:[@"PONG " stringByAppendingString:[pong substringWithRange:NSMakeRange(5, pong.length-5)]] canWait:NO];
+	if ([pong hasPrefix:@"PING "]) {
+		[self sendMessage:[@"PONG " stringByAppendingString:[pong substringFromIndex:5]] canWait:NO];
 	}
 	else {
 		NSScanner *scannr = [[NSScanner alloc] initWithString:pong];
@@ -1004,8 +1027,9 @@ char *RCIPForURL(NSString *URL) {
 		[scannr scanUpToString:@" " intoString:&cmd];
 		[scannr scanUpToString:@" " intoString:&to];
 		[scannr scanUpToString:@" :" intoString:&msg];
+        NSLog(@"<%@>", msg);
 		RCParseUserMask(from, &user, nil, nil);
-		[self sendMessage:[@"PRIVMSG " stringByAppendingFormat:@"%@ \x01%@ %@\x01", user, @"PING", msg]];
+		[self sendMessage:[@"NOTICE " stringByAppendingFormat:@"%@ %@", user, msg]];
 		[scannr release];
 	}
 }

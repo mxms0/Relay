@@ -143,6 +143,7 @@
     {
         [mainView layoutMessage:message];
         [mainView setNeedsDisplay];
+        [message release];
     });
 	/* would just pass the message here, but i'm switching threads. so it's offlimits 
 	 to end up releasing the message after the call. will just have the scrollview release it. */

@@ -733,10 +733,10 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
 - (NSString *)stringByLinkifyingURLs {
     if (!NSClassFromString(@"NSRegularExpression")) return self;
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    NSString *pattern = @"(?<!=\")\\b((http|https):\\/\\/[\\w\\-_]+(\\.[\\w\\-_]+)+([\\w\\-\\.,@?^=%%&amp;:/~\\+#]*[\\w\\-\\@?^=%%&amp;/~\\+#])?)";
+    NSString *pattern = @"(?<!=\")\\b((http|https|ftp|irc):\\/\\/[\\w\\-_]+(\\.[\\w\\-_]+)+([\\w\\-\\.,@?^=%%&amp;:/~\\+#]*[\\w\\-\\@?^=%%&amp;/~\\+#])?)";
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:0 error:nil];
     NSString *modifiedString = [[regex stringByReplacingMatchesInString:self options:0 range:NSMakeRange(0, [self length])
-                                                           withTemplate:@"<a href=\"$1\" class=\"linkified\">$1</a>"] retain];
+                                                           withTemplate:@"<a href=\"link:$1\" class=\"linkified\">$1</a>"] retain];
     [pool drain];
     return [modifiedString autorelease];
 }

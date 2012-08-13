@@ -109,6 +109,7 @@
 	[[RCNavigator sharedNavigator] rotateToInterfaceOrientation:self.interfaceOrientation];
 	[self dismissModalViewControllerAnimated:YES];
 }
+#define IS_STRING_OR(a,b) (((!a) || [a isEqualToString:@""]) ? b : a)
 
 - (void)textFieldDidEndEditing:(RCTextField *)textField {
 	switch ([textField tag]) {
@@ -123,13 +124,13 @@
 			[network setPort:[[textField text] intValue]];
 			break;
 		case 4:
-			[network setUsername:[textField text]];
+			[network setUsername:IS_STRING_OR([textField text],[textField placeholder])];
 			break;
 		case 5:
-			[network setNick:[textField text]];
+			[network setNick:IS_STRING_OR([textField text],[textField placeholder])];
 			break;
 		case 6:
-			[network setRealname:[textField text]];
+            [network setRealname:IS_STRING_OR([textField text],[textField placeholder])];
 			break;
 		case 7:
 			MARK;
@@ -143,17 +144,21 @@
 			break;
 	}
 }
-
 - (void)doneConnection {
 	[self.view findAndResignFirstResponder];
 	if (![network server]) return;
-	if (![network realname]) [network setRealname:@"Guest01"];
-	if (![network nick]) [network setNick:@"Guest01"];
-	if (![network username]) {
-		[network setUsername:[network nick]];
-	}
+    [network setRealname:IS_STRING_OR([network realname], @"Guest")];
+    [network setNick:IS_STRING_OR([network nick], @"Guest")];
+    [network setUsername:IS_STRING_OR([network username], @"Guest")];
 	if (![network port]) [network setPort:6667];
 	if (![network sDescription]) [network setSDescription:[network server]];
+    if (isNew) {
+		[network setupRooms:[NSArray arrayWithObject:@"IRC"]];
+		[[RCNetworkManager sharedNetworkManager] addNetwork:network];
+	}
+	else {
+		if ([network isConnected])	[network disconnect];
+	}
 	NSLog(@"HELLO %@", network);
 	if (([network spass] == nil) || [[network spass] isEqualToString:@""]) {
 		[network setSpass:@""];
@@ -170,13 +175,6 @@
 		RCKeychainItem *keychain = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@npass", [network _description]] accessGroup:nil];
         [keychain setObject:[network npass] forKey:(id)kSecValueData];
 		[keychain release];
-	}
-	if (isNew) {
-		[network setupRooms:[NSArray arrayWithObject:@"IRC"]];
-		[[RCNetworkManager sharedNetworkManager] addNetwork:network];
-	}
-	else {
-		if ([network isConnected])	[network disconnect];
 	}
 	[[RCNetworkManager sharedNetworkManager] saveNetworks];
 	[self doneWithJoin];
@@ -308,27 +306,44 @@
 			case 1:
 				switch (indexPath.row) {
 					case 0:
-						cell.textLabel.text = @"Username";
+                        cell.textLabel.text = @"Nickname";
 						RCTextField *uField = (RCTextField *)[cell accessoryView];
 						[uField setAdjustsFontSizeToFitWidth:YES];
-						[uField setPlaceholder:@"John"];
-						[uField setTag:4];
+						@try {
+                            NSString* name = [[UIDevice currentDevice] name];
+                            int ix = [name length];
+                            int px = [name rangeOfString:@" "].location;
+                            if (px != NSNotFound) {
+                                ix = px;
+                            }
+							[uField setPlaceholder:[name substringToIndex:ix]];
+						}
+						@catch (id bs) {
+							[uField setPlaceholder:@"Guest"];
+						}
+						[uField setTag:5];
 						[uField setText:[network username]];
 						[uField setDelegate:self];
 						[uField setKeyboardAppearance:UIKeyboardAppearanceDefault];
 						[uField setReturnKeyType:UIReturnKeyNext];
 						break;
 					case 1:
-						cell.textLabel.text = @"Nickname";
+                        cell.textLabel.text = @"Username";
 						RCTextField *nField = (RCTextField *)[cell accessoryView];
 						[nField setAdjustsFontSizeToFitWidth:YES];
-						@try {
-							[nField setPlaceholder:[[UIDevice currentDevice] name]];
+                        @try {
+                            NSString* name = [[UIDevice currentDevice] name];
+                            int ix = [name length];
+                            int px = [name rangeOfString:@" "].location;
+                            if (px != NSNotFound) {
+                                ix = px;
+                            }
+							[nField setPlaceholder:[name substringToIndex:ix]];
 						}
 						@catch (id bs) {
-							[nField setPlaceholder:@"John_iPhone"];
+							[nField setPlaceholder:@"Guest"];
 						}
-						[nField setTag:5];
+						[nField setTag:4];
 						[nField setText:[network nick]];
 						[nField setDelegate:self];
 						[nField setKeyboardAppearance:UIKeyboardAppearanceDefault];
@@ -338,7 +353,12 @@
 						cell.textLabel.text = @"Real Name";
 						RCTextField *rField = (RCTextField *)[cell accessoryView];
 						[rField setAdjustsFontSizeToFitWidth:YES];
-						[rField setPlaceholder:@"Johnathan"];
+						@try {
+							[rField setPlaceholder:[[UIDevice currentDevice] name]];
+						}
+						@catch (id bs) {
+							[rField setPlaceholder:@"Guest"];
+						}
 						[rField setTag:6];
 						[rField setText:[network realname]];
 						[rField setDelegate:self];

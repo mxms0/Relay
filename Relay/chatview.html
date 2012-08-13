@@ -1,3 +1,55 @@
+<!---
+ General definitions:
+ Colors:
+ 
+ white
+ black
+ navy
+ green
+ red
+ maroon
+ purple
+ orange
+ yellow
+ lime
+ teal
+ lightcyan
+ royalblue
+ fuchsia
+ grey
+ silver
+ 
+ default-foreground
+ The default color of the foreground.
+ 
+ default-background
+ The default color of the background. Usually trasparent.
+ 
+ invalid
+ Should never be used, but in case things go wrong with the IRC engine, this color is used. It should be mapped as default-foreground (if used as fgcolor) or default-background (if used as bgcolor).
+ 
+ Flags (used in setFlags):
+ H: Present if the message is highlighted.
+ 
+ Types (used in setFlags):
+ ACTION - a /me message
+ NORMAL - a normal message
+ NOTICE - a notice
+ TOPIC  - topic
+ JOIN   - a join event
+ PART   - a part event
+ QUIT   - a quit event
+ BAN    - a ban event
+ KICK   - a kick event
+ MODE   - a mode event
+ ERROR  - an error event
+ EXCEPTION - an exception event
+ 
+ For links to be open, you should prefix each link with a "link:" prefix. E.g. http://google.com becomes link:http://google.com
+ They will be open with an external application. 
+ 
+ For further questions, contact the Relay team.
+ -->
 <html>
     <head>
         <meta name="viewport" content="width=device-width, user-scalable=no initial-scale=1.0" />
@@ -7,23 +59,47 @@
                 font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", "HelveticaNeue-Light", "Helvetica Neue Light", 
                 sans-serif; 
                 word-wrap: break-word;
-                font-size: 11pt;
+                font-size: 11px;
             }
             * { margin-left: 0px; margin-top: 0px; padding: 0px; margin: 0px; }
-            p { -webkit-box-shadow: inset 0 0 10px #000000; }
+            p { -webkit-box-shadow: inset 0 0 0.5 px #000000; 
+                background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#eeeeee), color-stop(100%,#cccccc)); /* Chrome,Safari4+ */
+            }
             </style>
         <script>
+            /* 
+            These variables are not required by Relay. They are however used by this theme.
+             */
             var cnt = 0;
             var nowrem = 0;
             var maxscrollback = 300;
+            var flags = {};
+            var types = {};
+            
+            /* This makes the chat view unscrollable if it's not overflowing vertically */
+            
             document.ontouchmove = function(event) {
                 if (document.body.scrollHeight == document.body.clientHeight) event.preventDefault();
             }
+            
+            /*
+             createMessage() - REQUIRED BY RELAY
+             Abstract:
+                Creates a new message.
+             Arguments:
+                None.
+             Return Value:
+                Returns a "message name", which should be an unique identifier for the message. 
+             */ 
+
+            
             function createMessage()
             {
                 if (cnt >= maxscrollback)
                 {
                     nowrem++;
+                    delete flags[nowrem];
+                    delete types[nowrem];
                     var elem = document.getElementById('msg' + nowrem);
                     document.body.removeChild(elem);
                 }
@@ -37,25 +113,70 @@
                 document.body.appendChild(newdiv);
                 return cnt;
             }
+            
+            /*
+             setFlags(name, type) - REQUIRED BY RELAY
+                Abstract:
+                    Sets message's flags.
+                Arguments:
+                    name: The message name (the return value of createMessage())
+                    type: A string formatted this way: "FLAGS:TYPE". If there are no flags, the string is simply "TYPE".
+                Additional Infos:
+                    Currently used flags:
+                        H: If the H flag is present, the message is an highlight. You should make it more recognizable or something like that.
+                Return Value:
+                    None.
+             */ 
+            
             function setFlags(name, type)
             {
                 var olddiv = document.getElementById('msg' + name);
                 var pos = type.indexOf(":");
-                var flags = "";
+                var lflags = "";
                 if (pos != -1)
                 {
-                    flags = type.substr(0,pos);
+                    lflags = type.substr(0,pos);
                     type = type.substr(pos+1);
-                    if (flags.indexOf("H") != -1)
+                    /*
+                     Flags are per-message metadata. (not per-chunk)
+                     */
+                    if (lflags.indexOf("H") != -1)
                     {
                         olddiv.style.background = "#ea584f";
                     }
                 }
-                olddiv.type = type;
-                olddiv.flags = flags;
+                types[name] = type;
+                flags[name] = lflags;
             }
+            /*
+             addToMessage(name, isBold, isUnderlined, isItalic, bgcolor, fgcolor, text, isFirstChunk) - REQUIRED BY RELAY
+                Abstract:
+                    Adds a chunk to a message.
+                Arguments:
+                    name: The message's name (the return value of createMessage())
+                    isBold: a string. If it's "YES", the chunk has the bold flag enabled
+                    isUnderlined: a string. If it's "YES", the chunk has the underlined flag enabled
+                    isItalic: a string. If it's "YES", the chunk has the italic flag enabled
+                    bgcolor: The background color of the chunk. Unless changed using mIRC-like colors, it should be "default-foreground".
+                    fgcolor: The background color of the chunk, as a string.
+                    text: A string containing the text of the chunk.
+                    isFirstChunk: Currently unused.
+                Return Value:
+                    Must be "SUCCESS". Everything else makes Relay think the message has not been rendered properly.
+                
+            */
             function addToMessage(name, isBold, isUnderlined, isItalic, bgcolor, fgcolor, text, isFirstChunk)
             {
+                if (fgcolor == "default-foreground")
+                {
+                    if (flags[name].indexOf("H") != -1)
+                    {
+                        fgcolor = "#ffffff";
+                    } else
+                    {
+                        fgcolor = "#3e3f3f";
+                    }
+                }
                 var olddiv = document.getElementById('msg' + name);
                 var pre = "";
                 var post = "";
@@ -75,10 +196,20 @@
                 pre += "<font color=\"" + fgcolor + "\" style=\"background: " + bgcolor + ";\">"
                 post += "</font>"
                 olddiv.innerHTML += pre + text + post;
-                for (var i = 0; i < document.links.length; i++) document.links[i].href = 'relay://url/' + document.links[i].href
                 scrollToBottom();
                 return "SUCCESS";
             }
+            
+            /*
+             scrollToBottom() - REQUIRED BY RELAY
+                Abstract:
+                    Scrolls to the bottom of the page.
+                Arguments:
+                    None.
+                Return Value:
+                    None.
+             */
+            
             function scrollToBottom()
             {
                 window.scrollTo(0, document.body.scrollHeight);

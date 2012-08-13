@@ -32,7 +32,7 @@
 @property (nonatomic, retain) NSString *channelName;
 @property (nonatomic, assign) BOOL joinOnConnect;
 @property (nonatomic, assign) RCChatPanel *panel;
-@property (nonatomic, readonly) NSString *topic;
+@property (nonatomic, retain) NSString *topic;
 @property (nonatomic, retain) NSString *password;
 @property (nonatomic, assign) RCChannelBubble *bubble;
 @property (nonatomic, assign) RCUserListPanel *usersPanel;

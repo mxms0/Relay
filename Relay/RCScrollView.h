@@ -71,11 +71,11 @@ enum RCIRCAttribute {
 	float y;
 	NSMutableAttributedString *stringToDraw;
 	BOOL shouldScroll;
-    dispatch_queue_t scrollViewMessageQueue;
     int msgs;
     BOOL isModifying;
     BOOL canModify;
     id chatpanel;
+    NSMutableArray* preloadPool;
 }
 @property(assign) id chatpanel;
 

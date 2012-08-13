@@ -33,6 +33,7 @@
                 break;
             case RCMessageTypeTopic:
                 self.string = [@"TOPIC-" stringByAppendingString:_message];
+                NSLog(@"%@", [NSThread callStackSymbols]);
                 break;
             case RCMessageTypeJoin:
                 self.string = [@"JOIN-" stringByAppendingString:_message];

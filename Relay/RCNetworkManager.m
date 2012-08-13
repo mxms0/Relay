@@ -64,6 +64,9 @@ static NSMutableArray *networks = nil;
 	[networks addObject:network];
 	[[RCNavigator sharedNavigator] addNetwork:network];
 	[network release];
+    if ([network COL]) {
+        [network connect];
+    }
 	[self performSelectorInBackground:@selector(saveNetworks) withObject:nil];
 }
 

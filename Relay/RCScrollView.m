@@ -37,10 +37,10 @@ NSString* colorForIRCColor(char irccolor);
 NSString* colorForIRCColor(char irccolor)
 {
     if (irccolor == -1) {
-        return @"white";
+        return @"default-foreground";
     }
     if (irccolor == -2) {
-        return @"none";
+        return @"default-background";
     }
     if (irccolor >= 16) {
         return @"invalid";
@@ -64,22 +64,41 @@ NSString* colorForIRCColor(char irccolor)
          [self setScrollEnabled:YES];
          [self setDelegate:self];
          */
-        scrollViewMessageQueue = dispatch_queue_create([[@"SCDISPATCHQUEUE_MSGHANDLE" stringByAppendingString:[self description]] UTF8String], 0ul);
         if (!template) {
             template = [[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"chatview" ofType:@"html"] encoding:NSUTF8StringEncoding error:nil] retain];
         }
         self.opaque = NO;
         self.dataDetectorTypes = UIDataDetectorTypeNone;
         self.backgroundColor = [UIColor clearColor];
+        self.delegate = (id<UIWebViewDelegate>) self;
+        preloadPool = [NSMutableArray new];
         [self loadHTMLString:template baseURL:[NSURL URLWithString:@""]];
 	}
 	return self;
 }
 
+- (BOOL)webView:(UIWebView *)webView2 
+shouldStartLoadWithRequest:(NSURLRequest *)request 
+ navigationType:(UIWebViewNavigationType)navigationType {
+    
+	NSString *requestString = [[request URL] absoluteString];
+    
+    //NSLog(@"request : %@",requestString);
+    
+    if ([requestString hasPrefix:@"link:"]) {
+        NSLog(@"should open link: %@", [requestString substringFromIndex:[@"link:" length]]);
+        NSString *escaped = [[requestString substringFromIndex:[@"link:" length]] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:escaped]];  
+        return NO;
+    }
+    
+    return NO;
+}
+
 - (void)dealloc
 {
+    NSLog(@"kthxbai :[");
     [stringToDraw release];
-    dispatch_release(scrollViewMessageQueue);
     [super dealloc];
 }
 #define RENDER_WITH_OPTS \
@@ -94,74 +113,108 @@ NSString* colorForIRCColor(char irccolor)
             [[(RCChannel*)[[self chatpanel] channel] bubble] setHasNewMessage:![ms  highlight]];\
         }\
         lpos = cpos;    
-
-- (void)layoutMessage:(RCMessageFormatter *)ms {
-    NSString* name = [self stringByEvaluatingJavaScriptFromString:@"createMessage();"];
-    if ([[ms string] hasSuffix:@"\n"]) {
-        [ms setString:[[ms string] substringWithRange:NSMakeRange(0, [[ms string] length]-1)]];
-    }
-    [self stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"setFlags('%@','%@');", name, [[ms string] substringToIndex:[[ms string] rangeOfString:@"-"].location]]];
-    NSString* istring = [[[[[[ms string] substringFromIndex:[[ms string] rangeOfString:@"-"].location+1] stringByEncodingHTMLEntities:YES] stringByReplacingOccurrencesOfString:@"\n" withString:@"<br />"] stringByLinkifyingURLs] stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
-    unsigned int cpos = 0;
-    BOOL isBold = NO;
-    BOOL isItalic = NO;
-    BOOL isUnderline = NO;
-    NSString* fgcolor = colorForIRCColor(-1);
-    NSString* bgcolor = colorForIRCColor(-2);
-    unsigned int lpos = 0;
-    NSString* cstr;
-    NSLog(@"%@", istring);
-    while (cpos - [istring length]) {
-        switch ([istring characterAtIndex:cpos++]) {
-            case RCIRCAttributeBold:
-                RENDER_WITH_OPTS;
-                isBold = !isBold;
-                lpos = cpos;
-                break;
-            case RCIRCAttributeItalic:;;
-                RENDER_WITH_OPTS;
-                isItalic = !isItalic;
-                lpos = cpos;
-                break;
-            case RCIRCAttributeUnderline:;;
-                RENDER_WITH_OPTS;
-                isUnderline = !isUnderline;
-                lpos = cpos;
-                break;
-            case RCIRCAttributeReset:;;
-                RENDER_WITH_OPTS;
-                fgcolor = colorForIRCColor(-1);
-                bgcolor = colorForIRCColor(-2);
-                isBold = NO;
-                isItalic = NO;
-                isUnderline = NO;
-                lpos = cpos;
-                break;
-            case RCIRCAttributeColor:;;
-                RENDER_WITH_OPTS;
-                int number1 = -1;
-                int number2 = -2;
-                BOOL itc = YES;
-                if (readNumber(&number1, &itc, &cpos, istring) && itc) {
-                    NSLog(@"comma!");
-                    itc = NO;
-                    readNumber(&number2, &itc, &cpos, istring);
-                } 
-                NSLog(@"Using %d and %d (%d,%d) [%@]", number1, number2, cpos, lpos, [istring substringFromIndex:cpos]);
-                // BOOL readNumber(int* num, BOOL* isThereComma, int* size_of_num, char* data, int size);
-                fgcolor = colorForIRCColor(number1);
-                bgcolor = colorForIRCColor(number2);
-                lpos = cpos;
-                break;
-            default:
-                continue;
-                break;
+- (void)webViewDidFinishLoad:(UIWebView *)webView
+{
+    @synchronized(self)
+    {
+        NSMutableArray* pre_pool = preloadPool;
+        preloadPool = nil;
+        for (RCMessageFormatter* ms in pre_pool) {
+            [self layoutMessage:ms];
         }
-        continue;
+        [pre_pool release];
     }
-skcolor:
-    RENDER_WITH_OPTS;
-    //NSString* cstr = [NSString stringWithFormat:@"addToMessage('%@','NO','NO','NO','white','black','%@', 'YES');", name, ];
+    NSLog(@"DOM INIT");
+}
+- (void)layoutMessage:(RCMessageFormatter *)ms {
+_out_:
+    @synchronized(self)
+    {
+        if(preloadPool)
+        {
+            NSLog(@"DOM not ready! Queueing.");
+            [preloadPool addObject:ms];
+            return;
+        }
+    }
+    dispatch_async(dispatch_get_main_queue(), ^(void){
+        NSString* isReady = [self stringByEvaluatingJavaScriptFromString:@"isReady();"];
+        if (![isReady isEqualToString:@"YES"]) {
+            
+        }
+        NSString* name = [self stringByEvaluatingJavaScriptFromString:@"createMessage();"];
+        if ([[ms string] hasSuffix:@"\n"]) {
+            [ms setString:[[ms string] substringWithRange:NSMakeRange(0, [[ms string] length]-1)]];
+        }
+        [self stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"setFlags('%@','%@');", name, [[ms string] substringToIndex:[[ms string] rangeOfString:@"-"].location]]];
+        NSString* istring = [[[[[[ms string] substringFromIndex:[[ms string] rangeOfString:@"-"].location+1] stringByEncodingHTMLEntities:YES] stringByReplacingOccurrencesOfString:@"\n" withString:@"<br />"] stringByLinkifyingURLs] stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
+        unsigned int cpos = 0;
+        BOOL isBold = NO;
+        BOOL isItalic = NO;
+        BOOL isUnderline = NO;
+        NSString* fgcolor = colorForIRCColor(-1);
+        NSString* bgcolor = colorForIRCColor(-2);
+        unsigned int lpos = 0;
+        NSString* cstr;
+        NSLog(@"%@", istring);
+        while (cpos - [istring length]) {
+            switch ([istring characterAtIndex:cpos]) {
+                case RCIRCAttributeBold:
+                    RENDER_WITH_OPTS;
+                    cpos++;
+                    isBold = !isBold;
+                    lpos = cpos;
+                    break;
+                case RCIRCAttributeItalic:;;
+                    RENDER_WITH_OPTS;
+                    cpos++;
+                    isItalic = !isItalic;
+                    lpos = cpos;
+                    break;
+                case RCIRCAttributeUnderline:;;
+                    RENDER_WITH_OPTS;
+                    cpos++;
+                    isUnderline = !isUnderline;
+                    lpos = cpos;
+                    break;
+                case RCIRCAttributeReset:;;
+                    RENDER_WITH_OPTS;
+                    cpos++;
+                    fgcolor = colorForIRCColor(-1);
+                    bgcolor = colorForIRCColor(-2);
+                    isBold = NO;
+                    isItalic = NO;
+                    isUnderline = NO;
+                    lpos = cpos;
+                    break;
+                case RCIRCAttributeColor:;;
+                    RENDER_WITH_OPTS;
+                    cpos++;
+                    int number1 = -1;
+                    int number2 = -2;
+                    BOOL itc = YES;
+                    if (readNumber(&number1, &itc, &cpos, istring) && itc) {
+                        NSLog(@"comma!");
+                        itc = NO;
+                        readNumber(&number2, &itc, &cpos, istring);
+                    } 
+                    NSLog(@"Using %d and %d (%d,%d) [%@]", number1, number2, cpos, lpos, [istring substringFromIndex:cpos]);
+                    // BOOL readNumber(int* num, BOOL* isThereComma, int* size_of_num, char* data, int size);
+                    fgcolor = colorForIRCColor(number1);
+                    bgcolor = colorForIRCColor(number2);
+                    lpos = cpos;
+                    break;
+                default:
+                    cpos++;
+                    continue;
+                    break;
+            }
+            continue;
+        }
+    skcolor:
+        RENDER_WITH_OPTS;
+        //NSString* cstr = [NSString stringWithFormat:@"addToMessage('%@','NO','NO','NO','white','black','%@', 'YES');", name, ];
+    });
 }
 
 - (void)scrollToBottom {

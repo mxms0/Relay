@@ -101,13 +101,24 @@ UIImage *RCImageForRank(NSString *rank) {
 	return nil;
 }
 
+- (void)initialize_me:(NSString*)chan
+{
+    channelName = [chan retain];
+    joinOnConnect = YES;
+    joined = NO;
+    users = [[NSMutableDictionary alloc] init];
+    panel = [[RCChatPanel alloc] initWithStyle:UITableViewStylePlain andChannel:self];
+}
+
 - (id)initWithChannelName:(NSString *)_chan {
 	if ((self = [super init])) {
-		channelName = [_chan retain];
-		joinOnConnect = YES;
-		joined = NO;
-		users = [[NSMutableDictionary alloc] init];
-		panel = [[RCChatPanel alloc] initWithStyle:UITableViewStylePlain andChannel:self];
+        if (dispatch_get_main_queue() == dispatch_get_current_queue()) {
+            [self initialize_me:_chan];
+        } else {
+            dispatch_sync(dispatch_get_main_queue(), ^(void){
+                [self initialize_me:_chan];
+            });
+        }
 	}
 	return self;
 }
@@ -204,7 +215,9 @@ UIImage *RCImageForRank(NSString *rank) {
 			msg = [[NSString stringWithFormat:@"%@ joined the channel.", from] retain];
 			break;
 		case RCMessageTypeTopic:
-			msg = [message copy];
+            if ([topic isEqualToString:message]) return;
+            self.topic = message;
+			msg = [topic retain];
 			break;
 		case RCMessageTypeQuit:
             if ([self isUserInChannel:from]) {
