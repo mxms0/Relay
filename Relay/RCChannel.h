@@ -28,6 +28,7 @@
 	BOOL joinOnConnect;
 	RCNetwork *delegate;
 	RCChannelBubble *bubble;
+    NSMutableArray *fullUserList;
 }
 @property (nonatomic, retain) NSString *channelName;
 @property (nonatomic, assign) BOOL joinOnConnect;

@@ -64,12 +64,14 @@
         }
         goto out_;
     isMnt:
-        if (hh) {
+        [self setString:[@":" stringByAppendingString:[self string]]];
+        if (m) {
+            [self setString:[@"M" stringByAppendingString:[self string]]];
+        } else if (hh) {
             self.highlight = YES;
-            [self setString:[@"H:" stringByAppendingString:[self string]]];
+            [self setString:[@"H" stringByAppendingString:[self string]]];
         }
         goto out_;
-
     }
 out_:
     return self;

@@ -48,26 +48,14 @@ NSString *RCUserRank(NSString *user) {
 	if ([user hasPrefix:@"%"]) return @"%";
 	if ([user hasPrefix:@"~"]) return @"~";
 	if ([user hasPrefix:@"&"]) return @"&";
+	if ([user hasPrefix:@"!"]) return @"&";
 	return nil;
 }
 
+NSInteger rankToNumber(unichar rank);
+
 BOOL RCIsRankHigher(NSString *rank, NSString *rank2) {
-	if ([rank isEqualToString:@"~"]) {
-		return NO;
-	}
-	else if ([rank isEqualToString:@"&"]) {
-		return ![rank2 isEqualToString:@"~"];
-	}
-	else if ([rank isEqualToString:@"@"]) {
-		return !([rank2 isEqualToString:@"~"] || [rank2 isEqualToString:@"&"]);
-	}
-	else if ([rank isEqualToString:@"%"]) {
-		return [rank2 isEqualToString:@"+"];
-	}
-	else if ([rank isEqualToString:@"+"]) {
-		return YES;
-	}
-	return NO;
+    return (rankToNumber([rank characterAtIndex:0]) < rankToNumber([rank2 characterAtIndex:0]));
 }
 
 UIImage *RCImageForRanks(NSString *ranks, NSString *possible) {
@@ -90,8 +78,56 @@ NSString *RCSterilizeModes(NSString *modes) {
 	return [[[modes stringByReplacingOccurrencesOfString:@"i" withString:@""] stringByReplacingOccurrencesOfString:@"w" withString:@""] stringByReplacingOccurrencesOfString:@"s" withString:@""];
 }
 
+NSInteger rankToNumber(unichar rank)
+{
+    switch (rank) {
+        case '~':
+            return 0;
+            break;
+        case '!':
+        case '&':
+            return 1;
+            break;
+        case '@':
+            return 2;
+            break;
+        case '%':
+            return 3;
+            break;
+        case '+':
+            return 4;
+            break;
+        default:
+            return 999;
+            break;
+    }
+}
+
+NSInteger sortRank(id u1, id u2);
+NSInteger sortRank(id u1, id u2)
+{
+    NSString* ra = RCUserRank(u1);
+    NSString* rb = RCUserRank(u2);
+    unichar r1 = [ra characterAtIndex:0];
+    unichar r2 = [rb characterAtIndex:0];
+    NSInteger r1n = rankToNumber(r1);
+    NSInteger r2n = rankToNumber(r2);
+    if (r1n < r2n)
+        return NSOrderedAscending;
+    else if (r1n > r2n)
+        return NSOrderedDescending;
+    else
+    {
+        return [[u1 substringFromIndex:[ra length]] compare:[u2 substringFromIndex:[rb length]]];
+    }
+}
+
 UIImage *RCImageForRank(NSString *rank) {
 	if (rank == nil || [rank isEqualToString:@""]) return [UIImage imageNamed:@"0_regulares"];
+    NSLog(@"Rank r [%@]", rank);
+    if ([rank isEqualToString:@"!"]) {
+        rank = @"&";
+    }
 	if ([rank isEqualToString:@"@"] 
 		|| [rank isEqualToString:@"~"] 
 		|| [rank isEqualToString:@"&"] 
@@ -106,7 +142,7 @@ UIImage *RCImageForRank(NSString *rank) {
     channelName = [chan retain];
     joinOnConnect = YES;
     joined = NO;
-    users = [[NSMutableDictionary alloc] init];
+    fullUserList = [[NSMutableArray alloc] init];
     panel = [[RCChatPanel alloc] initWithStyle:UITableViewStylePlain andChannel:self];
 }
 
@@ -132,7 +168,7 @@ UIImage *RCImageForRank(NSString *rank) {
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	return [[users allKeys] count]+1;
+	return [fullUserList count]+1;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -147,12 +183,14 @@ UIImage *RCImageForRank(NSString *rank) {
 	if (indexPath.row == 0) {
 		c.textLabel.text = @"Nickname List";
 		c.imageView.image = [UIImage imageNamed:@"0_mListr"];
-		c.detailTextLabel.text = [NSString stringWithFormat:@" - %d users online", [[users allKeys] count]];
+		c.detailTextLabel.text = [NSString stringWithFormat:@" - %d users online", [fullUserList count]];
 	}
 	else {
 		c.detailTextLabel.text = @"";
-		c.textLabel.text = [[users allKeys] objectAtIndex:indexPath.row-1];
-		c.imageView.image = RCImageForRanks([users objectForKey:[[users allKeys] objectAtIndex:indexPath.row-1]], [delegate userModes]);
+        NSString* el = [fullUserList objectAtIndex:indexPath.row-1];
+        NSString* rank = RCUserRank(el);
+		c.textLabel.text = [el substringFromIndex:[rank length]];
+		c.imageView.image = RCImageForRanks(rank, [delegate userModes]);
 	}
 	return c;
 	
@@ -273,7 +311,7 @@ UIImage *RCImageForRank(NSString *rank) {
 
 - (BOOL)isUserInChannel:(NSString*)user
 {
-    return !!([users objectForKey:user]);
+    return ([fullUserList containsObject:user]||[fullUserList containsObject:[user substringFromIndex:MIN([user length], 1)]]);
 }
 
 - (void)shouldPost:(BOOL)isHighlight withMessage:(NSString *)msg {
@@ -293,7 +331,7 @@ UIImage *RCImageForRank(NSString *rank) {
 }
 
 - (NSString *)userWithPrefix:(NSString *)prefix pastUser:(NSString *)user {
-	for (NSString *aUser in [users allKeys]) {
+	for (NSString *aUser in fullUserList) {
 		if ([[aUser lowercaseString] hasPrefix:[prefix lowercaseString]] && ![[aUser lowercaseString] isEqualToString:[user lowercaseString]])
 			return aUser;
 	}
@@ -301,23 +339,21 @@ UIImage *RCImageForRank(NSString *rank) {
 }
 
 - (void)setUserJoined:(NSString *)_joined {
-	if (![_joined isEqualToString:@""] && ![_joined isEqualToString:@" "] && ![_joined isEqualToString:@"\r\n"]) {
-		NSString *rank = @"";
-		if (RCUserRank(_joined) != nil) {
-			rank = [_joined substringToIndex:1];
-			_joined = [_joined substringFromIndex:1];
-		}
-		[users setObject:rank forKey:_joined];
-
+	if (![_joined isEqualToString:@""] && ![_joined isEqualToString:@" "] && ![_joined isEqualToString:@"\r\n"] && ![self isUserInChannel:_joined]) {
+        NSUInteger newIndex = [fullUserList indexOfObject:_joined inSortedRange:(NSRange){0,[fullUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^NSComparisonResult(id obj1, id obj2) {
+            return sortRank(obj1, obj2);
+        }];
+        [fullUserList insertObject:_joined atIndex:newIndex];
+        NSLog(@"add %@ (%@)", _joined, fullUserList);
 	}
 }
 - (void)setUserLeft:(NSString *)left {
-	[users removeObjectForKey:left];
+    [fullUserList removeObject:left];
 	if (usersPanel)	[usersPanel reloadData];
 }
 
 - (void)setMyselfParted {
-	[users removeAllObjects];
+	[fullUserList removeAllObjects];
 	[self recievedMessage:@"Disconnected." from:@"" type:RCMessageTypeTopic];
 	joined = NO;
 }
@@ -331,6 +367,7 @@ UIImage *RCImageForRank(NSString *rank) {
 }
 
 - (void)setMode:(NSString *)modes forUser:(NSString *)user {
+    /*
 	// clean this up. :P
 	// this is all going to the trash
 	// there's absolutely no point.
@@ -379,6 +416,7 @@ UIImage *RCImageForRank(NSString *rank) {
 		[users setObject:uModes forKey:user];
 	}
 	if (usersPanel)	[usersPanel reloadData];
+     */ // NO.
 }
 
 - (void)setJoined:(BOOL)joind withArgument:(NSString *)arg1 {
