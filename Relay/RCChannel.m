@@ -201,31 +201,31 @@ UIImage *RCImageForRank(NSString *rank) {
             msg = @"== KICK == fixme";
 			break;
 		case RCMessageTypeBan:
-			msg = [[NSString stringWithFormat:@"%@ sets mode +b %@",from, message] retain];
+			msg = [[NSString stringWithFormat:@"%c[%@]%c %@ sets mode +b %@",RCIRCAttributeBold, time, RCIRCAttributeBold, from, message] retain];
 			break;
 		case RCMessageTypePart:
 			if (![message isEqualToString:@""]) {
-				msg = [[NSString stringWithFormat:@"%@ left the channel. (%@)", from, message] retain];
+				msg = [[NSString stringWithFormat:@"%c[%@]%c %@ left the channel. (%@)", RCIRCAttributeBold, time, RCIRCAttributeBold, from, message] retain];
 			}
 			else {
-				msg = [[NSString stringWithFormat:@"%@ left the channel.", from] retain];
+				msg = [[NSString stringWithFormat:@"%c[%@]%c %@ left the channel.", RCIRCAttributeBold, time, RCIRCAttributeBold, from] retain];
 			}
 			break;
 		case RCMessageTypeJoin:
-			msg = [[NSString stringWithFormat:@"%@ joined the channel.", from] retain];
+			msg = [[NSString stringWithFormat:@"%c[%@]%c %@ joined the channel.", RCIRCAttributeBold, time, RCIRCAttributeBold, from] retain];
 			break;
 		case RCMessageTypeTopic:
             if ([topic isEqualToString:message]) return;
             self.topic = message;
-			msg = [topic retain];
+			msg = [[NSString stringWithFormat:@"%c[%@]%c Topic is: %@", RCIRCAttributeBold, time, RCIRCAttributeBold, message] retain];
 			break;
 		case RCMessageTypeQuit:
             if ([self isUserInChannel:from]) {
                 if (![message isEqualToString:@""]) {
-                    msg = [[NSString stringWithFormat:@"%@ left IRC. (%@)", from, message] retain];
+                    msg = [[NSString stringWithFormat:@"%c[%@]%c %@ left IRC. (%@)", RCIRCAttributeBold, time, RCIRCAttributeBold, from, message] retain];
                 }
                 else {
-                    msg = [[NSString stringWithFormat:@"%@ left IRC.", from] retain];
+                    msg = [[NSString stringWithFormat:@"%c[%@]%c %@ left IRC.", RCIRCAttributeBold, time, RCIRCAttributeBold, from] retain];
                 }
             } else {
                 return;
@@ -250,7 +250,7 @@ UIImage *RCImageForRank(NSString *rank) {
 			}
 			break;
 		case RCMessageTypeNotice:
-			msg = [[NSString stringWithFormat:@"-%@- %@", from, message] retain];
+			msg = [[NSString stringWithFormat:@"%c[%@] -%@-%c %@", RCIRCAttributeBold, time, from, RCIRCAttributeBold, message] retain];
 			break;
 		case RCMessageTypeNormalE:
             msg = @"== TYPE: EXC < fixme! ==";
