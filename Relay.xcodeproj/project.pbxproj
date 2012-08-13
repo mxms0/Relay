@@ -781,7 +781,7 @@
 		50A7FB7314C0F0A800ABADEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0450;
+				LastUpgradeCheck = 0430;
 				ORGANIZATIONNAME = "American Heritage School";
 			};
 			buildConfigurationList = 50A7FB7614C0F0A800ABADEA /* Build configuration list for PBXProject "Relay" */;
@@ -1051,6 +1051,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALTERNATE_MODE = "";
+				CODE_SIGN_ENTITLEMENTS = Relay/Relay.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1134,7 +1135,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALTERNATE_MODE = "";
-				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_ENTITLEMENTS = Relay/Relay.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1166,6 +1167,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALTERNATE_MODE = "";
+				CODE_SIGN_ENTITLEMENTS = Relay/Relay.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

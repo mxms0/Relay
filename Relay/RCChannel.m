@@ -236,12 +236,15 @@ UIImage *RCImageForRank(NSString *rank) {
 		time = [time substringToIndex:time.length-1];
 	switch (type) {
 		case RCMessageTypeKick:
+            [self setUserLeft:message];
             msg = @"== KICK == fixme";
 			break;
 		case RCMessageTypeBan:
+            [self setUserLeft:message];
 			msg = [[NSString stringWithFormat:@"%c[%@]%c %@ sets mode +b %@",RCIRCAttributeBold, time, RCIRCAttributeBold, from, message] retain];
 			break;
 		case RCMessageTypePart:
+            [self setUserLeft:from];
 			if (![message isEqualToString:@""]) {
 				msg = [[NSString stringWithFormat:@"%c[%@]%c %@ left the channel. (%@)", RCIRCAttributeBold, time, RCIRCAttributeBold, from, message] retain];
 			}
@@ -250,6 +253,7 @@ UIImage *RCImageForRank(NSString *rank) {
 			}
 			break;
 		case RCMessageTypeJoin:
+            [self setUserJoined:from];
 			msg = [[NSString stringWithFormat:@"%c[%@]%c %@ joined the channel.", RCIRCAttributeBold, time, RCIRCAttributeBold, from] retain];
 			break;
 		case RCMessageTypeTopic:
@@ -259,6 +263,7 @@ UIImage *RCImageForRank(NSString *rank) {
 			break;
 		case RCMessageTypeQuit:
             if ([self isUserInChannel:from]) {
+                [self setUserLeft:from];
                 if (![message isEqualToString:@""]) {
                     msg = [[NSString stringWithFormat:@"%c[%@]%c %@ left IRC. (%@)", RCIRCAttributeBold, time, RCIRCAttributeBold, from, message] retain];
                 }
@@ -338,18 +343,48 @@ UIImage *RCImageForRank(NSString *rank) {
 	return nil;
 }
 
+- (NSString*)nickAndRankForNick:(NSString*)nick
+{
+    for (NSString* nickrank in fullUserList) {
+        if ([nickrank hasSuffix:nick]) {
+            NSInteger ln = [RCUserRank(nickrank) length];
+            NSLog(@"OMG OMG OMG maybe. RL = %d [%@|%@|%@]", ln, nick, nickrank, [nickrank substringFromIndex:ln] );
+            if ([[nickrank substringFromIndex:ln] isEqualToString:nick]) {
+                return nickrank;
+            }
+        }
+    }
+    return nil;
+}
+
 - (void)setUserJoined:(NSString *)_joined {
-	if (![_joined isEqualToString:@""] && ![_joined isEqualToString:@" "] && ![_joined isEqualToString:@"\r\n"] && ![self isUserInChannel:_joined]) {
-        NSUInteger newIndex = [fullUserList indexOfObject:_joined inSortedRange:(NSRange){0,[fullUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^NSComparisonResult(id obj1, id obj2) {
-            return sortRank(obj1, obj2);
-        }];
-        [fullUserList insertObject:_joined atIndex:newIndex];
-        NSLog(@"add %@ (%@)", _joined, fullUserList);
-	}
+    if (![NSThread isMainThread]) {
+        [self performSelectorOnMainThread:@selector(setUserJoined:) withObject:_joined waitUntilDone:YES];
+    }
+    @synchronized(self)
+    {
+        NSLog(@"_joined: %@", _joined);
+        if (![_joined isEqualToString:@""] && ![_joined isEqualToString:@" "] && ![_joined isEqualToString:@"\r\n"] && ![self isUserInChannel:_joined] && _joined) {
+            NSUInteger newIndex = [fullUserList indexOfObject:_joined inSortedRange:(NSRange){0,[fullUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^NSComparisonResult(id obj1, id obj2) {
+                return sortRank(obj1, obj2);
+            }];
+            [fullUserList insertObject:_joined atIndex:newIndex];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [usersPanel insertRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:newIndex+1 inSection:0], nil] withRowAnimation:UITableViewRowAnimationLeft];
+            });
+        }
+    }
 }
 - (void)setUserLeft:(NSString *)left {
-    [fullUserList removeObject:left];
-	if (usersPanel)	[usersPanel reloadData];
+    left = [self nickAndRankForNick:left];
+    NSLog(@"left: %@", left);
+    NSInteger newIndex = [fullUserList indexOfObject:left];
+    if (newIndex != NSNotFound) {
+        [fullUserList removeObjectAtIndex:newIndex];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [usersPanel deleteRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:newIndex+1 inSection:0], nil] withRowAnimation:UITableViewRowAnimationRight];
+        });
+    }
 }
 
 - (void)setMyselfParted {
