@@ -17,7 +17,8 @@
 	if ((self = [super init])) {
 		[self setBackgroundColor:[UIColor clearColor]];
 		[self setChannel:chan];
-		mainView = [[RCScrollView alloc] initWithFrame:CGRectMake(2, 0, 316, 344)];
+		mainView = [[RCScrollView alloc] initWithFrame:CGRectMake(0, 0, 320, 344)];
+        [mainView setChatpanel:self];
 		[self addSubview:mainView];
 		UITapGestureRecognizer *tapper = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(resignFirstResponder)];
 		[tapper setNumberOfTapsRequired:2];

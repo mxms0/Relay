@@ -12,8 +12,9 @@
 #import "RCChatPanel.h"
 
 @interface RCMessageFormatter : NSObject {
-	NSMutableAttributedString *string;
+	NSString *string;
 }
+@property(retain) NSString* string;
 - (id)initWithMessage:(NSString *)msg isOld:(BOOL)old isMine:(BOOL)m isHighlight:(BOOL)hh type:(RCMessageType)flavor;
-- (NSMutableAttributedString *)string;
+- (NSString *)string;
 @end

@@ -11,6 +11,7 @@
 #import "RCNavigator.h"
 #import "TestFlight.h"
 #import <MediaPlayer/MediaPlayer.h>
+#import "RCScrollView.h"
 
 @implementation RCChannel
 
@@ -210,11 +211,11 @@ UIImage *RCImageForRank(NSString *rank) {
 		case RCMessageTypeError:
 			break;
 		case RCMessageTypeAction:
-			msg = [[NSString stringWithFormat:@"[%@] \u2022 %@ %@", time, from, message] copy];
+			msg = [[NSString stringWithFormat:@"%c[%@] \u2022 %@%c %@", RCIRCAttributeBold, time, from, RCIRCAttributeBold, message] copy];
 			break;
 		case RCMessageTypeNormal:
 			if (![from isEqualToString:@""]) {
-				msg = [[NSString stringWithFormat:@"[%@] %@: %@", time, from, message] copy];
+				msg = [[NSString stringWithFormat:@"%c[%@] %@:%c %@", RCIRCAttributeBold, time, from, RCIRCAttributeBold, message] copy];
 			}
 			else {
 				msg = [message copy];

@@ -109,18 +109,25 @@ CTLineBreakMode CTLineBreakModeFromUILineBreakMode(UILineBreakMode lineBreakMode
 	NSRange effectiveRange;
 	do {
 		// Get font at startPoint
-		CTFontRef currentFont = (CTFontRef)[self attribute:(NSString *)kCTFontAttributeName atIndex:startPoint effectiveRange:&effectiveRange];
-		// The range for which this font is effective
+        CTFontRef currentFont;
+        
+        @try {
+            currentFont = (CTFontRef)[self attribute:(NSString *)kCTFontAttributeName atIndex:startPoint effectiveRange:&effectiveRange];
+        }
+        @catch (NSException *exception) {
+            return;
+        }
+        // The range for which this font is effective
 		NSRange fontRange = NSIntersectionRange(range, effectiveRange);
 		// Create bold/unbold font variant for this font and apply
-		CTFontRef newFont = CTFontCreateCopyWithSymbolicTraits(currentFont, 0.0, NULL, (isBold?kCTFontBoldTrait:0), kCTFontBoldTrait);
+		CTFontRef newFont = CTFontCreateCopyWithSymbolicTraits(CTFontCreateWithName(CFSTR("Helvetica"), 11, NULL), 0.0, NULL, (isBold?kCTFontBoldTrait:0), kCTFontBoldTrait);
 		if (newFont) {
 			[self removeAttribute:(NSString *)kCTFontAttributeName range:fontRange]; // Work around for Apple leak
 			[self addAttribute:(NSString *)kCTFontAttributeName value:(id)newFont range:fontRange];
 			CFRelease(newFont);
 		}
 		else {
-			NSString *fontName = [(NSString *)CTFontCopyFullName(currentFont) autorelease];
+			NSString *fontName = @"Helvetica-Bold";
 			NSLog(@"[OHAttributedLabel] Warning: can't find a bold font variant for font %@. Try another font family (like Helvetica) instead.",fontName);
 		}
 		////[self removeAttribute:(NSString *)kCTFontWeightTrait range:fontRange]; // Work around for Apple leak

@@ -8,8 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
+enum RCIRCAttribute {
+    RCIRCAttributeColor = 0x03,
+    RCIRCAttributeBold = 0x02,
+    RCIRCAttributeReset = 0x0F,
+    RCIRCAttributeItalic = 0x16,
+    RCIRCAttributeUnderline = 0x1F
+};
+
 @class RCMessageFormatter;
-@interface RCScrollView : UIScrollView <UIScrollViewDelegate> {
+@interface RCScrollView : UIWebView <UIScrollViewDelegate> {
 	float y;
 	NSMutableAttributedString *stringToDraw;
 	BOOL shouldScroll;
@@ -17,7 +25,9 @@
     int msgs;
     BOOL isModifying;
     BOOL canModify;
+    id chatpanel;
 }
+@property(assign) id chatpanel;
 
 - (void)layoutMessage:(RCMessageFormatter *)ms;
 - (void)scrollToBottom;

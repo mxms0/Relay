@@ -1,0 +1,87 @@
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, user-scalable=no initial-scale=1.0" />
+        <style>
+            html, body { width:100%; height:100%;}
+            body {
+                font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", "HelveticaNeue-Light", "Helvetica Neue Light", 
+                sans-serif; 
+                font-weight: 300;
+            }
+            * { margin-left: 0px; margin-top: 0px; padding: 0px; margin: 0px; }
+            p { -webkit-box-shadow: inset 0 0 10px #000000; }
+            </style>
+        <script>
+            var cnt = 0;
+            var nowrem = 0;
+            var maxscrollback = 10;
+            function createMessage()
+            {
+                if (cnt >= maxscrollback)
+                {
+                    nowrem++;
+                    var elem = document.getElementById('msg' + nowrem);
+                    document.body.removeChild(elem);
+                }
+                cnt++;
+                var newdiv = document.createElement('p');
+                var divIdName = 'msg' + cnt;
+                newdiv.setAttribute('id',divIdName);
+                newdiv.style.width = "100%";
+                newdiv.style.height = "auto";
+                newdiv.innerHTML = '';
+                document.body.appendChild(newdiv);
+                return cnt;
+            }
+            function setFlags(name, type)
+            {
+                var olddiv = document.getElementById('msg' + name);
+                var pos = type.indexOf(":");
+                var flags = "";
+                if (pos != -1)
+                {
+                    flags = type.substr(0,pos);
+                    type = type.substr(pos+1);
+                    if (flags.indexOf("H") != -1)
+                    {
+                        olddiv.style.background = "#FF0000";
+                    }
+                }
+                olddiv.type = type;
+                olddiv.flags = flags;
+            }
+            function addToMessage(name, isBold, isUnderlined, isItalic, bgcolor, fgcolor, text, isFirstChunk)
+            {
+                var olddiv = document.getElementById('msg' + name);
+                var pre = "";
+                var post = "";
+                var type = olddiv.type;
+                if (isBold == "YES") {
+                    pre += "<b>";
+                    post += "</b>";
+                }
+                if (isUnderlined == "YES") {
+                    pre += "<u>";
+                    post += "</u>";
+                }
+                if (isItalic == "YES") {
+                    pre += "<i>";
+                    post += "</i>";
+                } 
+                pre += "<font color=\"" + fgcolor + "\" style=\"background: " + bgcolor + ";\">"
+                post += "</font>"
+                olddiv.innerHTML += pre + text + post;
+                for (var i = 0; i < document.links.length; i++) document.links[i].href = 'relay://url/' + document.links[i].href
+                scrollToBottom();
+                return "SUCCESS";
+            }
+            function scrollToBottom()
+            {
+                window.scrollTo(0, document.body.scrollHeight);
+            }
+            </script>
+    </head>
+    <body style="background-color: transparent;">
+        
+    </body>
+</html>

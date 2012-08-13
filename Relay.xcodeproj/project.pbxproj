@@ -175,6 +175,8 @@
 		50FC091E1583BA610019DB14 /* RCChannelManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5038C8311583B8E4004BA602 /* RCChannelManager.m */; };
 		7EF931D9159A137B0031CDD0 /* RCBarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF931D8159A137B0031CDD0 /* RCBarButton.m */; };
 		AA503EEF15AD2C5A00EF223E /* RCAlternateNicknamesManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AA503EEE15AD2C5A00EF223E /* RCAlternateNicknamesManager.m */; };
+		EAF79C3B15D77E9C0075AF47 /* NSString+IRCStringSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = EAF79C3A15D77E9C0075AF47 /* NSString+IRCStringSupport.m */; };
+		EAF79C3E15D867730075AF47 /* chatview.html in Resources */ = {isa = PBXBuildFile; fileRef = EAF79C3D15D867730075AF47 /* chatview.html */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -402,6 +404,9 @@
 		7EF931D8159A137B0031CDD0 /* RCBarButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCBarButton.m; sourceTree = "<group>"; };
 		AA503EED15AD2C5A00EF223E /* RCAlternateNicknamesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCAlternateNicknamesManager.h; sourceTree = "<group>"; };
 		AA503EEE15AD2C5A00EF223E /* RCAlternateNicknamesManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCAlternateNicknamesManager.m; sourceTree = "<group>"; };
+		EAF79C3915D77E9C0075AF47 /* NSString+IRCStringSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+IRCStringSupport.h"; sourceTree = "<group>"; };
+		EAF79C3A15D77E9C0075AF47 /* NSString+IRCStringSupport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+IRCStringSupport.m"; sourceTree = "<group>"; };
+		EAF79C3D15D867730075AF47 /* chatview.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = chatview.html; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -569,6 +574,7 @@
 				50A7FBAA14C0F7E200ABADEA /* Backend */,
 				503D4E7A14F18491002E5E38 /* Imports */,
 				50A7FB8714C0F0A800ABADEA /* Supporting Files */,
+				EAF79C3D15D867730075AF47 /* chatview.html */,
 			);
 			path = Relay;
 			sourceTree = "<group>";
@@ -728,6 +734,8 @@
 				50E77A7F1505A21500E75C64 /* RCMessageFormatter.m */,
 				50E77A801505A21500E75C64 /* RCNetwork.h */,
 				50E77A811505A21500E75C64 /* RCNetwork.m */,
+				EAF79C3915D77E9C0075AF47 /* NSString+IRCStringSupport.h */,
+				EAF79C3A15D77E9C0075AF47 /* NSString+IRCStringSupport.m */,
 				502F788C15C51526009E39F1 /* RCSSLNetwork.h */,
 				502F788D15C51526009E39F1 /* RCSSLNetwork.m */,
 				50E77A821505A21500E75C64 /* RCNetworkManager.h */,
@@ -908,6 +916,7 @@
 				50EC2D3615D4D05B00EC4A37 /* 0_navback_press@2x.png in Resources */,
 				50EC2D3715D4D05B00EC4A37 /* 0_navback.png in Resources */,
 				50EC2D3815D4D05B00EC4A37 /* 0_navback@2x.png in Resources */,
+				EAF79C3E15D867730075AF47 /* chatview.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -979,6 +988,7 @@
 				50E3694115D0E4DD005DD077 /* RCChannelManagementViewController.m in Sources */,
 				50F1A65815D215E50013CD13 /* RCBasicTextInputCell.m in Sources */,
 				50F1A65C15D216CA0013CD13 /* RCBasicTableViewCell.m in Sources */,
+				EAF79C3B15D77E9C0075AF47 /* NSString+IRCStringSupport.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
