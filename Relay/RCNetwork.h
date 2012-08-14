@@ -58,6 +58,7 @@ typedef enum RCSocketStatus {
 	BOOL shouldRequestSPass;
 	BOOL shouldRequestNPass;
 	id namesCallback;
+    BOOL tryingToConnect;
 }
 @property (nonatomic, retain) NSMutableDictionary *_channels;
 @property (nonatomic, retain) NSMutableArray *_nicknames;
