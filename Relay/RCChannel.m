@@ -542,7 +542,7 @@ UIImage *RCImageForRank(NSString *rank) {
 	NSString *cmd = @"";
 	NSString *args = cmd;
 	[scanr scanUpToString:@" " intoString:&cmd];
-	args = [msg substringWithRange:NSMakeRange([scanr scanLocation], msg.length-[scanr scanLocation])];
+	[scanr scanUpToString:@"" intoString:&args];
 	NSString *realCmd = [NSString stringWithFormat:@"handleSlash%@:", [cmd uppercaseString]];
     SEL _pSEL = NSSelectorFromString(realCmd);
 	if ([self respondsToSelector:_pSEL]) [self performSelector:_pSEL withObject:args];
@@ -554,7 +554,16 @@ UIImage *RCImageForRank(NSString *rank) {
 }
 
 - (void)handleSlashJOIN:(NSString *)join {
-    [delegate addChannel:join join:YES];
+    for (NSString* piece in [join componentsSeparatedByString:@","]) {
+        if ([piece isEqualToString:@" "]||[piece isEqualToString:@""]||!piece)
+        {
+            continue;
+        }
+        if ((![piece hasPrefix:@"#"])||(![piece hasPrefix:@"&"])) {
+            piece = [@"#" stringByAppendingString:piece];
+        }
+        [delegate addChannel:piece join:YES];
+    }
 }
 
 - (BOOL)isPrivate

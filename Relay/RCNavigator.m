@@ -276,9 +276,12 @@ static RCChannelBubble *questionabubble = nil;
 
 - (void)scrollToBubble:(RCChannelBubble *)bubble
 {
-    CGPoint point = bubble.center;
+    if (!bubble) {
+        return;
+    }
+    CGPoint point = bubble.frame.origin;
     point.y = 0;
-    CGFloat slide = MIN(scrollBar.contentSize.width - scrollBar.frame.size.width, point.x);
+    CGFloat slide = MIN(point.x, MAX(0, scrollBar.contentSize.width-scrollBar.frame.size.width));
     point.x = slide;
     [scrollBar setContentOffset:point animated:YES];
 }
