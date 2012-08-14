@@ -174,119 +174,116 @@
 }
 
 - (void)_connect {
-    @synchronized(self)
-    {
-        BOOL oTT = tryingToConnect;
-        tryingToConnect = YES;
-        NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
-        canSend = YES;
-        isRegistered = NO;
-        if (sendQueue) [sendQueue release];
-        sendQueue = nil;
-        if (status == RCSocketStatusConnecting) goto errme;
-        if (status == RCSocketStatusConnected) goto errme;
-        useNick = nick;
-        self.userModes = @"~&@%+";
-        if (kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iPhoneOS_4_0) {
-            task = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
-                [[UIApplication sharedApplication] endBackgroundTask:task];
-                task = UIBackgroundTaskInvalid;
-            }];
-        }
-        RCChannel *chan = [_channels objectForKey:@"IRC"];
-        if (chan) [chan recievedMessage:[NSString stringWithFormat:@"Connecting to %@ on port %d", server, port] from:@"" type:RCMessageTypeNormal];
-        status = RCSocketStatusConnecting;
-        sockfd = 0;
-        int fd = 0;
-        char *lbuf = malloc(RECV_BUF_LEN);
-        char *pbuf = lbuf;
-        int blen   = RECV_BUF_LEN;
-        struct sockaddr_in serv_addr;
-        if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-            NSLog(@"ERRRRRRRR00");
-        }
-        memset(&serv_addr, '0', sizeof(serv_addr));
-        serv_addr.sin_family = AF_INET;
-        serv_addr.sin_port = htons(port);
-        char *ip = RCIPForURL(server);
-        NSLog(@"hi %@", CFNetworkCopySystemProxySettings());
-        if (ip == NULL) {
-            // report error..
-            NSLog(@"ERRRRRRRR");
-            [self disconnectWithMessage:@"Host not found."];
-            goto errme;
-        }
-        if (inet_pton(AF_INET, ip, &serv_addr.sin_addr) <= 0) {
-            [self disconnectWithMessage:@"Invalid address."];
-            NSLog(@"Errrrrr");
-            goto errme;
-        }
-        if (connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
-            [self disconnectWithMessage:[@"Socket error: " stringByAppendingFormat:@"%s", strerror(errno)]];
-            NSLog(@"Errrr");
-            goto errme;
-        }
-        if ([spass length] > 0) {
-            [self sendMessage:[@"PASS " stringByAppendingString:spass] canWait:NO];
-        }
-        [self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
-        [self sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
-        
-        /*
-         
-         Buffered read() implementation.
-         Designed to fix non-aligned messages being dropped, and improve performance overall.
-         -- This may have some logic flaws. Please investigate on it. Xoxo, qwertyoruiop.
-         
-         */
-        
-        int kbytes = 0;
-        int pbytes = 0;
-        int dbytes = 0;
-        int bindex = 0;
-        int cached = 0;
-        while ((fd = read(sockfd, lbuf+cached, blen-cached)) > 0) {
-            while (kbytes != fd+cached && kbytes != blen) {
-                if (*(lbuf+kbytes) == '\r'||*(lbuf+kbytes) == '\n') {
-                    pbytes = kbytes;
-                    if (pbytes - dbytes) {
-                        NSAutoreleasePool *pool = [NSAutoreleasePool new];
-                        kbytes ++;
-                        NSString* message = [[[[[NSString alloc] initWithBytes:(uint8_t*)lbuf+dbytes length:pbytes-dbytes encoding:NSUTF8StringEncoding] autorelease] stringByReplacingOccurrencesOfString:@"\n" withString:@""] stringByReplacingOccurrencesOfString:@"\r" withString:@""];
-                        dbytes = kbytes;
-                        [self recievedMessage:message];
-                        [pool drain];
-                    } else goto omg;
-                } else {
-                omg:
-                    kbytes ++;
-                }
-            }
-            cached = (kbytes) - dbytes;
-            bindex -= dbytes;
-            bindex += cached;
-            if (bindex > blen) {
-                [self disconnectWithMessage:@"Excess Flood"];
-                goto out_;
-            }
-            if (cached > blen && dbytes + cached > blen) {
-                [self disconnectWithMessage:@"Excess Flood"];
-                goto out_;
-            }
-            memcpy(lbuf, lbuf+dbytes, cached);
-            kbytes = cached;
-            dbytes = 0;
-            pbytes = 0;
-        }
-        if ([self isConnected]) {
-            [self disconnectWithMessage:@"End of stream"];
-        }
-    out_:
-        [p drain];
-        free(pbuf);
-    errme:
-        tryingToConnect = oTT;
+    BOOL oTT = tryingToConnect;
+    tryingToConnect = YES;
+    NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+    canSend = YES;
+    isRegistered = NO;
+    if (sendQueue) [sendQueue release];
+    sendQueue = nil;
+    if (status == RCSocketStatusConnecting) goto errme;
+    if (status == RCSocketStatusConnected) goto errme;
+    useNick = nick;
+    self.userModes = @"~&@%+";
+    if (kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iPhoneOS_4_0) {
+        task = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+            [[UIApplication sharedApplication] endBackgroundTask:task];
+            task = UIBackgroundTaskInvalid;
+        }];
     }
+    RCChannel *chan = [_channels objectForKey:@"IRC"];
+    if (chan) [chan recievedMessage:[NSString stringWithFormat:@"Connecting to %@ on port %d", server, port] from:@"" type:RCMessageTypeNormal];
+    status = RCSocketStatusConnecting;
+    sockfd = 0;
+    int fd = 0;
+    char *lbuf = malloc(RECV_BUF_LEN);
+    char *pbuf = lbuf;
+    int blen   = RECV_BUF_LEN;
+    struct sockaddr_in serv_addr;
+    if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+        NSLog(@"ERRRRRRRR00");
+    }
+    memset(&serv_addr, '0', sizeof(serv_addr));
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_port = htons(port);
+    char *ip = RCIPForURL(server);
+    NSLog(@"hi %@", CFNetworkCopySystemProxySettings());
+    if (ip == NULL) {
+        // report error..
+        NSLog(@"ERRRRRRRR");
+        [self disconnectWithMessage:@"Host not found."];
+        goto errme;
+    }
+    if (inet_pton(AF_INET, ip, &serv_addr.sin_addr) <= 0) {
+        [self disconnectWithMessage:@"Invalid address."];
+        NSLog(@"Errrrrr");
+        goto errme;
+    }
+    if (connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
+        [self disconnectWithMessage:[@"Socket error: " stringByAppendingFormat:@"%s", strerror(errno)]];
+        NSLog(@"Errrr");
+        goto errme;
+    }
+    if ([spass length] > 0) {
+        [self sendMessage:[@"PASS " stringByAppendingString:spass] canWait:NO];
+    }
+    [self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
+    [self sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
+    
+    /*
+     
+     Buffered read() implementation.
+     Designed to fix non-aligned messages being dropped, and improve performance overall.
+     -- This may have some logic flaws. Please investigate on it. Xoxo, qwertyoruiop.
+     
+     */
+    
+    int kbytes = 0;
+    int pbytes = 0;
+    int dbytes = 0;
+    int bindex = 0;
+    int cached = 0;
+    while ((fd = read(sockfd, lbuf+cached, blen-cached)) > 0) {
+        while (kbytes != fd+cached && kbytes != blen) {
+            if (*(lbuf+kbytes) == '\r'||*(lbuf+kbytes) == '\n') {
+                pbytes = kbytes;
+                if (pbytes - dbytes) {
+                    NSAutoreleasePool *pool = [NSAutoreleasePool new];
+                    kbytes ++;
+                    NSString* message = [[[[[NSString alloc] initWithBytes:(uint8_t*)lbuf+dbytes length:pbytes-dbytes encoding:NSUTF8StringEncoding] autorelease] stringByReplacingOccurrencesOfString:@"\n" withString:@""] stringByReplacingOccurrencesOfString:@"\r" withString:@""];
+                    dbytes = kbytes;
+                    [self recievedMessage:message];
+                    [pool drain];
+                } else goto omg;
+            } else {
+            omg:
+                kbytes ++;
+            }
+        }
+        cached = (kbytes) - dbytes;
+        bindex -= dbytes;
+        bindex += cached;
+        if (bindex > blen) {
+            [self disconnectWithMessage:@"Excess Flood"];
+            goto out_;
+        }
+        if (cached > blen && dbytes + cached > blen) {
+            [self disconnectWithMessage:@"Excess Flood"];
+            goto out_;
+        }
+        memcpy(lbuf, lbuf+dbytes, cached);
+        kbytes = cached;
+        dbytes = 0;
+        pbytes = 0;
+    }
+    if ([self isConnected]) {
+        [self disconnectWithMessage:@"End of stream"];
+    }
+out_:
+    [p drain];
+    free(pbuf);
+errme:
+    tryingToConnect = oTT;
 }
 
 char *RCIPForURL(NSString *URL) {
@@ -311,7 +308,7 @@ char *RCIPForURL(NSString *URL) {
 	freeaddrinfo(res);
 	return inet_ntoa(addr);	
 }
-		
+
 - (BOOL)sendMessage:(NSString *)msg {
 	return [self sendMessage:msg canWait:YES];
 }
@@ -322,7 +319,7 @@ char *RCIPForURL(NSString *URL) {
 		if (canSend) {
 			if (send(sockfd, [msg UTF8String], strlen([msg UTF8String]), 0) < 0) {
 				NSLog(@"BLASPHEMYY");
-		//		[self errorOccured:[oStream streamError]];
+                //		[self errorOccured:[oStream streamError]];
 				return NO;
 			}
 			else {
@@ -387,7 +384,7 @@ char *RCIPForURL(NSString *URL) {
 
 - (void)shouldAutoConnect
 {
-
+    
 }
 
 - (BOOL)isTryingToConnectOrConnected
@@ -484,7 +481,7 @@ char *RCIPForURL(NSString *URL) {
 	[scanner scanUpToString:@" " intoString:&crap];
 	[scanner setScanLocation:[scanner scanLocation]+1];
 	[scanner scanUpToString:@"\r\n" intoString:&crap];
-
+    
 	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
 	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
@@ -633,7 +630,7 @@ char *RCIPForURL(NSString *URL) {
 	if ([[[[[RCNavigator sharedNavigator] currentPanel] channel] delegate] isEqual:self]) {
 		[[[RCNavigator sharedNavigator] currentPanel] postMessage:@"You are no longer being marked as away" withType:RCMessageTypeTopic	highlight:NO];
 	}
-
+    
 }
 
 - (void)handle306:(NSString *)znc {
@@ -680,7 +677,7 @@ char *RCIPForURL(NSString *URL) {
 }
 
 - (void)handle353:(NSString *)_users {
-
+    
 	NSScanner *scanner = [[NSScanner alloc] initWithString:_users];
 	NSString *crap;
 	NSString *me;
@@ -703,7 +700,7 @@ char *RCIPForURL(NSString *URL) {
 		}
 	}
 	[scanner release];
-//	add users to room listing..
+    //	add users to room listing..
 }
 - (void)handle366:(NSString *)end {
 	// end of /NAMES list
@@ -893,7 +890,7 @@ char *RCIPForURL(NSString *URL) {
     
     NSRange finalRange = NSMakeRange(channelRange.location, invite.length-channelRange.location);    
     NSString *channel = [invite substringWithRange:finalRange];
-
+    
     [self addChannel:channel join:YES];
 }
 - (void)handleKICK:(NSString *)aKick {
