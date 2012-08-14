@@ -89,7 +89,7 @@ typedef enum RCSocketStatus {
 - (void)errorOccured:(NSError *)error;
 - (void)_setupRooms:(NSArray *)rooms;
 - (void)setupRooms:(NSArray *)rooms;
-- (void)addChannel:(NSString *)_chan join:(BOOL)join;
+- (RCChannel*)addChannel:(NSString *)_chan join:(BOOL)join;
 - (void)removeChannel:(RCChannel *)chan;
 - (void)handlePING:(NSString *)pong;
 - (void)handleCTCPRequest:(NSString *)request;

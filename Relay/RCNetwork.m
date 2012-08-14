@@ -8,7 +8,7 @@
 #import "RCNetwork.h"
 #import "RCNetworkManager.h"
 #import "TestFlight.h"
-
+#define RECV_BUF_LEN 10240
 @implementation RCNetwork
 
 @synthesize sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _bubbles, _nicknames, shouldRequestSPass, shouldRequestNPass, namesCallback;
@@ -106,36 +106,51 @@
 }
 
 - (RCChannel *)channelWithChannelName:(NSString *)chan {
-	for (NSString *chan_ in [_channels allKeys]) {
-		if ([[chan_ lowercaseString] isEqualToString:[chan lowercaseString]]) return [_channels objectForKey:chan];
-	}
-	return nil;
+	return [self channelWithChannelName:chan ifNilCreate:NO];
 }
 
-- (void)addChannel:(NSString *)_chan join:(BOOL)join {
-    if ([_chan hasPrefix:@" "]) {
-        _chan = [_chan stringByReplacingOccurrencesOfString:@" " withString:@""];
+- (RCChannel *)channelWithChannelName:(NSString *)chan ifNilCreate:(BOOL)cr {
+    @synchronized(self)
+    {
+        for (NSString *chan_ in [_channels allKeys]) {
+            if ([[chan_ lowercaseString] isEqualToString:[chan lowercaseString]]/* || (![chan hasPrefix:@"#"] && [[[@"#" stringByAppendingString: chan] lowercaseString] isEqualToString:[chan_ lowercaseString]]) */) return [_channels objectForKey:chan_];
+        }
+        if (cr) {
+            [self addChannel:chan join:NO];
+        }
+        return nil;
     }
-	for (NSString *aChan in [_channels allKeys])
-		if ([[aChan lowercaseString] isEqualToString:[_chan lowercaseString]]) return;
-	if (![self channelWithChannelName:_chan]) {
-		RCChannel *chan = nil;
-		if ([_chan isEqualToString:@"IRC"]) chan = [[RCConsoleChannel alloc] initWithChannelName:_chan];
-		else if ([_chan hasPrefix:@"#"]) chan = [[RCChannel alloc] initWithChannelName:_chan];
-		else chan = [[RCPMChannel alloc] initWithChannelName:_chan];
-		[chan setDelegate:self];
-		[[self _channels] setObject:chan forKey:_chan];
-		[chan release];
-		if (join) [chan setJoined:YES withArgument:nil];
-		if (isRegistered) {
-			[[RCNavigator sharedNavigator] addChannel:_chan toServer:self];
-			[[RCNetworkManager sharedNetworkManager] saveNetworks];
-			shouldSave = YES; // if we aren't registered.. it's _likely_ just setup.
-		}
-	}
-    else {
-        RCChannel *chan = [self channelWithChannelName:_chan];
-        [chan setSuccessfullyJoined:YES];
+}
+
+- (RCChannel* )addChannel:(NSString *)_chan join:(BOOL)join {
+    @synchronized(self)
+    {
+        if ([_chan hasPrefix:@" "]) {
+            _chan = [_chan stringByReplacingOccurrencesOfString:@" " withString:@""];
+        }
+        for (NSString *aChan in [_channels allKeys])
+            if ([[aChan lowercaseString] isEqualToString:[_chan lowercaseString]]) return [_channels objectForKey:aChan];
+        if (![self channelWithChannelName:_chan ifNilCreate:NO]) {
+            RCChannel *chan = nil;
+            if ([_chan isEqualToString:@"IRC"]) chan = [[RCConsoleChannel alloc] initWithChannelName:_chan];
+            else if ([_chan hasPrefix:@"#"]) chan = [[RCChannel alloc] initWithChannelName:_chan];
+            else chan = [[RCPMChannel alloc] initWithChannelName:_chan];
+            [chan setDelegate:self];
+            [[self _channels] setObject:chan forKey:_chan];
+            [chan release];
+            if (join) [chan setJoined:YES withArgument:nil];
+            if (isRegistered) {
+                [[RCNavigator sharedNavigator] addChannel:_chan toServer:self];
+                [[RCNetworkManager sharedNetworkManager] saveNetworks];
+                shouldSave = YES; // if we aren't registered.. it's _likely_ just setup.
+            }
+            return chan;
+        }
+        else {
+            RCChannel *chan = [self channelWithChannelName:_chan];
+            [chan setSuccessfullyJoined:YES];
+            return chan;
+        }
     }
 }
 
@@ -179,9 +194,10 @@
 	status = RCSocketStatusConnecting;
 	sockfd = 0;
 	int fd = 0;
-	char buff[512];
+	char *lbuf = malloc(RECV_BUF_LEN);
+    char *pbuf = lbuf;
+    int blen   = RECV_BUF_LEN;
 	struct sockaddr_in serv_addr;
-	memset(buff, '0', sizeof(buff));
 	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 		NSLog(@"ERRRRRRRR00");
 	}
@@ -208,46 +224,58 @@
 	}
 	[self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
 	[self sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
-	while ((fd = read(sockfd, buff, sizeof(buff)-1)) > 0) {
-		buff[fd] = 0;
-		NSMutableString *msg = [[NSMutableString alloc] initWithCString:(const char *)buff encoding:NSUTF8StringEncoding];
-		while ([msg rangeOfString:@"\r\n"].location != NSNotFound) {
-			if ([msg isEqualToString:@"\r\n"] || [msg isEqualToString:@""] || msg == nil) break;
-			if ([msg rangeOfString:@"\r\n"].location == NSNotFound) break;
-			// i guess i really have to.
-			NSString *send = [[NSString alloc] initWithString:[msg substringWithRange:NSMakeRange(0, [msg rangeOfString:@"\r\n"].location+2)]];
-#if LOGALL
-			NSLog(@"MESSAGE: %@", send);
-#endif
-			[self recievedMessage:send];
-			[send release];
-			send = nil;
-			if ([msg respondsToSelector:@selector(deleteCharactersInRange:)]) {
-				if ([msg rangeOfString:@"\r\n"].location != NSNotFound) {
-					@try {
-						[msg deleteCharactersInRange:NSMakeRange(0, [msg rangeOfString:@"\r\n"].location+2)];
-					}
-					@catch (NSException *e) { }
-				}
-			}
-			else {
-                [msg autorelease];
-				msg = [msg mutableCopy]; // LEAK LEAK LEAK.
-				// meh. i know i'm going to regret this.
-				// so. so. so. much.
-				// for some reason, data is becoming an NSString for one reason or another,
-				// i'm honestly not sure if it's becoming the actual send var;
-				// or just some random string. 
-				// i honestly just want to bail out here, but i cannot simply trash the data unless its not existant.
-				// also tempted to send this stuff to testflight. but do not want app crashing after multitasking
-				// because testflight sucks ass.
-			}
-		}
-		[msg release];
-		msg = nil;
-		usleep(30);
-	}
-	[p drain];
+    
+    /*
+     
+    Buffered read() implementation.
+     Designed to fix non-aligned messages being dropped, and improve performance overall.
+     -- This may have some logic flaws. Please investigate on it. Xoxo, qwertyoruiop.
+     
+     */
+    
+    int kbytes = 0;
+    int pbytes = 0;
+    int dbytes = 0;
+    int bindex = 0;
+    int cached = 0;
+	while ((fd = read(sockfd, lbuf+cached, blen-cached)) > 0) {
+        while (kbytes != fd+cached && kbytes != blen) {
+            if (*(lbuf+kbytes) == '\r'||*(lbuf+kbytes) == '\n') {
+                pbytes = kbytes;
+                if (pbytes - dbytes) {
+                    NSAutoreleasePool *pool = [NSAutoreleasePool new];
+                    kbytes ++;
+                    NSString* message = [[[[[NSString alloc] initWithBytes:(uint8_t*)lbuf+dbytes length:pbytes-dbytes encoding:NSUTF8StringEncoding] autorelease] stringByReplacingOccurrencesOfString:@"\n" withString:@""] stringByReplacingOccurrencesOfString:@"\r" withString:@""];
+                    dbytes = kbytes;
+                    [self recievedMessage:message];
+                    [pool drain];
+                } else goto omg;
+            } else {
+            omg:
+                kbytes ++;
+            }
+        }
+        cached = (kbytes) - dbytes;
+        bindex -= dbytes;
+        bindex += cached;
+        if (bindex > blen) {
+            [self disconnectWithMessage:@"Excess Flood"];
+            goto out_;
+            return;
+        }
+        if (cached > blen && dbytes + cached > blen) {
+            [self disconnectWithMessage:@"Excess Flood"];
+            goto out_;
+            return;
+        }
+        memcpy(lbuf, lbuf+dbytes, cached);
+        kbytes = cached;
+        dbytes = 0;
+        pbytes = 0;
+    }
+out_:
+    [p drain];
+    free(pbuf);
 }
 
 char *RCIPForURL(NSString *URL) {
@@ -351,12 +379,13 @@ char *RCIPForURL(NSString *URL) {
 
 }
 
-- (BOOL)disconnect {
-	if (_isDiconnecting) return NO;
+- (BOOL)disconnectWithMessage:(NSString*)msg
+{
+    if (_isDiconnecting) return NO;
 	_isDiconnecting = YES;
 	if (status == RCSocketStatusClosed) return NO;
 	if ((status == RCSocketStatusConnected) || (status == RCSocketStatusConnecting)) {
-		[self sendMessage:@"QUIT :Relay 1.0"];
+		[self sendMessage:[@"QUIT :" stringByAppendingString:msg]];
 		status = RCSocketStatusClosed;
 		if (sendQueue) [sendQueue release];
 		sendQueue = nil;
@@ -373,6 +402,10 @@ char *RCIPForURL(NSString *URL) {
 	}
 	_isDiconnecting = NO;
 	return YES;
+}
+
+- (BOOL)disconnect {
+    return [self disconnectWithMessage:@"Relay 1.0"];
 }
 
 - (void)networkDidRegister:(BOOL)reg {
@@ -545,8 +578,11 @@ char *RCIPForURL(NSString *URL) {
 	[_scanner scanUpToString:@" " intoString:&to];
 	[_scanner scanUpToString:@" " intoString:&room];
 	[_scanner scanUpToString:@"\r\n" intoString:&_topic];
-	_topic = [_topic substringFromIndex:1];
-	[[self channelWithChannelName:room] recievedMessage:_topic from:nil type:RCMessageTypeTopic];
+    if ([_topic hasPrefix:@":"]) {
+        _topic = [_topic substringFromIndex:1];
+    }
+    NSLog(@"Setting topic [%@]", _topic);
+	[[self channelWithChannelName:room ifNilCreate:YES] recievedMessage:_topic from:nil type:RCMessageTypeTopic];
 	// :irc.saurik.com 332 _m #bacon :Bacon | where2start? kitchen | Canadian Bacon? get out. | WE SPEAK: BACON, ENGLISH, PORTUGUESE, DEUTSCH. | http://blog.craftzine.com/bacon-starry-night.jpg THIS IS YOU ¬†
 	[_scanner release];
 }
@@ -619,6 +655,7 @@ char *RCIPForURL(NSString *URL) {
 }
 
 - (void)handle331:(NSString *)noTopic {
+    [self handle332:noTopic];
 	// Relay[18195:707] MSG: :irc.saurik.com 331 _m #kk :No topic is set.
 }
 
