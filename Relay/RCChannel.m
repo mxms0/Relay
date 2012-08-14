@@ -388,7 +388,7 @@ UIImage *RCImageForRank(NSString *rank) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [usersPanel deleteRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:newIndex+1 inSection:0], nil] withRowAnimation:UITableViewRowAnimationRight];
         });
-    }
+    } 
 }
 
 - (void)setMyselfParted {

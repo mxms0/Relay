@@ -90,6 +90,12 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         NSString *escaped = [[requestString substringFromIndex:[@"link:" length]] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:escaped]];  
         return NO;
+    } else
+    if ([requestString hasPrefix:@"channel:"]) {
+        NSLog(@"should join: %@", [requestString substringFromIndex:[@"channel:" length]]);
+        NSString *escaped = [[requestString substringFromIndex:[@"channel:" length]] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        [[(RCChannel*)[[self chatpanel] channel] delegate] addChannel:escaped join:YES];
+        return NO;
     }
     
     return NO;
