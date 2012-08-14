@@ -8,13 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		500DD85615BBDBC700F2E59D /* RCPasswordRequestAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 500DD85515BBDBC700F2E59D /* RCPasswordRequestAlert.m */; };
-		50136C0615C3668E0044666F /* RCScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50136C0515C3668E0044666F /* RCScrollView.m */; };
-		501D895015AD08C100366019 /* PDKeychainBindings.m in Sources */ = {isa = PBXBuildFile; fileRef = 501D894D15AD08C100366019 /* PDKeychainBindings.m */; };
-		501D895115AD08C100366019 /* PDKeychainBindingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 501D894F15AD08C100366019 /* PDKeychainBindingsController.m */; };
 		501F2B3115098C6C0099C9C3 /* 0_shadow_t.png in Resources */ = {isa = PBXBuildFile; fileRef = 501F2B2F15098C6C0099C9C3 /* 0_shadow_t.png */; };
 		501F2B3215098C6C0099C9C3 /* 0_shadow_t@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 501F2B3015098C6C0099C9C3 /* 0_shadow_t@2x.png */; };
 		501F2B3D150995DE0099C9C3 /* RCTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 501F2B3C150995DE0099C9C3 /* RCTableView.m */; };
 		50221BA414EF6CB800C7AF58 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50221BA314EF6CB800C7AF58 /* CoreText.framework */; };
+		5027643015DA0F07005F026E /* RCChatView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5027642F15DA0F07005F026E /* RCChatView.m */; };
 		502A66D215BCC3C30009C890 /* 0_alertview.png in Resources */ = {isa = PBXBuildFile; fileRef = 502A66CE15BCC3C30009C890 /* 0_alertview.png */; };
 		502A66D315BCC3C30009C890 /* 0_alertview@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 502A66CF15BCC3C30009C890 /* 0_alertview@2x.png */; };
 		502A66D615BCC79F0009C890 /* 0_alertview_mask.png in Resources */ = {isa = PBXBuildFile; fileRef = 502A66D415BCC79F0009C890 /* 0_alertview_mask.png */; };
@@ -93,7 +91,6 @@
 		504CC314151C40EE00605706 /* 0_input.png in Resources */ = {isa = PBXBuildFile; fileRef = 504CC312151C40EC00605706 /* 0_input.png */; };
 		504CC31B151C422500605706 /* 0_navbar_old.png in Resources */ = {isa = PBXBuildFile; fileRef = 504CC319151C422400605706 /* 0_navbar_old.png */; };
 		504CC31C151C422500605706 /* 0_navbar_old@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 504CC31A151C422400605706 /* 0_navbar_old@2x.png */; };
-		504D6EDC156B2B9E0004D7D7 /* RCAttributedString.m in Sources */ = {isa = PBXBuildFile; fileRef = 504D6EDB156B2B9E0004D7D7 /* RCAttributedString.m */; };
 		5050BFEB158ED168003A238B /* 0_popover.png in Resources */ = {isa = PBXBuildFile; fileRef = 5050BFE9158ED168003A238B /* 0_popover.png */; };
 		5050BFEC158ED168003A238B /* 0_popover@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5050BFEA158ED168003A238B /* 0_popover@2x.png */; };
 		5052343E1556D904002EC9AC /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5052343B1556D773002EC9AC /* libTestFlight.a */; };
@@ -180,20 +177,15 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		5000C73C15CED179003A635F /* RCAttributedString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCAttributedString.h; sourceTree = "<group>"; };
 		500DD85415BBDBC700F2E59D /* RCPasswordRequestAlert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCPasswordRequestAlert.h; sourceTree = "<group>"; };
 		500DD85515BBDBC700F2E59D /* RCPasswordRequestAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCPasswordRequestAlert.m; sourceTree = "<group>"; };
-		50136C0415C3668E0044666F /* RCScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCScrollView.h; sourceTree = "<group>"; };
-		50136C0515C3668E0044666F /* RCScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCScrollView.m; sourceTree = "<group>"; };
-		501D894C15AD08C100366019 /* PDKeychainBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDKeychainBindings.h; sourceTree = "<group>"; };
-		501D894D15AD08C100366019 /* PDKeychainBindings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDKeychainBindings.m; sourceTree = "<group>"; };
-		501D894E15AD08C100366019 /* PDKeychainBindingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDKeychainBindingsController.h; sourceTree = "<group>"; };
-		501D894F15AD08C100366019 /* PDKeychainBindingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDKeychainBindingsController.m; sourceTree = "<group>"; };
+		50136C0415C3668E0044666F /* RCChatView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCChatView.h; sourceTree = "<group>"; };
 		501F2B2F15098C6C0099C9C3 /* 0_shadow_t.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_shadow_t.png; sourceTree = "<group>"; };
 		501F2B3015098C6C0099C9C3 /* 0_shadow_t@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_shadow_t@2x.png"; sourceTree = "<group>"; };
 		501F2B3B150995DE0099C9C3 /* RCTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTableView.h; sourceTree = "<group>"; };
 		501F2B3C150995DE0099C9C3 /* RCTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTableView.m; sourceTree = "<group>"; };
 		50221BA314EF6CB800C7AF58 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		5027642F15DA0F07005F026E /* RCChatView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCChatView.m; sourceTree = "<group>"; };
 		502A66CE15BCC3C30009C890 /* 0_alertview.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_alertview.png; sourceTree = "<group>"; };
 		502A66CF15BCC3C30009C890 /* 0_alertview@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_alertview@2x.png"; sourceTree = "<group>"; };
 		502A66D415BCC79F0009C890 /* 0_alertview_mask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_alertview_mask.png; sourceTree = "<group>"; };
@@ -286,7 +278,6 @@
 		504CC312151C40EC00605706 /* 0_input.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_input.png; sourceTree = "<group>"; };
 		504CC319151C422400605706 /* 0_navbar_old.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_navbar_old.png; sourceTree = "<group>"; };
 		504CC31A151C422400605706 /* 0_navbar_old@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_navbar_old@2x.png"; sourceTree = "<group>"; };
-		504D6EDB156B2B9E0004D7D7 /* RCAttributedString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCAttributedString.m; sourceTree = "<group>"; };
 		5050BFE9158ED168003A238B /* 0_popover.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_popover.png; sourceTree = "<group>"; };
 		5050BFEA158ED168003A238B /* 0_popover@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_popover@2x.png"; sourceTree = "<group>"; };
 		5052343B1556D773002EC9AC /* libTestFlight.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libTestFlight.a; sourceTree = "<group>"; };
@@ -482,8 +473,8 @@
 				50376D2D15B3D1D700E13006 /* RCTextFieldBackgroundView.m */,
 				50E77A661505A18700E75C64 /* RCChatPanel.h */,
 				50E77A671505A18700E75C64 /* RCChatPanel.m */,
-				50136C0415C3668E0044666F /* RCScrollView.h */,
-				50136C0515C3668E0044666F /* RCScrollView.m */,
+				50136C0415C3668E0044666F /* RCChatView.h */,
+				5027642F15DA0F07005F026E /* RCChatView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -574,7 +565,6 @@
 				50A7FBAA14C0F7E200ABADEA /* Backend */,
 				503D4E7A14F18491002E5E38 /* Imports */,
 				50A7FB8714C0F0A800ABADEA /* Supporting Files */,
-				EAF79C3D15D867730075AF47 /* chatview.html */,
 			);
 			path = Relay;
 			sourceTree = "<group>";
@@ -582,6 +572,7 @@
 		50A7FB8714C0F0A800ABADEA /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				EAF79C3D15D867730075AF47 /* chatview.html */,
 				502A66D415BCC79F0009C890 /* 0_alertview_mask.png */,
 				502A66D515BCC79F0009C890 /* 0_alertview_mask@2x.png */,
 				502A66CE15BCC3C30009C890 /* 0_alertview.png */,
@@ -726,10 +717,6 @@
 				50929EB5151E65F1007E23D3 /* RCPMChannel.m */,
 				50E77A7C1505A21500E75C64 /* RCConsoleChannel.h */,
 				50E77A7D1505A21500E75C64 /* RCConsoleChannel.m */,
-				501D894C15AD08C100366019 /* PDKeychainBindings.h */,
-				501D894D15AD08C100366019 /* PDKeychainBindings.m */,
-				501D894E15AD08C100366019 /* PDKeychainBindingsController.h */,
-				501D894F15AD08C100366019 /* PDKeychainBindingsController.m */,
 				50E77A7E1505A21500E75C64 /* RCMessageFormatter.h */,
 				50E77A7F1505A21500E75C64 /* RCMessageFormatter.m */,
 				50E77A801505A21500E75C64 /* RCNetwork.h */,
@@ -746,8 +733,6 @@
 				504706E4159FBA2000C3E256 /* RCWelcomeChannel.m */,
 				50B0DB21154233EB00689EDC /* RCKeychainItem.h */,
 				504349FC152CEEDD0037BD12 /* RCKeychainItem.m */,
-				5000C73C15CED179003A635F /* RCAttributedString.h */,
-				504D6EDB156B2B9E0004D7D7 /* RCAttributedString.m */,
 				50E77A8E1505A29100E75C64 /* main.m */,
 				50E77A901505A2C300E75C64 /* Relay-Prefix.pch */,
 			);
@@ -969,26 +954,23 @@
 				50AAE7EA151AD8B900E631FD /* RCAddCell.m in Sources */,
 				50929EB6151E65F1007E23D3 /* RCPMChannel.m in Sources */,
 				50929EBA151E86FA007E23D3 /* RCiPadViewController.m in Sources */,
-				504D6EDC156B2B9E0004D7D7 /* RCAttributedString.m in Sources */,
 				502BE056158FF748002FFA74 /* RCPopoverWindow.m in Sources */,
 				5045752B159570460092CB31 /* RCNetworkCell.m in Sources */,
 				7EF931D9159A137B0031CDD0 /* RCBarButton.m in Sources */,
 				504706E5159FBA2000C3E256 /* RCWelcomeChannel.m in Sources */,
 				50E9BEC215A13C9900121507 /* RCBasicViewController.m in Sources */,
-				501D895015AD08C100366019 /* PDKeychainBindings.m in Sources */,
-				501D895115AD08C100366019 /* PDKeychainBindingsController.m in Sources */,
 				AA503EEF15AD2C5A00EF223E /* RCAlternateNicknamesManager.m in Sources */,
 				50376D2A15B3CCAD00E13006 /* RCDateManager.m in Sources */,
 				50376D2E15B3D1D700E13006 /* RCTextFieldBackgroundView.m in Sources */,
 				500DD85615BBDBC700F2E59D /* RCPasswordRequestAlert.m in Sources */,
 				50E0C34A15BCBD8100B79C50 /* RCPrettyAlertView.m in Sources */,
-				50136C0615C3668E0044666F /* RCScrollView.m in Sources */,
 				502F788E15C51526009E39F1 /* RCSSLNetwork.m in Sources */,
 				50E3694115D0E4DD005DD077 /* RCChannelManagementViewController.m in Sources */,
 				50F1A65815D215E50013CD13 /* RCBasicTextInputCell.m in Sources */,
 				50F1A65C15D216CA0013CD13 /* RCBasicTableViewCell.m in Sources */,
 				EAF79C3B15D77E9C0075AF47 /* NSString+IRCStringSupport.m in Sources */,
 				EAF79C4115D9068B0075AF47 /* RCShadowLayer.m in Sources */,
+				5027643015DA0F07005F026E /* RCChatView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

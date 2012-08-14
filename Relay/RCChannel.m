@@ -11,7 +11,7 @@
 #import "RCNavigator.h"
 #import "TestFlight.h"
 #import <MediaPlayer/MediaPlayer.h>
-#import "RCScrollView.h"
+#import "RCChatView.h"
 #import "NSString+IRCStringSupport.h"
 
 @implementation RCChannel
@@ -619,48 +619,5 @@ UIImage *RCImageForRank(NSString *rank) {
 	[delegate sendMessage:msg];
 	[self recievedMessage:cmd from:[delegate useNick] type:RCMessageTypeAction];
 }
-/*
-- (void)recievedEvent:(RCEventType)type from:(NSString *)from message:(NSString *)msg {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	switch (type) {
-		case RCEventTypeMode:
-			[panel postMessage:[NSString stringWithFormat:@"%@ %@",from, msg] withFlavor:RCMessageFlavorTopic highlight:NO];
-			break;
-		case RCEventTypeQuit:
-			if ([[users allKeys] containsObject:from]) {
-				[self setUserLeft:from];
-				[panel postMessage:[NSString stringWithFormat:@"%@ left IRC (%@)", from, msg] withFlavor:RCMessageFlavorPart highlight:NO];
-			}
-			break;
-		case RCEventTypeBan:
-			// ooOoOOOooo!!!!!
-			break;
-		case RCEventTypeJoin:
-			[self setUserJoined:from];
-			[panel postMessage:[NSString stringWithFormat:@"%@ joined the room", from] withFlavor:RCMessageFlavorJoin highlight:NO];
-			// haider!
-			break;
-		case RCEventTypeKick:
-			[panel postMessage:[NSString stringWithFormat:@"%@ (%@)", from, msg] withFlavor:RCMessageFlavorPart highlight:NO];
-			// sux.
-			break;
-		case RCEventTypePart:
-			[self setUserLeft:from];
-			[panel postMessage:[NSString stringWithFormat:@"%@ left", from] withFlavor:RCMessageFlavorPart highlight:NO];
-			// baibai || cyah.
-			break;
-		case RCEventTypeTopic:
-			if (topic) if ([topic isEqualToString:msg]) {
-				[pool drain];
-				return;
-			}
-			if (!from || [from isEqualToString:@""]) 
-				[panel postMessage:msg withFlavor:RCMessageFlavorTopic highlight:NO];
-			else [panel postMessage:[NSString stringWithFormat:@"%@ changed the topic to %@", from, msg] withFlavor:RCMessageFlavorTopic highlight:NO];
-			topic = [msg retain];
-			break;
-	}
-	[pool drain];
-}*/
 
 @end

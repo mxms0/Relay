@@ -11,11 +11,11 @@
 #import "RCTextField.h"
 #import "RCMessageFormatter.h"
 #import "RCTextFieldBackgroundView.h"
-#import "RCScrollView.h"
+#import "RCChatView.h"
 
 @class RCChannel;
 @interface RCChatPanel : UIView <UITextFieldDelegate> {
-	RCScrollView *mainView;
+	RCChatView *mainView;
 	RCChannel *channel;
 	NSMutableString *currentWord;
 	NSString *prev;

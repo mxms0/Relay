@@ -13,7 +13,6 @@
 #import "RCBasicTextInputCell.h"
 #import "RCChannelManager.h"
 #import "RCBasicViewController.h"
-#import "PDKeychainBindings.h"
 #import "RCAlternateNicknamesManager.h"
 
 @interface RCAddNetworkController : RCBasicViewController <UITextFieldDelegate, UIScrollViewDelegate> {

@@ -7,9 +7,8 @@
 //
 
 #import "NSString+IRCStringSupport.h"
-#import "RCAttributedString.h"
 #import <CoreText/CoreText.h>
-#import "RCScrollView.h"
+#import "RCChatView.h"
 typedef struct {
 	NSString *escapeSequence;
 	unichar uchar;

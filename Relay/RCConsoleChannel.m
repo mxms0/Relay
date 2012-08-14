@@ -7,7 +7,7 @@
 //
 
 #import "RCConsoleChannel.h"
-#import "RCScrollView.h"
+#import "RCChatView.h"
 @implementation RCConsoleChannel
 
 - (id)initWithChannelName:(NSString *)_name {
@@ -28,14 +28,15 @@
 		time = [time substringToIndex:time.length-1];
 			//msg = [[NSString stringWithFormat:@"%c[%@]%c %@ sets mode +b %@",RCIRCAttributeBold, time, RCIRCAttributeBold, from, message] retain];
 	if (type == RCMessageTypeAction) {
-					msg = [[NSString stringWithFormat:@"%c[%@] \u2022 %@%c %@", RCIRCAttributeBold, time, from, RCIRCAttributeBold, message] retain];
+		msg = [[NSString stringWithFormat:@"%c[%@] \u2022 %@%c %@", RCIRCAttributeBold, time, from, RCIRCAttributeBold, message] retain];
 	}
 	else if (type == RCMessageTypeNormal) {
-        if (from) {
-            msg = [[NSString stringWithFormat:@"%c[%@] %@%c: %@", RCIRCAttributeBold, time, from, RCIRCAttributeBold, message] retain];
-        } else {
-            msg = [[NSString stringWithFormat:@"%c[%@]%c %@", RCIRCAttributeBold, time, RCIRCAttributeBold, message] retain];
-        }
+		if (from) {
+			msg = [[NSString stringWithFormat:@"%c[%@] %@%c: %@", RCIRCAttributeBold, time, from, RCIRCAttributeBold, message] retain];
+		}
+		else {
+			msg = [[NSString stringWithFormat:@"%c[%@]%c %@", RCIRCAttributeBold, time, RCIRCAttributeBold, message] retain];
+		}
 		type = RCMessageTypeNormalE;
 	}
 	else if (type == RCMessageTypeNotice) {
