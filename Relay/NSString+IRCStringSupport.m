@@ -737,10 +737,12 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:0 error:nil];
     NSString *modifiedString = [regex stringByReplacingMatchesInString:self options:0 range:NSMakeRange(0, [self length])
                                                            withTemplate:@"<a href=\"link:$1\" class=\"linkified\">$1</a>"];
-    NSString *pattern1 = @"([#&][a-z]{1,20}|![A-Z0-9]{5})";
+    
+    NSString *pattern1 = @"([#][a-zA-Z0-9]{1,20}|![A-Z0-9]{5})";
     regex = [NSRegularExpression regularExpressionWithPattern:pattern1 options:0 error:nil];
     modifiedString = [[regex stringByReplacingMatchesInString:modifiedString options:0 range:NSMakeRange(0, [self length])
                                                            withTemplate:@"<a href=\"channel:$1\" class=\"channel\">$1</a>"] retain];
+    
     [pool drain];
     return [modifiedString autorelease];
 }

@@ -12,6 +12,8 @@
 #import "RCMessageFormatter.h"
 #import "NSString+IRCStringSupport.h"
 #import "RCChannel.h"
+#import "RCNetwork.h"
+#import "RCNavigator.h"
 static NSString* template = nil;
 
 static NSString* str2col[] = {
@@ -94,7 +96,9 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
     if ([requestString hasPrefix:@"channel:"]) {
         NSLog(@"should join: %@", [requestString substringFromIndex:[@"channel:" length]]);
         NSString *escaped = [[requestString substringFromIndex:[@"channel:" length]] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        [[(RCChannel*)[[self chatpanel] channel] delegate] addChannel:escaped join:YES];
+        RCChannel* ch = [[(RCChannel*)[[self chatpanel] channel] delegate] addChannel:escaped join:YES];
+        [[RCNavigator sharedNavigator] channelSelected:[ch bubble]];
+        [[RCNavigator sharedNavigator] scrollToBubble:[ch bubble]];
         return NO;
     }
     

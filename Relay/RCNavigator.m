@@ -274,6 +274,15 @@ static RCChannelBubble *questionabubble = nil;
 	}
 }
 
+- (void)scrollToBubble:(RCChannelBubble *)bubble
+{
+    CGPoint point = bubble.center;
+    point.y = 0;
+    CGFloat slide = MIN(scrollBar.contentSize.width - scrollBar.frame.size.width, point.x);
+    point.x = slide;
+    [scrollBar setContentOffset:point animated:YES];
+}
+
 - (void)doSuicideConfirmationAlert:(RCChannelBubble *)questionAble {
 	RCPrettyAlertView *alert = [[RCPrettyAlertView alloc] initWithTitle:@"Are you sure?" message:[NSString stringWithFormat:@"Are you sure you want to delete %@", [questionAble titleLabel].text] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Delete", nil];
 	[alert show];

@@ -55,4 +55,5 @@
 - (CGRect)frameForListButton;
 - (CGRect)frameForPlusButton;
 - (RCChannelBubble *)channelBubbleWithChannel:(id)channel;
+- (void)scrollToBubble:(RCChannelBubble *)bubble;
 @end
