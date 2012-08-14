@@ -106,6 +106,8 @@ NSInteger rankToNumber(unichar rank)
 NSInteger sortRank(id u1, id u2);
 NSInteger sortRank(id u1, id u2)
 {
+    u1 = [u1 lowercaseString];
+    u2 = [u2 lowercaseString];
     NSString* ra = RCUserRank(u1);
     NSString* rb = RCUserRank(u2);
     unichar r1 = [ra characterAtIndex:0];
@@ -364,6 +366,7 @@ UIImage *RCImageForRank(NSString *rank) {
 - (void)setUserJoined:(NSString *)_joined {
     if (![NSThread isMainThread]) {
         [self performSelectorOnMainThread:@selector(setUserJoined:) withObject:_joined waitUntilDone:YES];
+        return;
     }
     @synchronized(self)
     {
@@ -373,22 +376,27 @@ UIImage *RCImageForRank(NSString *rank) {
                 return sortRank(obj1, obj2);
             }];
             [fullUserList insertObject:_joined atIndex:newIndex];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [usersPanel insertRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:newIndex+1 inSection:0], nil] withRowAnimation:UITableViewRowAnimationLeft];
-            });
+            [usersPanel insertRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:newIndex+1 inSection:0], nil] withRowAnimation:UITableViewRowAnimationLeft];
         }
     }
 }
 - (void)setUserLeft:(NSString *)left {
+    if (![NSThread isMainThread]) {
+        [self performSelectorOnMainThread:@selector(setUserLeft:) withObject:left waitUntilDone:YES];
+        return;
+    }
     left = [self nickAndRankForNick:left];
-    NSLog(@"left: %@", left);
-    NSInteger newIndex = [fullUserList indexOfObject:left];
-    if (newIndex != NSNotFound) {
-        [fullUserList removeObjectAtIndex:newIndex];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [usersPanel deleteRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:newIndex+1 inSection:0], nil] withRowAnimation:UITableViewRowAnimationRight];
-        });
-    } 
+    @synchronized(self)
+    {
+        NSLog(@"left: %@", left);
+        if (![left isEqualToString:@""] && ![left isEqualToString:@" "] && ![left isEqualToString:@"\r\n"] && [self isUserInChannel:left] && left) {
+            NSInteger newIndex = [fullUserList indexOfObject:left];
+            if (newIndex != NSNotFound) {
+                [fullUserList removeObjectAtIndex:newIndex];
+                [usersPanel deleteRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:newIndex+1 inSection:0], nil] withRowAnimation:UITableViewRowAnimationRight];
+            }
+        }
+    }
 }
 
 - (void)setMyselfParted {
@@ -559,7 +567,7 @@ UIImage *RCImageForRank(NSString *rank) {
         {
             continue;
         }
-        if ((![piece hasPrefix:@"#"])||(![piece hasPrefix:@"&"])) {
+        if (!([piece hasPrefix:@"#"])||([piece hasPrefix:@"&"])) {
             piece = [@"#" stringByAppendingString:piece];
         }
         [delegate addChannel:piece join:YES];
