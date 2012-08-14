@@ -114,7 +114,7 @@ static NSMutableArray *networks = nil;
 
 - (void)unpack {
 	isSetup = YES;
-	_printMotd = NO;
+	_printMotd = YES;
 	@autoreleasepool {
 		NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithContentsOfFile:PREFS_ABSOLUT];
 		if (!dict) {

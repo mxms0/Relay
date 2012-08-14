@@ -714,15 +714,14 @@ char *RCIPForURL(NSString *URL) {
 		[scanner scanUpToString:@" " intoString:&crap];
 		[scanner scanUpToString:@" " intoString:&crap];
 		[scanner scanUpToString:@" " intoString:&crap];
-		[scanner setScanLocation:[scanner scanLocation]+1];
 		[scanner scanUpToString:@"\r\n" intoString:&crap];
+        if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
+        RCChannel *chan = [_channels objectForKey:@"IRC"];
+        if (chan) [chan recievedMessage:crap from:@"MOTD" type:RCMessageTypeNormal];
 	}
 	@catch (NSException *exception) {
 		NSLog(@"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF %s", (char *)_cmd);
 	}
-	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
-	RCChannel *chan = [_channels objectForKey:@"IRC"];
-	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
 	[scanner release];
 	// :irc.saurik.com 375 _m :irc.saurik.com message of the day
 }
@@ -743,7 +742,7 @@ char *RCIPForURL(NSString *URL) {
 	}
 	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
-	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
+	if (chan) [chan recievedMessage:crap from:@"MOTD" type:RCMessageTypeNormal];
 	[scanner release];
 	// :irc.saurik.com 372 _m :- Please edit /etc/inspircd/motd
 }

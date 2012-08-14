@@ -31,7 +31,11 @@
 					msg = [[NSString stringWithFormat:@"%c[%@] \u2022 %@%c %@", RCIRCAttributeBold, time, from, RCIRCAttributeBold, message] retain];
 	}
 	else if (type == RCMessageTypeNormal) {
-		msg = [[NSString stringWithFormat:@"%c[%@]%c %@", RCIRCAttributeBold, time, RCIRCAttributeBold, message] retain];
+        if (from) {
+            msg = [[NSString stringWithFormat:@"%c[%@] %@%c: %@", RCIRCAttributeBold, time, from, RCIRCAttributeBold, message] retain];
+        } else {
+            msg = [[NSString stringWithFormat:@"%c[%@]%c %@", RCIRCAttributeBold, time, RCIRCAttributeBold, message] retain];
+        }
 		type = RCMessageTypeNormalE;
 	}
 	else if (type == RCMessageTypeNotice) {
