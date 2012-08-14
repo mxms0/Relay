@@ -402,8 +402,10 @@ UIImage *RCImageForRank(NSString *rank) {
 	[fullUserList removeAllObjects];
     if ([msg isEqualToString:@"Disconnected."]) {
         [self recievedMessage:@"Disconnected." from:@"" type:RCMessageTypeEvent];
+    } else
+    {
+        [self recievedMessage:[@"Disconnected: " stringByAppendingString:msg] from:@"" type:RCMessageTypeEvent];
     }
-    [self recievedMessage:[@"Disconnected: " stringByAppendingString:msg] from:@"" type:RCMessageTypeEvent];
 	joined = NO;
 }
 
