@@ -126,7 +126,6 @@ static BOOL isSetup = NO;
 
 - (void)applicationWillTerminate:(UIApplication *)application {
 	NSLog(@"I want to liveeeeeee");
-	[[RCNetworkManager sharedNetworkManager] _reallySaveChannelData:nil];
 	/*
 	 Called when the application is about to terminate.
 	 Save data if appropriate.

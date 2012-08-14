@@ -134,7 +134,10 @@
             RCChannel *chan = nil;
             if ([_chan isEqualToString:@"IRC"]) chan = [[RCConsoleChannel alloc] initWithChannelName:_chan];
             else if ([_chan hasPrefix:@"#"]) chan = [[RCChannel alloc] initWithChannelName:_chan];
-            else chan = [[RCPMChannel alloc] initWithChannelName:_chan];
+            else {
+                chan = [[RCPMChannel alloc] initWithChannelName:_chan];
+                [[RCNavigator sharedNavigator] scrollToBubble:[chan bubble]];
+            }
             [chan setDelegate:self];
             [[self _channels] setObject:chan forKey:_chan];
             [chan release];

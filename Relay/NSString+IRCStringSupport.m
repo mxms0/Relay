@@ -7,9 +7,8 @@
 //
 
 #import "NSString+IRCStringSupport.h"
-#import "RCAttributedString.h"
 #import <CoreText/CoreText.h>
-#import "RCScrollView.h"
+#import "RCChatView.h"
 typedef struct {
 	NSString *escapeSequence;
 	unichar uchar;
@@ -738,7 +737,7 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
     NSString *modifiedString = [regex stringByReplacingMatchesInString:self options:0 range:NSMakeRange(0, [self length])
                                                            withTemplate:@"<a href=\"link:$1\" class=\"linkified\">$1</a>"];
     
-    NSString *pattern1 = @"([#][a-zA-Z0-9]{1,20}|![A-Z0-9]{5})";
+    NSString *pattern1 = @"([#][a-zA-Z0-9]{1,20})";
     regex = [NSRegularExpression regularExpressionWithPattern:pattern1 options:0 error:nil];
     modifiedString = [[regex stringByReplacingMatchesInString:modifiedString options:0 range:NSMakeRange(0, [self length])
                                                            withTemplate:@"<a href=\"channel:$1\" class=\"channel\">$1</a>"] retain];

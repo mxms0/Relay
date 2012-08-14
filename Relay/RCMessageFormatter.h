@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "RCAttributedString.h"
 #import <QuartzCore/QuartzCore.h>
 #import "RCChatPanel.h"
 

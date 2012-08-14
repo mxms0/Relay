@@ -121,8 +121,6 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	if (_rEditing) return [channels count]+1;
-	return [channels count];
 	return ([channels count] + (_rEditing ? 1 : 0));
 }
 

@@ -9,7 +9,6 @@
 #import "RCNetwork.h"
 #import "RCWelcomeNetwork.h"
 #import "RCKeychainItem.h"
-#import "PDKeychainBindings.h"
 #import "RCPasswordRequestAlert.h"
 
 @interface RCNetworkManager : NSObject {
@@ -29,5 +28,4 @@
 - (void)saveNetworks;
 - (void)unpack;
 - (void)setupWelcomeView;
-- (void)_reallySaveChannelData:(id)unused;
 @end

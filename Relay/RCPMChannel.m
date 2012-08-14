@@ -32,13 +32,11 @@
 		[nc release];
 	}
 }
-- (BOOL)isUserInChannel:(NSString*)user
-{
+- (BOOL)isUserInChannel:(NSString*)user {
     return [user isEqualToString:channelName];
 }
 
-- (BOOL)isPrivate
-{
+- (BOOL)isPrivate {
     return YES;
 }
 
