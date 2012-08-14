@@ -94,6 +94,8 @@ typedef enum RCSocketStatus {
 - (void)removeChannel:(RCChannel *)chan;
 - (void)handlePING:(NSString *)pong;
 - (void)handleCTCPRequest:(NSString *)request;
+- (BOOL)isTryingToConnectOrConnected;
+- (NSString*)defaultQuitMessage;
 - (id)infoDictionary;
 @end
 char *RCIPForURL(NSString *URL);

@@ -37,6 +37,7 @@
 @property (nonatomic, retain) NSString *password;
 @property (nonatomic, assign) RCChannelBubble *bubble;
 @property (nonatomic, assign) RCUserListPanel *usersPanel;
+- (void)disconnected:(NSString*)msg;
 - (id)initWithChannelName:(NSString *)_name;
 - (void)setDelegate:(RCNetwork *)delegate;
 - (RCNetwork *)delegate;

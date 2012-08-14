@@ -256,6 +256,10 @@ UIImage *RCImageForRank(NSString *rank) {
             [self setUserJoined:from];
 			msg = [[NSString stringWithFormat:@"%c[%@]%c %@ joined the channel.", RCIRCAttributeBold, time, RCIRCAttributeBold, from] retain];
 			break;
+		case RCMessageTypeEvent:
+            self.topic = @"";
+			msg = [[NSString stringWithFormat:@"%c[%@]%c %@", RCIRCAttributeBold, time, RCIRCAttributeBold, message] retain];
+			break;
 		case RCMessageTypeTopic:
             if ([topic isEqualToString:message]) return;
             self.topic = message;
@@ -389,7 +393,17 @@ UIImage *RCImageForRank(NSString *rank) {
 
 - (void)setMyselfParted {
 	[fullUserList removeAllObjects];
-	[self recievedMessage:@"Disconnected." from:@"" type:RCMessageTypeTopic];
+	[self recievedMessage:@"You left the channel." from:@"" type:RCMessageTypeEvent];
+	joined = NO;
+}
+
+- (void)disconnected:(NSString*)msg
+{
+	[fullUserList removeAllObjects];
+    if ([msg isEqualToString:@"Disconnected."]) {
+        [self recievedMessage:@"Disconnected." from:@"" type:RCMessageTypeEvent];
+    }
+    [self recievedMessage:[@"Disconnected: " stringByAppendingString:msg] from:@"" type:RCMessageTypeEvent];
 	joined = NO;
 }
 

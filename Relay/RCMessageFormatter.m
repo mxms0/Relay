@@ -59,6 +59,9 @@
             case RCMessageTypeNormalE:
                 self.string = [@"EXCEPTION-" stringByAppendingString:_message];
                 break;
+            case RCMessageTypeEvent:
+                self.string = [@"EVENT-" stringByAppendingString:_message];
+                break;
             default:
                 break;
         }

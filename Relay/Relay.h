@@ -51,6 +51,7 @@
 		RCMessageTypeQuit,
 		RCMessageTypeMode,
 		RCMessageTypeError,
+        RCMessageTypeEvent,
 		RCMessageTypeNormalE
 	} RCMessageType;
 #endif

@@ -382,14 +382,14 @@ char *RCIPForURL(NSString *URL) {
 	[p drain];
 }
 
-- (void)shouldAutoConnect
-{
-    
-}
-
 - (BOOL)isTryingToConnectOrConnected
 {
     return ([self isConnected] || tryingToConnect);
+}
+
+- (NSString*)defaultQuitMessage
+{
+    return @"Relay 1.0"; // TODO: return something else if user wants to
 }
 
 - (BOOL)disconnectWithMessage:(NSString*)msg
@@ -398,7 +398,7 @@ char *RCIPForURL(NSString *URL) {
 	_isDiconnecting = YES;
 	if (status == RCSocketStatusClosed) return NO;
 	if ((status == RCSocketStatusConnected) || (status == RCSocketStatusConnecting)) {
-		[self sendMessage:[@"QUIT :" stringByAppendingString:msg]];
+		[self sendMessage:[@"QUIT :" stringByAppendingString:([msg isEqualToString:@"Disconnected."] ? [self defaultQuitMessage] : msg)]];
 		status = RCSocketStatusClosed;
 		if (sendQueue) [sendQueue release];
 		sendQueue = nil;
@@ -409,7 +409,7 @@ char *RCIPForURL(NSString *URL) {
 		isRegistered = NO;
 		for (NSString *chan in [_channels allKeys]) {
 			RCChannel *_chan = [self channelWithChannelName:chan];
-			[_chan setMyselfParted];
+			[_chan disconnected:msg];
 		}
 		NSLog(@"Disconnected.");
 	}
@@ -418,7 +418,7 @@ char *RCIPForURL(NSString *URL) {
 }
 
 - (BOOL)disconnect {
-    return [self disconnectWithMessage:@"Relay 1.0"];
+    return [self disconnectWithMessage:@"Disconnected."];
 }
 
 - (void)networkDidRegister:(BOOL)reg {

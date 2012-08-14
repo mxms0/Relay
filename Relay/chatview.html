@@ -45,7 +45,7 @@
  MODE   - a mode event
  ERROR  - an error event
  EXCEPTION - an exception event
- 
+ EVENT  - a generic event (e.g. disconnected, you parted from this channel, etc..)
  For links to be open, you should prefix each link with a "link:" prefix. E.g. http://google.com becomes link:http://google.com
  They will be open with an external application. 
  
@@ -184,6 +184,10 @@
                     {
                         fgcolor = "#3e3f3f";
                     }
+                }
+                if (types[name] == "EVENT")
+                {
+                    isBold = "YES";
                 }
                 var olddiv = document.getElementById('msg' + name);
                 var pre = "";
