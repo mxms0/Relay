@@ -70,29 +70,24 @@ NSString *colorForIRCColor(char irccolor) {
 	return self;
 }
 
-- (BOOL)webView:(UIWebView *)webView2 
-shouldStartLoadWithRequest:(NSURLRequest *)request 
- navigationType:(UIWebViewNavigationType)navigationType {
-    
+- (BOOL)webView:(UIWebView *)webView2 shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
 	NSString *requestString = [[request URL] absoluteString];
-    
-    //NSLog(@"request : %@",requestString);
-    
     if ([requestString hasPrefix:@"link:"]) {
         NSLog(@"should open link: %@", [requestString substringFromIndex:[@"link:" length]]);
         NSString *escaped = [[requestString substringFromIndex:[@"link:" length]] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:escaped]];  
         return NO;
-    } else
+    }
+	else {
         if ([requestString hasPrefix:@"channel:"]) {
-            NSLog(@"should join: %@", [requestString substringFromIndex:[@"channel:" length]]);
-            NSString *escaped = [[requestString substringFromIndex:[@"channel:" length]] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-            RCChannel* ch = [[(RCChannel*)[[self chatpanel] channel] delegate] addChannel:escaped join:YES];
-            [[RCNavigator sharedNavigator] channelSelected:[ch bubble]];
-            [[RCNavigator sharedNavigator] scrollToBubble:[ch bubble]];
-            return NO;
-        }
-    
+			NSLog(@"should join: %@", [requestString substringFromIndex:[@"channel:" length]]);
+			NSString *escaped = [[requestString substringFromIndex:[@"channel:" length]] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+			RCChannel *ch = [[(RCChannel*)[[self chatpanel] channel] delegate] addChannel:escaped join:YES];
+			[[RCNavigator sharedNavigator] channelSelected:[ch bubble]];
+			[[RCNavigator sharedNavigator] scrollToBubble:[ch bubble]];
+			return NO;
+		}
+	}
     return NO;
 }
 
