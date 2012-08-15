@@ -191,6 +191,11 @@ static id _sharedNavigator = nil;
 		currentPanel = nil;
 		[scrollBar layoutChannels:nil];
 		titleLabel.text = nil;
+        CGSize available = CGSizeMake([self widthForTitleLabel]-[self frameForListButton].size.width-[self frameForPlusButton].size.width-30.0f, [self heightForNetworkBar]);
+        CGSize really_av = [titleLabel sizeThatFits:available];
+        titleLabel.frame = CGRectMake(0,0,really_av.width, really_av.height);
+        ((UIView*)titleLabel).center = CGPointMake([self widthForNetworkBar]/2.0f,[self heightForNetworkBar]/2.0f);
+        [titleLabel layoutSubviews];
 		[[RCNetworkManager sharedNetworkManager] removeNet:currentNetwork];
 		currentNetwork = nil;
 	}
@@ -260,6 +265,11 @@ static id _sharedNavigator = nil;
 - (void)selectNetwork:(RCNetwork *)net {
 	currentNetwork = net;
 	titleLabel.text = [net _description];
+    CGSize available = CGSizeMake([self widthForTitleLabel]-[self frameForListButton].size.width-[self frameForPlusButton].size.width-30.0f, [self heightForNetworkBar]);
+    CGSize really_av = [titleLabel sizeThatFits:available];
+    titleLabel.frame = CGRectMake(0,0,really_av.width, really_av.height);
+    ((UIView*)titleLabel).center = CGPointMake([self widthForNetworkBar]/2.0f,[self heightForNetworkBar]/2.0f);
+    [titleLabel layoutSubviews];
 	[scrollBar layoutChannels:[net _bubbles]];
     [self channelSelected:[[net channelWithChannelName:@"IRC"] bubble]];
 }
@@ -368,7 +378,6 @@ static RCChannelBubble *questionabubble = nil;
 	}
 	for (CALayer *lv in [scrollBar.layer sublayers]) {
 		if ([lv isKindOfClass:[RCShadowLayer class]]) {
-			float y = 0;
 			if (lv.superlayer.frame.origin.x != 0) {
 				
 			}
@@ -378,7 +387,11 @@ static RCChannelBubble *questionabubble = nil;
 	}
 	[plus setFrame:[self frameForPlusButton]];
 	[listr setFrame:[self frameForListButton]];
-	[titleLabel setFrame:CGRectMake(45, 0, [self widthForTitleLabel], bar.frame.size.height)];
+    CGSize available = CGSizeMake([self widthForTitleLabel]-[self frameForListButton].size.width-[self frameForPlusButton].size.width-30.0f, [self heightForNetworkBar]);
+    CGSize really_av = [titleLabel sizeThatFits:available];
+    titleLabel.frame = CGRectMake(0,0,really_av.width, really_av.height);
+    ((UIView*)titleLabel).center = CGPointMake([self widthForNetworkBar]/2.0f,[self heightForNetworkBar]/2.0f);
+    [titleLabel layoutSubviews];
 	[memberPanel setFrame:[self frameForMemberPanel]];
 	[window correctAndRotateToInterfaceOrientation:oi];
 }
@@ -397,7 +410,7 @@ static RCChannelBubble *questionabubble = nil;
 
 - (CGFloat)widthForNetworkBar {
 	if (_isLandscape)
-		return 120;
+		return 240;
 	return 320;
 }
 

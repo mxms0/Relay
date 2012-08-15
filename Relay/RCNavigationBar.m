@@ -21,6 +21,7 @@
 		[shadow setFrame:CGRectMake(0, self.frame.size.height+32, self.frame.size.width, 15)];
 		[shadow setOpacity:0.3];
 		[shadow setShouldRasterize:YES];
+        shadow.zPosition = 10000000;
 		[self.layer addSublayer:shadow];
 		[shadow release];
     }

@@ -21,6 +21,7 @@
 		[self setClipsToBounds:YES];
 		[self.layer setMasksToBounds:YES];
 		[self setShowsHorizontalScrollIndicator:NO];
+        [self setScrollsToTop:NO];
         self.delegate = (id<UIScrollViewDelegate>)self;
 	}
 	return self;

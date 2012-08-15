@@ -24,6 +24,7 @@ static id _instance = nil;
 		[self addSubview:_pImg];
 		[_pImg release];
 		[self addSubview:networkTable];
+        [networkTable setScrollsToTop:NO];
 		[networkTable release];
 		self.windowLevel = 7777;
 		self.hidden = YES;
@@ -79,12 +80,26 @@ static id _instance = nil;
 	}
 	networkTable.transform = CGAffineTransformMakeRotation(0);
 	if (UIInterfaceOrientationIsLandscape(oi)) {
-		if (self.frame.origin.y == 20) {
-			self.frame = CGRectMake(0,0,320,480);
-		}
-		networkTable.transform = CGAffineTransformMakeRotation(_deg(90));
-		networkTable.frame = CGRectMake(55, 10, networkTable.frame.size.width, networkTable.frame.size.height);
-		_pImg.frame = CGRectMake(20, 10, _pImg.frame.size.width, _pImg.frame.size.height);
+        switch (oi) {
+            case UIInterfaceOrientationLandscapeRight:
+                if (self.frame.origin.y == 20) {
+                    self.frame = CGRectMake(0,0,320,480);
+                }
+                networkTable.transform = CGAffineTransformMakeRotation(_deg(90));
+                networkTable.frame = CGRectMake(55, 10, networkTable.frame.size.width, networkTable.frame.size.height);
+                _pImg.frame = CGRectMake(20, 10, _pImg.frame.size.width, _pImg.frame.size.height);
+                break;
+            case UIInterfaceOrientationLandscapeLeft:
+                if (self.frame.origin.y == 20) {
+                    self.frame = CGRectMake(0,0,320,480);
+                }
+                networkTable.transform = CGAffineTransformMakeRotation(_deg(270));
+                networkTable.frame = CGRectMake(55, 10, networkTable.frame.size.width, networkTable.frame.size.height);
+                _pImg.frame = CGRectMake(20, 10, _pImg.frame.size.width, _pImg.frame.size.height);
+                break;
+            default:
+                break;
+        }
 		// i like 20.
 	}
 	else {

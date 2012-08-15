@@ -64,6 +64,8 @@ NSString *colorForIRCColor(char irccolor) {
         [self loadHTMLString:template baseURL:[NSURL URLWithString:@""]];
 		[[self scrollView] setShowsHorizontalScrollIndicator:NO];
 		[[self scrollView] setShowsVerticalScrollIndicator:NO];//just incase
+        [[self scrollView] setDecelerationRate:UIScrollViewDecelerationRateNormal];
+        [[self scrollView] setScrollsToTop:YES];
 	}
 	return self;
 }
