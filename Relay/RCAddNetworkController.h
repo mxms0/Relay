@@ -22,7 +22,3 @@
 - (id)initWithNetwork:(RCNetwork *)net;
 
 @end
-
-@interface UIView (FindAndResignFirstResponder)
-- (BOOL)findAndResignFirstResponder;
-@end

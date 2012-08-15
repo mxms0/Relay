@@ -55,12 +55,15 @@ NSString *colorForIRCColor(char irccolor) {
         if (!template) {
             template = [[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"chatview" ofType:@"html"] encoding:NSUTF8StringEncoding error:nil] retain];
         }
+		self.scalesPageToFit = YES;
         self.opaque = NO;
         self.dataDetectorTypes = UIDataDetectorTypeNone;
         self.backgroundColor = [UIColor clearColor];
         self.delegate = (id<UIWebViewDelegate>) self;
         preloadPool = [NSMutableArray new];
         [self loadHTMLString:template baseURL:[NSURL URLWithString:@""]];
+		[[self scrollView] setShowsHorizontalScrollIndicator:NO];
+		[[self scrollView] setShowsVerticalScrollIndicator:NO];//just incase
 	}
 	return self;
 }

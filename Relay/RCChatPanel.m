@@ -139,16 +139,12 @@
 
 - (void)postMessage:(NSString *)_message withType:(RCMessageType)type highlight:(BOOL)high isMine:(BOOL)mine {
 	RCMessageFormatter *message = [[RCMessageFormatter alloc] initWithMessage:_message isOld:NO isMine:mine isHighlight:high type:type];
-    dispatch_async(dispatch_get_main_queue(), ^(void)
-    {
+    dispatch_async(dispatch_get_main_queue(), ^(void) {
         [mainView layoutMessage:message];
         [mainView setNeedsDisplay];
         [message release];
     });
-	/* would just pass the message here, but i'm switching threads. so it's offlimits 
-	 to end up releasing the message after the call. will just have the scrollview release it. */
 }
-
 
 - (void)dealloc {
 	[currentWord release];

@@ -15,6 +15,7 @@
 
 @class RCChannel;
 @interface RCChatPanel : UIView <UITextFieldDelegate> {
+	@public
 	RCChatView *mainView;
 	RCChannel *channel;
 	NSMutableString *currentWord;

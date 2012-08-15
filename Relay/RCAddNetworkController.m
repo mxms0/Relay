@@ -9,20 +9,6 @@
 #import "RCAddNetworkController.h"
 #import "RCKeychainItem.h"
 
-@implementation UIView (FindAndResignFirstResponder)
-- (BOOL)findAndResignFirstResponder {
-    if (self.isFirstResponder) {
-        [self resignFirstResponder];
-        return YES;     
-    }
-    for (UIView *subView in self.subviews) {
-        if ([subView findAndResignFirstResponder])
-            return YES;
-    }
-    return NO;
-}
-@end
-
 @implementation RCAddNetworkController
 
 - (id)initWithNetwork:(RCNetwork *)net {

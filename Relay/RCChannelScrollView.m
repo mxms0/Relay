@@ -18,27 +18,12 @@
 		shouldDrawBG = YES;
 		[self setOpaque:NO];
 		[self setClearsContextBeforeDrawing:YES];
-		[self setClipsToBounds:NO];
-		[self.layer setMasksToBounds:NO];
+		[self setClipsToBounds:YES];
+		[self.layer setMasksToBounds:YES];
 		[self setShowsHorizontalScrollIndicator:NO];
         self.delegate = (id<UIScrollViewDelegate>)self;
 	}
 	return self;
-}
-
-- (void)layoutSubviews
-{
-    if (self.superview.layer != sLayer.superlayer) {
-        [sLayer removeFromSuperlayer];
-        UIImage *shadow = [UIImage imageNamed:@"0_r_shadow"];
-        sLayer = [[RCShadowLayer alloc] init];
-        sLayer.contents = (id)shadow.CGImage;
-        sLayer.opacity = 0.3;
-        sLayer.frame = [self convertRect:CGRectMake(0, 32, 320, 15) toView:self.superview];
-        [self.superview.layer addSublayer:sLayer];
-        [sLayer release];
-    }
-    [super layoutSubviews];
 }
 
 - (void)layoutChannels:(NSArray *)channels {

@@ -274,8 +274,7 @@ static RCChannelBubble *questionabubble = nil;
 	}
 }
 
-- (void)scrollToBubble:(RCChannelBubble *)bubble
-{
+- (void)scrollToBubble:(RCChannelBubble *)bubble {
     if (!bubble) {
         return;
     }
@@ -308,7 +307,10 @@ static RCChannelBubble *questionabubble = nil;
 		currentPanel = nil;
 	}
 	if (currentPanel != nil) if ([[[currentPanel channel] bubble] isEqual:bubble]) return;
-	[[[currentPanel channel] bubble] _setSelected:NO];
+	for (NSString *_chan in [[currentNetwork _channels] allKeys]) {
+		RCChannel *chan = [[currentNetwork _channels] objectForKey:_chan]; // safe not to use channelWithChannelName as getting the key from the dict directly.
+		[[chan bubble] _setSelected:NO];
+	}
 	[bubble _setSelected:YES];
 	RCChannel *chan = [currentNetwork channelWithChannelName:bubble.titleLabel.text]; // unneeded. <.<
 	if (chan) {
@@ -358,26 +360,25 @@ static RCChannelBubble *questionabubble = nil;
 		bar.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"0_navbar_landscape"]];
 		scrollBar.frame = CGRectMake(240, 0, 233, 33); // 233, for the hell of it.
 		[scrollBar clearBG];
-		for (CALayer *lv in [scrollBar.layer sublayers]) {
-			if ([lv isKindOfClass:[RCShadowLayer class]]) {
-				[lv setFrame:CGRectMake((bar.frame.size.width/2)*-1, lv.frame.origin.y, 480, lv.frame.size.height)];
-				break;
-			}
-		}
 	}
 	else {
 		bar.frame = CGRectMake(0, 0, 320, 45);
 		bar.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"0_navbar"]];
 		scrollBar.frame = CGRectMake(0, 45, 320, 32);
-		for (CALayer *lv in [scrollBar.layer sublayers]) {
-			if ([lv isKindOfClass:[RCShadowLayer class]]) {
-				[lv setFrame:CGRectMake(0, lv.frame.origin.y, 320, lv.frame.size.height)];
+	}
+	for (CALayer *lv in [scrollBar.layer sublayers]) {
+		if ([lv isKindOfClass:[RCShadowLayer class]]) {
+			float y = 0;
+			if (lv.superlayer.frame.origin.x != 0) {
+				
 			}
+			//		[lv setFrame:CGRectMake(0, lv.superlayer.frame.size.height, 320, lv.frame.size.height)];
+			break;
 		}
 	}
 	[plus setFrame:[self frameForPlusButton]];
 	[listr setFrame:[self frameForListButton]];
-	[titleLabel setFrame:CGRectMake(60, 0, [self widthForTitleLabel], bar.frame.size.height)];
+	[titleLabel setFrame:CGRectMake(45, 0, [self widthForTitleLabel], bar.frame.size.height)];
 	[memberPanel setFrame:[self frameForMemberPanel]];
 	[window correctAndRotateToInterfaceOrientation:oi];
 }

@@ -98,6 +98,18 @@
 }
 
 - (void)doneWithMod:(id)pfff {
+	if ([self.view findAndResignFirstResponder]) {
+		// dismissed active text field
+		return;
+	}
+	else {
+		// text field already wasn't active, that means
+		// we need to make this official and add it to the channel manager
+	}
+	if ([[((UILabel *)self.navigationItem.title) text] isEqualToString:@"New Channel"]) {
+		// present alert view saying you NEED A CHANNEL NAME YOU TARD
+		return;
+	}
 	chan = [(UILabel *)self.navigationItem.titleView text];
 	if (![chan isEqualToString:orig]) {
 		[net removeChannel:[net channelWithChannelName:orig]];
@@ -142,7 +154,7 @@
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    return YES;
 }
 
 @end

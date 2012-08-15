@@ -7,6 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+@interface UIView (FindAndResignFirstResponder)
+- (BOOL)findAndResignFirstResponder;
+@end
 
 @interface RCBasicViewController : UITableViewController {
 	UILabel *titleView;
