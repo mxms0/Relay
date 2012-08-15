@@ -104,8 +104,7 @@ NSInteger rankToNumber(unichar rank)
 }
 
 NSInteger sortRank(id u1, id u2);
-NSInteger sortRank(id u1, id u2)
-{
+NSInteger sortRank(id u1, id u2) {
     u1 = [u1 lowercaseString];
     u2 = [u2 lowercaseString];
     NSString* ra = RCUserRank(u1);
@@ -118,8 +117,7 @@ NSInteger sortRank(id u1, id u2)
         return NSOrderedAscending;
     else if (r1n > r2n)
         return NSOrderedDescending;
-    else
-    {
+    else {
         return [[u1 substringFromIndex:[ra length]] compare:[u2 substringFromIndex:[rb length]]];
     }
 }
@@ -139,8 +137,7 @@ UIImage *RCImageForRank(NSString *rank) {
 	return nil;
 }
 
-- (void)initialize_me:(NSString*)chan
-{
+- (void)initialize_me:(NSString *)chan {
     channelName = [chan retain];
     joinOnConnect = YES;
     joined = NO;
@@ -189,13 +186,12 @@ UIImage *RCImageForRank(NSString *rank) {
 	}
 	else {
 		c.detailTextLabel.text = @"";
-        NSString* el = [fullUserList objectAtIndex:indexPath.row-1];
-        NSString* rank = RCUserRank(el);
+        NSString *el = [fullUserList objectAtIndex:indexPath.row-1];
+        NSString *rank = RCUserRank(el);
 		c.textLabel.text = [el substringFromIndex:[rank length]];
 		c.imageView.image = RCImageForRanks(rank, [delegate userModes]);
 	}
 	return c;
-	
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -320,9 +316,8 @@ UIImage *RCImageForRank(NSString *rank) {
 	NSLog(@"i"); // what the fuck
 }
 
-- (BOOL)isUserInChannel:(NSString*)user
-{
-    return ([fullUserList containsObject:user]||[fullUserList containsObject:[user substringFromIndex:MIN([user length], 1)]]);
+- (BOOL)isUserInChannel:(NSString*)user {
+    return ([fullUserList containsObject:user] || [fullUserList containsObject:[user substringFromIndex:MIN([user length], 1)]]);
 }
 
 - (void)shouldPost:(BOOL)isHighlight withMessage:(NSString *)msg {
@@ -349,8 +344,7 @@ UIImage *RCImageForRank(NSString *rank) {
 	return nil;
 }
 
-- (NSString*)nickAndRankForNick:(NSString*)nick
-{
+- (NSString *)nickAndRankForNick:(NSString *)nick {
     for (NSString* nickrank in fullUserList) {
         if ([nickrank hasSuffix:nick]) {
             NSInteger ln = [RCUserRank(nickrank) length];
@@ -368,11 +362,10 @@ UIImage *RCImageForRank(NSString *rank) {
         [self performSelectorOnMainThread:@selector(setUserJoined:) withObject:_joined waitUntilDone:YES];
         return;
     }
-    @synchronized(self)
-    {
+    @synchronized(self) {
         NSLog(@"_joined: %@", _joined);
         if (![_joined isEqualToString:@""] && ![_joined isEqualToString:@" "] && ![_joined isEqualToString:@"\r\n"] && ![self isUserInChannel:_joined] && _joined) {
-            NSUInteger newIndex = [fullUserList indexOfObject:_joined inSortedRange:(NSRange){0,[fullUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^NSComparisonResult(id obj1, id obj2) {
+            NSUInteger newIndex = [fullUserList indexOfObject:_joined inSortedRange:(NSRange){0, [fullUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^NSComparisonResult(id obj1, id obj2) {
                 return sortRank(obj1, obj2);
             }];
             [fullUserList insertObject:_joined atIndex:newIndex];
@@ -386,17 +379,16 @@ UIImage *RCImageForRank(NSString *rank) {
         return;
     }
     left = [self nickAndRankForNick:left];
-    @synchronized(self)
-    {
-        NSLog(@"left: %@", left);
-        if (![left isEqualToString:@""] && ![left isEqualToString:@" "] && ![left isEqualToString:@"\r\n"] && [self isUserInChannel:left] && left) {
-            NSInteger newIndex = [fullUserList indexOfObject:left];
-            if (newIndex != NSNotFound) {
-                [fullUserList removeObjectAtIndex:newIndex];
-                [usersPanel deleteRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:newIndex+1 inSection:0], nil] withRowAnimation:UITableViewRowAnimationRight];
-            }
-        }
-    }
+	@synchronized(self) {
+		NSLog(@"left: %@", left);
+		if (![left isEqualToString:@""] && ![left isEqualToString:@" "] && ![left isEqualToString:@"\r\n"] && [self isUserInChannel:left] && left) {
+			NSInteger newIndex = [fullUserList indexOfObject:left];
+			if (newIndex != NSNotFound) {
+				[fullUserList removeObjectAtIndex:newIndex];
+				[usersPanel deleteRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:newIndex+1 inSection:0], nil] withRowAnimation:UITableViewRowAnimationRight];
+			}
+		}
+	}
 }
 
 - (void)setMyselfParted {
@@ -405,13 +397,12 @@ UIImage *RCImageForRank(NSString *rank) {
 	joined = NO;
 }
 
-- (void)disconnected:(NSString*)msg
-{
+- (void)disconnected:(NSString*)msg {
 	[fullUserList removeAllObjects];
     if ([msg isEqualToString:@"Disconnected."]) {
         [self recievedMessage:@"Disconnected." from:@"" type:RCMessageTypeEvent];
-    } else
-    {
+    }
+	else {
         [self recievedMessage:[@"Disconnected: " stringByAppendingString:msg] from:@"" type:RCMessageTypeEvent];
     }
 	joined = NO;

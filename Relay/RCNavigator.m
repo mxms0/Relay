@@ -302,6 +302,7 @@ static RCChannelBubble *questionabubble = nil;
 		if (currentPanel != nil) 
 			 [[[currentPanel channel] bubble] _setSelected:NO];
 		[memberPanel removeFromSuperview];
+		[((RCChannel *)[memberPanel dataSource]) setUsersPanel:nil];
 		memberPanel.delegate = nil;
 		memberPanel.dataSource = nil;
 		currentPanel = nil;
