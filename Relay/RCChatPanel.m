@@ -37,6 +37,7 @@
 		[field setBorderStyle:UITextBorderStyleNone];
 		[field setKeyboardAppearance:UIKeyboardAppearanceDefault];
 		[field setReturnKeyType:UIReturnKeySend];
+		[field setTextColor:UIColorFromRGB(0x3e3f3f)];
 		[field setFont:[UIFont fontWithName:@"Helvetica" size:12]];
 		[field setMinimumFontSize:17];
 		[field setAdjustsFontSizeToFitWidth:YES];
