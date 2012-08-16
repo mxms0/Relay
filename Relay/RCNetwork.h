@@ -43,6 +43,7 @@ typedef enum RCSocketStatus {
 	NSString *spass;
 	NSString *npass;
 	NSString *userModes;
+	NSString *fuckumich;
 	NSMutableString *sendQueue;
 	RCSocketStatus status;
 	int task;

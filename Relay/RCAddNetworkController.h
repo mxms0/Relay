@@ -14,11 +14,12 @@
 #import "RCChannelManager.h"
 #import "RCBasicViewController.h"
 #import "RCAlternateNicknamesManager.h"
+#import "RCPrettyAlertView.h"
 
 @interface RCAddNetworkController : RCBasicViewController <UITextFieldDelegate, UIScrollViewDelegate> {
 	RCNetwork *network;
 	BOOL isNew;
 }
 - (id)initWithNetwork:(RCNetwork *)net;
-
+- (void)showStupidWarningsRegardingMichiganUniversity;
 @end

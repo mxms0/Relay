@@ -103,6 +103,10 @@
 			[network setSDescription:[textField text]];
 			break;
 		case 2:
+			if ([[textField text] isEqualToString:@"irc.umich.edu"]) {
+				[textField setText:@""];
+				[self showStupidWarningsRegardingMichiganUniversity];
+			}
 			[network setServer:[textField text]];
 			[self.navigationItem.rightBarButtonItem setEnabled:([network server].length > 0)];
 			break;
@@ -203,6 +207,12 @@
 			break;
 	}
 	return @"  HAXXX !!! ";
+}
+
+- (void)showStupidWarningsRegardingMichiganUniversity {
+	RCPrettyAlertView *warning = [[RCPrettyAlertView alloc] initWithTitle:@"Error!" message:@"This server is currently not supported and may not be supported in the future. Use efnet instead" delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil];
+	[warning show];
+	[warning release];
 }
 
 - (BOOL)textFieldShouldReturn:(RCTextField *)textField {

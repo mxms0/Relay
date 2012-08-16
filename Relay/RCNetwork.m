@@ -317,6 +317,9 @@ char *RCIPForURL(NSString *URL) {
 }
 
 - (BOOL)sendMessage:(NSString *)msg canWait:(BOOL)canWait {
+#if LOGALL
+	NSLog(@"HAI OUTGOING ((%@))",msg);
+#endif
 	if ((!canWait) || isRegistered) {
 		msg = [msg stringByAppendingString:@"\r\n"];
 		if (canSend) {
@@ -343,14 +346,14 @@ char *RCIPForURL(NSString *URL) {
 }
 
 - (void)recievedMessage:(NSString *)msg {
+#if LOGALL
     NSLog(@"%@", msg);
+#endif
 	if ([msg isEqualToString:@""] || msg == nil || [msg isEqualToString:@"\r\n"]) return;
-	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	msg = [msg stringByReplacingOccurrencesOfString:@"\r" withString:@""];
 	msg = [msg stringByReplacingOccurrencesOfString:@"\n" withString:@""];	
 	if ([msg hasPrefix:@"PING"]) {
 		[self handlePING:msg];
-		[p drain];
 		return;
 	}
 	else if ([msg hasPrefix:@"ERROR"]) {
@@ -360,11 +363,9 @@ char *RCIPForURL(NSString *URL) {
 		if ([error hasPrefix:@" :"]) error = [error substringFromIndex:2];
 		RCChannel *chan = [_channels objectForKey:@"IRC"];
 		[chan recievedMessage:error from:@"" type:RCMessageTypeNormal];
-		[p drain];
 		return;
 	}
 	if (![msg hasPrefix:@":"]) {
-		[p drain];
 		return;
 	}
 	NSScanner *scanner = [[NSScanner alloc] initWithString:msg];
@@ -382,21 +383,17 @@ char *RCIPForURL(NSString *URL) {
 		NSLog(@"Meh. %@\r\n%@", cmd, rest);	
 	}
 	[scanner release];
-	[p drain];
 }
 
-- (BOOL)isTryingToConnectOrConnected
-{
+- (BOOL)isTryingToConnectOrConnected {
     return ([self isConnected] || tryingToConnect);
 }
 
-- (NSString*)defaultQuitMessage
-{
+- (NSString*)defaultQuitMessage {
     return @"Relay 1.0"; // TODO: return something else if user wants to
 }
 
-- (BOOL)disconnectWithMessage:(NSString*)msg
-{
+- (BOOL)disconnectWithMessage:(NSString*)msg {
     if (_isDiconnecting) return NO;
 	_isDiconnecting = YES;
 	if (status == RCSocketStatusClosed) return NO;
@@ -789,6 +786,32 @@ char *RCIPForURL(NSString *URL) {
 	// nick is in use.
 	useNick = [[useNick stringByAppendingString:@"_"] retain]; // set to autorelease, so retain'd copy will be released, and it will be set back to normal. :D
 	[self sendMessage:[@"NICK " stringByAppendingString:useNick] canWait:NO];
+}
+
+- (void)handle998:(NSString *)fuckyouumich {
+	return; // NO FUCK YOU DIE.
+	if (!fuckyouumich) return; //there's never a time where fuck umich is not true. FUCK YOU UMICH.
+	NSLog(@"FUCK. YOU. UMICH:%@",fuckyouumich);
+	@synchronized(self) {
+		if (!fuckumich) {
+			fuckumich = [[NSString alloc] init];
+		}
+		NSString *asciiz;
+		NSString *crap;
+		NSScanner *scanr = [[NSScanner alloc] initWithString:fuckyouumich];
+		[scanr scanUpToString:@" " intoString:&crap];
+		[scanr scanUpToString:@":" intoString:&crap];
+		[scanr setScanLocation:[scanr scanLocation]+1];
+		[scanr scanUpToString:@"" intoString:&asciiz];
+		if (!asciiz) {
+			// end of message. do SOMETHING HERE
+			[fuckumich release];
+		}
+		else {
+			fuckumich = [[fuckumich stringByAppendingFormat:@"%@\r\n", asciiz] retain];
+		}
+		[scanr release];
+	}
 }
 
 - (void)handleNOTICE:(NSString *)notice {

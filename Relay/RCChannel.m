@@ -363,7 +363,9 @@ UIImage *RCImageForRank(NSString *rank) {
         return;
     }
     @synchronized(self) {
+#if LOGALL
         NSLog(@"_joined: %@", _joined);
+#endif
         if (![_joined isEqualToString:@""] && ![_joined isEqualToString:@" "] && ![_joined isEqualToString:@"\r\n"] && ![self isUserInChannel:_joined] && _joined) {
             NSUInteger newIndex = [fullUserList indexOfObject:_joined inSortedRange:(NSRange){0, [fullUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^NSComparisonResult(id obj1, id obj2) {
                 return sortRank(obj1, obj2);
@@ -380,7 +382,9 @@ UIImage *RCImageForRank(NSString *rank) {
     }
     left = [self nickAndRankForNick:left];
 	@synchronized(self) {
+#if LOGALL
 		NSLog(@"left: %@", left);
+#endif
 		if (![left isEqualToString:@""] && ![left isEqualToString:@" "] && ![left isEqualToString:@"\r\n"] && [self isUserInChannel:left] && left) {
 			NSInteger newIndex = [fullUserList indexOfObject:left];
 			if (newIndex != NSNotFound) {
