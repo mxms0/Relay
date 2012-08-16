@@ -81,8 +81,8 @@ static BOOL isSetup = NO;
 		[[RCNetworkManager sharedNetworkManager] setIsBG:NO];
 		[[RCNetworkManager sharedNetworkManager] unpack];
 		isSetup = YES;
-	//	[TestFlight takeOff:@"35b8aa0d259ae0c61c57bc770aeafe63_Mzk5NDYyMDExLTExLTA5IDE4OjQ0OjEwLjc4MTM3MQ"];
-	//	[TestFlight setDeviceIdentifier:[[UIDevice currentDevice] uniqueIdentifier]];
+		[TestFlight takeOff:@"35b8aa0d259ae0c61c57bc770aeafe63_Mzk5NDYyMDExLTExLTA5IDE4OjQ0OjEwLjc4MTM3MQ"];
+		[TestFlight setDeviceIdentifier:[[UIDevice currentDevice] uniqueIdentifier]];
 	}
 	return YES;
 }
