@@ -32,10 +32,11 @@ static id _sharedNavigator = nil;
 		bar = [[RCNavigationBar alloc] initWithFrame:CGRectMake(0, 0, 320, 45)];
         [bar setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"0_navbar"]]];
 		bar.tag = 100;
-		titleLabel = [[RCTitleLabel alloc] initWithFrame:CGRectMake(60, 0, 200, bar.frame.size.height)];
+		titleLabel = [[RCTitleLabel alloc] initWithFrame:CGRectMake(47, 0, 225, bar.frame.size.height)];
 		[titleLabel setBackgroundColor:[UIColor clearColor]];
 		[titleLabel setHidden:NO];
 		[titleLabel setFont:[UIFont boldSystemFontOfSize:25]];
+
 		UILongPressGestureRecognizer *gesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(editNetwork:)];
 		[gesture setMinimumPressDuration:0.7];
 		[gesture setNumberOfTapsRequired:0];
@@ -265,11 +266,6 @@ static id _sharedNavigator = nil;
 - (void)selectNetwork:(RCNetwork *)net {
 	currentNetwork = net;
 	titleLabel.text = [net _description];
-    CGSize available = CGSizeMake([self widthForTitleLabel]-[self frameForListButton].size.width-[self frameForPlusButton].size.width-30.0f, [self heightForNetworkBar]);
-    CGSize really_av = [titleLabel sizeThatFits:available];
-    titleLabel.frame = CGRectMake(0,0,really_av.width, really_av.height);
-    ((UIView*)titleLabel).center = CGPointMake([self widthForNetworkBar]/2.0f,[self heightForNetworkBar]/2.0f);
-    [titleLabel layoutSubviews];
 	[scrollBar layoutChannels:[net _bubbles]];
     [self channelSelected:[[net channelWithChannelName:@"IRC"] bubble]];
 }
@@ -370,28 +366,16 @@ static RCChannelBubble *questionabubble = nil;
 		bar.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"0_navbar_landscape"]];
 		scrollBar.frame = CGRectMake(240, 0, 233, 33); // 233, for the hell of it.
 		[scrollBar clearBG];
+		titleLabel.frame = CGRectMake(45, 0, 150, bar.frame.size.height);
 	}
 	else {
 		bar.frame = CGRectMake(0, 0, 320, 45);
 		bar.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"0_navbar"]];
 		scrollBar.frame = CGRectMake(0, 45, 320, 32);
-	}
-	for (CALayer *lv in [scrollBar.layer sublayers]) {
-		if ([lv isKindOfClass:[RCShadowLayer class]]) {
-			if (lv.superlayer.frame.origin.x != 0) {
-				
-			}
-			//		[lv setFrame:CGRectMake(0, lv.superlayer.frame.size.height, 320, lv.frame.size.height)];
-			break;
-		}
+		titleLabel.frame = CGRectMake(47, 0, 225, bar.frame.size.height);
 	}
 	[plus setFrame:[self frameForPlusButton]];
 	[listr setFrame:[self frameForListButton]];
-    CGSize available = CGSizeMake([self widthForTitleLabel]-[self frameForListButton].size.width-[self frameForPlusButton].size.width-30.0f, [self heightForNetworkBar]);
-    CGSize really_av = [titleLabel sizeThatFits:available];
-    titleLabel.frame = CGRectMake(0,0,really_av.width, really_av.height);
-    ((UIView*)titleLabel).center = CGPointMake([self widthForNetworkBar]/2.0f,[self heightForNetworkBar]/2.0f);
-    [titleLabel layoutSubviews];
 	[memberPanel setFrame:[self frameForMemberPanel]];
 	[window correctAndRotateToInterfaceOrientation:oi];
 }

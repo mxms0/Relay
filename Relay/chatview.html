@@ -133,27 +133,28 @@
                     None.
              */ 
             
-            function setFlags(name, type)
-            {
+            function setFlags(name, type) {
                 var olddiv = document.getElementById('msg' + name);
                 var pos = type.indexOf(":");
                 var lflags = "";
-                if (pos != -1)
-                {
+                if (pos != -1) {
                     lflags = type.substr(0,pos);
                     type = type.substr(pos+1);
                     /*
                      Flags are per-message metadata. (not per-chunk)
                      */
-                    
-                    if (lflags.indexOf("M") != -1)
-                    {
+                    if (lflags.indexOf("M") != -1) {
                         olddiv.style.background = "-webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(147,190,242,0.15)), color-stop(100%,rgba(79,148,234,0.1))),-webkit-gradient(linear, left top, left bottom, color-stop(0%,#f6f8fa), color-stop(100%,#ebeef1))";
-                    } else if (lflags.indexOf("H") != -1)
-                    {
+                    }
+					else if (lflags.indexOf("H") != -1) {
                         olddiv.style.background = "-webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(242,153,147,0.4)), color-stop(100%,rgba(234,88,79,0.35))),-webkit-gradient(linear, left top, left bottom, color-stop(0%,#f6f8fa), color-stop(100%,#ebeef1))";
                     }
                 }
+				else {
+					if (type == "TOPIC") {
+						olddiv.style.textAlign="center";
+					}
+				}
                 types[name] = type;
                 flags[name] = lflags;
             }

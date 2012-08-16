@@ -137,6 +137,7 @@ _out_:
 			[ms setString:[[ms string] substringWithRange:NSMakeRange(0, [[ms string] length]-1)]];
 		}
 		[self stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"setFlags('%@','%@');", name, [[ms string] substringToIndex:[[ms string] rangeOfString:@"-"].location]]];
+		NSLog(@"Wat. %@", [[ms string] substringToIndex:[[ms string] rangeOfString:@"-"].location]);
 		NSString* istring = [[[[[[ms string] substringFromIndex:[[ms string] rangeOfString:@"-"].location+1] stringByEncodingHTMLEntities:YES] stringByReplacingOccurrencesOfString:@"\n" withString:@"<br />"] stringByLinkifyingURLs] stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
 		unsigned int cpos = 0;
 		BOOL isBold = NO;
@@ -209,7 +210,6 @@ _out_:
 
 - (void)scrollToBottom {
     [self stringByEvaluatingJavaScriptFromString:@"scrollToBottom();"];
-    // lalala 
 }
 
 @end

@@ -261,7 +261,7 @@ UIImage *RCImageForRank(NSString *rank) {
 		case RCMessageTypeTopic:
             if ([topic isEqualToString:message]) return;
             self.topic = message;
-			msg = [[NSString stringWithFormat:@"%c[%@]%c Topic is: %@", RCIRCAttributeBold, time, RCIRCAttributeBold, message] retain];
+			msg = [message retain];
 			break;
 		case RCMessageTypeQuit:
             if ([self isUserInChannel:from]) {

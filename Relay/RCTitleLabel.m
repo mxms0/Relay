@@ -18,6 +18,9 @@
 		self.textColor = UIColorFromRGB(0x3e3f3f);
 		self.font = [UIFont systemFontOfSize:30];
 		[self setUserInteractionEnabled:YES];
+		[self setAdjustsFontSizeToFitWidth:YES];
+		[self setMinimumFontSize:13];
+		[self setBaselineAdjustment:UIBaselineAdjustmentAlignCenters];
     }
     return self;
 }
