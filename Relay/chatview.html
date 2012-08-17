@@ -61,11 +61,17 @@
                 word-wrap: break-word;
                 font-size: 11px;
 				z-index:0;
+				-webkit-box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, 0.5);
             }
+			a { color:#498adb;text-decoration:none;}
+			a:active { color:#34629b; }
             * { margin-left: 0px; margin-top: 0px; padding: 0px; margin: 0px; }
-            p {-webkit-box-shadow:  0px -1px 0px 1px rgba(212, 218, 223, 0.3);
-				box-shadow:  0px -1px 0px 1px rgba(212, 218, 223, 0.3);
-                background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f6f8fa), color-stop(100%,#ebeef1));
+            p {
+				border-top-color:#dadadc;
+				border-top-style:solid;
+				border-top-width:1px;
+				padding:2px;
+                background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f2f5f7), color-stop(100%,#edf0f3));
             }
             html {
                 -webkit-text-size-adjust: none; /* Never autoresize text */
@@ -96,12 +102,9 @@
              Return Value:
                 Returns a "message name", which should be an unique identifier for the message. 
              */ 
-
             
-            function createMessage()
-            {
-                if (cnt >= maxscrollback)
-                {
+            function createMessage() {
+                if (cnt >= maxscrollback) {
                     nowrem++;
                     delete flags[nowrem];
                     delete types[nowrem];
@@ -144,15 +147,24 @@
                      Flags are per-message metadata. (not per-chunk)
                      */
                     if (lflags.indexOf("M") != -1) {
-                        olddiv.style.background = "-webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(147,190,242,0.15)), color-stop(100%,rgba(79,148,234,0.1))),-webkit-gradient(linear, left top, left bottom, color-stop(0%,#f6f8fa), color-stop(100%,#ebeef1))";
+                        olddiv.style.background = "-webkit-gradient(linear, left top, left bottom, color-stop(0%,#edf6f9), color-stop(100%,#e7f1f6))";
+						olddiv.style.color = "#2d475c";
+						olddiv.style.borderTop = "solid #cedce4 1px";
+						olddiv.class = "mmf";
                     }
 					else if (lflags.indexOf("H") != -1) {
-                        olddiv.style.background = "-webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(242,153,147,0.4)), color-stop(100%,rgba(234,88,79,0.35))),-webkit-gradient(linear, left top, left bottom, color-stop(0%,#f6f8fa), color-stop(100%,#ebeef1))";
+                        olddiv.style.background = "-webkit-gradient(linear, left top, left bottom, color-stop(0%,#f5f1f4), color-stop(100%,#f1ebef))";
+						olddiv.style.borderTop = "solid #e2ced1 1px";
+						olddiv.style.color = "#5b2e2e";
+						olddiv.class = "hhf";
                     }
                 }
 				else {
 					if (type == "TOPIC") {
 						olddiv.style.textAlign="center";
+					}
+					else {
+						olddiv.class="normal";
 					}
 				}
                 types[name] = type;
@@ -176,13 +188,19 @@
                 
             */
             function addToMessage(name, isBold, isUnderlined, isItalic, bgcolor, fgcolor, text, isFirstChunk) {
-                if (fgcolor == "default-foreground") {
-                    fgcolor = "#3e3f3f";
-                }
                 if (types[name] == "EVENT") {
                     isBold = "YES";
                 }
                 var olddiv = document.getElementById('msg' + name);
+				if (fgcolor == "default-foreground") {
+					if (olddiv.class == "mmf") {
+						fgcolor = "#2d475c";
+					}
+					else if (olddiv.class == "hhf") {
+						fgcolor = "#5b2e2e";
+					}
+					else fgcolor = "#3e3f3f";
+                }
                 var pre = "";
                 var post = "";
                 var type = olddiv.type;
@@ -201,7 +219,9 @@
                 pre += "<font color=\"" + fgcolor + "\" style=\"background: " + bgcolor + ";\">"
                 post += "</font>"
                 olddiv.innerHTML += pre + text + post;
-                scrollToBottom();
+				// conditional below does not work. fuck.
+				if ((window.pageYOffset || document.body.scrollTop || document.documentElement.scrollTop) == document.body.scrollHeight);
+					scrollToBottom();
                 return "SUCCESS";
             }
             

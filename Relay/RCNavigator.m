@@ -312,15 +312,11 @@ static RCChannelBubble *questionabubble = nil;
 		memberPanel.dataSource = nil;
 		currentPanel = nil;
 	}
-	NSLog(@"MEH %@ %@", currentPanel, [currentPanel channel]);
-	MARK;
 	if (currentPanel != nil) if ([[[currentPanel channel] bubble] isEqual:bubble]) return;
-	MARK;
 	for (NSString *_chan in [[currentNetwork _channels] allKeys]) {
 		RCChannel *chan = [[currentNetwork _channels] objectForKey:_chan]; // safe not to use channelWithChannelName as getting the key from the dict directly.
 		[[chan bubble] _setSelected:NO];
 	}
-	MARK;
 	[bubble _setSelected:YES];
 	RCChannel *chan = [currentNetwork channelWithChannelName:bubble.titleLabel.text]; // unneeded. <.<
 	if (chan) {
