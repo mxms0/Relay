@@ -7,7 +7,6 @@
 
 #import "RCNetworkManager.h"
 #import "RCNavigator.h"
-#import "RCSSLNetwork.h"
 
 @implementation RCNetworkManager
 @synthesize isBG, _printMotd;
@@ -15,13 +14,7 @@ static id snManager = nil;
 static NSMutableArray *networks = nil;
 
 - (void)ircNetworkWithInfo:(NSDictionary *)info isNew:(BOOL)n {
-	RCNetwork *network = nil;
-	if ([[info objectForKey:SSL_KEY] boolValue]) {
-		network = [[RCSSLNetwork alloc] init];
-	}
-	else {
-		network = [[RCNetwork alloc] init];
-	}
+	RCNetwork *network = [[RCNetwork alloc] init];
 	[network setUsername:[info objectForKey:USER_KEY]];
 	[network setNick:[info objectForKey:NICK_KEY]];
 	[network setRealname:[info objectForKey:NAME_KEY]];

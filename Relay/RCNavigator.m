@@ -36,7 +36,6 @@ static id _sharedNavigator = nil;
 		[titleLabel setBackgroundColor:[UIColor clearColor]];
 		[titleLabel setHidden:NO];
 		[titleLabel setFont:[UIFont boldSystemFontOfSize:25]];
-
 		UILongPressGestureRecognizer *gesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(editNetwork:)];
 		[gesture setMinimumPressDuration:0.7];
 		[gesture setNumberOfTapsRequired:0];
@@ -144,9 +143,6 @@ static id _sharedNavigator = nil;
         currentPanel = nil;
     }
 	isFirstSetup = ([net isKindOfClass:[RCWelcomeNetwork class]]);
-    if (!isFirstSetup) {
-        
-    }
 	if (titleLabel.text == nil || ([titleLabel.text isEqualToString:@""])) {
 		[titleLabel setText:[net _description]];
 		currentNetwork = net;
@@ -260,10 +256,15 @@ static id _sharedNavigator = nil;
 	memberPanel.frame = [self frameForMemberPanel];
 	chan.usersPanel = memberPanel;
 	[currentPanel removeFromSuperview];
+	currentPanel = nil;
 	[self addSubview:memberPanel];
 }
 
 - (void)selectNetwork:(RCNetwork *)net {
+	if (currentPanel) {
+		[currentPanel removeFromSuperview];
+		currentPanel = nil;
+	}
 	currentNetwork = net;
 	titleLabel.text = [net _description];
 	[scrollBar layoutChannels:[net _bubbles]];
@@ -295,7 +296,6 @@ static RCChannelBubble *questionabubble = nil;
 	RCPrettyAlertView *alert = [[RCPrettyAlertView alloc] initWithTitle:@"Are you sure?" message:[NSString stringWithFormat:@"Are you sure you want to delete %@", [questionAble titleLabel].text] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Delete", nil];
 	[alert show];
 	[alert release];
-	
 }
 
 - (BOOL)canBecomeFirstResponder {
@@ -312,11 +312,15 @@ static RCChannelBubble *questionabubble = nil;
 		memberPanel.dataSource = nil;
 		currentPanel = nil;
 	}
+	NSLog(@"MEH %@ %@", currentPanel, [currentPanel channel]);
+	MARK;
 	if (currentPanel != nil) if ([[[currentPanel channel] bubble] isEqual:bubble]) return;
+	MARK;
 	for (NSString *_chan in [[currentNetwork _channels] allKeys]) {
 		RCChannel *chan = [[currentNetwork _channels] objectForKey:_chan]; // safe not to use channelWithChannelName as getting the key from the dict directly.
 		[[chan bubble] _setSelected:NO];
 	}
+	MARK;
 	[bubble _setSelected:YES];
 	RCChannel *chan = [currentNetwork channelWithChannelName:bubble.titleLabel.text]; // unneeded. <.<
 	if (chan) {

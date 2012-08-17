@@ -19,6 +19,8 @@
 		shouldSave = NO;
 		isRegistered = NO;
 		canSend = YES;
+		ctx = NULL;
+		ssl = NULL;
 		_bubbles = [[NSMutableArray alloc] init];
 		_channels = [[NSMutableDictionary alloc] init];
 		_isDiconnecting = NO;
@@ -110,10 +112,9 @@
 }
 
 - (RCChannel *)channelWithChannelName:(NSString *)chan ifNilCreate:(BOOL)cr {
-    @synchronized(self)
-    {
+    @synchronized(self) {
         for (NSString *chan_ in [_channels allKeys]) {
-            if ([[chan_ lowercaseString] isEqualToString:[chan lowercaseString]]/* || (![chan hasPrefix:@"#"] && [[[@"#" stringByAppendingString: chan] lowercaseString] isEqualToString:[chan_ lowercaseString]]) */) return [_channels objectForKey:chan_];
+            if ([[chan_ lowercaseString] isEqualToString:[chan lowercaseString]]) return [_channels objectForKey:chan_];
         }
         if (cr) {
             [self addChannel:chan join:NO];
@@ -122,9 +123,8 @@
     }
 }
 
-- (RCChannel* )addChannel:(NSString *)_chan join:(BOOL)join {
-    @synchronized(self)
-    {
+- (RCChannel *)addChannel:(NSString *)_chan join:(BOOL)join {
+    @synchronized(self) {
         if ([_chan hasPrefix:@" "]) {
             _chan = [_chan stringByReplacingOccurrencesOfString:@" " withString:@""];
         }
@@ -172,8 +172,125 @@
 #pragma mark - SOCKET STUFF
 
 - (void)connect {
-    [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:[sDescription stringByAppendingFormat:@"-%@%@%@-%d%d", nick, username, server, port, useSSL]];
-	[self performSelectorInBackground:@selector(_connect) withObject:nil];
+	// [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:[sDescription stringByAppendingFormat:@"-%@%@%@-%d%d", nick, username, server, port, useSSL]];
+	if (useSSL) {
+		[self performSelectorInBackground:@selector(_ssl_connect) withObject:nil];
+	}
+	else {
+		[self performSelectorInBackground:@selector(_connect) withObject:nil];
+	}
+}
+
+- (void)_ssl_connect {
+	BOOL oTT = tryingToConnect;
+	tryingToConnect = YES;
+	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+	canSend = YES;
+	isRegistered = NO;
+	if (sendQueue) [sendQueue release];
+	sendQueue = nil;
+	if (status == RCSocketStatusConnecting) goto errme;
+	if (status == RCSocketStatusConnected) goto errme;
+	useNick = nick;
+	self.userModes = @"~&@%+";
+	if (kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iPhoneOS_4_0) {
+		task = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+			[[UIApplication sharedApplication] endBackgroundTask:task];
+			task = UIBackgroundTaskInvalid;
+		}];
+	}
+	RCChannel *chan = [_channels objectForKey:@"IRC"];
+	if (chan) [chan recievedMessage:[NSString stringWithFormat:@"Connecting to %@ on port %d", server, port] from:@"" type:RCMessageTypeNormal];
+	status = RCSocketStatusConnecting;
+	sockfd = 0;
+	int fd = 0;
+	char *lbuf = malloc(RECV_BUF_LEN);
+	char *pbuf = lbuf;
+	int blen = RECV_BUF_LEN;
+	SSL_library_init();
+	ctx = RCInitContext();
+	struct hostent *host;
+	struct sockaddr_in addr;
+	if ((host = gethostbyname([server UTF8String])) == NULL) {
+		// fuckme
+		perror([server UTF8String]);
+	}
+	sockfd = socket(PF_INET, SOCK_STREAM, 0);
+	bzero(&addr, sizeof(addr));
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons(port);
+	addr.sin_addr.s_addr = *(long *)(host->h_addr);
+	if (connect(sockfd, (struct sockaddr *)&addr, sizeof(addr)) != 0) {
+		// fuckyou
+		// close(sockfd)
+		// aborttttt !!!
+	}
+	ssl = SSL_new(ctx);
+	SSL_set_fd(ssl, sockfd);
+	if ((SSL_connect(ssl) == -1)) {
+		[p drain];
+		close(sockfd);
+		status = RCSocketStatusError;
+		return;
+	}
+	if ([spass length] > 0) {
+		[self sendMessage:[@"PASS " stringByAppendingString:spass] canWait:NO];
+	}
+	[self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
+	[self sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
+	/*
+     Buffered read() implementation.
+     Designed to fix non-aligned messages being dropped, and improve performance overall.
+     -- This may have some logic flaws. Please investigate on it. Xoxo, qwertyoruiop.
+     */
+	int kbytes = 0;
+	int pbytes = 0;
+	int dbytes = 0;
+	int bindex = 0;
+	int cached = 0;
+	while ((fd = SSL_read(ssl, lbuf+cached, blen-cached)) > 0) {
+		while (kbytes != fd+cached && kbytes != blen) {
+			if (*(lbuf+kbytes) == '\r'||*(lbuf+kbytes) == '\n') {
+				pbytes = kbytes;
+				if (pbytes - dbytes) {
+					NSAutoreleasePool *pool = [NSAutoreleasePool new];
+					kbytes ++;
+					NSString* message = [[[[[NSString alloc] initWithBytes:(uint8_t*)lbuf+dbytes length:pbytes-dbytes encoding:NSUTF8StringEncoding] autorelease] stringByReplacingOccurrencesOfString:@"\n" withString:@""] stringByReplacingOccurrencesOfString:@"\r" withString:@""];
+					dbytes = kbytes;
+					[self recievedMessage:message];
+					[pool drain];
+				}
+				else goto omg;
+            }
+			else {
+			omg:
+				kbytes ++;
+			}
+		}
+		cached = (kbytes) - dbytes;
+		bindex -= dbytes;
+		bindex += cached;
+		if (bindex > blen) {
+			[self disconnectWithMessage:@"Excess Flood"];
+			goto out_;
+		}
+		if (cached > blen && dbytes + cached > blen) {
+			[self disconnectWithMessage:@"Excess Flood"];
+			goto out_;
+		}
+		memcpy(lbuf, lbuf+dbytes, cached);
+		kbytes = cached;
+		dbytes = 0;
+		pbytes = 0;
+	}
+	if ([self isConnected]) {
+		[self disconnectWithMessage:@"End of stream"];
+	}
+errme:
+	tryingToConnect = oTT;
+out_:
+	[p drain];
+	free(pbuf);
 }
 
 - (void)_connect {
@@ -232,72 +349,78 @@
     }
     [self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
     [self sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
-    
     /*
-     
      Buffered read() implementation.
      Designed to fix non-aligned messages being dropped, and improve performance overall.
      -- This may have some logic flaws. Please investigate on it. Xoxo, qwertyoruiop.
-     
      */
-    
-    int kbytes = 0;
-    int pbytes = 0;
-    int dbytes = 0;
-    int bindex = 0;
-    int cached = 0;
-    while ((fd = read(sockfd, lbuf+cached, blen-cached)) > 0) {
-        while (kbytes != fd+cached && kbytes != blen) {
-            if (*(lbuf+kbytes) == '\r'||*(lbuf+kbytes) == '\n') {
-                pbytes = kbytes;
-                if (pbytes - dbytes) {
-                    NSAutoreleasePool *pool = [NSAutoreleasePool new];
-                    kbytes ++;
-                    NSString* message = [[[[[NSString alloc] initWithBytes:(uint8_t*)lbuf+dbytes length:pbytes-dbytes encoding:NSUTF8StringEncoding] autorelease] stringByReplacingOccurrencesOfString:@"\n" withString:@""] stringByReplacingOccurrencesOfString:@"\r" withString:@""];
-                    dbytes = kbytes;
-                    [self recievedMessage:message];
-                    [pool drain];
-                } else goto omg;
-            } else {
-            omg:
-                kbytes ++;
+	int kbytes = 0;
+	int pbytes = 0;
+	int dbytes = 0;
+	int bindex = 0;
+	int cached = 0;
+	while ((fd = read(sockfd, lbuf+cached, blen-cached)) > 0) {
+		while (kbytes != fd+cached && kbytes != blen) {
+			if (*(lbuf+kbytes) == '\r'||*(lbuf+kbytes) == '\n') {
+				pbytes = kbytes;
+				if (pbytes - dbytes) {
+					NSAutoreleasePool *pool = [NSAutoreleasePool new];
+					kbytes ++;
+					NSString* message = [[[[[NSString alloc] initWithBytes:(uint8_t*)lbuf+dbytes length:pbytes-dbytes encoding:NSUTF8StringEncoding] autorelease] stringByReplacingOccurrencesOfString:@"\n" withString:@""] stringByReplacingOccurrencesOfString:@"\r" withString:@""];
+					dbytes = kbytes;
+					[self recievedMessage:message];
+					[pool drain];
+				}
+				else goto omg;
             }
-        }
-        cached = (kbytes) - dbytes;
-        bindex -= dbytes;
-        bindex += cached;
-        if (bindex > blen) {
-            [self disconnectWithMessage:@"Excess Flood"];
-            goto out_;
-        }
-        if (cached > blen && dbytes + cached > blen) {
-            [self disconnectWithMessage:@"Excess Flood"];
-            goto out_;
-        }
-        memcpy(lbuf, lbuf+dbytes, cached);
-        kbytes = cached;
-        dbytes = 0;
-        pbytes = 0;
-    }
-    if ([self isConnected]) {
-        [self disconnectWithMessage:@"End of stream"];
-    }
+			else {
+			omg:
+				kbytes ++;
+			}
+		}
+		cached = (kbytes) - dbytes;
+		bindex -= dbytes;
+		bindex += cached;
+		if (bindex > blen) {
+			[self disconnectWithMessage:@"Excess Flood"];
+			goto out_;
+		}
+		if (cached > blen && dbytes + cached > blen) {
+			[self disconnectWithMessage:@"Excess Flood"];
+			goto out_;
+		}
+		memcpy(lbuf, lbuf+dbytes, cached);
+		kbytes = cached;
+		dbytes = 0;
+		pbytes = 0;
+	}
+	if ([self isConnected]) {
+		[self disconnectWithMessage:@"End of stream"];
+	}
 out_:
-    [p drain];
-    free(pbuf);
+	[p drain];
+	free(pbuf);
 errme:
-    tryingToConnect = oTT;
+	tryingToConnect = oTT;
+}
+
+SSL_CTX *RCInitContext(void) {
+	SSL_METHOD *meth; // lol;
+	SSL_CTX *_ctx;
+	OpenSSL_add_all_algorithms();
+	SSL_load_error_strings();
+	meth = (SSL_METHOD *)SSLv23_client_method();
+	_ctx = SSL_CTX_new(meth);
+	if (_ctx == NULL) {
+		// fuck.
+		//	ERR_print_errors(stderr);
+	}
+	return _ctx;
+	
 }
 
 char *RCIPForURL(NSString *URL) {
 	char *hostname = (char *)[URL UTF8String];
-	//BOOL valid;
-	//NSCharacterSet *alphaNums = [NSCharacterSet decimalDigitCharacterSet];
-	//	NSCharacterSet *inStringSet = [NSCharacterSet characterSetWithCharactersInString:URL];
-	//valid = [alphaNums isSupersetOfSet:inStringSet];
-	//	if (!valid) return hostname;
-	
-	//	NSLog(@"MEH %d %@", (int)valid, URL);
 	struct addrinfo hints, *res;
 	struct in_addr addr;
 	int err;
@@ -389,7 +512,7 @@ char *RCIPForURL(NSString *URL) {
     return ([self isConnected] || tryingToConnect);
 }
 
-- (NSString*)defaultQuitMessage {
+- (NSString *)defaultQuitMessage {
     return @"Relay 1.0"; // TODO: return something else if user wants to
 }
 
@@ -407,6 +530,10 @@ char *RCIPForURL(NSString *URL) {
 		task = UIBackgroundTaskInvalid;
 		status = RCSocketStatusClosed;
 		isRegistered = NO;
+		if (useSSL) {
+			SSL_free(ssl);
+			SSL_CTX_free(ctx);
+		}
 		for (NSString *chan in [_channels allKeys]) {
 			RCChannel *_chan = [self channelWithChannelName:chan];
 			[_chan disconnected:msg];
@@ -789,13 +916,10 @@ char *RCIPForURL(NSString *URL) {
 }
 
 - (void)handle998:(NSString *)fuckyouumich {
-	return; // NO FUCK YOU DIE.
 	if (!fuckyouumich) return; //there's never a time where fuck umich is not true. FUCK YOU UMICH.
 	NSLog(@"FUCK. YOU. UMICH:%@",fuckyouumich);
 	@synchronized(self) {
-		if (!fuckumich) {
-			fuckumich = [[NSString alloc] init];
-		}
+
 		NSString *asciiz;
 		NSString *crap;
 		NSScanner *scanr = [[NSScanner alloc] initWithString:fuckyouumich];
@@ -803,12 +927,9 @@ char *RCIPForURL(NSString *URL) {
 		[scanr scanUpToString:@":" intoString:&crap];
 		[scanr setScanLocation:[scanr scanLocation]+1];
 		[scanr scanUpToString:@"" intoString:&asciiz];
-		if (!asciiz) {
-			// end of message. do SOMETHING HERE
-			[fuckumich release];
-		}
-		else {
-			fuckumich = [[fuckumich stringByAppendingFormat:@"%@\r\n", asciiz] retain];
+		if (asciiz) {
+			RCChannel *chan = [_channels objectForKey:@"IRC"];
+			[chan recievedMessage:asciiz from:@"" type:RCMessageTypeNormalE];
 		}
 		[scanr release];
 	}

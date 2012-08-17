@@ -36,7 +36,6 @@
 		502F0E48151588390019CA24 /* 0_+_user@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 502F0E3E151588390019CA24 /* 0_+_user@2x.png */; };
 		502F0E49151588390019CA24 /* 0_~_user.png in Resources */ = {isa = PBXBuildFile; fileRef = 502F0E3F151588390019CA24 /* 0_~_user.png */; };
 		502F0E4A151588390019CA24 /* 0_~_user@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 502F0E40151588390019CA24 /* 0_~_user@2x.png */; };
-		502F788E15C51526009E39F1 /* RCSSLNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 502F788D15C51526009E39F1 /* RCSSLNetwork.m */; };
 		503742291511478300F4DA1A /* RCUserListPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 503742281511478300F4DA1A /* RCUserListPanel.m */; };
 		50376D2A15B3CCAD00E13006 /* RCDateManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 50376D2915B3CCAD00E13006 /* RCDateManager.m */; };
 		50376D2E15B3D1D700E13006 /* RCTextFieldBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50376D2D15B3D1D700E13006 /* RCTextFieldBackgroundView.m */; };
@@ -147,7 +146,6 @@
 		50F1A65C15D216CA0013CD13 /* RCBasicTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 50F1A65B15D216CA0013CD13 /* RCBasicTableViewCell.m */; };
 		50F9036E15C5B105001BC6F0 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 50F9036C15C5B105001BC6F0 /* libcrypto.a */; };
 		50F9036F15C5B105001BC6F0 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 50F9036D15C5B105001BC6F0 /* libssl.a */; };
-		50F9037215C5B126001BC6F0 /* openssl in Resources */ = {isa = PBXBuildFile; fileRef = 50F9037115C5B126001BC6F0 /* openssl */; };
 		50FC091E1583BA610019DB14 /* RCChannelManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5038C8311583B8E4004BA602 /* RCChannelManager.m */; };
 		7EF931D9159A137B0031CDD0 /* RCBarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF931D8159A137B0031CDD0 /* RCBarButton.m */; };
 		AA503EEF15AD2C5A00EF223E /* RCAlternateNicknamesManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AA503EEE15AD2C5A00EF223E /* RCAlternateNicknamesManager.m */; };
@@ -190,8 +188,6 @@
 		502F0E3E151588390019CA24 /* 0_+_user@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_+_user@2x.png"; sourceTree = "<group>"; };
 		502F0E3F151588390019CA24 /* 0_~_user.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_~_user.png"; sourceTree = "<group>"; };
 		502F0E40151588390019CA24 /* 0_~_user@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_~_user@2x.png"; sourceTree = "<group>"; };
-		502F788C15C51526009E39F1 /* RCSSLNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCSSLNetwork.h; sourceTree = "<group>"; };
-		502F788D15C51526009E39F1 /* RCSSLNetwork.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCSSLNetwork.m; sourceTree = "<group>"; };
 		503399E61505A0EC004C4D28 /* shadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shadow.png; sourceTree = "<group>"; };
 		503399E71505A0EC004C4D28 /* shadow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shadow@2x.png"; sourceTree = "<group>"; };
 		503742271511478300F4DA1A /* RCUserListPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCUserListPanel.h; sourceTree = "<group>"; };
@@ -663,8 +659,6 @@
 				50E77A811505A21500E75C64 /* RCNetwork.m */,
 				EAF79C3915D77E9C0075AF47 /* NSString+IRCStringSupport.h */,
 				EAF79C3A15D77E9C0075AF47 /* NSString+IRCStringSupport.m */,
-				502F788C15C51526009E39F1 /* RCSSLNetwork.h */,
-				502F788D15C51526009E39F1 /* RCSSLNetwork.m */,
 				50E77A821505A21500E75C64 /* RCNetworkManager.h */,
 				50E77A831505A21500E75C64 /* RCNetworkManager.m */,
 				50E77A841505A21500E75C64 /* RCWelcomeNetwork.h */,
@@ -808,7 +802,6 @@
 				502A66DD15BCCD600009C890 /* 0_listrbtn_pressed@2x.png in Resources */,
 				502A66DE15BCCD600009C890 /* 0_plusbtn_pressed.png in Resources */,
 				502A66DF15BCCD600009C890 /* 0_plusbtn_pressed@2x.png in Resources */,
-				50F9037215C5B126001BC6F0 /* openssl in Resources */,
 				50EC2D2115D4BEA100EC4A37 /* 0_removebtn.png in Resources */,
 				50EC2D2215D4BEA100EC4A37 /* 0_removebtn@2x.png in Resources */,
 				50EC2D2315D4BEA100EC4A37 /* 0_removebtnpres.png in Resources */,
@@ -884,7 +877,6 @@
 				50376D2E15B3D1D700E13006 /* RCTextFieldBackgroundView.m in Sources */,
 				500DD85615BBDBC700F2E59D /* RCPasswordRequestAlert.m in Sources */,
 				50E0C34A15BCBD8100B79C50 /* RCPrettyAlertView.m in Sources */,
-				502F788E15C51526009E39F1 /* RCSSLNetwork.m in Sources */,
 				50E3694115D0E4DD005DD077 /* RCChannelManagementViewController.m in Sources */,
 				50F1A65815D215E50013CD13 /* RCBasicTextInputCell.m in Sources */,
 				50F1A65C15D216CA0013CD13 /* RCBasicTableViewCell.m in Sources */,

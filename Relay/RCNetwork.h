@@ -20,7 +20,11 @@
 #include <string.h>
 #include <sys/types.h>
 #include <netdb.h>
-#include <time.h>   
+#include <time.h>
+#include <resolv.h>
+#include <netdb.h>
+#include "openssl/ssl.h"
+#include "openssl/err.h"
 #include <ifaddrs.h>
 
 typedef enum RCSocketStatus {
@@ -43,8 +47,9 @@ typedef enum RCSocketStatus {
 	NSString *spass;
 	NSString *npass;
 	NSString *userModes;
-	NSString *fuckumich;
 	NSMutableString *sendQueue;
+	SSL_CTX *ctx;
+	SSL *ssl;
 	RCSocketStatus status;
 	int task;
 	int port;
@@ -99,6 +104,7 @@ typedef enum RCSocketStatus {
 - (NSString *)defaultQuitMessage;
 - (id)infoDictionary;
 @end
+SSL_CTX *RCInitContext(void);
 char *RCIPForURL(NSString *URL);
 void RCParseUserMask(NSString *mask, NSString **nick, NSString **user, NSString **hostmask);
 @interface CALayer (Haxx)

@@ -298,7 +298,7 @@ UIImage *RCImageForRank(NSString *rank) {
 			msg = [[NSString stringWithFormat:@"%c[%@] -%@-%c %@", RCIRCAttributeBold, time, from, RCIRCAttributeBold, message] retain];
 			break;
 		case RCMessageTypeNormalE:
-            msg = @"== TYPE: EXC < fixme! ==";
+			msg = [[NSString stringWithFormat:@"%c[%@]%c %@", RCIRCAttributeBold, time, RCIRCAttributeBold, message] retain];
 			break;
         default:
             msg = @"unk_event";
