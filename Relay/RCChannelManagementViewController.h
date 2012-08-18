@@ -15,11 +15,12 @@
 @class RCNetwork;
 @interface RCChannelManagementViewController : RCBasicViewController <UITextFieldDelegate> {
 	RCNetwork *net;
-	NSString *chan;
-	NSString *orig;
+	NSString *channel;
+	NSString *originalChannel;
 	NSString *pass;
 	BOOL jOC;
 }
-
+@property (nonatomic, retain) NSString *channel;
+@property (nonatomic, retain) NSString *originalChannel;
 - (id)initWithStyle:(UITableViewStyle)style network:(RCNetwork *)net channel:(NSString *)chan;
 @end

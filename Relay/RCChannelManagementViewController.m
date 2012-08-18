@@ -10,17 +10,17 @@
 #import "RCNetwork.h"
 
 @implementation RCChannelManagementViewController
+@synthesize channel, originalChannel;
 
 - (id)initWithStyle:(UITableViewStyle)style network:(RCNetwork *)_net channel:(NSString *)_chan {
 	if ((self = [super initWithStyle:style])) {
 		net = _net;
-		chan = [_chan retain];
+		[self setChannel:channel];
 		jOC = NO;
-		orig = [@"" retain];
-		if ((chan != nil) && ![chan isEqualToString:@""]) {
-			orig = [chan retain];
-			jOC = [[net channelWithChannelName:chan] joinOnConnect];
-			RCKeychainItem *item = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@%@rpass", [_net _description], chan]  accessGroup:nil];
+		[self setOriginalChannel:_chan];
+		if ((channel != nil) && ![channel isEqualToString:@""]) {
+			jOC = [[net channelWithChannelName:channel] joinOnConnect];
+			RCKeychainItem *item = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@%@rpass", [_net _description], channel]  accessGroup:nil];
 			pass = [item objectForKey:(id)kSecValueData];
 			[item release];
 		}
@@ -43,12 +43,12 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	RCBasicTextInputCell *cell = (RCBasicTextInputCell *)[tableView dequeueReusableCellWithIdentifier:@"0_CELLD"];
 	if (!cell) {
-		cell = [[RCBasicTextInputCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"0_CELLD"];
+		cell = [[[RCBasicTextInputCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"0_CELLD"] autorelease];
 		switch (indexPath.row) {
 			case 0: {
 				RCTextField *field = (RCTextField *)[cell accessoryView];
 				[field addTarget:self action:@selector(textChanged:) forControlEvents:UIControlEventEditingChanged];
-				[field setText:chan];
+				[field setText:channel];
 				[field setPlaceholder:@"#help"];
 				[field setTag:1];
 				break;
@@ -71,8 +71,7 @@
 				[cell setAccessoryView:jocSwitch];
 				[jocSwitch release];
 				break;
-			}
-				
+			}		
 		}
 	}
 	switch (indexPath.row) {
@@ -108,15 +107,16 @@
 		// text field already wasn't active, that means
 		// we need to make this official and add it to the channel manager
 	}
-	chan = [self titleText];
-	if ([chan isEqualToString:@"New Channel"]) {
+	NSString *_chan = [self titleText];
+	if ([_chan isEqualToString:@"New Channel"]) {
 		return;
 	}
-	if (![chan isEqualToString:orig]) {
-		[net removeChannel:[net channelWithChannelName:orig]];
-		[net addChannel:chan join:NO];
+	MARK;
+	if (![_chan isEqualToString:originalChannel]) {
+		[net removeChannel:[net channelWithChannelName:originalChannel]];
+		[net addChannel:_chan join:NO];
 	}
-	RCChannel *rchan = [net channelWithChannelName:chan];
+	RCChannel *rchan = [net channelWithChannelName:_chan];
 	if ([pass length] > 0) {
 		[rchan setPassword:pass];
 	}
@@ -136,12 +136,12 @@
 }
 
 - (void)textChanged:(UITextField *)textField {
-	chan = textField.text;
+	channel = textField.text;
 	[((UILabel *)self.navigationItem.titleView) setText:[self titleText]];
 }
 
 - (NSString *)titleText {
-	return ([chan isEqualToString:@""] ? @"New Channel" : chan);
+	return ([channel isEqualToString:@""] ? @"New Channel" : channel);
 }
 
 - (void)viewDidLoad {

@@ -120,7 +120,7 @@ static id _instance = nil;
 	static NSString *ident = @"0_networkcell";
 	RCNetworkCell *cell = [tableView dequeueReusableCellWithIdentifier:ident];
 	if (!cell) {
-		cell = [[RCNetworkCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:ident];
+		cell = [[[RCNetworkCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:ident] autorelease];
 	}
 	cell.textLabel.text = [[[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.row] sDescription];
 	return cell;

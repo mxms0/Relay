@@ -17,6 +17,8 @@
 		_rEditing = NO;
 		self.tableView.allowsSelectionDuringEditing = YES;
 		[self reloadData];
+		if ([[[net _channels] allKeys] count] == 0)
+			[self edit];
     }
     return self;
 }

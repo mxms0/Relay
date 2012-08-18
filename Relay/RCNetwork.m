@@ -1068,12 +1068,15 @@ char *RCIPForURL(NSString *URL) {
 	[_sc scanUpToString:@" " intoString:&request];
 	RCParseUserMask(_from, &_from, nil, nil);
     if ([request hasPrefix:@":"]) {
-        request = [request substringFromIndex:1];
+        [_sc release];
+		request = [request substringFromIndex:1];
     }
     if (![request hasPrefix:@"\x01"]) {
-        return;
+        [_sc release];
+		return;
     }
     if (![request hasSuffix:@"\x01"]) {
+		[_sc release];
         return;
     }
     request = [request substringFromIndex:1];
