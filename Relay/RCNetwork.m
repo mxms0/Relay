@@ -203,17 +203,12 @@
 	if (chan) [chan recievedMessage:[NSString stringWithFormat:@"Connecting to %@ on port %d", server, port] from:@"" type:RCMessageTypeNormal];
 	status = RCSocketStatusConnecting;
 	sockfd = 0;
-	int fd = 0;
-	char *lbuf = malloc(RECV_BUF_LEN);
-	char *pbuf = lbuf;
-	int blen = RECV_BUF_LEN;
 	SSL_library_init();
 	ctx = RCInitContext();
 	struct hostent *host;
 	struct sockaddr_in addr;
 	if ((host = gethostbyname([server UTF8String])) == NULL) {
-		// fuckme
-		perror([server UTF8String]);
+		MARK;
 	}
 	sockfd = socket(PF_INET, SOCK_STREAM, 0);
 	bzero(&addr, sizeof(addr));
@@ -221,18 +216,18 @@
 	addr.sin_port = htons(port);
 	addr.sin_addr.s_addr = *(long *)(host->h_addr);
 	if (connect(sockfd, (struct sockaddr *)&addr, sizeof(addr)) != 0) {
-		// fuckyou
-		// close(sockfd)
-		// aborttttt !!!
+		MARK;
 	}
 	ssl = SSL_new(ctx);
 	SSL_set_fd(ssl, sockfd);
-	if ((SSL_connect(ssl) == -1)) {
-		[p drain];
-		close(sockfd);
-		status = RCSocketStatusError;
-		return;
+	if (SSL_connect(ssl) == -1) {
+		MARK;
 	}
+	
+	int fd = 0;
+	char *lbuf = malloc(RECV_BUF_LEN);
+	char *pbuf = lbuf;
+	int blen = RECV_BUF_LEN;
 	if ([spass length] > 0) {
 		[self sendMessage:[@"PASS " stringByAppendingString:spass] canWait:NO];
 	}
@@ -413,10 +408,11 @@ SSL_CTX *RCInitContext(void) {
 	_ctx = SSL_CTX_new(meth);
 	if (_ctx == NULL) {
 		// fuck.
+		MARK;
+		NSLog(@"FUCKKKKK");
 		//	ERR_print_errors(stderr);
 	}
 	return _ctx;
-	
 }
 
 char *RCIPForURL(NSString *URL) {
@@ -446,14 +442,23 @@ char *RCIPForURL(NSString *URL) {
 	if ((!canWait) || isRegistered) {
 		msg = [msg stringByAppendingString:@"\r\n"];
 		if (canSend) {
-			if (send(sockfd, [msg UTF8String], strlen([msg UTF8String]), 0) < 0) {
-				NSLog(@"BLASPHEMYY");
-                //		[self errorOccured:[oStream streamError]];
-				return NO;
+			if (useSSL) {
+				if (SSL_write(ssl, [msg UTF8String], strlen([msg UTF8String])) < 0) {
+					MARK;
+					return NO;
+				}
+				return YES;
 			}
 			else {
+				if (send(sockfd, [msg UTF8String], strlen([msg UTF8String]), 0) < 0) {
+					NSLog(@"BLASPHEMYY");
+                //		[self errorOccured:[oStream streamError]];
+					return NO;
+				}
+				else {
 				// success! :D
-				return YES;
+					return YES;
+				}
 			}
 		}
 	}
@@ -553,7 +558,7 @@ char *RCIPForURL(NSString *URL) {
 	isRegistered = YES;
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
 	if (chan) [chan recievedMessage:@"Connected to host." from:@"" type:RCMessageTypeNormal];
-	if ([npass length] > 0)	[self sendMessage:[@"PRIVMSG NickServ IDENTIFY " stringByAppendingString:npass]];
+	if ([npass length] > 0)	[self sendMessage:[@"PRIVMSG NickServ :IDENTIFY " stringByAppendingString:npass]];
 	for (NSString *chan in [_channels allKeys]) {
 		if ([[self channelWithChannelName:chan] joinOnConnect]) [[self channelWithChannelName:chan] setJoined:YES withArgument:nil];
 	}
@@ -844,7 +849,7 @@ char *RCIPForURL(NSString *URL) {
 		[scanner scanUpToString:@"\r\n" intoString:&crap];
         if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
         RCChannel *chan = [_channels objectForKey:@"IRC"];
-        if (chan) [chan recievedMessage:crap from:@"MOTD" type:RCMessageTypeNormal];
+        if (chan) [chan recievedMessage:crap from:@" MOTD" type:RCMessageTypeNormal];
 	}
 	@catch (NSException *exception) {
 		NSLog(@"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF %s", (char *)_cmd);
@@ -869,7 +874,7 @@ char *RCIPForURL(NSString *URL) {
 	}
 	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
 	RCChannel *chan = [_channels objectForKey:@"IRC"];
-	if (chan) [chan recievedMessage:crap from:@"MOTD" type:RCMessageTypeNormal];
+	if (chan) [chan recievedMessage:crap from:@" MOTD" type:RCMessageTypeNormal];
 	[scanner release];
 	// :irc.saurik.com 372 _m :- Please edit /etc/inspircd/motd
 }

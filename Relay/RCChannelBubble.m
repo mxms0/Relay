@@ -12,23 +12,17 @@ static UIImage* image = nil;
 @implementation RCChannelBubble
 @synthesize hasNewHighlights, isSelected, _rcount;
 
-- (BOOL)_selected
-{
+- (BOOL)_selected {
     return self.isSelected;
 }
 
-- (id)initWithFrame:(CGRect)frame andChan:(RCChannel*)channel_ {
+- (id)initWithFrame:(CGRect)frame andChan:(RCChannel *)channel_ {
 	if ((self = [super initWithFrame:frame])) {
         if (!image) {
             image = [[[UIImage imageNamed:@"0_bble"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 9, 0, 9)] retain];
         }
 		[[self titleLabel] setFont:[UIFont boldSystemFontOfSize:13]];
 		[[self titleLabel] setShadowOffset:CGSizeMake(0, 1)];
-        /*
-         BOOL isSelected;
-         BOOL hasNewMessages;
-         BOOL hasNewHighlights;
-         */
 		isSelected = NO;
 		hasNewMessages = NO;
 		hasNewHighlights = NO;
@@ -42,15 +36,13 @@ static UIImage* image = nil;
     return self;
 }
 
-- (id)initWithFrame:(CGRect)frame
-{
+- (id)initWithFrame:(CGRect)frame {
     NSLog(@"NO");
     [self release];
     return nil;
 }
 
-- (RCChannel*)channel
-{
+- (RCChannel *)channel {
     return channel;
 }
 
@@ -90,14 +82,12 @@ static UIImage* image = nil;
 		if (suicidee.state == UIGestureRecognizerStateBegan) {
 			if (delegate) 
 				[delegate channelWantsSuicide:self];
-            //	[[[self allTargets] anyObject] channelWantsSuicide:self];
 		}
 	}
     [self fixColors];
 }
 
-- (void) fixColors
-{
+- (void)fixColors {
     dispatch_async(dispatch_get_main_queue(), ^(void){
         if (isSelected) {
             if ([self backgroundImageForState:UIControlStateNormal] != image) {
@@ -105,14 +95,13 @@ static UIImage* image = nil;
             }
             [self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
             [self setTitleShadowColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
-        } else
-        {
+        } else {
             [self setBackgroundImage:nil forState:UIControlStateNormal];
             if (hasNewHighlights) {
-                [self setTitleColor:UIColorFromRGB(0xea584f) forState:UIControlStateNormal];
+                [self setTitleColor:UIColorFromRGB(0xDB4949) forState:UIControlStateNormal];
                 [self setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
             } else if (hasNewMessages) {
-                [self setTitleColor:UIColorFromRGB(0x4f94ea) forState:UIControlStateNormal];
+                [self setTitleColor:UIColorFromRGB(0x498ADB) forState:UIControlStateNormal];
                 [self setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
             } else {
                 [self setTitleColor:UIColorFromRGB(0x3e3f3f) forState:UIControlStateNormal];
@@ -124,8 +113,7 @@ static UIImage* image = nil;
 }
 
 - (void)_setSelected:(BOOL)selected {
-    @synchronized(self)
-    {
+    @synchronized(self) {
         if (selected == isSelected) {
             return;
         }
@@ -137,8 +125,7 @@ static UIImage* image = nil;
 }
 
 - (void)setMentioned:(BOOL)mentioned {
-    @synchronized(self)
-    {
+    @synchronized(self) {
         if (mentioned == hasNewHighlights || isSelected == YES) {
             return;
         }
@@ -149,14 +136,13 @@ static UIImage* image = nil;
 }
 
 - (void)setHasNewMessage:(BOOL)msgs {
-    @synchronized(self)
-    {
-        if (msgs == hasNewMessages || isSelected == YES || hasNewHighlights == YES) {
-            return;
-        }
-        hasNewMessages = msgs;
-        [self fixColors];
-    }
+    @synchronized(self) {
+		if (msgs == hasNewMessages || isSelected == YES || hasNewHighlights == YES) {
+			return;
+		}
+		hasNewMessages = msgs;
+		[self fixColors];
+	}
 }
 
 @end

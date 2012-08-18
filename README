@@ -1,16 +1,10 @@
 Relay! (Codenamed 'Relé')
 Welcome to the wonderful world of relay. :) 
 
-There's a lot that needs to be done before the initial release.
-RCMessage needs to be overhauled, into some sort of CATextLayer subclass. 
-This will be done so that text rendering is efficient and usable. 
-We need to implement some sort of link support i think we will do with some math + UIButtons.
-I'm clueless of how we would approach copy/paste support, but will keep thinking.
+There's a lot that needs to be done before the initial release. 
 I would like basic-tablike-completion like in all IRC clients.
 Implement a message count/highlight count in the RCPopoverWindow's table view.
 Updating of channels modes needs to be fixed, + need to refresh user list modes after mode changes.
-Fix password storing in the keychain.
-Add support for channels with passwords
 Fix /command system.
 Fix rotation of RCPopoverWindow.
 Select previously selected channel when a different network is selected via RCPopoverWindow

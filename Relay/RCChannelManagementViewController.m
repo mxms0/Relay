@@ -49,6 +49,7 @@
 				RCTextField *field = (RCTextField *)[cell accessoryView];
 				[field addTarget:self action:@selector(textChanged:) forControlEvents:UIControlEventEditingChanged];
 				[field setText:chan];
+				[field setPlaceholder:@"#help"];
 				[field setTag:1];
 				break;
 			}
@@ -57,6 +58,7 @@
 				[field setSecureTextEntry:YES];
 				[field addTarget:self action:@selector(passTextChanged:) forControlEvents:UIControlEventEditingChanged];
 				[field setDelegate:self];
+				[field setPlaceholder:@"password"];
 				[field setText:pass];
 				[field setTag:2];
 				break;
@@ -106,11 +108,10 @@
 		// text field already wasn't active, that means
 		// we need to make this official and add it to the channel manager
 	}
-	if ([[((UILabel *)self.navigationItem.title) text] isEqualToString:@"New Channel"]) {
-		// present alert view saying you NEED A CHANNEL NAME YOU TARD
+	chan = [self titleText];
+	if ([chan isEqualToString:@"New Channel"]) {
 		return;
 	}
-	chan = [(UILabel *)self.navigationItem.titleView text];
 	if (![chan isEqualToString:orig]) {
 		[net removeChannel:[net channelWithChannelName:orig]];
 		[net addChannel:chan join:NO];

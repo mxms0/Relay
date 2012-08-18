@@ -55,7 +55,6 @@ NSString *colorForIRCColor(char irccolor) {
         if (!template) {
             template = [[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"chatview" ofType:@"html"] encoding:NSUTF8StringEncoding error:nil] retain];
         }
-		self.scalesPageToFit = YES;
         self.opaque = NO;
         self.dataDetectorTypes = UIDataDetectorTypeNone;
         self.backgroundColor = [UIColor clearColor];
@@ -107,6 +106,7 @@ NSString *colorForIRCColor(char irccolor) {
             [[(RCChannel*)[[self chatpanel] channel] bubble] setHasNewMessage:![ms  highlight]];\
         }\
         lpos = cpos;    
+
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     @synchronized(self) {
 		NSMutableArray *pre_pool = preloadPool;

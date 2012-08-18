@@ -401,7 +401,7 @@ UIImage *RCImageForRank(NSString *rank) {
 	joined = NO;
 }
 
-- (void)disconnected:(NSString*)msg {
+- (void)disconnected:(NSString *)msg {
 	[fullUserList removeAllObjects];
     if ([msg isEqualToString:@"Disconnected."]) {
         [self recievedMessage:@"Disconnected." from:@"" type:RCMessageTypeEvent];
@@ -421,56 +421,7 @@ UIImage *RCImageForRank(NSString *rank) {
 }
 
 - (void)setMode:(NSString *)modes forUser:(NSString *)user {
-    /*
-	// clean this up. :P
-	// this is all going to the trash
-	// there's absolutely no point.
-	// if a user has +vao
-	// only the server knows that/
-	// so i will be told max has +a,
-	// then he will lose +a, and it'll just say he's normal
-	// so i need to refresh al users
-	// so i guess i'll just re-index everytime.
-	return;
-	NSRange plus;
-	NSRange minus;
-	plus = [modes rangeOfString:@"+"];
-	minus = [modes rangeOfString:@"-"];
-	if (plus.location != NSNotFound && minus.location != NSNotFound) {
-		// both.
-	}
-	else if (minus.location == NSNotFound) {
-		// revert to + stuff
-	}
-	else {
-		// only subtractions :((
-	}
-	// what you see above is crap. ignore it.
-	modes = RCSterilizeModes(modes);
-	if ([modes hasPrefix:@"+"]) {
-		modes = [modes substringFromIndex:1];
-		modes = RCSymbolRepresentationForModes(modes);
-		NSString *uModes = [users objectForKey:user];
-		if (uModes == nil || [uModes isEqualToString:@""]) {
-			[users setObject:modes forKey:user];
-		}
-		else {
-			uModes = RCMergeModes(uModes, modes);
-			if (uModes == nil) uModes = @"";
-			[users setObject:uModes forKey:user];
-		}
-	}
-	else if ([modes hasPrefix:@"-"]) {
-		NSString *uModes = [users objectForKey:user];
-		modes = [modes substringFromIndex:1];
-		modes = RCSymbolRepresentationForModes(modes);
-		if (!(uModes == nil || [uModes isEqualToString:@""])) {
-			uModes = [uModes stringByReplacingOccurrencesOfString:modes withString:@""];
-		}
-		[users setObject:uModes forKey:user];
-	}
-	if (usersPanel)	[usersPanel reloadData];
-     */ // NO.
+
 }
 
 - (void)setJoined:(BOOL)joind withArgument:(NSString *)arg1 {
@@ -481,7 +432,10 @@ UIImage *RCImageForRank(NSString *rank) {
     NSLog(@"Meh %@", [self channelName]);
 	if ([[self channelName] hasPrefix:@"#"]) {
 		if (joind) {
-			[delegate sendMessage:[@"JOIN " stringByAppendingString:channelName]];
+			if ([[self password] length] > 0) {
+				[delegate sendMessage:[NSString stringWithFormat:@"JOIN %@ %@", channelName, password]];
+			}
+			else [delegate sendMessage:[@"JOIN " stringByAppendingString:channelName]];
 		}
 		else {
 			[delegate sendMessage:[NSString stringWithFormat:@"PART %@ %@", channelName, (arg1 ? arg1 : @"Leaving...")]];

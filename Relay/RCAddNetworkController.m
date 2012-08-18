@@ -110,10 +110,10 @@
 			[network setPort:[[textField text] intValue]];
 			break;
 		case 4:
-			[network setUsername:IS_STRING_OR([textField text],[textField placeholder])];
+			[network setNick:IS_STRING_OR([textField text],[textField placeholder])];
 			break;
 		case 5:
-			[network setNick:IS_STRING_OR([textField text],[textField placeholder])];
+			[network setUsername:IS_STRING_OR([textField text],[textField placeholder])];
 			break;
 		case 6:
             [network setRealname:IS_STRING_OR([textField text],[textField placeholder])];
@@ -192,7 +192,7 @@
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
 	switch (section) {
 		case 0:
-			return @"   CONNECT INFORMATION";
+			return @"   CONNECTION INFORMATION";
 		case 1:
 			return @"   USER INFORMATION";
 		case 2:
@@ -313,8 +313,8 @@
 						@catch (id bs) {
 							[uField setPlaceholder:@"Guest"];
 						}
-						[uField setTag:5];
-						[uField setText:[network username]];
+						[uField setTag:4];
+						[uField setText:[network nick]];
 						[uField setDelegate:self];
 						[uField setKeyboardAppearance:UIKeyboardAppearanceDefault];
 						[uField setReturnKeyType:UIReturnKeyNext];
@@ -335,8 +335,8 @@
 						@catch (id bs) {
 							[nField setPlaceholder:@"Guest"];
 						}
-						[nField setTag:4];
-						[nField setText:[network nick]];
+						[nField setTag:5];
+						[nField setText:[network username]];
 						[nField setDelegate:self];
 						[nField setKeyboardAppearance:UIKeyboardAppearanceDefault];
 						[nField setReturnKeyType:UIReturnKeyNext];

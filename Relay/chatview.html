@@ -53,31 +53,34 @@
  -->
 <html>
     <head>
-        <meta name="viewport" content="width=device-width, user-scalable=no initial-scale=1.0" />
+		<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
         <style>
             html, body { width:100%; height:100%;}
             body {
                 font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", "HelveticaNeue-Light", "Helvetica Neue Light", sans-serif; 
                 word-wrap: break-word;
                 font-size: 11px;
-				z-index:0;
-				-webkit-box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, 0.5);
+				overflow:hidden;
             }
 			a { color:#498adb;text-decoration:none;}
 			a:active { color:#34629b; }
-            * { margin-left: 0px; margin-top: 0px; padding: 0px; margin: 0px; }
+            * { padding: 0px; margin: 0px; -webkit-touch-callout:none;}
             p {
+				overflow:hidden;
 				border-top-color:#dadadc;
 				border-top-style:solid;
 				border-top-width:1px;
-				padding:2px;
+				padding-top:2px;
+				padding-bottom:2px;
+				padding-right:2px;
+				padding-left:2px;
                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f2f5f7), color-stop(100%,#edf0f3));
             }
             html {
                 -webkit-text-size-adjust: none; /* Never autoresize text */
             }
-            </style>
-        <script>
+		</style>
+		<script>
             /* 
             These variables are not required by Relay. They are however used by this theme.
              */
@@ -115,7 +118,6 @@
                 var newdiv = document.createElement('p');
                 var divIdName = 'msg' + cnt;
                 newdiv.setAttribute('id',divIdName);
-                newdiv.style.width = "100%";
                 newdiv.style.height = "auto";
                 newdiv.innerHTML = '';
                 document.body.appendChild(newdiv);
@@ -219,9 +221,7 @@
                 pre += "<font color=\"" + fgcolor + "\" style=\"background: " + bgcolor + ";\">"
                 post += "</font>"
                 olddiv.innerHTML += pre + text + post;
-				// conditional below does not work. fuck.
-				if ((window.pageYOffset || document.body.scrollTop || document.documentElement.scrollTop) == document.body.scrollHeight);
-					scrollToBottom();
+				scrollToBottom();
                 return "SUCCESS";
             }
             

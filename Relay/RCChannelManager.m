@@ -151,6 +151,16 @@
         [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }   
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
+		NSString *chan = nil;
+		if ([channels count] == indexPath.row) {
+			chan = @"";
+		}
+		else {
+			chan = [channels objectAtIndex:indexPath.row];
+		}
+		RCChannelManagementViewController *management = [[RCChannelManagementViewController alloc] initWithStyle:UITableViewStyleGrouped network:network channel:chan];
+		[self.navigationController pushViewController:management animated:YES];
+		[management release];
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
     }   
 }

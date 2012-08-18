@@ -36,11 +36,6 @@ static id _sharedNavigator = nil;
 		[titleLabel setBackgroundColor:[UIColor clearColor]];
 		[titleLabel setHidden:NO];
 		[titleLabel setFont:[UIFont boldSystemFontOfSize:25]];
-		UILongPressGestureRecognizer *gesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(editNetwork:)];
-		[gesture setMinimumPressDuration:0.7];
-		[gesture setNumberOfTapsRequired:0];
-		[titleLabel addGestureRecognizer:gesture];
-		[gesture release];
 		UITapGestureRecognizer *dble = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showNetworkPopover:)];
 		[dble setNumberOfTapsRequired:1];
 		[titleLabel addGestureRecognizer:dble];
@@ -61,7 +56,7 @@ static id _sharedNavigator = nil;
 		[listr setImage:[UIImage imageNamed:@"0_listrbtn_pressed"] forState:UIControlStateHighlighted];
         [bar addSubview:plus];
         [plus addTarget:self action:@selector(presentAddNetworkController) forControlEvents:UIControlEventTouchUpInside];
-		[listr addTarget:self action:@selector(presentChannelManagementController) forControlEvents:UIControlEventTouchUpInside];
+		[listr addTarget:self action:@selector(editNetwork) forControlEvents:UIControlEventTouchUpInside];
         [bar addSubview:listr];
         [plus release];
         [listr release];
@@ -70,10 +65,6 @@ static id _sharedNavigator = nil;
     }
 	_sharedNavigator = self;
     return _sharedNavigator;
-}
-
-- (void)presentChannelManagementController {
-
 }
 
 - (void)presentViewControllerInMainViewController:(UIViewController *)hi {
@@ -170,14 +161,11 @@ static id _sharedNavigator = nil;
     }
 }
 
-- (void)editNetwork:(UIGestureRecognizer *)recog {
+- (void)editNetwork {
     if (isFirstSetup) return;
-	if (recog.state == UIGestureRecognizerStateBegan) {
-		RCNetwork *net = [[RCNetworkManager sharedNetworkManager] networkWithDescription:[(UILabel *)[recog view] text]];
-		UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"What do you want to do for %@", [currentNetwork _description]] delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Delete" otherButtonTitles:@"Edit", ([net isTryingToConnectOrConnected] ? @"Disconnect" : @"Connect"), nil];
-		[sheet showInView:self];
-		[sheet release];
-	}
+	UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"What do you want to do for %@", [currentNetwork _description]] delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Delete" otherButtonTitles:@"Edit", ([currentNetwork isTryingToConnectOrConnected] ? @"Disconnect" : @"Connect"), nil];
+	[sheet showInView:self];
+	[sheet release];
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
