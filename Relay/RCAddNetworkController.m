@@ -150,6 +150,7 @@
 		[keychain release];
 	}
 	[[RCNetworkManager sharedNetworkManager] saveNetworks];
+	[[RCNavigator sharedNavigator] refreshTitleBar:network];
 	[self doneWithJoin];
 }
 

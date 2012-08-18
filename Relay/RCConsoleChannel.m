@@ -20,6 +20,18 @@
     joined = success;
 }
 
+- (void)userWouldLikeToPartakeInThisConversation:(NSString *)message {
+	@autoreleasepool {
+		if ([message hasPrefix:@"/"]) {
+			[self parseAndHandleSlashCommand:[message substringFromIndex:1]];
+			return;
+		}
+		else {
+			[delegate sendMessage:message];
+		}
+	}
+}
+
 - (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type {
 	NSString *msg = @"";
     NSString *time = @"";

@@ -249,14 +249,22 @@ static id _sharedNavigator = nil;
 }
 
 - (void)selectNetwork:(RCNetwork *)net {
-	if (currentPanel) {
-		[currentPanel removeFromSuperview];
-		currentPanel = nil;
+	@synchronized(self) {
+		if (currentPanel) {
+			[currentPanel removeFromSuperview];
+			currentPanel = nil;
+		}
+		currentNetwork = net;
+		[titleLabel setText:[net _description]];
+		if (_isLandscape) {
+			titleLabel.frame = CGRectMake(45, 0, 150, bar.frame.size.height);
+		}
+		else {
+			titleLabel.frame = CGRectMake(47, 0, 225, bar.frame.size.height);
+		}
+		[scrollBar layoutChannels:[net _bubbles]];
+		[self channelSelected:[[net currentChannel] bubble]];
 	}
-	currentNetwork = net;
-	titleLabel.text = [net _description];
-	[scrollBar layoutChannels:[net _bubbles]];
-    [self channelSelected:[[net currentChannel] bubble]];
 }
 
 static RCChannelBubble *questionabubble = nil;
@@ -307,6 +315,7 @@ static RCChannelBubble *questionabubble = nil;
 	}
 	[currentNetwork setCurrentChannel:[bubble channel]];
 	[bubble _setSelected:YES];
+	if (!currentNetwork) NSLog(@"NO CURRENT WORK");
 	RCChannel *chan = [currentNetwork channelWithChannelName:bubble.titleLabel.text]; // unneeded. <.<
 	if (chan) {
 		if ([currentPanel isFirstResponder])
@@ -341,6 +350,10 @@ static RCChannelBubble *questionabubble = nil;
 			[bg drawInRect:CGRectMake(0, 45, 320, 426)];
 		}
 	}
+}
+
+- (void)refreshTitleBar:(RCNetwork *)net {
+	[self selectNetwork:net];
 }
 
 - (void)rotateToInterfaceOrientation:(UIInterfaceOrientation)oi {

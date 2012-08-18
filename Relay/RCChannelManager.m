@@ -44,6 +44,13 @@
 	[self.tableView reloadData];
 }
 
+- (void)addChannel:(NSString *)chan {
+	if ([channels containsObject:chan]) return;
+	[channels insertObject:chan atIndex:[channels count]];
+	[self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:[channels count] inSection:0]] withRowAnimation:UITableViewRowAnimationLeft];
+	[self.tableView reloadData];
+}
+
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
 	return 10;
 }
@@ -172,6 +179,7 @@
 			chan = [channels objectAtIndex:indexPath.row];
 		}
 		RCChannelManagementViewController *management = [[RCChannelManagementViewController alloc] initWithStyle:UITableViewStyleGrouped network:network channel:chan];
+		[management setDelegate:self];
 		[self.navigationController pushViewController:management animated:YES];
 		[management release];
 		NSLog(@"meh %@", chan);
@@ -189,6 +197,7 @@
 		chan = [channels objectAtIndex:indexPath.row];
 	}
 	RCChannelManagementViewController *management = [[RCChannelManagementViewController alloc] initWithStyle:UITableViewStyleGrouped network:network channel:chan];
+	[management setDelegate:self];
 	[self.navigationController pushViewController:management animated:YES];
 	[management release];
 }

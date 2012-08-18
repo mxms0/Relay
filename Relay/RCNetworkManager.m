@@ -97,19 +97,21 @@ static NSMutableArray *networks = nil;
 }
 
 - (void)removeNet:(RCNetwork *)net {
-	if ([net isConnected]) {
-		[net disconnect];
+	@synchronized(self) {
+		dispatch_async(dispatch_get_main_queue(), ^{
+			if ([net isConnected]) {
+				[net disconnect];
+			}
+			[networks removeObject:net];
+			if ([networks count] == 0) {
+				[self setupWelcomeView];
+			}
+			else {
+				[[RCNavigator sharedNavigator] selectNetwork:[networks objectAtIndex:0]];
+			}
+			[self saveNetworks];
+		});
 	}
-	int idx = [networks indexOfObject:net];
-	[networks removeObject:net];
-	if ([networks count] == 0) {
-		[self setupWelcomeView];
-	}
-	else {
-		if (idx == 0) idx++;
-		[[RCNavigator sharedNavigator] selectNetwork:[networks objectAtIndex:idx-1]];
-	}
-	[self saveNetworks];
 }
 
 - (void)unpack {

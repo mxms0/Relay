@@ -10,7 +10,7 @@
 #import "RCNetwork.h"
 
 @implementation RCChannelManagementViewController
-@synthesize channel, originalChannel;
+@synthesize channel, originalChannel, delegate;
 
 - (id)initWithStyle:(UITableViewStyle)style network:(RCNetwork *)_net channel:(NSString *)_chan {
 	if ((self = [super initWithStyle:style])) {
@@ -107,12 +107,10 @@
 		// text field already wasn't active, that means
 		// we need to make this official and add it to the channel manager
 	}
-	MARK;
 	NSString *_chan = [self titleText];
 	if ([_chan isEqualToString:@"New Channel"]) {
 		return;
 	}
-	MARK;
 	if (![_chan isEqualToString:originalChannel]) {
 		[net removeChannel:[net channelWithChannelName:originalChannel]];
 		[net addChannel:_chan join:NO];
@@ -122,6 +120,8 @@
 		[rchan setPassword:pass];
 	}
 	[rchan setJoinOnConnect:jOC];
+	if (jOC) [rchan setJoined:YES withArgument:nil];
+	[delegate addChannel:_chan];
 	[self.navigationController popViewControllerAnimated:YES];
 }
 

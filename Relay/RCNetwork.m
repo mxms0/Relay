@@ -213,7 +213,10 @@
 	struct hostent *host;
 	struct sockaddr_in addr;
 	if ((host = gethostbyname([server UTF8String])) == NULL) {
-		MARK;
+		RCChannel *chan = [_channels objectForKey:@"IRC"];
+		[chan recievedMessage:@"Error obtaining host." from:@"" type:RCMessageTypeNormal];
+		[p drain];
+		return;
 	}
 	sockfd = socket(PF_INET, SOCK_STREAM, 0);
 	bzero(&addr, sizeof(addr));
@@ -221,12 +224,18 @@
 	addr.sin_port = htons(port);
 	addr.sin_addr.s_addr = *(long *)(host->h_addr);
 	if (connect(sockfd, (struct sockaddr *)&addr, sizeof(addr)) != 0) {
-		MARK;
+		RCChannel *chan = [_channels objectForKey:@"IRC"];
+		[chan recievedMessage:@"Error connecting to host." from:@"" type:RCMessageTypeNormal];
+		[p drain];
+		return;
 	}
 	ssl = SSL_new(ctx);
 	SSL_set_fd(ssl, sockfd);
 	if (SSL_connect(ssl) == -1) {
-		MARK;
+		RCChannel *chan = [_channels objectForKey:@"IRC"];
+		[chan recievedMessage:@"Error connecting with SSL" from:@"" type:RCMessageTypeNormal];
+		[p drain];
+		return;
 	}
 	
 	int fd = 0;
@@ -1067,7 +1076,7 @@ char *RCIPForURL(NSString *URL) {
 }
 
 - (void)handleCTCPRequest:(NSString *)_request {
-	NSScanner *_sc = [[NSScanner alloc] initWithString:_request];
+	NSScanner *_sc = [[[NSScanner alloc] initWithString:_request] autorelease];
 	NSString *_from = @"_";
 	NSString *cmd = _from;
 	NSString *to = cmd;
@@ -1080,15 +1089,12 @@ char *RCIPForURL(NSString *URL) {
 	[_sc scanUpToString:@" " intoString:&request];
 	RCParseUserMask(_from, &_from, nil, nil);
     if ([request hasPrefix:@":"]) {
-        [_sc release];
 		request = [request substringFromIndex:1];
     }
     if (![request hasPrefix:@"\x01"]) {
-        [_sc release];
 		return;
     }
     if (![request hasSuffix:@"\x01"]) {
-		[_sc release];
         return;
     }
     request = [request substringFromIndex:1];
@@ -1097,7 +1103,7 @@ char *RCIPForURL(NSString *URL) {
     if (vdx == NSNotFound) {
         vdx = [request length];
     }
-    NSString* command = [request substringToIndex:vdx];
+    NSString *command = [request substringToIndex:vdx];
 	NSLog(@"Meh. %@", command);
 	if ([command isEqualToString:@"TIME"]) 
 		extra = [NSString stringWithFormat:@"%@", [NSDate date]];
@@ -1110,7 +1116,6 @@ char *RCIPForURL(NSString *URL) {
 	else 
 		NSLog(@"WTF?!?!! %@", command);
 	[self sendMessage:[@"NOTICE " stringByAppendingFormat:@"%@ :\x01%@ %@\x01", _from, command, extra]];
-	[_sc release];
 }
 
 - (void)handlePART:(NSString *)parted {
