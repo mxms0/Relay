@@ -12,7 +12,6 @@
 
 - (id)initWithStyle:(UITableViewStyle)style andNetwork:(RCNetwork *)net {
 	if ((self = [super initWithStyle:style])) {
-		[net setNamesCallback:self];
 		network = net;
 		_rEditing = NO;
 		self.tableView.allowsSelectionDuringEditing = YES;
@@ -22,6 +21,21 @@
     }
     return self;
 }
+/*
+- (void)recievedChannel:(NSString *)chanf withCount:(int)count andTopic:(NSString *)topicPlusModes {
+	if (!listing) {
+		listing = YES;
+		[self.tableView reloadData];
+	}
+	if (!listChannels) listChannels = [[NSMutableArray alloc] init];
+	RCChannelInfo *info = [[RCChannelInfo alloc] init];
+	[info setTopic:topicPlusModes];
+	[info setUserCount:count];
+	[info setChannel:chanf];
+	[listChannels addObject:info];
+	[info release];
+	[self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:[listChannels count]-1 inSection:0]] withRowAnimation:UITableViewRowAnimationLeft];
+}*/
 
 - (void)reloadData {
 	if (channels) [channels release];
@@ -107,10 +121,6 @@
     network = nil;
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    return YES;
-}
-
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
@@ -130,10 +140,11 @@
     static NSString *CellIdentifier = @"0_addCell";
     RCAddCell *cell = (RCAddCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[RCAddCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[[RCAddCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
 		cell.selectionStyle = UITableViewCellSelectionStyleBlue;
 		cell.textLabel.font = [UIFont boldSystemFontOfSize:14];
 		cell.textLabel.textColor = UIColorFromRGB(0x545758);
+		[cell setOpaque:YES];
 	}
 	if ([channels count] == indexPath.row) {
 		cell.textLabel.text = @"Add Channel";
@@ -163,11 +174,13 @@
 		RCChannelManagementViewController *management = [[RCChannelManagementViewController alloc] initWithStyle:UITableViewStyleGrouped network:network channel:chan];
 		[self.navigationController pushViewController:management animated:YES];
 		[management release];
+		NSLog(@"meh %@", chan);
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
     }   
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	NSString *chan = nil;
 	if ([channels count] == indexPath.row) {
 		chan = @"";
@@ -175,7 +188,6 @@
 	else {
 		chan = [channels objectAtIndex:indexPath.row];
 	}
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 	RCChannelManagementViewController *management = [[RCChannelManagementViewController alloc] initWithStyle:UITableViewStyleGrouped network:network channel:chan];
 	[self.navigationController pushViewController:management animated:YES];
 	[management release];

@@ -31,7 +31,7 @@
 		prev = @"";
 		_bar = [[RCTextFieldBackgroundView alloc] initWithFrame:CGRectMake(0, 343, 320, 40)];
 		[_bar setOpaque:NO];
-		field = [[RCTextField alloc] initWithFrame:CGRectMake(15, 5, 295, 31)];
+		field = [[RCTextField alloc] initWithFrame:CGRectMake(15, 5, 299, 31)];
 		[field setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
 		[field setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
 		[field setBorderStyle:UITextBorderStyleNone];
@@ -42,6 +42,8 @@
 		[field setMinimumFontSize:17];
 		[field setAdjustsFontSizeToFitWidth:YES];
 		[field setDelegate:self];
+		[field setAutocapitalizationType:UITextAutocapitalizationTypeNone];
+		[field setClearButtonMode:UITextFieldViewModeWhileEditing];
 		[_bar addSubview:field];
 		[field release];
 		[self addSubview:_bar];
@@ -120,7 +122,7 @@
 		[UIView setAnimationDuration:0.25];
 	}
 	[_bar setFrame:[self frameForInputField:key]];
-	field.frame = CGRectMake(15, 5, _bar.frame.size.width-30, 31);
+	field.frame = CGRectMake(15, 5, _bar.frame.size.width-21, 31);
 	if (anim) [UIView commitAnimations];
 	[mainView setFrame:CGRectMake(0, 0, _bar.frame.size.width, _bar.frame.origin.y)];
 	[mainView setNeedsDisplay];

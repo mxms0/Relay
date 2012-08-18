@@ -256,7 +256,7 @@ static id _sharedNavigator = nil;
 	currentNetwork = net;
 	titleLabel.text = [net _description];
 	[scrollBar layoutChannels:[net _bubbles]];
-    [self channelSelected:[[net channelWithChannelName:@"IRC"] bubble]];
+    [self channelSelected:[[net currentChannel] bubble]];
 }
 
 static RCChannelBubble *questionabubble = nil;
@@ -305,6 +305,7 @@ static RCChannelBubble *questionabubble = nil;
 		RCChannel *chan = [[currentNetwork _channels] objectForKey:_chan]; // safe not to use channelWithChannelName as getting the key from the dict directly.
 		[[chan bubble] _setSelected:NO];
 	}
+	[currentNetwork setCurrentChannel:[bubble channel]];
 	[bubble _setSelected:YES];
 	RCChannel *chan = [currentNetwork channelWithChannelName:bubble.titleLabel.text]; // unneeded. <.<
 	if (chan) {

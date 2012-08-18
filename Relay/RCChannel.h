@@ -9,7 +9,7 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "RCChatPanel.h"
 #import "RCAppDelegate.h"
-#import "NSString+Comparing.h"
+#import "NSString+Utils.h"
 #import "RCChannelBubble.h"
 #import "RCUserListPanel.h"
 #import "RCUserTableCell.h"

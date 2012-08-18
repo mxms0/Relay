@@ -15,9 +15,9 @@
 - (id)initWithStyle:(UITableViewStyle)style network:(RCNetwork *)_net channel:(NSString *)_chan {
 	if ((self = [super initWithStyle:style])) {
 		net = _net;
-		[self setChannel:channel]; // botched.
-		jOC = NO;
 		[self setOriginalChannel:_chan];
+		[self setChannel:_chan]; // botched.
+		jOC = NO;
 		if ((channel != nil) && ![channel isEqualToString:@""]) {
 			jOC = [[net channelWithChannelName:channel] joinOnConnect];
 			RCKeychainItem *item = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@%@rpass", [_net _description], channel]  accessGroup:nil];
@@ -107,6 +107,7 @@
 		// text field already wasn't active, that means
 		// we need to make this official and add it to the channel manager
 	}
+	MARK;
 	NSString *_chan = [self titleText];
 	if ([_chan isEqualToString:@"New Channel"]) {
 		return;
@@ -122,7 +123,6 @@
 	}
 	[rchan setJoinOnConnect:jOC];
 	[self.navigationController popViewControllerAnimated:YES];
-	[[net namesCallback] reloadData];
 }
 
 - (BOOL)textFieldShouldReturn:(RCTextField *)textField {
@@ -132,11 +132,11 @@
 }
 
 - (void)passTextChanged:(UITextField *)textField {
-	pass = textField.text;
+	pass = [textField.text retain];
 }
 
 - (void)textChanged:(UITextField *)textField {
-	channel = textField.text;
+	channel = [textField.text retain];
 	[((UILabel *)self.navigationItem.titleView) setText:[self titleText]];
 }
 
@@ -152,10 +152,6 @@
 - (void)viewDidUnload {
     [super viewDidUnload];
     // Release any retained subviews of the main view.
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    return YES;
 }
 
 @end

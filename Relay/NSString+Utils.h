@@ -8,8 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSString (Comparing)
+@interface NSString (Utils)
 - (BOOL)isEqualToStringNoCase:(NSString *)string;
 - (BOOL)hasPrefixNoCase:(NSString *)string;
 - (BOOL)hasSuffixNoCase:(NSString *)string;
+- (NSString *)recursivelyRemovePrefix:(NSString *)prefix fromString:(NSString *)str;
 @end

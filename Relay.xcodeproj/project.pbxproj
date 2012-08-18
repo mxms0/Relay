@@ -115,7 +115,7 @@
 		50E77A981505A30400E75C64 /* RCNavigator.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A711505A1D800E75C64 /* RCNavigator.m */; };
 		50E77A991505A30400E75C64 /* RCTitleLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A731505A1E300E75C64 /* RCTitleLabel.m */; };
 		50E77A9A1505A30400E75C64 /* RCAddNetworkController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A751505A1EC00E75C64 /* RCAddNetworkController.m */; };
-		50E77A9B1505A30400E75C64 /* NSString+Comparing.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A771505A21500E75C64 /* NSString+Comparing.m */; };
+		50E77A9B1505A30400E75C64 /* NSString+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A771505A21500E75C64 /* NSString+Utils.m */; };
 		50E77A9C1505A30400E75C64 /* RCAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A791505A21500E75C64 /* RCAppDelegate.m */; };
 		50E77A9D1505A30400E75C64 /* RCChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A7B1505A21500E75C64 /* RCChannel.m */; };
 		50E77A9E1505A30400E75C64 /* RCConsoleChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A7D1505A21500E75C64 /* RCConsoleChannel.m */; };
@@ -142,6 +142,7 @@
 		50EEDA2A1512C8540011618C /* 0_ops@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50EEDA281512C8540011618C /* 0_ops@2x.png */; };
 		50EEDA2D1512C92F0011618C /* 0_mListr.png in Resources */ = {isa = PBXBuildFile; fileRef = 50EEDA2B1512C92F0011618C /* 0_mListr.png */; };
 		50EEDA301512CA520011618C /* 0_mListr@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50EEDA2F1512CA520011618C /* 0_mListr@2x.png */; };
+		50F0BFCE15DF73DC001B3F50 /* RCChannelInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 50F0BFCD15DF73DC001B3F50 /* RCChannelInfo.m */; };
 		50F1A65815D215E50013CD13 /* RCBasicTextInputCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 50F1A65715D215E50013CD13 /* RCBasicTextInputCell.m */; };
 		50F1A65C15D216CA0013CD13 /* RCBasicTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 50F1A65B15D216CA0013CD13 /* RCBasicTableViewCell.m */; };
 		50F9036E15C5B105001BC6F0 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 50F9036C15C5B105001BC6F0 /* libcrypto.a */; };
@@ -298,8 +299,8 @@
 		50E77A731505A1E300E75C64 /* RCTitleLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTitleLabel.m; sourceTree = "<group>"; };
 		50E77A741505A1EC00E75C64 /* RCAddNetworkController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCAddNetworkController.h; sourceTree = "<group>"; };
 		50E77A751505A1EC00E75C64 /* RCAddNetworkController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCAddNetworkController.m; sourceTree = "<group>"; };
-		50E77A761505A21500E75C64 /* NSString+Comparing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+Comparing.h"; sourceTree = "<group>"; };
-		50E77A771505A21500E75C64 /* NSString+Comparing.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+Comparing.m"; sourceTree = "<group>"; };
+		50E77A761505A21500E75C64 /* NSString+Utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+Utils.h"; sourceTree = "<group>"; };
+		50E77A771505A21500E75C64 /* NSString+Utils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+Utils.m"; sourceTree = "<group>"; };
 		50E77A781505A21500E75C64 /* RCAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCAppDelegate.h; sourceTree = "<group>"; };
 		50E77A791505A21500E75C64 /* RCAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCAppDelegate.m; sourceTree = "<group>"; };
 		50E77A7A1505A21500E75C64 /* RCChannel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCChannel.h; sourceTree = "<group>"; };
@@ -338,6 +339,8 @@
 		50EEDA281512C8540011618C /* 0_ops@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_ops@2x.png"; sourceTree = "<group>"; };
 		50EEDA2B1512C92F0011618C /* 0_mListr.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_mListr.png; sourceTree = "<group>"; };
 		50EEDA2F1512CA520011618C /* 0_mListr@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_mListr@2x.png"; sourceTree = "<group>"; };
+		50F0BFCC15DF73DC001B3F50 /* RCChannelInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCChannelInfo.h; sourceTree = "<group>"; };
+		50F0BFCD15DF73DC001B3F50 /* RCChannelInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCChannelInfo.m; sourceTree = "<group>"; };
 		50F1A65615D215E50013CD13 /* RCBasicTextInputCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCBasicTextInputCell.h; sourceTree = "<group>"; };
 		50F1A65715D215E50013CD13 /* RCBasicTextInputCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCBasicTextInputCell.m; sourceTree = "<group>"; };
 		50F1A65A15D216CA0013CD13 /* RCBasicTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCBasicTableViewCell.h; sourceTree = "<group>"; };
@@ -643,8 +646,8 @@
 			children = (
 				50376D2815B3CCAD00E13006 /* RCDateManager.h */,
 				50376D2915B3CCAD00E13006 /* RCDateManager.m */,
-				50E77A761505A21500E75C64 /* NSString+Comparing.h */,
-				50E77A771505A21500E75C64 /* NSString+Comparing.m */,
+				50E77A761505A21500E75C64 /* NSString+Utils.h */,
+				50E77A771505A21500E75C64 /* NSString+Utils.m */,
 				50E77A781505A21500E75C64 /* RCAppDelegate.h */,
 				50E77A791505A21500E75C64 /* RCAppDelegate.m */,
 				50E77A7A1505A21500E75C64 /* RCChannel.h */,
@@ -657,6 +660,8 @@
 				50E77A7F1505A21500E75C64 /* RCMessageFormatter.m */,
 				50E77A801505A21500E75C64 /* RCNetwork.h */,
 				50E77A811505A21500E75C64 /* RCNetwork.m */,
+				50F0BFCC15DF73DC001B3F50 /* RCChannelInfo.h */,
+				50F0BFCD15DF73DC001B3F50 /* RCChannelInfo.m */,
 				EAF79C3915D77E9C0075AF47 /* NSString+IRCStringSupport.h */,
 				EAF79C3A15D77E9C0075AF47 /* NSString+IRCStringSupport.m */,
 				50E77A821505A21500E75C64 /* RCNetworkManager.h */,
@@ -851,7 +856,7 @@
 				50E77A981505A30400E75C64 /* RCNavigator.m in Sources */,
 				50E77A991505A30400E75C64 /* RCTitleLabel.m in Sources */,
 				50E77A9A1505A30400E75C64 /* RCAddNetworkController.m in Sources */,
-				50E77A9B1505A30400E75C64 /* NSString+Comparing.m in Sources */,
+				50E77A9B1505A30400E75C64 /* NSString+Utils.m in Sources */,
 				50E77A9C1505A30400E75C64 /* RCAppDelegate.m in Sources */,
 				50E77A9D1505A30400E75C64 /* RCChannel.m in Sources */,
 				50E77A9E1505A30400E75C64 /* RCConsoleChannel.m in Sources */,
@@ -883,6 +888,7 @@
 				EAF79C3B15D77E9C0075AF47 /* NSString+IRCStringSupport.m in Sources */,
 				EAF79C4115D9068B0075AF47 /* RCShadowLayer.m in Sources */,
 				5027643015DA0F07005F026E /* RCChatView.m in Sources */,
+				50F0BFCE15DF73DC001B3F50 /* RCChannelInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

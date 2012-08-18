@@ -516,8 +516,8 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	// Character sets
-	NSCharacterSet *stopCharacters = [NSCharacterSet characterSetWithCharactersInString:[NSString stringWithFormat:@"< \t\n\r%C%C%C%C", 0x0085, 0x000C, 0x2028, 0x2029]];
-	NSCharacterSet *newLineAndWhitespaceCharacters = [NSCharacterSet characterSetWithCharactersInString:[NSString stringWithFormat:@" \t\n\r%C%C%C%C", 0x0085, 0x000C, 0x2028, 0x2029]];
+	NSCharacterSet *stopCharacters = [NSCharacterSet characterSetWithCharactersInString:[NSString stringWithFormat:@"< \t\n\r%C%C%C%C", (unsigned short)0x0085, (unsigned short)0x000C, (unsigned short)0x2028, (unsigned short)0x2029]];
+	NSCharacterSet *newLineAndWhitespaceCharacters = [NSCharacterSet characterSetWithCharactersInString:[NSString stringWithFormat:@" \t\n\r%C%C%C%C", (unsigned short)0x0085, (unsigned short)0x000C, (unsigned short)0x2028, (unsigned short)0x2029]];
 	NSCharacterSet *tagNameCharacters = [NSCharacterSet characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"];
 	
 	// Scan and find all tags
@@ -638,7 +638,7 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
 	NSMutableString *result = [[NSMutableString alloc] init];
 	NSString *temp;
 	NSCharacterSet *newLineCharacters = [NSCharacterSet characterSetWithCharactersInString:
-										 [NSString stringWithFormat:@"\n\r%C%C%C%C", 0x0085, 0x000C, 0x2028, 0x2029]];
+										 [NSString stringWithFormat:@"\n\r%C%C%C%C", (unsigned short)0x0085, (unsigned short)0x000C, (unsigned short)0x2028, (unsigned short)0x2029]];
 	// Scan
 	do {
 		
@@ -697,7 +697,7 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
 	NSMutableString *result = [[NSMutableString alloc] init];
 	NSString *temp;
 	NSCharacterSet *newLineAndWhitespaceCharacters = [NSCharacterSet characterSetWithCharactersInString:
-													  [NSString stringWithFormat:@" \t\n\r%C%C%C%C", 0x0085, 0x000C, 0x2028, 0x2029]];
+													  [NSString stringWithFormat:@" \t\n\r%C%C%C%C", (unsigned short)0x0085, (unsigned short)0x000C, (unsigned short)0x2028, (unsigned short)0x2029]];
 	// Scan
 	while (![scanner isAtEnd]) {
 		
@@ -735,12 +735,12 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
     NSString *pattern = @"(?<!=\")\\b((http|https|ftp|irc):\\/\\/[\\w\\-_]+(\\.[\\w\\-_]+)+([\\w\\-\\.,@?^=%%&amp;:/~\\+#]*[\\w\\-\\@?^=%%&amp;/~\\+#])?)";
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:0 error:nil];
     NSString *modifiedString = [regex stringByReplacingMatchesInString:self options:0 range:NSMakeRange(0, [self length])
-                                                           withTemplate:@"<a href=\"link:$1\" class=\"linkified\">$1</a>"];
+                                                           withTemplate:@"<a href=\"$1\" class=\"linkified\">$1</a>"];
     
     NSString *pattern1 = @"([#][a-zA-Z0-9]{1,20})";
     regex = [NSRegularExpression regularExpressionWithPattern:pattern1 options:0 error:nil];
     modifiedString = [[regex stringByReplacingMatchesInString:modifiedString options:0 range:NSMakeRange(0, [self length])
-                                                           withTemplate:@"<a href=\"channel:$1\" class=\"channel\">$1</a>"] retain];
+												 withTemplate:@"<a href=\"$1\" class=\"channel\">$1</a>"] retain];
     
     [pool drain];
     return [modifiedString autorelease];

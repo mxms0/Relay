@@ -78,19 +78,6 @@
 	// Do any additional setup after loading the view, typically from a nib.
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-	return YES;
-}
-
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-	float y = 44;
-	float width = 320;
-	if (UIInterfaceOrientationIsLandscape(toInterfaceOrientation)) {
-		y = 32; width = 480;
-	}
-	r_shadow.frame = CGRectMake(0, y, width, 10);
-}
-
 - (void)doneWithJoin {
 	[[RCNavigator sharedNavigator] rotateToInterfaceOrientation:self.interfaceOrientation];
 	[self dismissModalViewControllerAnimated:YES];

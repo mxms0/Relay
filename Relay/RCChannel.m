@@ -203,6 +203,9 @@ UIImage *RCImageForRank(NSString *rank) {
 	if (indexPath.row == 0) return;
 	else {
 		[delegate addChannel:c.textLabel.text join:NO];
+		if ([[[RCNavigator sharedNavigator] currentNetwork] isEqual:delegate]) {
+			[[RCNavigator sharedNavigator] channelSelected:[[delegate channelWithChannelName:c.textLabel.text] bubble]];
+		}
 	}
 }
 
@@ -305,7 +308,7 @@ UIImage *RCImageForRank(NSString *rank) {
             break;
 	}
 	BOOL isHighlight = NO;
-	if (type != RCMessageTypeNormalE && type != RCMessageTypeNotice && type != RCMessageTypeTopic) isHighlight = ([message rangeOfString:[delegate useNick] options:NSCaseInsensitiveSearch].location != NSNotFound);
+	if (type == RCMessageTypeNormal || type == RCMessageTypeAction || type == RCMessageTypeNotice && ![from isEqualToStringNoCase:[delegate useNick]]) isHighlight = ([message rangeOfString:[delegate useNick] options:NSCaseInsensitiveSearch].location != NSNotFound);
 	[panel postMessage:msg withType:type highlight:isHighlight isMine:([from isEqualToString:[delegate useNick]])];
 	[self shouldPost:isHighlight withMessage:msg];
 	[msg release];

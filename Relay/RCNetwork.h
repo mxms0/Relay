@@ -85,6 +85,7 @@ typedef enum RCSocketStatus {
 @property (nonatomic, assign) BOOL shouldRequestSPass;
 @property (nonatomic, assign) BOOL shouldRequestNPass;
 @property (nonatomic, assign) id namesCallback;
+@property (nonatomic, assign) RCChannel *currentChannel;
 - (RCChannel *)channelWithChannelName:(NSString *)chan;
 - (NSString *)_description;
 - (void)connect;

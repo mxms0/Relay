@@ -8,10 +8,13 @@
 #import "RCNetwork.h"
 #import "RCNetworkManager.h"
 #import "TestFlight.h"
+#import "RCChannelManager.h"
+
 #define RECV_BUF_LEN 10240
+
 @implementation RCNetwork
 
-@synthesize sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _bubbles, _nicknames, shouldRequestSPass, shouldRequestNPass, namesCallback;
+@synthesize sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _bubbles, _nicknames, shouldRequestSPass, shouldRequestNPass, namesCallback, currentChannel;
 
 - (id)init {
 	if ((self = [super init])) {
@@ -163,6 +166,8 @@
 
 - (void)removeChannel:(RCChannel *)chan withMessage:(NSString *)quitter {
 	if (!chan) return;
+	if ([[self.currentChannel channelName] isEqual:[chan channelName]])
+		self.currentChannel = [[self _channels] objectForKey:@"IRC"];
 	[chan setJoined:NO withArgument:quitter];
 	[[RCNavigator sharedNavigator] removeChannel:chan fromServer:self];
 	[_channels removeObjectForKey:[chan channelName]];
@@ -531,19 +536,17 @@ char *RCIPForURL(NSString *URL) {
 		if (sendQueue) [sendQueue release];
 		sendQueue = nil;
 		close(sockfd);
+		if (useSSL)
+			SSL_CTX_free(ctx);
+		// freeing ssl causes crash. need to fix.
 		[[UIApplication sharedApplication] endBackgroundTask:task];
 		task = UIBackgroundTaskInvalid;
 		status = RCSocketStatusClosed;
 		isRegistered = NO;
-		if (useSSL) {
-			SSL_free(ssl);
-			SSL_CTX_free(ctx);
-		}
 		for (NSString *chan in [_channels allKeys]) {
 			RCChannel *_chan = [self channelWithChannelName:chan];
 			[_chan disconnected:msg];
 		}
-		NSLog(@"Disconnected.");
 	}
 	_isDiconnecting = NO;
 	return YES;
@@ -793,10 +796,19 @@ char *RCIPForURL(NSString *URL) {
 	[hi scanUpToString:@" " intoString:&count];
 	[hi scanUpToString:@"\r\n" intoString:&topicModes];
 	chan = [chan stringByReplacingOccurrencesOfString:@" " withString:@""];
-	count = [chan stringByReplacingOccurrencesOfString:@" " withString:@""];
+	count = [count stringByReplacingOccurrencesOfString:@" " withString:@""];
+	if ([topicModes length] > 1)
+		topicModes = [topicModes substringFromIndex:1];
+	if ([topicModes isEqualToString:@" "]) topicModes = nil;
+	if ([topicModes hasPrefix:@" "]) topicModes = [topicModes recursivelyRemovePrefix:@" " fromString:topicModes];
+	[namesCallback recievedChannel:chan withCount:[count intValue] andTopic:topicModes];
 	NSLog(@"eeee %@:%@:%@",chan,count,topicModes);
 	[hi release];
 	// :irc.saurik.com 322 mx_ #testing 1 :[+nt]
+}
+
+- (void)handle323:(NSString *)endofchannellistning {
+	[namesCallback removeStupidWarningView];
 }
 
 - (void)handle331:(NSString *)noTopic {

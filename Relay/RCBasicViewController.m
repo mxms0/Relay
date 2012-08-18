@@ -79,7 +79,22 @@
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+	return YES;
 }
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+	float y = 44;
+	float width = 320;
+	if (UIInterfaceOrientationIsLandscape(toInterfaceOrientation)) {
+		y = 32; width = 480;
+	}
+	for (UIView *subvc in [self.navigationController.navigationBar subviews]) {
+		NSLog(@"hi %@",subvc);
+		if ([subvc isKindOfClass:[UIImageView class]])
+			subvc.frame = CGRectMake(0, y, width, 10);
+	}
+	r_shadow.frame = CGRectMake(0, y, width, 10);
+}
+
 
 @end

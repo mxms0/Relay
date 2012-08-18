@@ -77,15 +77,17 @@ NSString *colorForIRCColor(char irccolor) {
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:escaped]];  
         return NO;
     }
+	else if ([requestString hasPrefix:@"channel:"]) {
+		NSLog(@"should join: %@", [requestString substringFromIndex:[@"channel:" length]]);
+		NSString *escaped = [[requestString substringFromIndex:[@"channel:" length]] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+		RCChannel *ch = [[(RCChannel*)[[self chatpanel] channel] delegate] addChannel:escaped join:YES];
+		[[RCNavigator sharedNavigator] channelSelected:[ch bubble]];
+		[[RCNavigator sharedNavigator] scrollToBubble:[ch bubble]];
+		return NO;
+		
+	}
 	else {
-        if ([requestString hasPrefix:@"channel:"]) {
-			NSLog(@"should join: %@", [requestString substringFromIndex:[@"channel:" length]]);
-			NSString *escaped = [[requestString substringFromIndex:[@"channel:" length]] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-			RCChannel *ch = [[(RCChannel*)[[self chatpanel] channel] delegate] addChannel:escaped join:YES];
-			[[RCNavigator sharedNavigator] channelSelected:[ch bubble]];
-			[[RCNavigator sharedNavigator] scrollToBubble:[ch bubble]];
-			return NO;
-		}
+		[[UIApplication sharedApplication] openURL:[request URL]];
 	}
     return NO;
 }
@@ -137,7 +139,6 @@ _out_:
 			[ms setString:[[ms string] substringWithRange:NSMakeRange(0, [[ms string] length]-1)]];
 		}
 		[self stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"setFlags('%@','%@');", name, [[ms string] substringToIndex:[[ms string] rangeOfString:@"-"].location]]];
-		NSLog(@"Wat. %@", [[ms string] substringToIndex:[[ms string] rangeOfString:@"-"].location]);
 		NSString* istring = [[[[[[ms string] substringFromIndex:[[ms string] rangeOfString:@"-"].location+1] stringByEncodingHTMLEntities:YES] stringByReplacingOccurrencesOfString:@"\n" withString:@"<br />"] stringByLinkifyingURLs] stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
 		unsigned int cpos = 0;
 		BOOL isBold = NO;
@@ -147,7 +148,6 @@ _out_:
 		NSString *bgcolor = colorForIRCColor(-2);
 		unsigned int lpos = 0;
 		NSString *cstr;
-		NSLog(@"%@", istring);
 		while (cpos - [istring length]) {
 			switch ([istring characterAtIndex:cpos]) {
 				case RCIRCAttributeBold:
