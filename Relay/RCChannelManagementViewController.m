@@ -15,7 +15,7 @@
 - (id)initWithStyle:(UITableViewStyle)style network:(RCNetwork *)_net channel:(NSString *)_chan {
 	if ((self = [super initWithStyle:style])) {
 		net = _net;
-		[self setChannel:channel];
+		[self setChannel:channel]; // botched.
 		jOC = NO;
 		[self setOriginalChannel:_chan];
 		if ((channel != nil) && ![channel isEqualToString:@""]) {
