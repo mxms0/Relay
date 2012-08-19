@@ -8,6 +8,8 @@
 
 #import "RCConsoleChannel.h"
 #import "RCChatView.h"
+#import "RCNetwork.h"
+
 @implementation RCConsoleChannel
 
 - (id)initWithChannelName:(NSString *)_name {
@@ -27,7 +29,8 @@
 			return;
 		}
 		else {
-			[delegate sendMessage:message];
+			[(RCNetwork *)delegate sendMessage:message];
+			[self recievedMessage:message from:@"" type:RCMessageTypeNormalE];
 		}
 	}
 }

@@ -55,10 +55,17 @@
 		[self.navigationController.navigationBar addSubview:r_shadow];
 		[r_shadow release];
 	}
-	UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 65, 30)];
-	[btn setImage:[UIImage imageNamed:@"0_donebutton_normal"] forState:UIControlStateNormal];
-	[btn setImage:[UIImage imageNamed:@"0_donebutton_pressed"] forState:UIControlStateHighlighted];
-	[btn setImage:[UIImage imageNamed:@"0_donebutton_disabled"] forState:UIControlStateDisabled];
+	UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 55, 30)];
+	[btn setTitle:@"Done" forState:UIControlStateNormal];
+	[[btn titleLabel] setTextAlignment:UITextAlignmentCenter];
+	[btn setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
+	[[btn titleLabel] setShadowOffset:CGSizeMake(0, 1)];
+	[[btn titleLabel] setFont:[UIFont boldSystemFontOfSize:11]];
+	[btn setTitleColor:UIColorFromRGB(0x929292) forState:UIControlStateDisabled];
+	[btn setTitleColor:UIColorFromRGB(0x454646) forState:UIControlStateNormal];
+	[btn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateNormal];
+	[btn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_p"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateHighlighted];
+	//	[btn setImage:[UIImage imageNamed:@"0_donebutton_disabled"] forState:UIControlStateDisabled];
 	btn.enabled = NO;
 	[btn addTarget:self action:@selector(doneConnection) forControlEvents:UIControlEventTouchUpInside];
 	UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithCustomView:btn];
@@ -67,9 +74,14 @@
 	[self.navigationItem setRightBarButtonItem:done];
 	[done release];
 	
-	UIButton *cBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 65, 30)];
-	[cBtn setImage:[UIImage imageNamed:@"0_cancelbutton_normal"] forState:UIControlStateNormal];
-	[cBtn setImage:[UIImage imageNamed:@"0_cancelbutton_pressed"] forState:UIControlStateHighlighted];
+	UIButton *cBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 55, 30)];
+	[cBtn setTitle:@"Cancel" forState:UIControlStateNormal];
+	[cBtn setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
+	[[cBtn titleLabel] setShadowOffset:CGSizeMake(0, 1)];
+		[[cBtn titleLabel] setFont:[UIFont boldSystemFontOfSize:11]];
+	[cBtn setTitleColor:UIColorFromRGB(0x454646) forState:UIControlStateNormal];
+	[cBtn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateNormal];
+	[cBtn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_p"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateHighlighted];
 	[cBtn addTarget:self action:@selector(doneWithJoin) forControlEvents:UIControlEventTouchUpInside];
 	UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithCustomView:cBtn];
 	[cBtn release];
@@ -381,7 +393,6 @@
 						cell.textLabel.text = @"Connect At Launch";
 						UISwitch *cnt = [[UISwitch alloc] init];
 						[cnt setOn:[network COL]];
-						[cnt setOnTintColor:UIColorFromRGB(0x5296ea)];
 						[cnt addTarget:self action:@selector(launchSwitched:) forControlEvents:UIControlEventValueChanged];
 						[cell setAccessoryView:cnt];
 						[cnt release];

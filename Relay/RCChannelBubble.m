@@ -8,7 +8,9 @@
 
 #import "RCChannelBubble.h"
 #import "RCNavigator.h"
-static UIImage* image = nil;
+
+static UIImage *image = nil;
+
 @implementation RCChannelBubble
 @synthesize hasNewHighlights, isSelected, _rcount;
 
@@ -27,7 +29,12 @@ static UIImage* image = nil;
 		hasNewMessages = NO;
 		hasNewHighlights = NO;
 		_rcount = 0;
+		self.exclusiveTouch = YES;
         channel = channel_;
+		//		UILongPressGestureRecognizer *pp = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressBegan:)];
+		//pp.minimumPressDuration = 1;
+		//[self addGestureRecognizer:pp];
+		//[pp release];
 		self.alpha = 1;
 		self.reversesTitleShadowWhenHighlighted = NO;
         self.adjustsImageWhenHighlighted = NO;
@@ -46,6 +53,24 @@ static UIImage* image = nil;
     return channel;
 }
 
+- (void)longPressBegan:(UIGestureRecognizer *)gg {
+	longPressed = ([gg state] == UIGestureRecognizerStateBegan);
+	if (longPressed) {
+		//id vv = [[gg view] retain];
+		//[[gg view] removeFromSuperview];
+		//		[self.superview addSubview:vv];
+	}
+}
+/*
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+	if (longPressed) {
+	UITouch *touch = [[event allTouches] anyObject];
+	CGPoint touchLocation = [touch locationInView:self.superview];
+	self.center = touchLocation;
+		
+	}
+}*/
+
 - (void)setTitle:(NSString *)title forState:(UIControlState)state {
 	[super setTitle:title forState:state];
 	if (![title isEqualToString:@"IRC"]) {
@@ -55,13 +80,6 @@ static UIImage* image = nil;
 		[longPress setMinimumPressDuration:0.5];
 		[self addGestureRecognizer:longPress];
 		[longPress release];
-		if (![channel isPrivate]) {
-			UILongPressGestureRecognizer *longHold = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(showUserList:)];
-			[longHold setNumberOfTapsRequired:0];
-			[longHold setMinimumPressDuration:0.5];
-			[self addGestureRecognizer:longHold];
-			[longHold release];
-		}
 	}
     [self fixColors];
 }

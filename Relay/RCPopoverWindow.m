@@ -122,7 +122,7 @@ static id _instance = nil;
 	if (!cell) {
 		cell = [[[RCNetworkCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:ident] autorelease];
 	}
-	cell.textLabel.text = [[[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.row] sDescription];
+	cell.textLabel.text = [[[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.row] _description];
 	return cell;
 }
 

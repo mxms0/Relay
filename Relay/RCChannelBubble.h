@@ -14,6 +14,7 @@
 	BOOL hasNewHighlights;
 	id delegate;
 	int _rcount;
+	BOOL longPressed;
     RCChannel* channel;
 }
 @property (nonatomic, readonly) BOOL isSelected;

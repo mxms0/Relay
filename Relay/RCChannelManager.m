@@ -18,6 +18,7 @@
 		[self reloadData];
 		if ([[[net _channels] allKeys] count] == 0)
 			[self edit];
+		else [self setupEditButton];
     }
     return self;
 }
@@ -67,9 +68,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-	UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(edit)];
-	[self.navigationItem setRightBarButtonItem:edit];
-	[edit release];
 	if ([network isConnected]) {
 		[network sendMessage:@"LIST"];
 		[self addStupidWarningView];
@@ -100,13 +98,48 @@
 	[self.tableView setTableHeaderView:nil];
 }
 
+- (void)setupDoneButton {
+	UIButton *editBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 32)];
+	[editBtn setTitle:@"Done" forState:UIControlStateNormal];
+	[editBtn setTitleColor:UIColorFromRGB(0xf7f7f7) forState:UIControlStateNormal];
+	[[editBtn titleLabel] setFont:[UIFont boldSystemFontOfSize:11]];
+	[editBtn setTitleShadowColor:[UIColor blackColor] forState:UIControlStateNormal];
+	[[editBtn titleLabel] setShadowOffset:CGSizeMake(0, 1)];
+	[editBtn addTarget:self action:@selector(edit) forControlEvents:UIControlEventTouchUpInside];
+	[editBtn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_d"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateNormal];
+	[editBtn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_dp"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateHighlighted];
+	UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithCustomView:editBtn];
+	[self.navigationItem setRightBarButtonItem:edit];
+	[edit release];
+	[editBtn release];
+}
+
+- (void)setupEditButton {
+	UIButton *editBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 32)];
+	[editBtn setTitle:@"Edit" forState:UIControlStateNormal];
+	[editBtn setTitleColor:UIColorFromRGB(0x454646) forState:UIControlStateNormal];
+	[[editBtn titleLabel] setFont:[UIFont boldSystemFontOfSize:11]];
+	[editBtn setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
+	[[editBtn titleLabel] setShadowOffset:CGSizeMake(0, 1)];
+	[editBtn addTarget:self action:@selector(edit) forControlEvents:UIControlEventTouchUpInside];
+	[editBtn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateNormal];
+	[editBtn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_p"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateHighlighted];
+	UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithCustomView:editBtn];
+	[self.navigationItem setRightBarButtonItem:edit];
+	[edit release];
+	[editBtn release];
+}
+
 - (void)edit {
 	_rEditing = !_rEditing;
 	[((UITableView *)self.tableView) setEditing:!_rEditing animated:NO];
 	[((UITableView *)self.tableView) setEditing:_rEditing animated:YES];
-	UIBarButtonItem *rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:([((UITableView *)self.view) isEditing] ? UIBarButtonSystemItemDone : UIBarButtonSystemItemEdit) target:self action:@selector(edit)];
-	[self.navigationItem setRightBarButtonItem:rightBarButtonItem animated:YES];
-	[rightBarButtonItem release];
+	if ([((UITableView *)self.view) isEditing]) {
+		[self setupDoneButton];
+	}
+	else {
+		[self setupEditButton];	
+	}
 	[((UITableView *)self.view) beginUpdates];
 	if (_rEditing)
 		[((UITableView *)self.view) insertRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:[channels count] inSection:0]] withRowAnimation:UITableViewRowAnimationTop];

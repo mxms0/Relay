@@ -20,5 +20,4 @@
 }
 
 - (id)initWithStyle:(UITableViewStyle)style andNetwork:(RCNetwork *)net;
-- (void)recievedChannel:(NSString *)chanf withCount:(int)count andTopic:(NSString *)topicPlusModes;
 @end

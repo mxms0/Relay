@@ -740,7 +740,7 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
     NSString *pattern1 = @"([#][a-zA-Z0-9]{1,20})";
     regex = [NSRegularExpression regularExpressionWithPattern:pattern1 options:0 error:nil];
     modifiedString = [[regex stringByReplacingMatchesInString:modifiedString options:0 range:NSMakeRange(0, [self length])
-												 withTemplate:@"<a href=\"$1\" class=\"channel\">$1</a>"] retain];
+												 withTemplate:@"<a href=\"channel:$1\" class=\"channel\">$1</a>"] retain];
     
     [pool drain];
     return [modifiedString autorelease];

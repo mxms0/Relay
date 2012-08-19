@@ -67,6 +67,26 @@
 	self.tableView.backgroundView = bg;
 	[bg release];
 	titleView.text = [self titleText];
+	UIButton *backButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 32)];
+	[backButton setTitle:@"  Back" forState:UIControlStateNormal];
+	[[backButton titleLabel] setFrame:CGRectMake(0, 10, 40, 30)];
+	[[backButton titleLabel] setTextAlignment:UITextAlignmentCenter];
+	[[backButton titleLabel] setFont:[UIFont boldSystemFontOfSize:11]];
+	[backButton setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
+	[backButton setTitleColor:UIColorFromRGB(0x454646) forState:UIControlStateNormal];
+	[[backButton titleLabel] setShadowOffset:CGSizeMake(0, 1)];
+	[backButton setBackgroundImage:[[UIImage imageNamed:@"0_navback"] stretchableImageWithLeftCapWidth:15 topCapHeight:0] forState:UIControlStateNormal];
+	[backButton setBackgroundImage:[[UIImage imageNamed:@"0_navback_pressed"] stretchableImageWithLeftCapWidth:15 topCapHeight:0] forState:UIControlStateHighlighted];
+	[backButton addTarget:self action:@selector(backButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+	UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithCustomView:backButton];
+	self.navigationItem.leftBarButtonItem = backItem;
+	[backItem release];
+	[backButton release];
+}
+
+- (void)backButtonTapped:(id)of {
+	[self.navigationController popViewControllerAnimated:YES];
+	
 }
 
 - (void)viewWillAppear:(BOOL)animated {

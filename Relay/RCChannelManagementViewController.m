@@ -93,9 +93,19 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-	UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneWithMod:)];
-	[self.navigationItem setRightBarButtonItem:done];
-	[done release];
+	UIButton *editBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 32)];
+	[editBtn setTitle:@"Done" forState:UIControlStateNormal];
+	[editBtn setTitleColor:UIColorFromRGB(0xf7f7f7) forState:UIControlStateNormal];
+	[[editBtn titleLabel] setFont:[UIFont boldSystemFontOfSize:11]];
+	[editBtn setTitleShadowColor:[UIColor blackColor] forState:UIControlStateNormal];
+	[[editBtn titleLabel] setShadowOffset:CGSizeMake(0, 1)];
+	[editBtn addTarget:self action:@selector(edit) forControlEvents:UIControlEventTouchUpInside];
+	[editBtn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_d"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateNormal];
+	[editBtn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_dp"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateHighlighted];
+	UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithCustomView:editBtn];
+	[self.navigationItem setRightBarButtonItem:edit];
+	[edit release];
+	[editBtn release];
 }
 
 - (void)doneWithMod:(id)pfff {

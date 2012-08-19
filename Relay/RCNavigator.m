@@ -308,13 +308,17 @@ static RCChannelBubble *questionabubble = nil;
 		memberPanel.dataSource = nil;
 		currentPanel = nil;
 	}
-	if (currentPanel != nil) if ([[[currentPanel channel] bubble] isEqual:bubble]) return;
 	for (NSString *_chan in [[currentNetwork _channels] allKeys]) {
 		RCChannel *chan = [[currentNetwork _channels] objectForKey:_chan]; // safe not to use channelWithChannelName as getting the key from the dict directly.
 		[[chan bubble] _setSelected:NO];
 	}
 	[currentNetwork setCurrentChannel:[bubble channel]];
 	[bubble _setSelected:YES];
+	if ([[[currentPanel channel] bubble] isEqual:bubble]) {
+		if ([[bubble channel] isKindOfClass:[RCConsoleChannel class]] || [[bubble channel] isKindOfClass:[RCPMChannel class]]) return;
+		[self tearDownForChannelList:bubble];
+		return;
+	}
 	if (!currentNetwork) NSLog(@"NO CURRENT WORK");
 	RCChannel *chan = [currentNetwork channelWithChannelName:bubble.titleLabel.text]; // unneeded. <.<
 	if (chan) {

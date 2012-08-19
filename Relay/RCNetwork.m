@@ -76,7 +76,7 @@
 }
 
 - (NSString *)_description {
-	if (!sDescription) {
+	if (!sDescription || [sDescription isEqualToString:@""]) {
 		return server;
 	}
 	return sDescription;
@@ -213,8 +213,7 @@
 	struct hostent *host;
 	struct sockaddr_in addr;
 	if ((host = gethostbyname([server UTF8String])) == NULL) {
-		RCChannel *chan = [_channels objectForKey:@"IRC"];
-		[chan recievedMessage:@"Error obtaining host." from:@"" type:RCMessageTypeNormal];
+		[self disconnectWithMessage:@"Error obtaining host."];
 		[p drain];
 		return;
 	}
@@ -224,16 +223,14 @@
 	addr.sin_port = htons(port);
 	addr.sin_addr.s_addr = *(long *)(host->h_addr);
 	if (connect(sockfd, (struct sockaddr *)&addr, sizeof(addr)) != 0) {
-		RCChannel *chan = [_channels objectForKey:@"IRC"];
-		[chan recievedMessage:@"Error connecting to host." from:@"" type:RCMessageTypeNormal];
+		[self disconnectWithMessage:@"Error connecting to host."];
 		[p drain];
 		return;
 	}
 	ssl = SSL_new(ctx);
 	SSL_set_fd(ssl, sockfd);
 	if (SSL_connect(ssl) == -1) {
-		RCChannel *chan = [_channels objectForKey:@"IRC"];
-		[chan recievedMessage:@"Error connecting with SSL" from:@"" type:RCMessageTypeNormal];
+		[self disconnectWithMessage:@"Error connecting with SSL."];
 		[p drain];
 		return;
 	}
@@ -331,6 +328,8 @@ out_:
     struct sockaddr_in serv_addr;
     if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         NSLog(@"ERRRRRRRR00");
+		[self disconnectWithMessage:@"Error socketing"];
+		goto errme;
     }
     memset(&serv_addr, '0', sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;
@@ -458,7 +457,6 @@ char *RCIPForURL(NSString *URL) {
 		if (canSend) {
 			if (useSSL) {
 				if (SSL_write(ssl, [msg UTF8String], strlen([msg UTF8String])) < 0) {
-					MARK;
 					return NO;
 				}
 				return YES;
@@ -521,6 +519,8 @@ char *RCIPForURL(NSString *URL) {
 	SEL pSEL = NSSelectorFromString(selName);
 	if ([self respondsToSelector:pSEL]) [self performSelector:pSEL withObject:msg];
 	else {
+		RCChannel *chan = [_channels objectForKey:@"IRC"];
+		[chan recievedMessage:rest from:@"" type:RCMessageTypeNormal];
 		NSLog(@"PLZ IMPLEMENT %s %@", (char *)pSEL, msg);
 		NSLog(@"Meh. %@\r\n%@", cmd, rest);	
 	}

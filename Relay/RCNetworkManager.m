@@ -144,6 +144,7 @@ static NSMutableArray *networks = nil;
 	[net addChannel:@"#Relay" join:YES];
     [[self networks] addObject:net];
 	[[RCNavigator sharedNavigator] addNetwork:net];
+	[[RCNavigator sharedNavigator] selectNetwork:net];
 	RCChannel *chan = [[net _channels] objectForKey:@"#Relay"];
     [[RCNavigator sharedNavigator] channelSelected:[chan bubble]];
 	[chan recievedMessage:@"Welcome to Relay!" from:@"" type:RCMessageTypeTopic];

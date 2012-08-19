@@ -283,7 +283,7 @@ UIImage *RCImageForRank(NSString *rank) {
             msg = @"== TYPE: MODE < fixme! ==";
 			break;
 		case RCMessageTypeError:
-            msg = @"== TYPE: ERROR < fixme! ==";
+			msg = [[NSString stringWithFormat:@"%c[%@]%c %@", RCIRCAttributeBold, time, RCIRCAttributeBold, message] retain];
 			break;
 		case RCMessageTypeAction:
 			msg = [[NSString stringWithFormat:@"%c[%@] \u2022 %@%c %@", RCIRCAttributeBold, time, from, RCIRCAttributeBold, message] retain];
