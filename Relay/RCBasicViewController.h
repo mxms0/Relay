@@ -14,6 +14,9 @@
 @interface RCBasicViewController : UITableViewController {
 	UILabel *titleView;
 	UIImageView *r_shadow;
+	BOOL _rEditing;
 }
 - (NSString *)titleText;
+- (void)setupDoneButton;
+- (void)setupEditButton;
 @end

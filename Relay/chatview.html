@@ -89,7 +89,7 @@
             var maxscrollback = 300;
             var flags = {};
             var types = {};
-            
+            var isBottom = true;
             /* This makes the chat view unscrollable if it's not overflowing vertically */
             
             document.ontouchmove = function(event) {
@@ -221,7 +221,7 @@
                 pre += "<font color=\"" + fgcolor + "\" style=\"background: " + bgcolor + ";\">"
                 post += "</font>"
                 olddiv.innerHTML += pre + text + post;
-				scrollToBottom();
+				if (isBottom)scrollToBottom();
                 return "SUCCESS";
             }
             
@@ -234,12 +234,38 @@
                 Return Value:
                     None.
              */
-            
+		
+			
+			function atttach() {
+				if (window.addEventListener) {
+					window.addEventListener('scroll', scroll)
+				}
+				else if (window.attachEvent) {
+					window.attachEvent('onscroll', scroll);
+				}
+			}
+			
+			function scroll(ev){
+				var st = Math.max(document.documentElement.scrollTop,document.body.scrollTop);
+				if (!st) {
+					isBottom = false;
+				}
+				else if ((st+document.documentElement.clientHeight) >= document.documentElement.scrollHeight) {
+					isBottom = true;
+				}
+				else {
+					isBottom = false;
+				}
+				
+			}
+			
+			​
+			
             function scrollToBottom() {
                 window.scrollTo(0, document.body.scrollHeight);
             }
             </script>
     </head>
-    <body style="background-color: transparent;">
+    <body style="background-color: transparent;" onload="atttach();">
     </body>
 </html>

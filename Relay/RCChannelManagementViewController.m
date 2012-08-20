@@ -99,7 +99,7 @@
 	[[editBtn titleLabel] setFont:[UIFont boldSystemFontOfSize:11]];
 	[editBtn setTitleShadowColor:[UIColor blackColor] forState:UIControlStateNormal];
 	[[editBtn titleLabel] setShadowOffset:CGSizeMake(0, 1)];
-	[editBtn addTarget:self action:@selector(edit) forControlEvents:UIControlEventTouchUpInside];
+	[editBtn addTarget:self action:@selector(doneWithMod:) forControlEvents:UIControlEventTouchUpInside];
 	[editBtn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_d"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateNormal];
 	[editBtn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_dp"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateHighlighted];
 	UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithCustomView:editBtn];

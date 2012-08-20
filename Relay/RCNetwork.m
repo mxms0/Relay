@@ -941,6 +941,21 @@ char *RCIPForURL(NSString *URL) {
 	[self sendMessage:[@"NICK " stringByAppendingString:useNick] canWait:NO];
 }
 
+- (void)handle473:(NSString *)high {
+	NSLog(@"FUCKFUCKFUCK(((%@)))", high);
+	NSScanner *scanr = [[NSScanner alloc] initWithString:high];
+	NSString *crap;
+	NSString *chan;
+	NSString *msg;
+	[scanr scanUpToString:@" " intoString:&crap];
+	[scanr scanUpToString:@" " intoString:&crap];
+	[scanr scanUpToString:@" " intoString:&crap];
+	[scanr scanUpToString:@" " intoString:&chan];
+	[scanr scanUpToString:@"" intoString:&msg];
+	NSLog(@"MHe %@:%@", chan, msg);
+	MARK;MARK;MARK;MARK;
+}
+
 - (void)handle998:(NSString *)fuckyouumich {
 	if (!fuckyouumich) return; //there's never a time where fuck umich is not true. FUCK YOU UMICH.
 	NSLog(@"FUCK. YOU. UMICH:%@",fuckyouumich);
@@ -1277,6 +1292,7 @@ char *RCIPForURL(NSString *URL) {
 	newTopic = [newTopic substringFromIndex:1];
 	from = [from substringFromIndex:1];
 	RCParseUserMask(from, &from, nil, nil);
+		NSLog(@"hi %@ %@ %@ %@", from, cmd,room, newTopic);
 	[[self channelWithChannelName:room] recievedMessage:newTopic from:from type:RCMessageTypeTopic];
 	[_scan release];
 }

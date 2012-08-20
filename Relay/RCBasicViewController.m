@@ -89,6 +89,38 @@
 	
 }
 
+- (void)setupDoneButton {
+	UIButton *editBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 32)];
+	[editBtn setTitle:@"Done" forState:UIControlStateNormal];
+	[editBtn setTitleColor:UIColorFromRGB(0xf7f7f7) forState:UIControlStateNormal];
+	[[editBtn titleLabel] setFont:[UIFont boldSystemFontOfSize:11]];
+	[editBtn setTitleShadowColor:[UIColor blackColor] forState:UIControlStateNormal];
+	[[editBtn titleLabel] setShadowOffset:CGSizeMake(0, 1)];
+	[editBtn addTarget:self action:@selector(edit) forControlEvents:UIControlEventTouchUpInside];
+	[editBtn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_d"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateNormal];
+	[editBtn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_dp"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateHighlighted];
+	UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithCustomView:editBtn];
+	[self.navigationItem setRightBarButtonItem:edit];
+	[edit release];
+	[editBtn release];
+}
+
+- (void)setupEditButton {
+	UIButton *editBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 32)];
+	[editBtn setTitle:@"Edit" forState:UIControlStateNormal];
+	[editBtn setTitleColor:UIColorFromRGB(0x454646) forState:UIControlStateNormal];
+	[[editBtn titleLabel] setFont:[UIFont boldSystemFontOfSize:11]];
+	[editBtn setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
+	[[editBtn titleLabel] setShadowOffset:CGSizeMake(0, 1)];
+	[editBtn addTarget:self action:@selector(edit) forControlEvents:UIControlEventTouchUpInside];
+	[editBtn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateNormal];
+	[editBtn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_p"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateHighlighted];
+	UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithCustomView:editBtn];
+	[self.navigationItem setRightBarButtonItem:edit];
+	[edit release];
+	[editBtn release];
+}
+
 - (void)viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 }
@@ -109,9 +141,11 @@
 		y = 32; width = 480;
 	}
 	for (UIView *subvc in [self.navigationController.navigationBar subviews]) {
-		NSLog(@"hi %@",subvc);
-		if ([subvc isKindOfClass:[UIImageView class]])
+
+		if ([subvc isKindOfClass:[UIImageView class]]) {
 			subvc.frame = CGRectMake(0, y, width, 10);
+			break;
+		}
 	}
 	r_shadow.frame = CGRectMake(0, y, width, 10);
 }

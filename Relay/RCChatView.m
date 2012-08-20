@@ -206,6 +206,7 @@ _out_:
 		RENDER_WITH_OPTS;
         //NSString* cstr = [NSString stringWithFormat:@"addToMessage('%@','NO','NO','NO','white','black','%@', 'YES');", name, ];
 	});
+	NSLog(@"meh %@ %@", [self stringByEvaluatingJavaScriptFromString:@"window.pageYOffset"], [self stringByEvaluatingJavaScriptFromString:@"window.innerHeight"]);
 }
 
 - (void)scrollToBottom {

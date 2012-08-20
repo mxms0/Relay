@@ -264,7 +264,8 @@ UIImage *RCImageForRank(NSString *rank) {
 		case RCMessageTypeTopic:
             if ([topic isEqualToString:message]) return;
             self.topic = message;
-			msg = [message retain];
+			if (from) msg = [[NSString stringWithFormat:@"%@ changed the topic to: %@",from, message] retain];
+			else msg = [message retain];
 			break;
 		case RCMessageTypeQuit:
             if ([self isUserInChannel:from]) {
@@ -280,7 +281,7 @@ UIImage *RCImageForRank(NSString *rank) {
             }
 			break;
 		case RCMessageTypeMode:
-            msg = @"== TYPE: MODE < fixme! ==";
+			msg = [[NSString stringWithFormat:@"%c[%@]%c %@ %@",RCIRCAttributeBold, time, RCIRCAttributeBold, from, message] retain];
 			break;
 		case RCMessageTypeError:
 			msg = [[NSString stringWithFormat:@"%c[%@]%c %@", RCIRCAttributeBold, time, RCIRCAttributeBold, message] retain];

@@ -690,6 +690,7 @@
 				50376D2915B3CCAD00E13006 /* RCDateManager.m */,
 				50E77A761505A21500E75C64 /* NSString+Utils.h */,
 				50E77A771505A21500E75C64 /* NSString+Utils.m */,
+				50E77A8E1505A29100E75C64 /* main.m */,
 				50E77A781505A21500E75C64 /* RCAppDelegate.h */,
 				50E77A791505A21500E75C64 /* RCAppDelegate.m */,
 				50E77A7A1505A21500E75C64 /* RCChannel.h */,
@@ -714,7 +715,6 @@
 				504706E4159FBA2000C3E256 /* RCWelcomeChannel.m */,
 				50B0DB21154233EB00689EDC /* RCKeychainItem.h */,
 				504349FC152CEEDD0037BD12 /* RCKeychainItem.m */,
-				50E77A8E1505A29100E75C64 /* main.m */,
 				50E77A901505A2C300E75C64 /* Relay-Prefix.pch */,
 			);
 			name = Backend;

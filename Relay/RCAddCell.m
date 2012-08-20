@@ -8,6 +8,7 @@
 
 #import "RCAddCell.h"
 #import <QuartzCore/QuartzCore.h>
+#import "RCBasicViewController.h"
 
 @implementation RCAddCell
 
@@ -15,10 +16,6 @@
 	if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
 	}
 	return self;
-}
-
-- (void)addSubview:(UIView *)view {
-	[super addSubview:view];
 }
 
 @end

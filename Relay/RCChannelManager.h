@@ -14,7 +14,6 @@
 
 @interface RCChannelManager : RCBasicViewController <UIAlertViewDelegate> {
     RCNetwork *network;
-	BOOL _rEditing;
     NSMutableArray *channels;
     UIBarButtonItem *addBtn;
 }

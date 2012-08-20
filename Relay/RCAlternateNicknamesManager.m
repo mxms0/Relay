@@ -13,13 +13,29 @@
 - (id)initWithStyle:(UITableViewStyle)style andNetwork:(RCNetwork *)net {
 	if ((self = [super initWithStyle:style])) {
         network = net;
-        titleView.text = @"Nicknames"; //Doesn't fit. >_<
-        
-        if ([network nick])
-            nicknames = [[NSMutableArray alloc] initWithArray:[network _nicknames]];
-        else 
-            nicknames = [[NSMutableArray alloc] initWithArray:[NSArray arrayWithObject:@"Guest01"]];
-        
+        titleView.text = @"Nicknames";
+		nicknames = [[NSMutableArray alloc] init];
+        if ([network _nicknames]) {
+			if ([[network _nicknames] count] > 1) {
+				[nicknames addObject:[network _nicknames]];
+			}
+			else {
+				if ([network nick])
+					[nicknames addObject:[network nick]];
+				if ([network username] && [network nick])
+					if (![[network username] isEqualToString:[network nick]])
+						[nicknames addObject:[network username]];
+			}
+		}
+		else {
+			if ([network nick]) {
+				[nicknames addObject:[network nick]];
+			}
+			else if ([network username]) {
+				[nicknames addObject:[network username]];
+			}
+		}
+		// hopefully find SOMETHING.        
     }
     return self;
 }
@@ -28,18 +44,8 @@
 	return @"Nicknames";
 }
 
-- (void)setEditing:(BOOL)editing animated:(BOOL)animated { 
-    [super setEditing:editing animated:animated];
-	if (editing) {
-		NSMutableArray *items = [[self.navigationItem.rightBarButtonItems mutableCopy] autorelease];
-		[items addObject: addBtn];
-		self.navigationItem.rightBarButtonItems = items;
-	}
-	else {
-		NSMutableArray *items = [[self.navigationItem.rightBarButtonItems mutableCopy] autorelease];
-		[items removeObject: addBtn];
-		self.navigationItem.rightBarButtonItems = items;
-    }
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+	return 10;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -47,7 +53,24 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	return [nicknames count];
+	return [nicknames count] + (_rEditing ? 1 : 0);
+}
+
+- (void)edit {
+	_rEditing = !_rEditing;
+	[((UITableView *)self.tableView) setEditing:!_rEditing animated:NO];
+	[((UITableView *)self.tableView) setEditing:_rEditing animated:YES];
+	if ([((UITableView *)self.view) isEditing]) {
+		[self setupDoneButton];
+	}
+	else {
+		[self setupEditButton];
+	}
+	[((UITableView *)self.view) beginUpdates];
+	if (_rEditing)
+		[((UITableView *)self.view) insertRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:[nicknames count] inSection:0]] withRowAnimation:UITableViewRowAnimationTop];
+	else [((UITableView *)self.view) deleteRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:[nicknames count] inSection:0]] withRowAnimation:UITableViewRowAnimationTop];
+	[((UITableView *)self.view) endUpdates];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -59,7 +82,10 @@
 		cell.textLabel.font = [UIFont boldSystemFontOfSize:14];
 		cell.textLabel.textColor = UIColorFromRGB(0x545758);
 	}
-	cell.textLabel.text = [nicknames objectAtIndex:indexPath.row];
+	if (indexPath.row == [nicknames count]) {
+		cell.textLabel.text = @"Add Nick";
+	}
+	else cell.textLabel.text = [nicknames objectAtIndex:indexPath.row];
     return cell;
 }
 
@@ -74,30 +100,6 @@
     }   
 }
 
-- (void)presentAddAlert {
-    UIAlertView *av = [[UIAlertView alloc] initWithTitle:@"Add New Nickname" message:@"Enter the nickname below" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Add nickname", nil];
-    [av setAlertViewStyle:UIAlertViewStylePlainTextInput];
-    [av show];
-    [av release];                           
-}
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {  
-    if (buttonIndex == 1) {
-        UITextField *textField = [alertView textFieldAtIndex:0];
-        [nicknames addObject:[textField text]];
-        [self.tableView reloadData];
-    }
-}
-
-- (BOOL)alertViewShouldEnableFirstOtherButton:(UIAlertView *)alertView {
-	NSString *inputText = [[alertView textFieldAtIndex:0] text];
-    if ([inputText length] > 0) {
-		return YES;
-	}
-	else {
-		return NO;
-	}
-}
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
@@ -105,9 +107,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.tableView reloadData];
-    addBtn = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(presentAddAlert)];
-    NSArray *array = [NSArray arrayWithObjects:self.editButtonItem, nil];
-    [self.navigationItem setRightBarButtonItems:array animated:YES];
+	if ([nicknames count] > 0) {
+		[self setupEditButton];
+	}
+	else {
+		[self setupDoneButton];
+		[self edit];
+	}
 }
 
 - (void)viewDidUnload {
