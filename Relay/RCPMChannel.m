@@ -32,6 +32,27 @@
 		[nc release];
 	}
 }
+
+- (void)setJoined:(BOOL)joind withArgument:(NSString *)arg1
+{
+    return;
+}
+
+- (void)setSuccessfullyJoined:(BOOL)success
+{
+    return;
+}
+
+- (void)setJoined:(BOOL)joind
+{
+    return;
+}
+
+- (BOOL)joined
+{
+    return YES;
+}
+
 - (BOOL)isUserInChannel:(NSString*)user {
     return [user isEqualToString:channelName];
 }

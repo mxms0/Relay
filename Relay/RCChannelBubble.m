@@ -107,12 +107,18 @@ static UIImage *image = nil;
 
 - (void)fixColors {
     dispatch_async(dispatch_get_main_queue(), ^(void){
+        @synchronized(self)
+        {
         if (isSelected) {
             if ([self backgroundImageForState:UIControlStateNormal] != image) {
                 [self setBackgroundImage:image forState:UIControlStateNormal];
             }
             [self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
             [self setTitleShadowColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+            if (![[self channel] joined]) {
+                [self setTitleColor:UIColorFromRGB(0xc4c4c4) forState:UIControlStateNormal];
+                [self setTitleShadowColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+            }
         } else {
             [self setBackgroundImage:nil forState:UIControlStateNormal];
             if (hasNewHighlights) {
@@ -125,8 +131,13 @@ static UIImage *image = nil;
                 [self setTitleColor:UIColorFromRGB(0x3e3f3f) forState:UIControlStateNormal];
                 [self setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
             }
+            if (![[self channel] joined]) {
+                [self setTitleColor:UIColorFromRGB(0xc4c4c4) forState:UIControlStateNormal];
+                [self setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
+            }
         }
         [self layoutSubviews];
+        }
     });
 }
 

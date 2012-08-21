@@ -229,7 +229,6 @@ UIImage *RCImageForRank(NSString *rank) {
 	NSLog(@"%s:%d", (char *)_cmd, type);
 #endif
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
-	message = [message stringByReplacingOccurrencesOfString:@"\t" withString:@""];
 	NSString *msg = @"";
 	NSString *time = @"";
 	time = [[RCDateManager sharedInstance] currentDateAsString];
@@ -237,9 +236,13 @@ UIImage *RCImageForRank(NSString *rank) {
 		time = [time substringToIndex:time.length-1];
 	switch (type) {
 		case RCMessageTypeKick:
-            [self setUserLeft:message];
-            msg = @"== KICK == fixme";
-			break;
+        {
+            NSString* mesg = [(NSArray*)message objectAtIndex:1];
+            NSString* whog = [(NSArray*)message objectAtIndex:0];
+            [self setUserLeft:whog];
+            msg = [[NSString stringWithFormat:@"%c[%@]%c %@ has kicked %@%@",RCIRCAttributeBold, time, RCIRCAttributeBold, from, whog, (!mesg) ? @"" : [@" (" stringByAppendingFormat:@"%@)", mesg]] retain];
+        }
+            break;
 		case RCMessageTypeBan:
             [self setUserLeft:message];
 			msg = [[NSString stringWithFormat:@"%c[%@]%c %@ sets mode +b %@",RCIRCAttributeBold, time, RCIRCAttributeBold, from, message] retain];
@@ -284,7 +287,7 @@ UIImage *RCImageForRank(NSString *rank) {
 			msg = [[NSString stringWithFormat:@"%c[%@]%c %@ %@",RCIRCAttributeBold, time, RCIRCAttributeBold, from, message] retain];
 			break;
 		case RCMessageTypeError:
-			msg = [[NSString stringWithFormat:@"%c[%@]%c %@", RCIRCAttributeBold, time, RCIRCAttributeBold, message] retain];
+			msg = [[NSString stringWithFormat:@"%c[%@]%c Error: %@", RCIRCAttributeBold, time, RCIRCAttributeBold, message] retain];
 			break;
 		case RCMessageTypeAction:
 			msg = [[NSString stringWithFormat:@"%c[%@] \u2022 %@%c %@", RCIRCAttributeBold, time, from, RCIRCAttributeBold, message] retain];
@@ -427,6 +430,15 @@ UIImage *RCImageForRank(NSString *rank) {
 - (void)setMode:(NSString *)modes forUser:(NSString *)user {
 
 }
+- (void)setJoined:(BOOL)joind {
+	if (joined == joind) {
+		NSLog(@"State the same. Canceling request..");
+		return;
+	}
+    if (!joind) joined = joind;
+    else [self setJoined:joind withArgument:@""];
+    [[self bubble] fixColors];
+}
 
 - (void)setJoined:(BOOL)joind withArgument:(NSString *)arg1 {
 	if (joined == joind) {
@@ -445,10 +457,18 @@ UIImage *RCImageForRank(NSString *rank) {
 			[delegate sendMessage:[NSString stringWithFormat:@"PART %@ %@", channelName, (arg1 ? arg1 : @"Leaving...")]];
 		}
 	}
+    [[self bubble] fixColors];
 }
 
 - (void)setSuccessfullyJoined:(BOOL)success {
-	joined = success;
+    @synchronized(self)
+    {
+        joined = success;
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            NSLog(@"omg");
+            [bubble fixColors];
+        });
+    }
 }
 
 - (BOOL)joined {
@@ -508,7 +528,7 @@ UIImage *RCImageForRank(NSString *rank) {
     SEL _pSEL = NSSelectorFromString(realCmd);
 	if ([self respondsToSelector:_pSEL]) [self performSelector:_pSEL withObject:args];
 	else {
-		NSLog(@"PRINT TO CONSOLE NO HANDLER");
+		[[self delegate] sendMessage:msg canWait:YES];
 	}
 	
 	[scanr release];
@@ -523,7 +543,9 @@ UIImage *RCImageForRank(NSString *rank) {
         if (!([piece hasPrefix:@"#"])||([piece hasPrefix:@"&"])) {
             piece = [@"#" stringByAppendingString:piece];
         }
-        [delegate addChannel:piece join:YES];
+        id ch = [delegate addChannel:piece join:YES];
+        [[RCNavigator sharedNavigator] channelSelected:[ch bubble]];
+		[[RCNavigator sharedNavigator] scrollToBubble:[ch bubble]];
     }
 }
 

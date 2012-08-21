@@ -212,14 +212,31 @@ static id _sharedNavigator = nil;
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
 	isShowing = NO;
-	switch (buttonIndex) {
-		case 1: {
-			[currentNetwork removeChannel:[currentNetwork channelWithChannelName:[[questionabubble titleLabel] text]]];		
-			break;
-		}
-		case 0:
-			break;
-	}
+    switch ([alertView tag]) {
+        case 13371:
+            switch (buttonIndex) {
+                case 1: {
+                    [currentNetwork removeChannel:[currentNetwork channelWithChannelName:[[questionabubble titleLabel] text]]];		
+                    break;
+                }
+                case 0:
+                    break;
+            }
+            break;
+        case 13372:
+            switch (buttonIndex) {
+                case 1: {
+                    [[questionabubble channel] setJoined:YES withArgument:@""];		
+                    break;
+                }
+                case 0:
+                    break;
+            }
+            break;
+            
+        default:
+            break;
+    }
 }
 
 - (RCChannelBubble *)channelBubbleWithChannel:(RCChannel *)chan {
@@ -235,6 +252,14 @@ static id _sharedNavigator = nil;
 }
 
 - (void)tearDownForChannelList:(RCChannelBubble *)bubble {
+    if (![[bubble channel] joined]) {
+        questionabubble = bubble;
+        RCPrettyAlertView *alert = [[RCPrettyAlertView alloc] initWithTitle:@"Do you want to join?" message:[NSString stringWithFormat:@"Are you sure you want to join %@?", [bubble titleLabel].text] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Join", nil];
+        [alert setTag:13372];
+        [alert show];
+        [alert release];
+        return;
+    }
 	if (![[[currentPanel channel] bubble] isEqual:bubble]) {
 		[self channelSelected:bubble];
 	}
@@ -289,9 +314,10 @@ static RCChannelBubble *questionabubble = nil;
 }
 
 - (void)doSuicideConfirmationAlert:(RCChannelBubble *)questionAble {
-	RCPrettyAlertView *alert = [[RCPrettyAlertView alloc] initWithTitle:@"Are you sure?" message:[NSString stringWithFormat:@"Are you sure you want to delete %@?", [questionAble titleLabel].text] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Delete", nil];
-	[alert show];
-	[alert release];
+        RCPrettyAlertView *alert = [[RCPrettyAlertView alloc] initWithTitle:@"Are you sure?" message:[NSString stringWithFormat:@"Are you sure you want to delete %@?", [questionAble titleLabel].text] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Delete", nil];
+        [alert setTag:13371];
+        [alert show];
+        [alert release];
 }
 
 - (BOOL)canBecomeFirstResponder {

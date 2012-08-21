@@ -26,6 +26,7 @@
 	RCUserListPanel *usersPanel;
 	BOOL joined;
 	BOOL joinOnConnect;
+    BOOL shouldJoin;
 	RCNetwork *delegate;
 	RCChannelBubble *bubble;
     NSMutableArray *fullUserList;
@@ -56,6 +57,7 @@
 - (BOOL)isUserInChannel:(NSString*)user;
 - (void)setSuccessfullyJoined:(BOOL)success;
 - (BOOL)isPrivate;
+- (void)setJoined:(BOOL)joind;
 NSString *RCUserRank(NSString *user);
 UIImage *RCImageForRank(NSString *rank);
 UIImage *RCImageForRanks(NSString *ranks, NSString *possible);

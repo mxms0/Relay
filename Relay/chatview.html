@@ -70,8 +70,6 @@
 				border-top-color:#dadadc;
 				border-top-style:solid;
 				border-top-width:1px;
-				padding-top:2px;
-				padding-bottom:2px;
 				padding-right:2px;
 				padding-left:2px;
                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f2f5f7), color-stop(100%,#edf0f3));
@@ -120,6 +118,11 @@
                 newdiv.setAttribute('id',divIdName);
                 newdiv.style.height = "auto";
                 newdiv.innerHTML = '';
+                if ((document.documentElement.clientHeight) >= window.pageYOffset) {
+					isBottom = true;
+				} else {
+                    isBottom = false;
+                }
                 document.body.appendChild(newdiv);
                 return cnt;
             }
@@ -164,8 +167,7 @@
 				else {
 					if (type == "TOPIC") {
 						olddiv.style.textAlign="center";
-					}
-					else {
+					} else {
 						olddiv.class="normal";
 					}
 				}
@@ -191,6 +193,9 @@
             */
             function addToMessage(name, isBold, isUnderlined, isItalic, bgcolor, fgcolor, text, isFirstChunk) {
                 if (types[name] == "EVENT") {
+                    isBold = "YES";
+                } else
+                if (types[name] == "ERROR") {
                     isBold = "YES";
                 }
                 var olddiv = document.getElementById('msg' + name);
@@ -234,35 +239,11 @@
                 Return Value:
                     None.
              */
-		
-			
-			function atttach() {
-				if (window.addEventListener) {
-					window.addEventListener('scroll', scroll)
-				}
-				else if (window.attachEvent) {
-					window.attachEvent('onscroll', scroll);
-				}
-			}
-			
-			function scroll(ev){
-				var st = Math.max(document.documentElement.scrollTop,document.body.scrollTop);
-				if (!st) {
-					isBottom = false;
-				}
-				else if ((st+document.documentElement.clientHeight) >= document.documentElement.scrollHeight) {
-					isBottom = true;
-				}
-				else {
-					isBottom = false;
-				}
-				
-			}
-			
-			​
-			
+    
             function scrollToBottom() {
                 window.scrollTo(0, document.body.scrollHeight);
+                scroll("lalala");
+                isBottom = true;
             }
             </script>
     </head>

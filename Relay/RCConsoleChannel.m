@@ -14,12 +14,18 @@
 
 - (id)initWithChannelName:(NSString *)_name {
     if ((self = [super initWithChannelName:_name])) {
+        joined = YES;
     }
     return self;
 }
 
+- (BOOL)joined
+{
+    return YES;
+}
+
 - (void)setSuccessfullyJoined:(BOOL)success {
-    joined = success;
+    joined = YES;
 }
 
 - (void)userWouldLikeToPartakeInThisConversation:(NSString *)message {
