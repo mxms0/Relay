@@ -220,10 +220,6 @@ UIImage *RCImageForRank(NSString *rank) {
 	return [NSString stringWithFormat:@"[%@ %@]", [super description], channelName];
 }
 
-- (void)recievedKick:(NSString *)kick from:(NSString *)from reason:(NSString *)rsn {
-	
-}
-
 - (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type {
 #if LOGALL
 	NSLog(@"%s:%d", (char *)_cmd, type);
@@ -235,10 +231,9 @@ UIImage *RCImageForRank(NSString *rank) {
 	if ([time hasSuffix:@" "])
 		time = [time substringToIndex:time.length-1];
 	switch (type) {
-		case RCMessageTypeKick:
-        {
-            NSString* mesg = [(NSArray*)message objectAtIndex:1];
-            NSString* whog = [(NSArray*)message objectAtIndex:0];
+		case RCMessageTypeKick: {
+            NSString *mesg = [(NSArray *)message objectAtIndex:1];
+            NSString *whog = [(NSArray *)message objectAtIndex:0];
             [self setUserLeft:whog];
             msg = [[NSString stringWithFormat:@"%c[%@]%c %@ has kicked %@%@",RCIRCAttributeBold, time, RCIRCAttributeBold, from, whog, (!mesg) ? @"" : [@" (" stringByAppendingFormat:@"%@)", mesg]] retain];
         }
@@ -445,7 +440,6 @@ UIImage *RCImageForRank(NSString *rank) {
 		NSLog(@"State the same. Canceling request..");
 		return;
 	}
-    NSLog(@"Meh %@", [self channelName]);
 	if ([[self channelName] hasPrefix:@"#"]) {
 		if (joind) {
 			if ([[self password] length] > 0) {
@@ -461,14 +455,13 @@ UIImage *RCImageForRank(NSString *rank) {
 }
 
 - (void)setSuccessfullyJoined:(BOOL)success {
-    @synchronized(self)
-    {
-        joined = success;
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            NSLog(@"omg");
-            [bubble fixColors];
-        });
-    }
+	@synchronized(self) {
+		joined = success;
+		dispatch_async(dispatch_get_main_queue(), ^(void){
+			[bubble fixColors];
+			[self recievedMessage:nil from:[delegate useNick] type:RCMessageTypeJoin];
+		});
+	}
 }
 
 - (BOOL)joined {

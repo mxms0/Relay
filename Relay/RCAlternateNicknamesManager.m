@@ -100,6 +100,13 @@
     }   
 }
 
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if ([nicknames count] == indexPath.row) {
+        return UITableViewCellEditingStyleInsert;
+    }
+	return UITableViewCellEditingStyleDelete;
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }

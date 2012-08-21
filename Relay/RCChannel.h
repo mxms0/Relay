@@ -58,6 +58,7 @@
 - (void)setSuccessfullyJoined:(BOOL)success;
 - (BOOL)isPrivate;
 - (void)setJoined:(BOOL)joind;
+- (BOOL)joined;
 NSString *RCUserRank(NSString *user);
 UIImage *RCImageForRank(NSString *rank);
 UIImage *RCImageForRanks(NSString *ranks, NSString *possible);

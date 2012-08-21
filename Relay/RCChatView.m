@@ -118,7 +118,6 @@ NSString *colorForIRCColor(char irccolor) {
 		}
 		[pre_pool release];
 	}
-    NSLog(@"DOM INIT");
 }
 - (void)layoutMessage:(RCMessageFormatter *)ms {
 _out_:

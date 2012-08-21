@@ -80,7 +80,10 @@
 	NSDictionary *attributes = nil;
 	NSMutableDictionary *upd = nil;
 	OSStatus st;
-	if (SecItemCopyMatching((CFDictionaryRef)genericQuery, (CFTypeRef *)&attributes) == noErr) {
+	OSStatus rts = SecItemCopyMatching((CFDictionaryRef)genericQuery, (CFTypeRef *)&attributes);
+	if (attributes) NSLog(@"hi%@", attributes);
+	NSLog(@"hi %d", rts);
+	if (rts == noErr) {
 		upd = [NSMutableDictionary dictionaryWithDictionary:attributes];
 		[upd setObject:[genericQuery objectForKey:(id)kSecClass] forKey:(id)kSecClass];
 		NSMutableDictionary *tmp = [self basicDictionaryToSecDictionary:data];
@@ -89,13 +92,17 @@
 		[tmp removeObjectForKey:(id)kSecAttrAccessGroup];
 #endif
 		st = SecItemUpdate((CFDictionaryRef)upd, (CFDictionaryRef)tmp);
+				[self logStatus:st];
 	}
 	else {
 		st = SecItemAdd((CFDictionaryRef)[self basicDictionaryToSecDictionary:data], NULL);
+		if (st == -25299) {
+			NSLog(@"hi alryd found");
+		}
 	}
 }
 - (void)logStatus:(OSStatus)st {
-	NSLog(@"ERR-OR %@", [NSError errorWithDomain:NSOSStatusErrorDomain code:st userInfo:nil]);
+	NSLog(@"ERR-OR %d", st);
 }
 
 - (void)resetKeychain {
