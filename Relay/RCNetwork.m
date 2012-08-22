@@ -57,7 +57,7 @@
 							  ([chan joinOnConnect] ? (id)kCFBooleanTrue : (id)kCFBooleanFalse), @"0_CHANJOC",
 							  ([[chan password] length] > 0 ? (id)kCFBooleanTrue : (id)kCFBooleanFalse), @"0_CHANPASS", nil];
 		[chanArray addObject:dict];
-		[dict release];
+		[dict autorelease];
 	}
 	[chanArray autorelease];
 	return [NSDictionary dictionaryWithObjectsAndKeys:
