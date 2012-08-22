@@ -46,6 +46,8 @@
     if (state == 1) {
         for (UIView *subv in [self subviews]) {
             if ([subv isKindOfClass:[objc_getClass("UITableViewCellEditControl") class]]) {
+				if (![self showingDeleteConfirmation])
+					transform = 0;
 				if (self.editingStyle == UITableViewCellEditingStyleInsert) return;
                 [UIView beginAnimations:nil context:nil];
                 [[self viewWithTag:500] setTransform:CGAffineTransformMakeRotation(-transform)];

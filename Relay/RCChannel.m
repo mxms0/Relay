@@ -247,8 +247,6 @@ name ## _nope_not_at_all:\
     [self setUserJoined:new_];
     [self recievedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" type:RCMessageTypeNormalE];
 }
-
-
 - (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type {
 #if LOGALL
 	NSLog(@"%s:%d", (char *)_cmd, type);
@@ -490,7 +488,6 @@ name ## _nope_not_at_all:\
 		NSLog(@"State the same. Canceling request..");
 		return;
 	}
-    NSLog(@"Meh %@", [self channelName]);
 	if ([[self channelName] hasPrefix:@"#"]) {
 		if (joind) {
 			if ([[self password] length] > 0) {
@@ -506,14 +503,13 @@ name ## _nope_not_at_all:\
 }
 
 - (void)setSuccessfullyJoined:(BOOL)success {
-    @synchronized(self)
-    {
-        joined = success;
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            NSLog(@"omg");
-            [bubble fixColors];
-        });
-    }
+	@synchronized(self) {
+		joined = success;
+		dispatch_async(dispatch_get_main_queue(), ^(void){
+			[bubble fixColors];
+			[self recievedMessage:nil from:[delegate useNick] type:RCMessageTypeJoin];
+		});
+	}
 }
 
 - (BOOL)joined {
