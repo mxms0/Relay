@@ -132,7 +132,8 @@
 	}
 	[rchan setJoinOnConnect:jOC];
 	if (jOC) [rchan setJoined:YES withArgument:nil];
-	[(RCNavigator*)delegate addChannel:_chan toServer:net];
+	[[RCNavigator sharedNavigator] addChannel:_chan toServer:net];
+	[delegate addChannel:_chan];
 	[self.navigationController popViewControllerAnimated:YES];
 }
 
