@@ -278,11 +278,11 @@ name ## _nope_not_at_all:\
             NSString* mesg = [(NSArray*)message objectAtIndex:1];
             NSString* whog = [(NSArray*)message objectAtIndex:0];
             if ([mesg isKindOfClass:[NSString class]]) {
-                mesg = [message stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
+                mesg = [mesg stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
                 mesg = [mesg stringByReplacingOccurrencesOfString:@"\x04" withString:@"\\R"];
             }
             if ([whog isKindOfClass:[NSString class]]) {
-                whog = [message stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
+                whog = [whog stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
                 whog = [whog stringByReplacingOccurrencesOfString:@"\x04" withString:@"\\R"];
             }
             [self setUserLeft:whog];
