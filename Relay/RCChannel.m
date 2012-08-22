@@ -186,7 +186,6 @@ UIImage *RCImageForRank(NSString *rank, RCNetwork* network) {
     @synchronized(self)
     {
         [channelName release];
-        [users release];
         [panel release];
         [bubble setChannel:nil];
         [self setBubble:nil];
