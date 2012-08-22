@@ -825,6 +825,7 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
 {
     unsigned int cpos = 0;
     unsigned int lpos = 0;
+    BOOL isNick = NO;
     NSString* istring = self;
     NSMutableString* ret = [NSMutableString stringWithCapacity:[self length]];
     while (cpos - [istring length]) {
@@ -856,6 +857,18 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
                 } 
                 NSLog(@"Using %d and %d (%d,%d) [%@]", a, b, cpos, lpos, [istring substringFromIndex:cpos]);
                 // BOOL readNumber(int* num, BOOL* isThereComma, int* size_of_num, char* data, int size);
+                lpos = cpos;
+                break;
+            case RCIRCAttributeInternalNickname:;;
+                RENDER_WITH_OPTS;
+                isNick = !isNick;
+                if (isNick) {
+                    // begin tag
+                    int nickcolor = [[istring substringWithRange:NSMakeRange(cpos, 2)] intValue];
+                    cpos+=2;
+                } else {
+
+                }
                 lpos = cpos;
                 break;
             default:

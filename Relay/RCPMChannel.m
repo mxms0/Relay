@@ -10,6 +10,7 @@
 #import "RCNetworkManager.h"
 #import "RCNavigator.h"
 #import "RCChannelScrollView.h"
+#import "NSString+IRCStringSupport.h"
 
 @implementation RCPMChannel
 
@@ -58,7 +59,7 @@
 	if ([[RCNetworkManager sharedNetworkManager] isBG]) {
         UILocalNotification *nc = [[UILocalNotification alloc] init];
         [nc setFireDate:[NSDate date]];
-        [nc setAlertBody:msg];
+        [nc setAlertBody:[msg stringByStrippingIRCMetadata]];
         [nc setSoundName:UILocalNotificationDefaultSoundName];
 		[[UIApplication sharedApplication] scheduleLocalNotification:nc];
 		[nc release];

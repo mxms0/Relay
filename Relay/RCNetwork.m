@@ -192,7 +192,7 @@
             self.currentChannel = [self consoleChannel];
         [chan setJoined:NO withArgument:quitter];
         [[RCNavigator sharedNavigator] removeChannel:chan fromServer:self];
-        [_channels removeObject:[chan channelName]];
+        [_channels removeObject:chan];
         [[RCNetworkManager sharedNetworkManager] saveNetworks];
     }
 }

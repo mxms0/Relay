@@ -11,8 +11,10 @@ static inline void NOLog(NSString* a, ...)
 }
 
 #ifndef Relay_Relay_h
+#ifdef NO_LOGGING
     #define NSLog NOLog
-	#define Relay_Relay_h
+#endif
+    #define Relay_Relay_h
 	#define USER_KEY @"0_USER"
 	#define NICK_KEY @"0_NICK"
 	#define NAME_KEY @"0_NAME"
