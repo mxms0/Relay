@@ -25,6 +25,7 @@
 }
 @property (nonatomic, assign) RCChannel *channel;
 @property (nonatomic, readonly) NSMutableArray *messages;
+@property (nonatomic, readonly) RCChatView *mainView;
 
 - (id)initWithStyle:(UITableViewStyle)style andChannel:(RCChannel *)chan;
 - (void)postMessage:(NSString *)_message withType:(RCMessageType)tr highlight:(BOOL)high;
@@ -33,4 +34,5 @@
 - (void)setHidesEntryField:(BOOL)entry;
 - (void)becomeFirstResponderNoAnimate;
 - (void)didPresentView;
+- (CGRect)frameForChatTable;
 @end

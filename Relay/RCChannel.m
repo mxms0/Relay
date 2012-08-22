@@ -209,8 +209,7 @@ char user_hash(NSString* from)
     int uhash = 0;
     @synchronized([[UIApplication sharedApplication] delegate])
     {
-        srand([from hash]);
-        uhash = (rand() % (M_COLOR-2)) + 2;
+        uhash = ([from hash] % (M_COLOR-2)) + 2;
     }
     return uhash % 0xFF;
 }
@@ -291,10 +290,10 @@ name ## _nope_not_at_all:\
 		case RCMessageTypePart:
             [self setUserLeft:from];
 			if (![message isEqualToString:@""]) {
-				msg = [[NSString stringWithFormat:@"%c[%@]%c %@ left the channel. (%@)", RCIRCAttributeBold, time, RCIRCAttributeBold, from, message] retain];
+				msg = [[NSString stringWithFormat:@"%c[%@] %@ %c left the channel. (%@)", RCIRCAttributeBold, time, from, RCIRCAttributeBold, message] retain];
 			}
 			else {
-				msg = [[NSString stringWithFormat:@"%c[%@]%c %@ left the channel.", RCIRCAttributeBold, time, RCIRCAttributeBold, from] retain];
+				msg = [[NSString stringWithFormat:@"%c[%@] %@ %c left the channel.", RCIRCAttributeBold, time, from, RCIRCAttributeBold] retain];
 			}
 			break;
 		case RCMessageTypeJoin:
@@ -308,17 +307,17 @@ name ## _nope_not_at_all:\
 		case RCMessageTypeTopic:
             if ([topic isEqualToString:message]) return;
             self.topic = message;
-			if (from) msg = [[NSString stringWithFormat:@"%@ changed the topic to: %@",from, message] retain];
+			if (from) msg = [[NSString stringWithFormat:@"%c%@%c changed the topic to: %@", RCIRCAttributeBold, from, RCIRCAttributeBold, message] retain];
 			else msg = [message retain];
 			break;
 		case RCMessageTypeQuit:
             if ([self isUserInChannel:from]) {
                 [self setUserLeft:from];
                 if (![message isEqualToString:@""]) {
-                    msg = [[NSString stringWithFormat:@"%c[%@]%c %@ left IRC. (%@)", RCIRCAttributeBold, time, RCIRCAttributeBold, from, message] retain];
+                    msg = [[NSString stringWithFormat:@"%c[%@] %@%c left IRC. (%@)", RCIRCAttributeBold, time, from, RCIRCAttributeBold, message] retain];
                 }
                 else {
-                    msg = [[NSString stringWithFormat:@"%c[%@]%c %@ left IRC.", RCIRCAttributeBold, time, RCIRCAttributeBold, from] retain];
+                    msg = [[NSString stringWithFormat:@"%c[%@] %@%c left IRC.", RCIRCAttributeBold, time, from, RCIRCAttributeBold] retain];
                 }
             } else {
                 return;
@@ -345,8 +344,15 @@ name ## _nope_not_at_all:\
 			}
 			break;
 		case RCMessageTypeNotice:
-            MSG_HIGHLIGHT_CHECK(notice);
-			msg = [[NSString stringWithFormat:@"%c[%@] -%c%c%@%c-%c %@", RCIRCAttributeBold, time, RCIRCAttributeInternalNickname, uhash, from, RCIRCAttributeInternalNickname, RCIRCAttributeBold, message] retain];
+            if ([self isUserInChannel:from]) {
+                MSG_HIGHLIGHT_CHECK(notice);
+                msg = [[NSString stringWithFormat:@"%c[%@] -%c%c%@%c-%c %@", RCIRCAttributeBold, time, RCIRCAttributeInternalNickname, uhash, from, RCIRCAttributeInternalNickname, RCIRCAttributeBold, message] retain];
+            } else {
+                [[[[self delegate] _channels] objectForKey:@"IRC"] recievedMessage:msg from:from type:RCMessageTypeNotice];
+                [msg release];
+                [p drain];
+                return;
+            }
 			break;
 		case RCMessageTypeNormalE:
 			msg = [[NSString stringWithFormat:@"%c[%@]%c %@", RCIRCAttributeBold, time, RCIRCAttributeBold, message] retain];

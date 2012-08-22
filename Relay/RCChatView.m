@@ -119,6 +119,7 @@ NSString *colorForIRCColor(char irccolor) {
 		[pre_pool release];
 	}
 }
+
 - (void)layoutMessage:(RCMessageFormatter *)ms {
 _out_:
 	@synchronized(self) {

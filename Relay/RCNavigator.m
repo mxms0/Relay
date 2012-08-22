@@ -392,6 +392,7 @@ static RCChannelBubble *questionabubble = nil;
 	if (currentPanel) {
 		[currentPanel setFrame:[self frameForChatTable]];
 	}
+    [[currentPanel mainView] scrollToBottom]; 
 	if (_isLandscape) {
 		bar.frame = CGRectMake(0, 0, 480, 32);
 		bar.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"0_navbar_landscape"]];

@@ -11,7 +11,7 @@
 #import "RCNavigator.h"
 
 @implementation RCChatPanel
-@synthesize messages, channel;
+@synthesize messages, channel, mainView;
 
 - (id)initWithStyle:(UITableViewStyle)style andChannel:(RCChannel *)chan {
 	if ((self = [super init])) {
