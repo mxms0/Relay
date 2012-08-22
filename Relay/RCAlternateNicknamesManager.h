@@ -16,5 +16,4 @@
     UIBarButtonItem *addBtn;
 }
 - (id)initWithStyle:(UITableViewStyle)style andNetwork:(RCNetwork *)net;
-- (void)presentAddAlert;
 @end

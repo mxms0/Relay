@@ -34,5 +34,4 @@
 - (void)setHidesEntryField:(BOOL)entry;
 - (void)becomeFirstResponderNoAnimate;
 - (void)didPresentView;
-- (CGRect)frameForChatTable;
 @end

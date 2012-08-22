@@ -16,7 +16,7 @@
 		_rEditing = NO;
 		self.tableView.allowsSelectionDuringEditing = YES;
 		[self reloadData];
-		if ([[[net _channels] allKeys] count] == 0)
+		if ([[net _channels]count] == 0)
 			[self edit];
 		else [self setupEditButton];
     }
@@ -40,7 +40,10 @@
 
 - (void)reloadData {
 	if (channels) [channels release];
-	channels = [[NSMutableArray alloc] initWithArray:[[network _channels] allKeys]];
+	channels = [[NSMutableArray alloc] init];
+    for (RCChannel* chn in [network _channels]) {
+        [channels addObject:[chn channelName]];
+    }
 	[channels removeObject:@"IRC"];
 	[self.tableView reloadData];
 }

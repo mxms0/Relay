@@ -151,7 +151,7 @@ UIImage *RCImageForRank(NSString *rank, RCNetwork* network) {
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	UITableViewCell *c = (RCUserTableCell *)[tableView dequeueReusableCellWithIdentifier:@"0_usercell"];
 	if (!c) {
-		c = [[RCUserTableCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"0_usercell"];
+		c = [[[RCUserTableCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"0_usercell"] autorelease];
 	}
 	if (indexPath.row == 0) {
 		c.textLabel.text = @"Nickname List";
@@ -228,7 +228,7 @@ if ((range.location == 0 || ![chset characterIsMember:[cmp characterAtIndex:rang
 index += range.location+range.length;\
 is_highlight = (hhash == 1) ? 1 : is_highlight;\
 cmp = [cmp substringFromIndex:range.location+range.length];\
-message = [message stringByReplacingCharactersInRange:NSMakeRange(range.location, range.length) withString:[NSString stringWithFormat:@"%c%c%@%c", RCIRCAttributeInternalNickname, hhash, [message substringWithRange:NSMakeRange(range.location, range.length)],RCIRCAttributeInternalNickname]];\
+message = [message stringByReplacingCharactersInRange:NSMakeRange(range.location, range.length) withString:[NSString stringWithFormat:@"%c%02d%@%c", RCIRCAttributeInternalNickname, hhash, [message substringWithRange:NSMakeRange(range.location, range.length)],RCIRCAttributeInternalNickname]];\
 goto name ## _again;\
 } else {\
 goto name ## _nope_not_at_all;\
@@ -242,11 +242,17 @@ name ## _nope_not_at_all:\
 
 - (void)changeNick:(NSString*)old toNick:(NSString*)new_
 {
-    NSString* full_old = [self nickAndRankForNick:old];
-    NSString* old_rank = RCUserRank(full_old, [self delegate]);
-    [self setUserLeft:old];
-    [self setUserJoined:[old_rank stringByAppendingString:new_]];
-    [self recievedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" type:RCMessageTypeNormalE];
+    if (new_)
+    {
+        NSString* full_old = [self nickAndRankForNick:old];
+        NSString* old_rank = RCUserRank(full_old, [self delegate]);
+        if (old && full_old)
+        {
+            [self setUserLeft:old];
+            [self setUserJoined:[old_rank stringByAppendingString:new_]];
+            [self recievedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" type:RCMessageTypeNormalE];
+        }
+    }
 }
 - (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type {
 #if LOGALL
@@ -273,11 +279,11 @@ name ## _nope_not_at_all:\
             NSString* whog = [(NSArray*)message objectAtIndex:0];
             if ([mesg isKindOfClass:[NSString class]]) {
                 mesg = [message stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
-                mesg = [message stringByReplacingOccurrencesOfString:@"\x04" withString:@"\\R"];
+                mesg = [mesg stringByReplacingOccurrencesOfString:@"\x04" withString:@"\\R"];
             }
             if ([whog isKindOfClass:[NSString class]]) {
                 whog = [message stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
-                whog = [message stringByReplacingOccurrencesOfString:@"\x04" withString:@"\\R"];
+                whog = [whog stringByReplacingOccurrencesOfString:@"\x04" withString:@"\\R"];
             }
             [self setUserLeft:whog];
             msg = [[NSString stringWithFormat:@"%c[%@]%c %@ has kicked %@%@",RCIRCAttributeBold, time, RCIRCAttributeBold, from, whog, (!mesg) ? @"" : [@" (" stringByAppendingFormat:@"%@)", mesg]] retain];
@@ -331,12 +337,12 @@ name ## _nope_not_at_all:\
 			break;
 		case RCMessageTypeAction:
             MSG_HIGHLIGHT_CHECK(highlight);
-			msg = [[NSString stringWithFormat:@"%c[%@] %c%c\u2022 %@%c%c %@", RCIRCAttributeBold, time, RCIRCAttributeInternalNickname, uhash, from, RCIRCAttributeInternalNickname, RCIRCAttributeBold, message] retain];
+			msg = [[NSString stringWithFormat:@"%c[%@] %c%02d\u2022 %@%c%c %@", RCIRCAttributeBold, time, RCIRCAttributeInternalNickname, uhash, from, RCIRCAttributeInternalNickname, RCIRCAttributeBold, message] retain];
 			break;
 		case RCMessageTypeNormal:
 			if (![from isEqualToString:@""]) {
                 MSG_HIGHLIGHT_CHECK(msg);
-				msg = [[NSString stringWithFormat:@"%c[%@] %c%c<%@>%c%c %@", RCIRCAttributeBold, time, RCIRCAttributeInternalNickname, uhash, [self nickAndRankForNick:from], RCIRCAttributeInternalNickname, RCIRCAttributeBold, message] retain];
+				msg = [[NSString stringWithFormat:@"%c[%@] %c%02d<%@>%c%c %@", RCIRCAttributeBold, time, RCIRCAttributeInternalNickname, uhash, [self nickAndRankForNick:from], RCIRCAttributeInternalNickname, RCIRCAttributeBold, message] retain];
 			}
 			else {
 				msg = @"";
@@ -346,9 +352,9 @@ name ## _nope_not_at_all:\
 		case RCMessageTypeNotice:
             if ([self isUserInChannel:from]) {
                 MSG_HIGHLIGHT_CHECK(notice);
-                msg = [[NSString stringWithFormat:@"%c[%@] -%c%c%@%c-%c %@", RCIRCAttributeBold, time, RCIRCAttributeInternalNickname, uhash, from, RCIRCAttributeInternalNickname, RCIRCAttributeBold, message] retain];
+                msg = [[NSString stringWithFormat:@"%c[%@] -%c%02d%@%c-%c %@", RCIRCAttributeBold, time, RCIRCAttributeInternalNickname, uhash, from, RCIRCAttributeInternalNickname, RCIRCAttributeBold, message] retain];
             } else {
-                [[[[self delegate] _channels] objectForKey:@"IRC"] recievedMessage:msg from:from type:RCMessageTypeNotice];
+                [[[self delegate] consoleChannel] recievedMessage:[message retain] from:from type:RCMessageTypeNotice];
                 [msg release];
                 [p drain];
                 return;
@@ -387,9 +393,6 @@ name ## _nope_not_at_all:\
 }
 
 - (void)shouldPost:(BOOL)isHighlight withMessage:(NSString *)msg {
-	BOOL iAmCurrent = NO;
-	if ([[RCNavigator sharedNavigator] currentPanel]) 
-		iAmCurrent = [[[[RCNavigator sharedNavigator] currentPanel] channel] isEqual:self];
 	if (isHighlight) {
 		if ([[RCNetworkManager sharedNetworkManager] isBG]) {
 			UILocalNotification *nc = [[UILocalNotification alloc] init];
@@ -419,7 +422,7 @@ name ## _nope_not_at_all:\
             }
         }
     }
-    return nil;
+    return nick;
 }
 
 - (void)setUserJoined:(NSString *)_joined {

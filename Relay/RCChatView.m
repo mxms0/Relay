@@ -103,9 +103,13 @@ NSString *colorForIRCColor(char irccolor) {
         cstr = [NSString stringWithFormat:@"addToMessage('%@','%@','%@','%@','%@','%@','%@', '%@', '%d');", name, isBold ? @"YES" : @"NO", isUnderline ? @"YES" : @"NO", isItalic ? @"YES" : @"NO", bgcolor, fgcolor, [[istring substringWithRange:NSMakeRange(lpos, cpos-lpos)] stringByReplacingOccurrencesOfString:@"\\R" withString:@"\x04"], isNick ? @"YES" : @"NO", nickcolor]; \
         if (![[self stringByEvaluatingJavaScriptFromString:cstr] isEqualToString:@"SUCCESS"]) { \
             NSLog(@"Could not exec: %@", cstr); \
-        } else if ([ms  shouldColor]) { \
+        } else if ([ms  shouldColor]) {\
+        if([(RCChannel*)[[self chatpanel] channel] isPrivate]) \
+            [[(RCChannel*)[[self chatpanel] channel] bubble] setMentioned:YES];\
+        else {\
             [[(RCChannel*)[[self chatpanel] channel] bubble] setMentioned:[ms  highlight]];\
             [[(RCChannel*)[[self chatpanel] channel] bubble] setHasNewMessage:![ms  highlight]];\
+        }\
         }\
         lpos = cpos;    
 
@@ -203,9 +207,9 @@ _out_:
                     isNick = !isNick;
                     if (isNick) {
                         // begin tag
-                        nickcolor = [istring characterAtIndex:cpos] & 0x00FF;
+                        nickcolor = [[istring substringWithRange:NSMakeRange(cpos, 2)] intValue];
                         NSLog(@"enabling color %d", nickcolor);
-                        cpos++;
+                        cpos+=2;
                     } else {
                         NSLog(@"disabling color %d", nickcolor);
                         // end tag

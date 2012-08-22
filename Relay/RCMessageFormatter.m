@@ -64,6 +64,8 @@
             default:
                 break;
         }
+        self.shouldColor = NO;
+        self.highlight = NO;
         goto out_;
     isMnt:
         [self setString:[@":" stringByAppendingString:[self string]]];

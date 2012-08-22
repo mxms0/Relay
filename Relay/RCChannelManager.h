@@ -19,4 +19,6 @@
 }
 
 - (id)initWithStyle:(UITableViewStyle)style andNetwork:(RCNetwork *)net;
+- (void)addStupidWarningView;
+- (void)removeStupidWarningView;
 @end

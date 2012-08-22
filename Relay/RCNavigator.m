@@ -137,8 +137,8 @@ static id _sharedNavigator = nil;
 		[titleLabel setText:[net _description]];
 		currentNetwork = net;
 	}
-	for (NSString *chan in [[net _channels] allKeys]) {
-		[self addChannel:chan toServer:net];
+	for (RCChannel *chan in [net _channels]) {
+		[self addChannel:[chan channelName] toServer:net];
 	}
 }
 
@@ -262,7 +262,7 @@ static id _sharedNavigator = nil;
 	if (![[[currentPanel channel] bubble] isEqual:bubble]) {
 		[self channelSelected:bubble];
 	}
-	RCChannel *chan = [[currentNetwork _channels] objectForKey:[[bubble titleLabel] text]];
+	RCChannel *chan = [currentNetwork channelWithChannelName:[[bubble titleLabel] text]];
 	memberPanel.delegate = chan;
 	memberPanel.dataSource = chan;
 	memberPanel.frame = [self frameForMemberPanel];
@@ -288,6 +288,7 @@ static id _sharedNavigator = nil;
 		}
 		[scrollBar layoutChannels:[net _bubbles]];
 		[self channelSelected:[[net currentChannel] bubble]];
+		[self scrollToBubble:[[net currentChannel] bubble]];
 	}
 }
 
@@ -302,14 +303,14 @@ static RCChannelBubble *questionabubble = nil;
 }
 
 - (void)scrollToBubble:(RCChannelBubble *)bubble {
-    if (!bubble) {
+    if (!(bubble&&[bubble superview])) {
         return;
     }
     CGPoint point = bubble.frame.origin;
     point.y = 0;
-    CGFloat slide = MIN(point.x, MAX(0, scrollBar.contentSize.width-scrollBar.frame.size.width));
+    CGFloat slide = MIN(point.x, MAX(0, ((UIScrollView*)[bubble superview]).contentSize.width-[bubble superview].frame.size.width));
     point.x = slide;
-    [scrollBar setContentOffset:point animated:YES];
+    [(UIScrollView*)[bubble superview] setContentOffset:point animated:YES];
 }
 
 - (void)doSuicideConfirmationAlert:(RCChannelBubble *)questionAble {
@@ -333,8 +334,7 @@ static RCChannelBubble *questionabubble = nil;
 		memberPanel.dataSource = nil;
 		currentPanel = nil;
 	}
-	for (NSString *_chan in [[currentNetwork _channels] allKeys]) {
-		RCChannel *chan = [[currentNetwork _channels] objectForKey:_chan]; // safe not to use channelWithChannelName as getting the key from the dict directly.
+	for (RCChannel *chan in [currentNetwork _channels]) {
 		[[chan bubble] _setSelected:NO];
 	}
 	[currentNetwork setCurrentChannel:[bubble channel]];

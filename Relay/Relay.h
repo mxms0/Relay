@@ -5,7 +5,13 @@
 //  Created by Maximus on 1/16/12.
 //
 
+static inline void NOLog(NSString* a, ...)
+{
+    
+}
+
 #ifndef Relay_Relay_h
+    #define NSLog NOLog
 	#define Relay_Relay_h
 	#define USER_KEY @"0_USER"
 	#define NICK_KEY @"0_NICK"

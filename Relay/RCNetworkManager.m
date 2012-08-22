@@ -69,7 +69,7 @@ static NSMutableArray *networks = nil;
 			return;
 		}
 	}
-	if (![[[_net _channels] allKeys] containsObject:@"IRC"]) [_net addChannel:@"IRC" join:NO];
+	if (![_net consoleChannel]) [_net addChannel:@"IRC" join:NO];
 	[networks addObject:_net];
 	[[RCNavigator sharedNavigator] addNetwork:_net];
 	if ([_net COL]) [_net connect];
@@ -118,14 +118,13 @@ static NSMutableArray *networks = nil;
 	isSetup = YES;
 	_printMotd = YES;
 	@autoreleasepool {
-		NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithContentsOfFile:PREFS_ABSOLUT];
+		NSMutableDictionary *dict = [[[NSMutableDictionary alloc] initWithContentsOfFile:PREFS_ABSOLUT] autorelease];
 		if (!dict) {
 			isSetup = NO;
 			return;
 		}
 		if ([[dict allKeys] count] == 0) {
 			[self setupWelcomeView];
-			[dict release];
 			isSetup = NO;
 			return;
 		}
@@ -145,7 +144,7 @@ static NSMutableArray *networks = nil;
     [[self networks] addObject:net];
 	[[RCNavigator sharedNavigator] addNetwork:net];
 	[[RCNavigator sharedNavigator] selectNetwork:net];
-	RCChannel *chan = [[net _channels] objectForKey:@"#Relay"];
+	RCChannel *chan = [net channelWithChannelName:@"#Relay"];
     [[RCNavigator sharedNavigator] channelSelected:[chan bubble]];
 	[chan recievedMessage:@"Welcome to Relay!" from:@"" type:RCMessageTypeTopic];
 	[[chan panel] setHidesEntryField:YES];

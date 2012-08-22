@@ -35,7 +35,7 @@ typedef enum RCSocketStatus {
 } RCSocketStatus;
 
 @interface RCNetwork : NSObject {
-	NSMutableDictionary *_channels;
+	NSMutableArray *_channels;
     NSMutableArray *_nicknames;
 	NSMutableArray *_bubbles;
 	NSString *sDescription;
@@ -68,7 +68,7 @@ typedef enum RCSocketStatus {
     NSDictionary* prefix;
 }
 @property (nonatomic, retain) NSDictionary* prefix;
-@property (nonatomic, retain) NSMutableDictionary *_channels;
+@property (nonatomic, retain) NSMutableArray *_channels;
 @property (nonatomic, retain) NSMutableArray *_nicknames;
 @property (nonatomic, readonly) NSMutableArray *_bubbles;
 @property (nonatomic, retain) NSString *sDescription;
@@ -92,6 +92,7 @@ typedef enum RCSocketStatus {
 - (NSString *)_description;
 - (void)connect;
 - (BOOL)disconnect;
+- (RCChannel*)consoleChannel;
 - (BOOL)isConnected;
 - (BOOL)sendMessage:(NSString *)msg;
 - (BOOL)sendMessage:(NSString *)msg canWait:(BOOL)canWait;

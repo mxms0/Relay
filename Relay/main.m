@@ -35,6 +35,7 @@
 }
 @end
 
+
 int main(int argc, char *argv[]) {
 	Method orig = class_getClassMethod([objc_getClass("_UITableViewCellDeleteConfirmationControl") class], @selector(_backgroundImage));
 	Method rep = class_getClassMethod([RCSpecialClass class], @selector(backgroundImage));
