@@ -78,7 +78,7 @@ typedef enum RCSocketStatus {
 @property (nonatomic, retain) NSString *realname;
 @property (nonatomic, retain) NSString *spass;
 @property (nonatomic, retain) NSString *npass;
-@property (nonatomic, readonly) NSString *useNick;
+@property (nonatomic, retain) NSString *useNick;
 @property (nonatomic, retain) NSString *userModes;
 @property (nonatomic, assign) int port;
 @property (nonatomic, assign) BOOL isRegistered;

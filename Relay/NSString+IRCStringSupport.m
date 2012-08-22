@@ -861,13 +861,12 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
                 break;
             case RCIRCAttributeInternalNickname:;;
                 RENDER_WITH_OPTS;
-                isNick = !isNick;
-                if (isNick) {
-                    // begin tag
-                    cpos+=2;
-                } else {
-
-                }
+				cpos+=2;
+                lpos = cpos;
+                break;
+            case RCIRCAttributeInternalNicknameEnd:;;
+                RENDER_WITH_OPTS;
+                isNick = NO;
                 lpos = cpos;
                 break;
             default:

@@ -86,6 +86,7 @@
 	[npass release];
 	[sDescription release];
     [_nicknames release];
+    self.useNick = nil;
     [self setPrefix:nil];
 	[super dealloc];
 }
@@ -219,7 +220,7 @@
 	sendQueue = nil;
 	if (status == RCSocketStatusConnecting) goto errme;
 	if (status == RCSocketStatusConnected) goto errme;
-	useNick = nick;
+	self.useNick = nick;
 	self.userModes = @"~&@%+";
 	if (kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iPhoneOS_4_0) {
 		task = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
@@ -331,7 +332,7 @@ out_:
     sendQueue = nil;
     if (status == RCSocketStatusConnecting) goto errme;
     if (status == RCSocketStatusConnected) goto errme;
-    useNick = nick;
+    self.useNick = nick;
     self.userModes = @"~&@%+";
     if (kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iPhoneOS_4_0) {
         task = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
@@ -952,8 +953,10 @@ char *RCIPForURL(NSString *URL) {
 	[scanner scanUpToString:@" " intoString:&crap];
 	[scanner scanUpToString:@" " intoString:&cmd];
 	[scanner scanUpToString:@" " intoString:&me];
-    [useNick release];
-	useNick = [me retain];
+    @synchronized(useNick)
+    {
+        self.useNick = me;
+    }
 	[scanner release];
 	
 	// :fr.ac3xx.com 305 MaxZNC :You are no longer marked as being away
@@ -1104,7 +1107,7 @@ char *RCIPForURL(NSString *URL) {
 
 - (void)handle433:(NSString *)use {
 	// nick is in use.
-	useNick = [[useNick stringByAppendingString:@"_"] retain]; // set to autorelease, so retain'd copy will be released, and it will be set back to normal. :D
+    self.useNick = [useNick stringByAppendingString:@"_"];
 	[self sendMessage:[@"NICK " stringByAppendingString:useNick] canWait:NO];
 }
 
@@ -1287,7 +1290,7 @@ char *RCIPForURL(NSString *URL) {
         oldnick = [oldnick substringFromIndex:1];
     }
     if ([oldnick isEqualToString:useNick]) {
-        useNick = newnick;
+        self.useNick = newnick;
     }
     NSMutableArray* chanarr = [[NSMutableArray new] autorelease];
     @synchronized(_channels)

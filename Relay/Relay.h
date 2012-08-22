@@ -11,7 +11,7 @@ static inline void NOLog(NSString* a, ...)
 }
 
 #ifndef Relay_Relay_h
-#ifdef NO_LOGGING
+#ifdef NO_LOGGING__
     #define NSLog NOLog
 #endif
     #define Relay_Relay_h

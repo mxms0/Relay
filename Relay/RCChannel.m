@@ -210,35 +210,38 @@ char user_hash(NSString* from)
     @synchronized([[UIApplication sharedApplication] delegate])
     {
         uhash = ([from hash] % (M_COLOR-2)) + 2;
-    }
+	}    
+
     return uhash % 0xFF;
 }
 
-#define MSG_HIGHLIGHT_CHECK(name)                { for (NSString* uname  in fullUserList) {\
+#define MSG_HIGHLIGHT_CHECK(name) \
+{\
+for (NSString* uname  in [fullUserList  sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {if ([obj1 length] > [obj2 length]) {return NSOrderedAscending;} else if ([obj1 length] < [obj2 length]) {return NSOrderedDescending;}return NSOrderedSame;}]) {\
 NSString *cmp = message; \
 int index = 0;\
 NSString *rank = RCUserRank(uname,[self delegate]);\
 NSString *namenorank = [uname substringFromIndex:[rank length]]; \
 NSCharacterSet* chset = [NSCharacterSet letterCharacterSet]; \
 int hhash = ([namenorank isEqualToString:[delegate useNick]]) ? 1 : user_hash(namenorank); \
-name ## _again:;; \
+name ## _again:;; NSLog(@"trying %@", uname);\
 NSRange range = [cmp rangeOfString:namenorank options:NSCaseInsensitiveSearch];;\
 if (range.location != NSNotFound) {\
-if ((range.location == 0 || ![chset characterIsMember:[cmp characterAtIndex:range.location-1]]) && (range.location+range.length == [cmp length] || ![chset characterIsMember:[cmp characterAtIndex:range.location+range.length]])) {\
-index += range.location+range.length;\
-is_highlight = (hhash == 1) ? 1 : is_highlight;\
-cmp = [cmp substringFromIndex:range.location+range.length];\
-message = [message stringByReplacingCharactersInRange:NSMakeRange(range.location, range.length) withString:[NSString stringWithFormat:@"%c%02d%@%c", RCIRCAttributeInternalNickname, hhash, [message substringWithRange:NSMakeRange(range.location, range.length)],RCIRCAttributeInternalNickname]];\
-goto name ## _again;\
+	if ((range.location == 0 || ![chset characterIsMember:[cmp characterAtIndex:range.location-1]]) && (range.location+range.length == [cmp length] || ![chset characterIsMember:[cmp characterAtIndex:range.location+range.length]])) {\
+		index += range.location+range.length;\
+		is_highlight = (hhash == 1) ? 1 : is_highlight; NSLog(@"got %@", uname);\
+		cmp = [cmp substringFromIndex:range.location+range.length];\
+		message = [message stringByReplacingCharactersInRange:NSMakeRange(range.location, range.length) withString:[NSString stringWithFormat:@"%c%02d%@%c", RCIRCAttributeInternalNickname, hhash, [message substringWithRange:NSMakeRange(range.location, range.length)],RCIRCAttributeInternalNicknameEnd]];\
+		goto name ## _again;\
+	} else {\
+		goto name ## _nope_not_at_all;\
+	}\
 } else {\
-goto name ## _nope_not_at_all;\
+	name ## _nope_not_at_all:\
+	;;\
 }\
-} else {\
-name ## _nope_not_at_all:\
-;;\
 }\
-\
-}}\
+}\
 
 - (void)changeNick:(NSString*)old toNick:(NSString*)new_
 {
@@ -248,9 +251,10 @@ name ## _nope_not_at_all:\
         NSString* old_rank = RCUserRank(full_old, [self delegate]);
         if (old && full_old)
         {
+			if (!old_rank) old_rank = @"";
             [self setUserLeft:old];
-            [self setUserJoined:[old_rank stringByAppendingString:new_]];
             [self recievedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" type:RCMessageTypeNormalE];
+            [self setUserJoined:[old_rank stringByAppendingString:new_]];
         }
     }
 }
@@ -258,15 +262,17 @@ name ## _nope_not_at_all:\
 #if LOGALL
 	NSLog(@"%s:%d", (char *)_cmd, type);
 #endif
-	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+    NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSString *msg = @"";
 	NSString *time = @"";
     from = [from stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
     from = [from stringByReplacingOccurrencesOfString:@"\x04" withString:@"\\R"];
+    from = [from stringByReplacingOccurrencesOfString:@"\x05" withString:@"\\F"];
     char uhash = (![from isEqualToString:[delegate useNick]]) ? user_hash(from) : 1;
     if ([message isKindOfClass:[NSString class]]) {
         message = [message stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
         message = [message stringByReplacingOccurrencesOfString:@"\x04" withString:@"\\R"];
+        message = [message stringByReplacingOccurrencesOfString:@"\x05" withString:@"\\F"];
     }
     BOOL is_highlight = NO;
 	time = [[RCDateManager sharedInstance] currentDateAsString];
@@ -280,18 +286,20 @@ name ## _nope_not_at_all:\
             if ([mesg isKindOfClass:[NSString class]]) {
                 mesg = [mesg stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
                 mesg = [mesg stringByReplacingOccurrencesOfString:@"\x04" withString:@"\\R"];
+                mesg = [mesg stringByReplacingOccurrencesOfString:@"\x05" withString:@"\\F"];
             }
             if ([whog isKindOfClass:[NSString class]]) {
                 whog = [whog stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
                 whog = [whog stringByReplacingOccurrencesOfString:@"\x04" withString:@"\\R"];
+                whog = [whog stringByReplacingOccurrencesOfString:@"\x05" withString:@"\\F"];
             }
             [self setUserLeft:whog];
-            msg = [[NSString stringWithFormat:@"%c[%@]%c %@ has kicked %@%@",RCIRCAttributeBold, time, RCIRCAttributeBold, from, whog, (!mesg) ? @"" : [@" (" stringByAppendingFormat:@"%@)", mesg]] retain];
+            msg = [[NSString stringWithFormat:@"%c[%@] %@%c has kicked %c%@%c%@",RCIRCAttributeBold, time, from, RCIRCAttributeBold, RCIRCAttributeBold, whog, RCIRCAttributeBold, (!mesg) ? @"" : [@" (" stringByAppendingFormat:@"%@)", mesg]] retain];
         }
             break;
 		case RCMessageTypeBan:
             [self setUserLeft:message];
-			msg = [[NSString stringWithFormat:@"%c[%@]%c %@ sets mode +b %@",RCIRCAttributeBold, time, RCIRCAttributeBold, from, message] retain];
+			msg = [[NSString stringWithFormat:@"%c[%@] %@%c sets mode +b %@",RCIRCAttributeBold, time, from, RCIRCAttributeBold, message] retain];
 			break;
 		case RCMessageTypePart:
             [self setUserLeft:from];
@@ -333,16 +341,16 @@ name ## _nope_not_at_all:\
 			msg = [[NSString stringWithFormat:@"%c[%@] %@%c sets mode %c%@%c",RCIRCAttributeBold, time, from, RCIRCAttributeBold, RCIRCAttributeBold, message,RCIRCAttributeBold] retain];
 			break;
 		case RCMessageTypeError:
-			msg = [[NSString stringWithFormat:@"%c[%@]%c Error: %@", RCIRCAttributeBold, time, RCIRCAttributeBold, message] retain];
+			msg = [[NSString stringWithFormat:@"%c[%@] Error%c: %@", RCIRCAttributeBold, time, RCIRCAttributeBold, message] retain];
 			break;
 		case RCMessageTypeAction:
             MSG_HIGHLIGHT_CHECK(highlight);
-			msg = [[NSString stringWithFormat:@"%c[%@] %c%02d\u2022 %@%c%c %@", RCIRCAttributeBold, time, RCIRCAttributeInternalNickname, uhash, from, RCIRCAttributeInternalNickname, RCIRCAttributeBold, message] retain];
+			msg = [[NSString stringWithFormat:@"%c[%@] %c%02d\u2022 %@%c%c %@", RCIRCAttributeBold, time, RCIRCAttributeInternalNickname, uhash, from, RCIRCAttributeInternalNicknameEnd, RCIRCAttributeBold, message] retain];
 			break;
 		case RCMessageTypeNormal:
 			if (![from isEqualToString:@""]) {
                 MSG_HIGHLIGHT_CHECK(msg);
-				msg = [[NSString stringWithFormat:@"%c[%@] %c%02d<%@>%c%c %@", RCIRCAttributeBold, time, RCIRCAttributeInternalNickname, uhash, [self nickAndRankForNick:from], RCIRCAttributeInternalNickname, RCIRCAttributeBold, message] retain];
+				msg = [[NSString stringWithFormat:@"%c[%@] %c%02d<%@>%c%c %@", RCIRCAttributeBold, time, RCIRCAttributeInternalNickname, uhash, [self nickAndRankForNick:from], RCIRCAttributeInternalNicknameEnd, RCIRCAttributeBold, message] retain];
 			}
 			else {
 				msg = @"";
@@ -352,7 +360,7 @@ name ## _nope_not_at_all:\
 		case RCMessageTypeNotice:
             if ([self isUserInChannel:from]) {
                 MSG_HIGHLIGHT_CHECK(notice);
-                msg = [[NSString stringWithFormat:@"%c[%@] -%c%02d%@%c-%c %@", RCIRCAttributeBold, time, RCIRCAttributeInternalNickname, uhash, from, RCIRCAttributeInternalNickname, RCIRCAttributeBold, message] retain];
+                msg = [[NSString stringWithFormat:@"%c[%@] -%c%02d%@%c-%c %@", RCIRCAttributeBold, time, RCIRCAttributeInternalNickname, uhash, from, RCIRCAttributeInternalNicknameEnd, RCIRCAttributeBold, message] retain];
             } else {
                 [[[self delegate] consoleChannel] recievedMessage:[message retain] from:from type:RCMessageTypeNotice];
                 [msg release];
@@ -425,12 +433,22 @@ name ## _nope_not_at_all:\
     return nick;
 }
 
-- (void)setUserJoined:(NSString *)_joined {
+- (void)setUserJoined:(NSString *)_joined
+{
+    if (_joined && ![_joined isEqualToString:@""]) {
+        [self setUserJoined:_joined cnt:0];
+    }
+}
+
+- (void)setUserJoined:(NSString *)_joined cnt:(int)cnt_ {
+    if (cnt_ > 10) {
+        [[self delegate] setPrefix:[NSDictionary new]];
+    }
     if (![[self delegate] prefix]) {
         double delayInSeconds = 0.1;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-            [self setUserJoined:_joined];
+            [self setUserJoined:_joined cnt:cnt_+1];
         });
         return;
     }

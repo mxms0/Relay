@@ -99,8 +99,8 @@ NSString *colorForIRCColor(char irccolor) {
 #define RENDER_WITH_OPTS \
         if (!([ms string] && ms)) {\
             return;\
-        }\
-        cstr = [NSString stringWithFormat:@"addToMessage('%@','%@','%@','%@','%@','%@','%@', '%@', '%d');", name, isBold ? @"YES" : @"NO", isUnderline ? @"YES" : @"NO", isItalic ? @"YES" : @"NO", bgcolor, fgcolor, [[istring substringWithRange:NSMakeRange(lpos, cpos-lpos)] stringByReplacingOccurrencesOfString:@"\\R" withString:@"\x04"], isNick ? @"YES" : @"NO", nickcolor]; \
+        } NSLog(@"rendering color %d", nickcolor);\
+        cstr = [NSString stringWithFormat:@"addToMessage('%@','%@','%@','%@','%@','%@','%@', '%@', '%d');", name, isBold ? @"YES" : @"NO", isUnderline ? @"YES" : @"NO", isItalic ? @"YES" : @"NO", bgcolor, fgcolor, [[[istring substringWithRange:NSMakeRange(lpos, cpos-lpos)] stringByReplacingOccurrencesOfString:@"\\R" withString:@"\x04"] stringByReplacingOccurrencesOfString:@"\\F" withString:@"\x05"], nDepth ? @"YES" : @"NO", nickcolor]; \
         if (![[self stringByEvaluatingJavaScriptFromString:cstr] isEqualToString:@"SUCCESS"]) { \
             NSLog(@"Could not exec: %@", cstr); \
         } else if ([ms  shouldColor]) {\
@@ -145,9 +145,9 @@ _out_:
 		[self stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"setFlags('%@','%@');", name, [[ms string] substringToIndex:[[ms string] rangeOfString:@"-"].location]]];
 		NSString* istring = [[[[[ms string] substringFromIndex:[[ms string] rangeOfString:@"-"].location+1] stringByEncodingHTMLEntities:YES] stringWithNewLinesAsBRs] stringByLinkifyingURLs];
 		unsigned int cpos = 0;
+		int nDepth = 0;
 		BOOL isBold = NO;
 		BOOL isItalic = NO;
-		BOOL isNick = NO;
 		BOOL isUnderline = NO;
 		NSString *fgcolor = colorForIRCColor(-1);
 		NSString *bgcolor = colorForIRCColor(-2);
@@ -204,17 +204,24 @@ _out_:
                 case RCIRCAttributeInternalNickname:;;
 					RENDER_WITH_OPTS;
 					cpos++;
-                    isNick = !isNick;
-                    if (isNick) {
+					nDepth++;
+                    if (nDepth) {
+						NSLog(@"+");
                         // begin tag
-                        nickcolor = [[istring substringWithRange:NSMakeRange(cpos, 2)] intValue];
-                        NSLog(@"enabling color %d", nickcolor);
-                        cpos+=2;
-                    } else {
-                        NSLog(@"disabling color %d", nickcolor);
-                        // end tag
-                        nickcolor = 0;
+						if ([istring length] >= cpos+2 && nDepth == 1) {
+							nickcolor = [[istring substringWithRange:NSMakeRange(cpos, 2)] intValue];
+							NSLog(@"enabling color %d [depth is %d]", nickcolor, nDepth);
+						}
+						cpos+=2;
+						lpos = cpos;
                     }
+                    break;
+                case RCIRCAttributeInternalNicknameEnd:;;
+					RENDER_WITH_OPTS;
+					cpos++;
+					if (nDepth) {
+						nDepth--;
+					}
                     lpos = cpos;
                     break;
                     
