@@ -27,7 +27,6 @@
 	RCNavigator *navigator = [RCNavigator sharedNavigator];
 	[navigator setFrame:CGRectMake(0, 0, 480, screenWidth.height)];
 	[self.view addSubview:navigator];
-	[navigator release];
 	[self.navigationController setNavigationBarHidden:YES];
 }
 

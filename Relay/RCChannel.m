@@ -20,7 +20,7 @@
 @synthesize channelName, joinOnConnect, panel, topic, bubble, usersPanel, password;
 
 NSString *RCUserRank(NSString *user, RCNetwork* network) {
-@synchronized(network)
+    @synchronized(network)
     {
         if (![network prefix]) {
             return @"";
@@ -114,6 +114,7 @@ UIImage *RCImageForRank(NSString *rank, RCNetwork* network) {
     channelName = [chan retain];
     joinOnConnect = YES;
     joined = NO;
+    userRanksAdv = [NSMutableDictionary new];
     fullUserList = [[NSMutableArray alloc] init];
     panel = [[RCChatPanel alloc] initWithStyle:UITableViewStylePlain andChannel:self];
 }
@@ -189,6 +190,7 @@ UIImage *RCImageForRank(NSString *rank, RCNetwork* network) {
         [panel release];
         [bubble setChannel:nil];
         [self setBubble:nil];
+        [userRanksAdv release];
         [super dealloc];
     }
 }
@@ -223,18 +225,18 @@ int hhash = ([namenorank isEqualToString:[delegate useNick]]) ? 1 : user_hash(na
 name ## _again:;; \
 NSRange range = [cmp rangeOfString:namenorank options:NSCaseInsensitiveSearch];;\
 if (range.location != NSNotFound) {\
-    if ((range.location == 0 || ![chset characterIsMember:[cmp characterAtIndex:range.location-1]]) && (range.location+range.length == [cmp length] || ![chset characterIsMember:[cmp characterAtIndex:range.location+range.length]])) {\
-        index += range.location+range.length;\
-        is_highlight = (hhash == 1) ? 1 : is_highlight;\
-        cmp = [cmp substringFromIndex:range.location+range.length];\
-        message = [message stringByReplacingCharactersInRange:NSMakeRange(range.location, range.length) withString:[NSString stringWithFormat:@"%c%c%@%c", RCIRCAttributeInternalNickname, hhash, [message substringWithRange:NSMakeRange(range.location, range.length)],RCIRCAttributeInternalNickname]];\
-        goto name ## _again;\
-    } else {\
-        goto name ## _nope_not_at_all;\
-    }\
+if ((range.location == 0 || ![chset characterIsMember:[cmp characterAtIndex:range.location-1]]) && (range.location+range.length == [cmp length] || ![chset characterIsMember:[cmp characterAtIndex:range.location+range.length]])) {\
+index += range.location+range.length;\
+is_highlight = (hhash == 1) ? 1 : is_highlight;\
+cmp = [cmp substringFromIndex:range.location+range.length];\
+message = [message stringByReplacingCharactersInRange:NSMakeRange(range.location, range.length) withString:[NSString stringWithFormat:@"%c%c%@%c", RCIRCAttributeInternalNickname, hhash, [message substringWithRange:NSMakeRange(range.location, range.length)],RCIRCAttributeInternalNickname]];\
+goto name ## _again;\
+} else {\
+goto name ## _nope_not_at_all;\
+}\
 } else {\
 name ## _nope_not_at_all:\
-    ;;\
+;;\
 }\
 \
 }}\
@@ -366,7 +368,16 @@ name ## _nope_not_at_all:\
 }
 
 - (BOOL)isUserInChannel:(NSString*)user {
-    return  !![self nickAndRankForNick:user];
+    NSString* rnka = RCUserRank(user, [self delegate]);
+    user = [user substringFromIndex:[rnka length]];
+    for (NSString* nickn in fullUserList) {
+        NSString* rnk = RCUserRank(nickn, [self delegate]);
+        NSString* rln = [nickn substringFromIndex:[rnk length]];
+        if ([rln isEqualToString:user]) {
+            return YES;
+        }
+    }
+    return NO;
 }
 
 - (void)shouldPost:(BOOL)isHighlight withMessage:(NSString *)msg {
@@ -419,9 +430,7 @@ name ## _nope_not_at_all:\
         return;
     }
     @synchronized(self) {
-#if LOGALL
         NSLog(@"_joined: %@", _joined);
-#endif
         if (![_joined isEqualToString:@""] && ![_joined isEqualToString:@" "] && ![_joined isEqualToString:@"\r\n"] && ![self isUserInChannel:_joined] && _joined) {
             NSUInteger newIndex = [fullUserList indexOfObject:_joined inSortedRange:(NSRange){0, [fullUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^NSComparisonResult(id obj1, id obj2) {
                 return sortRank(obj1, obj2, [self delegate]);
@@ -438,9 +447,7 @@ name ## _nope_not_at_all:\
     }
     left = [self nickAndRankForNick:left];
 	@synchronized(self) {
-#if LOGALL
 		NSLog(@"left: %@", left);
-#endif
 		if (![left isEqualToString:@""] && ![left isEqualToString:@" "] && ![left isEqualToString:@"\r\n"] && [self isUserInChannel:left] && left) {
 			NSInteger newIndex = [fullUserList indexOfObject:left];
 			if (newIndex != NSNotFound) {
@@ -468,14 +475,90 @@ name ## _nope_not_at_all:\
 	joined = NO;
 }
 
+#define NICK_NO_RANK(nick,network) [nick substringFromIndex:[RCUserRank(nick,network) length]]
+#define REFRESH_TABLE   \
+NSString* cur_rank = @"";\
+int max = 999;\
+for (NSString* rank in current) {\
+int nm = rankToNumber([rank characterAtIndex:0], [self delegate]);\
+if (max > nm) {\
+max = nm;\
+cur_rank = rank;\
+}\
+} if(![or isEqualToString:cur_rank]){ \
+NSLog(@"user has now rank %@ [%@]",cur_rank,full_user);\
+[self setUserLeft:nnr];\
+[self setUserJoined:[cur_rank stringByAppendingString:nnr]];\
+}
+
+#define SET_MODE    \
+partialLen = [modes substringWithRange:NSMakeRange(stptr, endptr-stptr)];\
+for (int a = 0; a < [partialLen length]; a++) { \
+if (adding) {\
+    NSString* rankf = [[[delegate prefix] objectForKey:[partialLen substringWithRange:NSMakeRange(a, 1)]] objectAtIndex:1];\
+    NSString* full_user = [self nickAndRankForNick:[users objectAtIndex:modecnt]]; NSString* or = RCUserRank(full_user,[self delegate]);\
+    NSString* nnr = NICK_NO_RANK(full_user, [self delegate]);\
+    NSArray * current = [userRanksAdv objectForKey:nnr];   \
+    if (!current) current = [[NSArray new] autorelease]; \
+    current = [current arrayByAddingObject:rankf];\
+    [userRanksAdv setObject:current forKey:nnr];\
+    REFRESH_TABLE;\
+    NSLog(@"addin rank %@ to %@ %@ %d", rankf, nnr, userRanksAdv, modecnt);\
+}\
+else if (subtracting) {\
+    NSString* rankf = [[[delegate prefix] objectForKey:[partialLen substringWithRange:NSMakeRange(a, 1)]] objectAtIndex:1];\
+    NSString* full_user = [self nickAndRankForNick:[users objectAtIndex:modecnt]];NSString* or = RCUserRank(full_user,[self delegate]);\
+    NSString* nnr = NICK_NO_RANK(full_user, [self delegate]);\
+    NSMutableArray * current = [[[userRanksAdv objectForKey:nnr] mutableCopy] autorelease];   \
+    [current removeObject:rankf];\
+    if (current)     [userRanksAdv setObject:[[current copy] autorelease] forKey:nnr];\
+    NSLog(@"subtracting rank %@ to %@ %@ %d", rankf, nnr, userRanksAdv,modecnt);\
+    REFRESH_TABLE;\
+}\
+modecnt++;\
+}\
+
+
 - (void)setMode:(NSString *)modes forUser:(NSString *)user {
-    @try {
-        
+    @synchronized(userRanksAdv)
+    {
+        @try {
+            NSArray* users = [user componentsSeparatedByString:@" "];
+            NSLog(@"usrs %@", users);
+            BOOL adding = NO;
+            BOOL subtracting = NO;
+            int stptr = 0;
+            int endptr = 0;
+            int modecnt = 0;
+            NSString* partialLen = nil;
+            for (int i = 0; i < [modes length]; i++) {
+                switch ([modes characterAtIndex:i]) {
+                    case '+':
+                        SET_MODE;;
+                        adding = YES;
+                        subtracting = NO;
+                        stptr = i + 1;
+                        endptr = stptr;
+                        break;                                            
+                    case '-':
+                        SET_MODE;
+                        adding = NO;
+                        subtracting = YES;
+                        stptr = i + 1;
+                        endptr = stptr;
+                        break;
+                    default:
+                        endptr ++;
+                        break;
+                }
+            }
+            SET_MODE;
+        }
+        @catch (NSException *exception) {
+            NSLog(@"exc %@", exception);
+        }
+        NSLog(@"setting %@ for %@", modes, user);
     }
-    @catch (NSException *exception) {
-        NSLog(@"exc %@", exception);
-    }
-    NSLog(@"setting %@ for %@", modes, user);
 }
 
 - (void)setJoined:(BOOL)joind {

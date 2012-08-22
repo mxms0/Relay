@@ -293,7 +293,6 @@
 		memcpy(lbuf, lbuf+dbytes, cached);
 		kbytes = cached;
 		dbytes = 0;
-		pbytes = 0;
 	}
 	if ([self isConnected]) {
 		[self disconnectWithMessage:@"End of stream"];
@@ -1442,7 +1441,7 @@ char *RCIPForURL(NSString *URL) {
 	[scannr scanUpToString:@" " intoString:&cmd];
 	[scannr scanUpToString:@"\r\n" intoString:&msg];
 	fullHost = [fullHost substringFromIndex:1];
-	if ([msg length] > 1) {
+	if ([msg hasPrefix:@":"]) {
 		msg = [msg substringFromIndex:1];
 	}
 	RCParseUserMask(fullHost, &user, nil, nil);

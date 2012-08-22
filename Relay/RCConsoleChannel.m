@@ -67,7 +67,7 @@
 		[super recievedMessage:message from:from type:type];
 		return;
 	}
-	[panel postMessage:msg withType:type highlight:NO];
+	[panel postMessage:[msg autorelease] withType:type highlight:NO];
 }
 
 @end
