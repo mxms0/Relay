@@ -864,7 +864,6 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
                 isNick = !isNick;
                 if (isNick) {
                     // begin tag
-                    int nickcolor = [[istring substringWithRange:NSMakeRange(cpos, 2)] intValue];
                     cpos+=2;
                 } else {
 

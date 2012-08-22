@@ -82,7 +82,7 @@
 	OSStatus st;
 	OSStatus rts = SecItemCopyMatching((CFDictionaryRef)genericQuery, (CFTypeRef *)&attributes);
 	if (attributes) NSLog(@"hi%@", attributes);
-	NSLog(@"hi %d", rts);
+	NSLog(@"hi %ld", rts);
 	if (rts == noErr) {
 		upd = [NSMutableDictionary dictionaryWithDictionary:attributes];
 		[upd setObject:[genericQuery objectForKey:(id)kSecClass] forKey:(id)kSecClass];
@@ -102,7 +102,7 @@
 	}
 }
 - (void)logStatus:(OSStatus)st {
-	NSLog(@"ERR-OR %d", st);
+	NSLog(@"ERR-OR %ld", st);
 }
 
 - (void)resetKeychain {
