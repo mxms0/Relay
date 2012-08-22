@@ -25,7 +25,6 @@ NSString *RCUserRank(NSString *user, RCNetwork* network) {
         if (![network prefix]) {
             return @"";
         }
-        NSLog(@"prefix %@", [network prefix]);
         for (id karr in [[network prefix] allKeys]) {
             NSArray* arr = [[network prefix] objectForKey:karr];
             if ([arr count] == 2) {
@@ -243,8 +242,10 @@ name ## _nope_not_at_all:\
 
 - (void)changeNick:(NSString*)old toNick:(NSString*)new_
 {
+    NSString* full_old = [self nickAndRankForNick:old];
+    NSString* old_rank = RCUserRank(full_old, [self delegate]);
     [self setUserLeft:old];
-    [self setUserJoined:new_];
+    [self setUserJoined:[old_rank stringByAppendingString:new_]];
     [self recievedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" type:RCMessageTypeNormalE];
 }
 - (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type {
@@ -297,7 +298,7 @@ name ## _nope_not_at_all:\
 			break;
 		case RCMessageTypeJoin:
             [self setUserJoined:from];
-			msg = [[NSString stringWithFormat:@"%c[%@]%c %@ joined the channel.", RCIRCAttributeBold, time, RCIRCAttributeBold, from] retain];
+			msg = [[NSString stringWithFormat:@"%c[%@] %@ %c joined the channel.", RCIRCAttributeBold, time, from, RCIRCAttributeBold] retain];
 			break;
 		case RCMessageTypeEvent:
             self.topic = @"";
@@ -323,7 +324,7 @@ name ## _nope_not_at_all:\
             }
 			break;
 		case RCMessageTypeMode:
-			msg = [[NSString stringWithFormat:@"%c[%@]%c %@ %@",RCIRCAttributeBold, time, RCIRCAttributeBold, from, message] retain];
+			msg = [[NSString stringWithFormat:@"%c[%@] %@%c sets mode %c%@%c",RCIRCAttributeBold, time, from, RCIRCAttributeBold, RCIRCAttributeBold, message,RCIRCAttributeBold] retain];
 			break;
 		case RCMessageTypeError:
 			msg = [[NSString stringWithFormat:@"%c[%@]%c Error: %@", RCIRCAttributeBold, time, RCIRCAttributeBold, message] retain];
@@ -366,7 +367,7 @@ name ## _nope_not_at_all:\
 }
 
 - (BOOL)isUserInChannel:(NSString*)user {
-    return ([fullUserList containsObject:user] || [fullUserList containsObject:[user substringFromIndex:MIN([user length], 1)]]);
+    return  !![self nickAndRankForNick:user];
 }
 
 - (void)shouldPost:(BOOL)isHighlight withMessage:(NSString *)msg {
@@ -397,7 +398,6 @@ name ## _nope_not_at_all:\
     for (NSString* nickrank in fullUserList) {
         if (nick && [nickrank hasSuffix:nick]) {
             NSInteger ln = [RCUserRank(nickrank, [self delegate]) length];
-            NSLog(@"OMG OMG OMG maybe. RL = %d [%@|%@|%@]", ln, nick, nickrank, [nickrank substringFromIndex:ln] );
             if ([[nickrank substringFromIndex:ln] isEqualToString:nick]) {
                 return nickrank;
             }
@@ -470,6 +470,12 @@ name ## _nope_not_at_all:\
 }
 
 - (void)setMode:(NSString *)modes forUser:(NSString *)user {
+    @try {
+        
+    }
+    @catch (NSException *exception) {
+        NSLog(@"exc %@", exception);
+    }
     NSLog(@"setting %@ for %@", modes, user);
 }
 

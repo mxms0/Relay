@@ -18,7 +18,6 @@
 @class RCNetwork;
 @class RCNavigator;
 @interface RCChannel : NSObject <UITableViewDelegate, UITableViewDataSource> {
-	NSMutableDictionary *users;
 	NSString *channelName;
 	NSString *topic;
 	NSString *password;

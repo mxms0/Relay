@@ -1264,11 +1264,11 @@ char *RCIPForURL(NSString *URL) {
     [scanner scanUpToString:@"" intoString:&newnick];
     [scanner release];
     if ([newnick hasPrefix:@":"]) {
-        NSLog(@"hi i am 12 and wat is thi- [%@]", [newnick substringFromIndex:1]);
+        NSLog(@"a hi i am 12 and wat is thi- [%@]", [newnick substringFromIndex:1]);
         newnick = [newnick substringFromIndex:1];
     }
     if ([oldnick hasPrefix:@":"]) {
-        NSLog(@"hi i am 12 and wat is thi- [%@]", [newnick substringFromIndex:1]);
+        NSLog(@"a hi i am 12 and wat is thi- [%@]", [oldnick substringFromIndex:1]);
         oldnick = [oldnick substringFromIndex:1];
     }
     if ([oldnick isEqualToString:useNick]) {
@@ -1474,11 +1474,11 @@ char *RCIPForURL(NSString *URL) {
 			return;
 		}
 		if (!user) {
-			[chan recievedMessage:[NSString stringWithFormat:@"sets mode %@", modes] from:settr type:RCMessageTypeMode];
+			[chan recievedMessage:[NSString stringWithFormat:@"%@", modes] from:settr type:RCMessageTypeMode];
 			[scanr release];
 			return;
 		}
-		[chan recievedMessage:[NSString stringWithFormat:@"sets mode %@ %@", modes, user] from:settr type:RCMessageTypeMode];
+		[chan recievedMessage:[NSString stringWithFormat:@"%@ %@", modes, user] from:settr type:RCMessageTypeMode];
 		[chan setMode:modes forUser:user];
 		
 	}
