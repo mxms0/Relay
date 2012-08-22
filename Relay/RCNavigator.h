@@ -51,6 +51,7 @@
 - (void)rotateToInterfaceOrientation:(UIInterfaceOrientation)oi;
 - (void)presentNetworkPopover;
 - (void)dismissNetworkPopover;
+- (void)refreshTitleBar:(RCNetwork *)net;
 - (void)selectNetwork:(RCNetwork *)net;
 - (CGRect)frameForListButton;
 - (CGRect)frameForPlusButton;

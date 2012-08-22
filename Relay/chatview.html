@@ -74,6 +74,43 @@
 				padding-left:2px;
                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f2f5f7), color-stop(100%,#edf0f3));
             }
+            /*
+             Nickname colors
+             */
+            .color0  { } /* reserved */
+            .color1  { color: #ea584f; }
+            .color2  { }
+            .color3  { }
+            .color4  { }
+            .color5  { }
+            .color6  { }
+            .color7  { }
+            .color8  { }
+            .color9  { }
+            .color10 { }
+            .color11 { color: #4238e7; }
+            .color12 { }
+            .color13 { }
+            .color14 { }
+            .color15 { }
+            .color16 { }
+            .color17 { }
+            .color18 { }
+            .color19 { }
+            .color20 { }
+            .color21 { }
+            .color22 { }
+            .color23 { }
+            .color24 { }
+            .color25 { }
+            .color26 { }
+            .color27 { }
+            .color28 { }
+            .color29 { }
+            .color30 { }
+            .color31 { }
+            .color32 { }
+
             html {
                 -webkit-text-size-adjust: none; /* Never autoresize text */
             }
@@ -152,10 +189,10 @@
                      Flags are per-message metadata. (not per-chunk)
                      */
                     if (lflags.indexOf("M") != -1) {
-                        olddiv.style.background = "-webkit-gradient(linear, left top, left bottom, color-stop(0%,#edf6f9), color-stop(100%,#e7f1f6))";
-						olddiv.style.color = "#2d475c";
-						olddiv.style.borderTop = "solid #cedce4 1px";
-						olddiv.class = "mmf";
+                        //olddiv.style.background = "-webkit-gradient(linear, left top, left bottom, color-stop(0%,#edf6f9), color-stop(100%,#e7f1f6))";
+						//olddiv.style.color = "#2d475c";
+						//olddiv.style.borderTop = "solid #cedce4 1px";
+						//olddiv.class = "mmf";
                     }
 					else if (lflags.indexOf("H") != -1) {
                         olddiv.style.background = "-webkit-gradient(linear, left top, left bottom, color-stop(0%,#f5f1f4), color-stop(100%,#f1ebef))";
@@ -187,15 +224,20 @@
                     fgcolor: The background color of the chunk, as a string.
                     text: A string containing the text of the chunk.
                     isFirstChunk: Currently unused.
+                    isNick: if the current chunk is a nickname. if so, it should be colored with a color identified by nickColor.
+                    nickColor: a number that can go from 0 to 254 that represents an unique color. in the current implementation, only 32 colors are used. Color ID 1 is reserved for the current nickname (should have a particular color). Color ID 0 means there should be no color at all, but this is currently not used in Relay.
                 Return Value:
                     Must be "SUCCESS". Everything else makes Relay think the message has not been rendered properly.
                 
             */
-            function addToMessage(name, isBold, isUnderlined, isItalic, bgcolor, fgcolor, text, isFirstChunk) {
+            function addToMessage(name, isBold, isUnderlined, isItalic, bgcolor, fgcolor, text, isNick, nickColor) {
                 if (types[name] == "EVENT") {
                     isBold = "YES";
                 } else
                 if (types[name] == "ERROR") {
+                    isBold = "YES";
+                }
+                if (isNick == "YES") {
                     isBold = "YES";
                 }
                 var olddiv = document.getElementById('msg' + name);
@@ -223,8 +265,13 @@
                     pre += "<i>";
                     post += "</i>";
                 } 
-                pre += "<font color=\"" + fgcolor + "\" style=\"background: " + bgcolor + ";\">"
-                post += "</font>"
+                if (isNick == "YES") {
+                    pre += "<font color=\"" + fgcolor + "\" class=\"color" + nickColor + "\" style=\"background: " + bgcolor + ";\">"
+                    post += "</font>"
+                } else {
+                    pre += "<font color=\"" + fgcolor + "\" class=\"color0\" style=\"background: " + bgcolor + ";\">"
+                    post += "</font>"
+                }
                 olddiv.innerHTML += pre + text + post;
 				scrollToBottom();
                 return "SUCCESS";

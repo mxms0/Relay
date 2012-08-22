@@ -8,6 +8,7 @@
 
 #import "RCChannelManagementViewController.h"
 #import "RCNetwork.h"
+#import "RCNavigator.h"
 
 @implementation RCChannelManagementViewController
 @synthesize channel, originalChannel, delegate;
@@ -131,7 +132,7 @@
 	}
 	[rchan setJoinOnConnect:jOC];
 	if (jOC) [rchan setJoined:YES withArgument:nil];
-	[delegate addChannel:_chan];
+	[(RCNavigator*)delegate addChannel:_chan];
 	[self.navigationController popViewControllerAnimated:YES];
 }
 

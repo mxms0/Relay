@@ -36,9 +36,10 @@
 @property (nonatomic, assign) RCChatPanel *panel;
 @property (nonatomic, retain) NSString *topic;
 @property (nonatomic, retain) NSString *password;
-@property (nonatomic, assign) RCChannelBubble *bubble;
+@property (nonatomic, retain) RCChannelBubble *bubble;
 @property (nonatomic, assign) RCUserListPanel *usersPanel;
 - (void)disconnected:(NSString*)msg;
+- (void)changeNick:(NSString*)old toNick:(NSString*)new_;
 - (id)initWithChannelName:(NSString *)_name;
 - (void)setDelegate:(RCNetwork *)delegate;
 - (RCNetwork *)delegate;
@@ -50,6 +51,7 @@
 - (void)setJoined:(BOOL)joind withArgument:(NSString *)arg1;
 - (void)userWouldLikeToPartakeInThisConversation:(NSString *)message;
 - (void)peopleParticipateInConversationsNotPartake:(id)hai wtfWasIThinking:(BOOL)thinking;
+- (BOOL)joined;
 // yes, seriously. :P spent like 15 minutes and felt this was best suited. 
 - (void)parseAndHandleSlashCommand:(NSString *)cmd;
 - (void)setMyselfParted;	
@@ -58,11 +60,7 @@
 - (void)setSuccessfullyJoined:(BOOL)success;
 - (BOOL)isPrivate;
 - (void)setJoined:(BOOL)joind;
-NSString *RCUserRank(NSString *user);
-UIImage *RCImageForRank(NSString *rank);
-UIImage *RCImageForRanks(NSString *ranks, NSString *possible);
-NSString *RCMergeModes(NSString *arg1, NSString *arg2);
-NSString *RCSymbolRepresentationForModes(NSString *modes);
-NSString *RCSterilizeModes(NSString *modes);
-BOOL RCIsRankHigher(NSString *rank, NSString *rank2);
+NSString *RCUserRank(NSString *user, RCNetwork* network);
+UIImage *RCImageForRank(NSString *rank, RCNetwork* network);
+BOOL RCIsRankHigher(NSString *rank, NSString *rank2, RCNetwork* network);
 @end

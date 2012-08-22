@@ -20,6 +20,7 @@
 @property (nonatomic, readonly) BOOL isSelected;
 @property (nonatomic, assign) BOOL hasNewHighlights;
 @property (nonatomic, readonly) int _rcount;
+@property (nonatomic, assign) RCChannel* channel; // weak ref
 - (id)initWithFrame:(CGRect)frame andChan:(RCChannel*)channel_;
 - (void)setMentioned:(BOOL)mentioned;
 - (void)setHasNewMessage:(BOOL)msgs;

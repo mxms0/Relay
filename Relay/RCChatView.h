@@ -66,7 +66,8 @@ enum RCIRCAttribute {
     RCIRCAttributeBold = 0x02,
     RCIRCAttributeReset = 0x0F,
     RCIRCAttributeItalic = 0x16,
-    RCIRCAttributeUnderline = 0x1F
+    RCIRCAttributeUnderline = 0x1F,
+    RCIRCAttributeInternalNickname = 0x04
 };
 
 @class RCMessageFormatter;

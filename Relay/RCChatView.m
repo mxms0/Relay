@@ -100,7 +100,7 @@ NSString *colorForIRCColor(char irccolor) {
         if (!([ms string] && ms)) {\
             return;\
         }\
-        cstr = [NSString stringWithFormat:@"addToMessage('%@','%@','%@','%@','%@','%@','%@', 'YES');", name, isBold ? @"YES" : @"NO", isUnderline ? @"YES" : @"NO", isItalic ? @"YES" : @"NO", bgcolor, fgcolor, [istring substringWithRange:NSMakeRange(lpos, cpos-lpos)]]; \
+        cstr = [NSString stringWithFormat:@"addToMessage('%@','%@','%@','%@','%@','%@','%@', '%@', '%d');", name, isBold ? @"YES" : @"NO", isUnderline ? @"YES" : @"NO", isItalic ? @"YES" : @"NO", bgcolor, fgcolor, [[istring substringWithRange:NSMakeRange(lpos, cpos-lpos)] stringByReplacingOccurrencesOfString:@"\\R" withString:@"\x04"], isNick ? @"YES" : @"NO", nickcolor]; \
         if (![[self stringByEvaluatingJavaScriptFromString:cstr] isEqualToString:@"SUCCESS"]) { \
             NSLog(@"Could not exec: %@", cstr); \
         } else if ([ms  shouldColor]) { \
@@ -139,16 +139,18 @@ _out_:
 			[ms setString:[[ms string] substringWithRange:NSMakeRange(0, [[ms string] length]-1)]];
 		}
 		[self stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"setFlags('%@','%@');", name, [[ms string] substringToIndex:[[ms string] rangeOfString:@"-"].location]]];
-		NSString* istring = [[[[[[ms string] substringFromIndex:[[ms string] rangeOfString:@"-"].location+1] stringByEncodingHTMLEntities:YES] stringByReplacingOccurrencesOfString:@"\n" withString:@"<br />"] stringByLinkifyingURLs] stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
+		NSString* istring = [[[[[ms string] substringFromIndex:[[ms string] rangeOfString:@"-"].location+1] stringByEncodingHTMLEntities:YES] stringWithNewLinesAsBRs] stringByLinkifyingURLs];
 		unsigned int cpos = 0;
 		BOOL isBold = NO;
 		BOOL isItalic = NO;
+		BOOL isNick = NO;
 		BOOL isUnderline = NO;
 		NSString *fgcolor = colorForIRCColor(-1);
 		NSString *bgcolor = colorForIRCColor(-2);
 		unsigned int lpos = 0;
 		NSString *cstr;
-		while (cpos - [istring length]) {
+        int nickcolor = 0;
+		while (cpos < [istring length]) {
 			switch ([istring characterAtIndex:cpos]) {
 				case RCIRCAttributeBold:
 					RENDER_WITH_OPTS;
@@ -195,6 +197,23 @@ _out_:
 					bgcolor = colorForIRCColor(number2);
 					lpos = cpos;
 					break;
+                case RCIRCAttributeInternalNickname:;;
+					RENDER_WITH_OPTS;
+					cpos++;
+                    isNick = !isNick;
+                    if (isNick) {
+                        // begin tag
+                        nickcolor = [istring characterAtIndex:cpos] & 0x00FF;
+                        NSLog(@"enabling color %d", nickcolor);
+                        cpos++;
+                    } else {
+                        NSLog(@"disabling color %d", nickcolor);
+                        // end tag
+                        nickcolor = 0;
+                    }
+                    lpos = cpos;
+                    break;
+                    
 				default:
 					cpos++;
 					continue;

@@ -85,7 +85,6 @@ static id _sharedNavigator = nil;
 	if (![chan isEqualToString:@""] && ![chan isEqualToString:@" "]) {
 		RCChannelBubble *bubble = [self channelBubbleWithChannel:[net channelWithChannelName:chan]];
 		[[net _bubbles] insertObject:bubble atIndex:([[net _bubbles] count])];
-		[bubble release];
 	}
 	if (currentNetwork)
 		if ([[net description] isEqualToString:[currentNetwork description]])
@@ -248,7 +247,7 @@ static id _sharedNavigator = nil;
 	[bubble addTarget:self action:@selector(channelSelected:) forControlEvents:UIControlEventTouchUpInside];
 	[bubble setTitle:[chan channelName] forState:UIControlStateNormal];
     [chan setBubble:bubble];
-	return bubble;
+	return [bubble autorelease];
 }
 
 - (void)tearDownForChannelList:(RCChannelBubble *)bubble {

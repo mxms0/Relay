@@ -12,7 +12,7 @@
 static UIImage *image = nil;
 
 @implementation RCChannelBubble
-@synthesize hasNewHighlights, isSelected, _rcount;
+@synthesize hasNewHighlights, isSelected, _rcount, channel;
 
 - (BOOL)_selected {
     return self.isSelected;
@@ -105,39 +105,53 @@ static UIImage *image = nil;
     [self fixColors];
 }
 
+- (void)dealloc
+{
+    @synchronized(self)
+    {
+        [super dealloc];
+    }
+}
+
 - (void)fixColors {
+    [self retain];
     dispatch_async(dispatch_get_main_queue(), ^(void){
         @synchronized(self)
         {
-        if (isSelected) {
-            if ([self backgroundImageForState:UIControlStateNormal] != image) {
-                [self setBackgroundImage:image forState:UIControlStateNormal];
+            @synchronized([self channel])
+            {
+                NSLog(@"inside fixColors");
+                if (isSelected) {
+                    if ([self backgroundImageForState:UIControlStateNormal] != image) {
+                        [self setBackgroundImage:image forState:UIControlStateNormal];
+                    }
+                    [self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+                    [self setTitleShadowColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+                    if (![(RCChannel*)[self channel] joined]) {
+                        [self setTitleColor:UIColorFromRGB(0xc4c4c4) forState:UIControlStateNormal];
+                        [self setTitleShadowColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+                    }
+                } else {
+                    [self setBackgroundImage:nil forState:UIControlStateNormal];
+                    if (hasNewHighlights) {
+                        [self setTitleColor:UIColorFromRGB(0xDB4949) forState:UIControlStateNormal];
+                        [self setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
+                    } else if (hasNewMessages) {
+                        [self setTitleColor:UIColorFromRGB(0x498ADB) forState:UIControlStateNormal];
+                        [self setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
+                    } else {
+                        [self setTitleColor:UIColorFromRGB(0x3e3f3f) forState:UIControlStateNormal];
+                        [self setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
+                    }
+                    if (![(RCChannel*)[self channel] joined]) {
+                        [self setTitleColor:UIColorFromRGB(0xc4c4c4) forState:UIControlStateNormal];
+                        [self setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
+                    }
+                }
             }
-            [self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-            [self setTitleShadowColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
-            if (![[self channel] joined]) {
-                [self setTitleColor:UIColorFromRGB(0xc4c4c4) forState:UIControlStateNormal];
-                [self setTitleShadowColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
-            }
-        } else {
-            [self setBackgroundImage:nil forState:UIControlStateNormal];
-            if (hasNewHighlights) {
-                [self setTitleColor:UIColorFromRGB(0xDB4949) forState:UIControlStateNormal];
-                [self setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
-            } else if (hasNewMessages) {
-                [self setTitleColor:UIColorFromRGB(0x498ADB) forState:UIControlStateNormal];
-                [self setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
-            } else {
-                [self setTitleColor:UIColorFromRGB(0x3e3f3f) forState:UIControlStateNormal];
-                [self setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
-            }
-            if (![[self channel] joined]) {
-                [self setTitleColor:UIColorFromRGB(0xc4c4c4) forState:UIControlStateNormal];
-                [self setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
-            }
+            [self layoutSubviews];
         }
-        [self layoutSubviews];
-        }
+        [self release];
     });
 }
 

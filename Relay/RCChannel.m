@@ -13,106 +13,59 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "RCChatView.h"
 #import "NSString+IRCStringSupport.h"
-
+#import "RCChannelManager.h"
+#define M_COLOR 32
 @implementation RCChannel
 
 @synthesize channelName, joinOnConnect, panel, topic, bubble, usersPanel, password;
 
-NSString *RCMergeModes(NSString *arg1, NSString *arg2) {
-	if (arg1 == nil || arg2 == nil) return nil;
-	if ([arg1 isEqualToString:@""] || [arg2 isEqualToString:@""]) return nil;
-	if ([arg1 isEqualToString:arg2]) return arg1;
-	NSString *final = @"";
-	if (([arg1 rangeOfString:@"~"].location != NSNotFound) || ([arg2 rangeOfString:@"~"].location != NSNotFound)) {
-		final = [final stringByAppendingFormat:@"~"];
-	}
-	if (([arg1 rangeOfString:@"&"].location != NSNotFound) || ([arg2 rangeOfString:@"&"].location != NSNotFound)) {
-		final = [final stringByAppendingFormat:@"&"];
-	}
-	if (([arg1 rangeOfString:@"@"].location != NSNotFound) || ([arg2 rangeOfString:@"@"].location != NSNotFound)) {
-		final = [final stringByAppendingString:@"@"];
-	}
-	if (([arg1 rangeOfString:@"%"].location != NSNotFound) || ([arg2 rangeOfString:@"%"].location != NSNotFound)) {
-		final = [final stringByAppendingString:@"%"];
-	}
-	if (([arg1 rangeOfString:@"+"].location != NSNotFound) || ([arg2 rangeOfString:@"+"].location != NSNotFound)) {
-		final = [final stringByAppendingString:@"+"];
-	}
-	return final;
-	
-}
-
-NSString *RCUserRank(NSString *user) {
-	if ([user hasPrefix:@"@"]) return @"@";
-	if ([user hasPrefix:@"+"]) return @"+";
-	if ([user hasPrefix:@"%"]) return @"%";
-	if ([user hasPrefix:@"~"]) return @"~";
-	if ([user hasPrefix:@"&"]) return @"&";
-	if ([user hasPrefix:@"!"]) return @"&";
-	return nil;
-}
-
-NSInteger rankToNumber(unichar rank);
-
-BOOL RCIsRankHigher(NSString *rank, NSString *rank2) {
-    return (rankToNumber([rank characterAtIndex:0]) < rankToNumber([rank2 characterAtIndex:0]));
-}
-
-UIImage *RCImageForRanks(NSString *ranks, NSString *possible) {
-	if ([ranks isEqualToString:@""] || ranks == nil) return RCImageForRank(@"");
-	if (!possible) return RCImageForRank([NSString stringWithFormat:@"%C", [ranks characterAtIndex:0]]);
-	for (int i = 0; i < [possible length]; i++) {
-		unichar rank = [possible characterAtIndex:i];
-		NSString *nRank = [NSString stringWithFormat:@"%C", rank];
-		if ([ranks rangeOfString:nRank].location != NSNotFound)
-			return RCImageForRank(nRank);
-	}
-	return nil;
-}
-
-NSString *RCSymbolRepresentationForModes(NSString *modes) {
-	return [[[[[modes stringByReplacingOccurrencesOfString:@"o" withString:@"@"] stringByReplacingOccurrencesOfString:@"h" withString:@"%"] stringByReplacingOccurrencesOfString:@"v" withString:@"+"] stringByReplacingOccurrencesOfString:@"a" withString:@"&"] stringByReplacingOccurrencesOfString:@"q" withString:@"~"];
-}
-
-NSString *RCSterilizeModes(NSString *modes) {
-	return [[[modes stringByReplacingOccurrencesOfString:@"i" withString:@""] stringByReplacingOccurrencesOfString:@"w" withString:@""] stringByReplacingOccurrencesOfString:@"s" withString:@""];
-}
-
-NSInteger rankToNumber(unichar rank)
-{
-    switch (rank) {
-        case '~':
-            return 0;
-            break;
-        case '!':
-        case '&':
-            return 1;
-            break;
-        case '@':
-            return 2;
-            break;
-        case '%':
-            return 3;
-            break;
-        case '+':
-            return 4;
-            break;
-        default:
-            return 999;
-            break;
+NSString *RCUserRank(NSString *user, RCNetwork* network) {
+@synchronized(network)
+    {
+        if (![network prefix]) {
+            return @"";
+        }
+        NSLog(@"prefix %@", [network prefix]);
+        for (id karr in [[network prefix] allKeys]) {
+            NSArray* arr = [[network prefix] objectForKey:karr];
+            if ([arr count] == 2) {
+                if ([[arr objectAtIndex:1] characterAtIndex:0] == [user characterAtIndex:0]) {
+                    return [arr objectAtIndex:1];
+                }
+            }
+        }
+        return nil;
     }
 }
 
-NSInteger sortRank(id u1, id u2);
-NSInteger sortRank(id u1, id u2) {
+NSInteger rankToNumber(unichar rank, RCNetwork* network);
+
+BOOL RCIsRankHigher(NSString *rank, NSString *rank2, RCNetwork* network) {
+    return (rankToNumber([rank characterAtIndex:0],network) < rankToNumber([rank2 characterAtIndex:0],network));
+}
+
+NSInteger rankToNumber(unichar rank, RCNetwork* network)
+{
+    for (NSArray* arr in [[network prefix] allValues]) {
+        if ([arr count] == 2) {
+            if ([[arr objectAtIndex:1] characterAtIndex:0] == rank) {
+                return [[arr objectAtIndex:0] intValue];
+            }
+        }
+    }
+    return 999;
+}
+
+NSInteger sortRank(id u1, id u2, RCNetwork* network);
+NSInteger sortRank(id u1, id u2, RCNetwork* network) {
     u1 = [u1 lowercaseString];
     u2 = [u2 lowercaseString];
-    NSString* ra = RCUserRank(u1);
-    NSString* rb = RCUserRank(u2);
+    NSString* ra = RCUserRank(u1,network);
+    NSString* rb = RCUserRank(u2,network);
     unichar r1 = [ra characterAtIndex:0];
     unichar r2 = [rb characterAtIndex:0];
-    NSInteger r1n = rankToNumber(r1);
-    NSInteger r2n = rankToNumber(r2);
+    NSInteger r1n = rankToNumber(r1, network);
+    NSInteger r2n = rankToNumber(r2, network);
     if (r1n < r2n)
         return NSOrderedAscending;
     else if (r1n > r2n)
@@ -122,12 +75,33 @@ NSInteger sortRank(id u1, id u2) {
     }
 }
 
-UIImage *RCImageForRank(NSString *rank) {
-	if (rank == nil || [rank isEqualToString:@""]) return [UIImage imageNamed:@"0_regulares"];
-    NSLog(@"Rank r [%@]", rank);
-    if ([rank isEqualToString:@"!"]) {
-        rank = @"&";
+UIImage *RCImageForRank(NSString *rank, RCNetwork* network) {
+    NSString* realRank = RCUserRank(rank, network);
+    NSInteger rankPosi = rankToNumber([realRank characterAtIndex:0], network);
+    switch (rankPosi) {
+        case 0:
+            rank = @"~";
+            break;
+        case 1:
+            rank = @"&";
+            break;
+        case 2:
+            rank = @"@";
+            break;
+        case 3:
+            rank = @"%";
+            break;
+        case 4:
+            rank = @"+";
+            break;
+        default:
+            rank = @"";
+            break;
     }
+    /*
+     Uses numerical value for rank positions etc. => basically, works relying on PREFIX
+     */
+	if (rank == nil || [rank isEqualToString:@""]) return [UIImage imageNamed:@"0_regulares"];
 	if ([rank isEqualToString:@"@"] 
 		|| [rank isEqualToString:@"~"] 
 		|| [rank isEqualToString:@"&"] 
@@ -187,9 +161,9 @@ UIImage *RCImageForRank(NSString *rank) {
 	else {
 		c.detailTextLabel.text = @"";
         NSString *el = [fullUserList objectAtIndex:indexPath.row-1];
-        NSString *rank = RCUserRank(el);
+        NSString *rank = RCUserRank(el,[self delegate]);
 		c.textLabel.text = [el substringFromIndex:[rank length]];
-		c.imageView.image = RCImageForRanks(rank, [delegate userModes]);
+		c.imageView.image = RCImageForRank(rank, delegate);
 	}
 	return c;
 }
@@ -210,10 +184,15 @@ UIImage *RCImageForRank(NSString *rank) {
 }
 
 - (void)dealloc {
-	[channelName release];
-	[users release];
-	[panel release];
-	[super dealloc];
+    @synchronized(self)
+    {
+        [channelName release];
+        [users release];
+        [panel release];
+        [bubble setChannel:nil];
+        [self setBubble:nil];
+        [super dealloc];
+    }
 }
 
 - (id)description {
@@ -224,6 +203,52 @@ UIImage *RCImageForRank(NSString *rank) {
 	
 }
 
+char user_hash(NSString* from);
+char user_hash(NSString* from)
+{
+    int uhash = 0;
+    @synchronized([[UIApplication sharedApplication] delegate])
+    {
+        srand([from hash]);
+        uhash = (rand() % (M_COLOR-2)) + 2;
+    }
+    return uhash % 0xFF;
+}
+
+#define MSG_HIGHLIGHT_CHECK(name)                { for (NSString* uname  in fullUserList) {\
+NSString *cmp = message; \
+int index = 0;\
+NSString *rank = RCUserRank(uname,[self delegate]);\
+NSString *namenorank = [uname substringFromIndex:[rank length]]; \
+NSCharacterSet* chset = [NSCharacterSet letterCharacterSet]; \
+int hhash = ([namenorank isEqualToString:[delegate useNick]]) ? 1 : user_hash(namenorank); \
+name ## _again:;; \
+NSRange range = [cmp rangeOfString:namenorank options:NSCaseInsensitiveSearch];;\
+if (range.location != NSNotFound) {\
+    if ((range.location == 0 || ![chset characterIsMember:[cmp characterAtIndex:range.location-1]]) && (range.location+range.length == [cmp length] || ![chset characterIsMember:[cmp characterAtIndex:range.location+range.length]])) {\
+        index += range.location+range.length;\
+        is_highlight = (hhash == 1) ? 1 : is_highlight;\
+        cmp = [cmp substringFromIndex:range.location+range.length];\
+        message = [message stringByReplacingCharactersInRange:NSMakeRange(range.location, range.length) withString:[NSString stringWithFormat:@"%c%c%@%c", RCIRCAttributeInternalNickname, hhash, [message substringWithRange:NSMakeRange(range.location, range.length)],RCIRCAttributeInternalNickname]];\
+        goto name ## _again;\
+    } else {\
+        goto name ## _nope_not_at_all;\
+    }\
+} else {\
+name ## _nope_not_at_all:\
+    ;;\
+}\
+\
+}}\
+
+- (void)changeNick:(NSString*)old toNick:(NSString*)new_
+{
+    [self setUserLeft:old];
+    [self setUserJoined:new_];
+    [self recievedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" type:RCMessageTypeNormalE];
+}
+
+
 - (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type {
 #if LOGALL
 	NSLog(@"%s:%d", (char *)_cmd, type);
@@ -231,6 +256,14 @@ UIImage *RCImageForRank(NSString *rank) {
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSString *msg = @"";
 	NSString *time = @"";
+    from = [from stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
+    from = [from stringByReplacingOccurrencesOfString:@"\x04" withString:@"\\R"];
+    char uhash = (![from isEqualToString:[delegate useNick]]) ? user_hash(from) : 1;
+    if ([message isKindOfClass:[NSString class]]) {
+        message = [message stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
+        message = [message stringByReplacingOccurrencesOfString:@"\x04" withString:@"\\R"];
+    }
+    BOOL is_highlight = NO;
 	time = [[RCDateManager sharedInstance] currentDateAsString];
 	if ([time hasSuffix:@" "])
 		time = [time substringToIndex:time.length-1];
@@ -239,6 +272,14 @@ UIImage *RCImageForRank(NSString *rank) {
         {
             NSString* mesg = [(NSArray*)message objectAtIndex:1];
             NSString* whog = [(NSArray*)message objectAtIndex:0];
+            if ([mesg isKindOfClass:[NSString class]]) {
+                mesg = [message stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
+                mesg = [message stringByReplacingOccurrencesOfString:@"\x04" withString:@"\\R"];
+            }
+            if ([whog isKindOfClass:[NSString class]]) {
+                whog = [message stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
+                whog = [message stringByReplacingOccurrencesOfString:@"\x04" withString:@"\\R"];
+            }
             [self setUserLeft:whog];
             msg = [[NSString stringWithFormat:@"%c[%@]%c %@ has kicked %@%@",RCIRCAttributeBold, time, RCIRCAttributeBold, from, whog, (!mesg) ? @"" : [@" (" stringByAppendingFormat:@"%@)", mesg]] retain];
         }
@@ -290,11 +331,13 @@ UIImage *RCImageForRank(NSString *rank) {
 			msg = [[NSString stringWithFormat:@"%c[%@]%c Error: %@", RCIRCAttributeBold, time, RCIRCAttributeBold, message] retain];
 			break;
 		case RCMessageTypeAction:
-			msg = [[NSString stringWithFormat:@"%c[%@] \u2022 %@%c %@", RCIRCAttributeBold, time, from, RCIRCAttributeBold, message] retain];
+            MSG_HIGHLIGHT_CHECK(highlight);
+			msg = [[NSString stringWithFormat:@"%c[%@] %c%c\u2022 %@%c%c %@", RCIRCAttributeBold, time, RCIRCAttributeInternalNickname, uhash, from, RCIRCAttributeInternalNickname, RCIRCAttributeBold, message] retain];
 			break;
 		case RCMessageTypeNormal:
 			if (![from isEqualToString:@""]) {
-				msg = [[NSString stringWithFormat:@"%c[%@] %@:%c %@", RCIRCAttributeBold, time, from, RCIRCAttributeBold, message] retain];
+                MSG_HIGHLIGHT_CHECK(msg);
+				msg = [[NSString stringWithFormat:@"%c[%@] %c%c<%@>%c%c %@", RCIRCAttributeBold, time, RCIRCAttributeInternalNickname, uhash, [self nickAndRankForNick:from], RCIRCAttributeInternalNickname, RCIRCAttributeBold, message] retain];
 			}
 			else {
 				msg = @"";
@@ -302,7 +345,8 @@ UIImage *RCImageForRank(NSString *rank) {
 			}
 			break;
 		case RCMessageTypeNotice:
-			msg = [[NSString stringWithFormat:@"%c[%@] -%@-%c %@", RCIRCAttributeBold, time, from, RCIRCAttributeBold, message] retain];
+            MSG_HIGHLIGHT_CHECK(notice);
+			msg = [[NSString stringWithFormat:@"%c[%@] -%c%c%@%c-%c %@", RCIRCAttributeBold, time, RCIRCAttributeInternalNickname, uhash, from, RCIRCAttributeInternalNickname, RCIRCAttributeBold, message] retain];
 			break;
 		case RCMessageTypeNormalE:
 			msg = [[NSString stringWithFormat:@"%c[%@]%c %@", RCIRCAttributeBold, time, RCIRCAttributeBold, message] retain];
@@ -312,7 +356,7 @@ UIImage *RCImageForRank(NSString *rank) {
             break;
 	}
 	BOOL isHighlight = NO;
-	if ((type == RCMessageTypeNormal || type == RCMessageTypeAction || type == RCMessageTypeNotice) && ![from isEqualToStringNoCase:[delegate useNick]]) isHighlight = ([message rangeOfString:[delegate useNick] options:NSCaseInsensitiveSearch].location != NSNotFound);
+	if ((type == RCMessageTypeNormal || type == RCMessageTypeAction || type == RCMessageTypeNotice) && ![from isEqualToStringNoCase:[delegate useNick]]) isHighlight = is_highlight;
 	[panel postMessage:msg withType:type highlight:isHighlight isMine:([from isEqualToString:[delegate useNick]])];
 	[self shouldPost:isHighlight withMessage:msg];
 	[msg release];
@@ -353,8 +397,8 @@ UIImage *RCImageForRank(NSString *rank) {
 
 - (NSString *)nickAndRankForNick:(NSString *)nick {
     for (NSString* nickrank in fullUserList) {
-        if ([nickrank hasSuffix:nick]) {
-            NSInteger ln = [RCUserRank(nickrank) length];
+        if (nick && [nickrank hasSuffix:nick]) {
+            NSInteger ln = [RCUserRank(nickrank, [self delegate]) length];
             NSLog(@"OMG OMG OMG maybe. RL = %d [%@|%@|%@]", ln, nick, nickrank, [nickrank substringFromIndex:ln] );
             if ([[nickrank substringFromIndex:ln] isEqualToString:nick]) {
                 return nickrank;
@@ -365,6 +409,14 @@ UIImage *RCImageForRank(NSString *rank) {
 }
 
 - (void)setUserJoined:(NSString *)_joined {
+    if (![[self delegate] prefix]) {
+        double delayInSeconds = 0.1;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            [self setUserJoined:_joined];
+        });
+        return;
+    }
     if (![NSThread isMainThread]) {
         [self performSelectorOnMainThread:@selector(setUserJoined:) withObject:_joined waitUntilDone:YES];
         return;
@@ -375,7 +427,7 @@ UIImage *RCImageForRank(NSString *rank) {
 #endif
         if (![_joined isEqualToString:@""] && ![_joined isEqualToString:@" "] && ![_joined isEqualToString:@"\r\n"] && ![self isUserInChannel:_joined] && _joined) {
             NSUInteger newIndex = [fullUserList indexOfObject:_joined inSortedRange:(NSRange){0, [fullUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^NSComparisonResult(id obj1, id obj2) {
-                return sortRank(obj1, obj2);
+                return sortRank(obj1, obj2, [self delegate]);
             }];
             [fullUserList insertObject:_joined atIndex:newIndex];
             [usersPanel insertRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:newIndex+1 inSection:0], nil] withRowAnimation:UITableViewRowAnimationLeft];
@@ -419,17 +471,10 @@ UIImage *RCImageForRank(NSString *rank) {
 	joined = NO;
 }
 
-- (void)subtractModes:(NSString *)md forUser:(NSString *)usr {
-	
-}
-
-- (void)addModes:(NSString *)md forUser:(NSString *)usr {
-	
-}
-
 - (void)setMode:(NSString *)modes forUser:(NSString *)user {
-
+    NSLog(@"setting %@ for %@", modes, user);
 }
+
 - (void)setJoined:(BOOL)joind {
 	if (joined == joind) {
 		NSLog(@"State the same. Canceling request..");

@@ -26,7 +26,7 @@
 #include "openssl/ssl.h"
 #include "openssl/err.h"
 #include <ifaddrs.h>
-
+@class RCChannelManager;
 typedef enum RCSocketStatus {
 	RCSocketStatusConnecting,
 	RCSocketStatusConnected,
@@ -63,9 +63,11 @@ typedef enum RCSocketStatus {
 	BOOL _isDiconnecting;
 	BOOL shouldRequestSPass;
 	BOOL shouldRequestNPass;
-	id namesCallback;
+	RCChannelManager* namesCallback;
     BOOL tryingToConnect;
+    NSDictionary* prefix;
 }
+@property (nonatomic, retain) NSDictionary* prefix;
 @property (nonatomic, retain) NSMutableDictionary *_channels;
 @property (nonatomic, retain) NSMutableArray *_nicknames;
 @property (nonatomic, readonly) NSMutableArray *_bubbles;
@@ -84,7 +86,7 @@ typedef enum RCSocketStatus {
 @property (nonatomic, assign) BOOL COL;
 @property (nonatomic, assign) BOOL shouldRequestSPass;
 @property (nonatomic, assign) BOOL shouldRequestNPass;
-@property (nonatomic, assign) id namesCallback;
+@property (nonatomic, assign) RCChannelManager *namesCallback;
 @property (nonatomic, assign) RCChannel *currentChannel;
 - (RCChannel *)channelWithChannelName:(NSString *)chan;
 - (NSString *)_description;
