@@ -211,7 +211,7 @@ char user_hash(NSString* from)
     {
         uhash = ([from hash] % (M_COLOR-2)) + 2;
 	}    
-
+	
     return uhash % 0xFF;
 }
 
@@ -265,14 +265,12 @@ if (range.location != NSNotFound) {\
     NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSString *msg = @"";
 	NSString *time = @"";
-    from = [from stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
-    from = [from stringByReplacingOccurrencesOfString:@"\x04" withString:@"\\R"];
-    from = [from stringByReplacingOccurrencesOfString:@"\x05" withString:@"\\F"];
+    from = [from stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
+    from = [from stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
     char uhash = (![from isEqualToString:[delegate useNick]]) ? user_hash(from) : 1;
     if ([message isKindOfClass:[NSString class]]) {
-        message = [message stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
-        message = [message stringByReplacingOccurrencesOfString:@"\x04" withString:@"\\R"];
-        message = [message stringByReplacingOccurrencesOfString:@"\x05" withString:@"\\F"];
+        message = [message stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
+        message = [message stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
     }
     BOOL is_highlight = NO;
 	time = [[RCDateManager sharedInstance] currentDateAsString];
@@ -284,14 +282,12 @@ if (range.location != NSNotFound) {\
             NSString* mesg = [(NSArray*)message objectAtIndex:1];
             NSString* whog = [(NSArray*)message objectAtIndex:0];
             if ([mesg isKindOfClass:[NSString class]]) {
-                mesg = [mesg stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
-                mesg = [mesg stringByReplacingOccurrencesOfString:@"\x04" withString:@"\\R"];
-                mesg = [mesg stringByReplacingOccurrencesOfString:@"\x05" withString:@"\\F"];
+                mesg = [mesg stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
+                mesg = [mesg stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
             }
             if ([whog isKindOfClass:[NSString class]]) {
-                whog = [whog stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
-                whog = [whog stringByReplacingOccurrencesOfString:@"\x04" withString:@"\\R"];
-                whog = [whog stringByReplacingOccurrencesOfString:@"\x05" withString:@"\\F"];
+                whog = [whog stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
+                whog = [whog stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
             }
             [self setUserLeft:whog];
             msg = [[NSString stringWithFormat:@"%c[%@] %@%c has kicked %c%@%c%@",RCIRCAttributeBold, time, from, RCIRCAttributeBold, RCIRCAttributeBold, whog, RCIRCAttributeBold, (!mesg) ? @"" : [@" (" stringByAppendingFormat:@"%@)", mesg]] retain];
@@ -523,23 +519,23 @@ partialLen = [modes substringWithRange:NSMakeRange(stptr, endptr-stptr)];\
 for (int a = 0; a < [partialLen length]; a++) { \
 if (adding) {\
     NSString* rankf = [[[delegate prefix] objectForKey:[partialLen substringWithRange:NSMakeRange(a, 1)]] objectAtIndex:1];if(rankf){\
-    NSString* full_user = [self nickAndRankForNick:[users objectAtIndex:modecnt]]; NSString* or = RCUserRank(full_user,[self delegate]);\
-    NSString* nnr = NICK_NO_RANK(full_user, [self delegate]);\
-    NSArray * current = [userRanksAdv objectForKey:nnr];   \
-    if (!current) current = [[NSArray new] autorelease]; \
-    current = [current arrayByAddingObject:rankf];\
-    [userRanksAdv setObject:current forKey:nnr];\
-    REFRESH_TABLE;\
+		NSString* full_user = [self nickAndRankForNick:[users objectAtIndex:modecnt]]; NSString* or = RCUserRank(full_user,[self delegate]);\
+		NSString* nnr = NICK_NO_RANK(full_user, [self delegate]);\
+		NSArray * current = [userRanksAdv objectForKey:nnr];   \
+		if (!current) current = [[NSArray new] autorelease]; \
+		current = [current arrayByAddingObject:rankf];\
+		[userRanksAdv setObject:current forKey:nnr];\
+		REFRESH_TABLE;\
 		NSLog(@"addin rank %@ to %@ %@ %d", rankf, nnr, userRanksAdv, modecnt);}\
 }\
 else if (subtracting) {\
     NSString* rankf = [[[delegate prefix] objectForKey:[partialLen substringWithRange:NSMakeRange(a, 1)]] objectAtIndex:1]; if(rankf){\
-    NSString* full_user = [self nickAndRankForNick:[users objectAtIndex:modecnt]];NSString* or = RCUserRank(full_user,[self delegate]);\
-    NSString* nnr = NICK_NO_RANK(full_user, [self delegate]);\
-    NSMutableArray * current = [[[userRanksAdv objectForKey:nnr] mutableCopy] autorelease];   \
-    [current removeObject:rankf];\
-    if (current)     [userRanksAdv setObject:[[current copy] autorelease] forKey:nnr];\
-    NSLog(@"subtracting rank %@ to %@ %@ %d", rankf, nnr, userRanksAdv,modecnt);\
+		NSString* full_user = [self nickAndRankForNick:[users objectAtIndex:modecnt]];NSString* or = RCUserRank(full_user,[self delegate]);\
+		NSString* nnr = NICK_NO_RANK(full_user, [self delegate]);\
+		NSMutableArray * current = [[[userRanksAdv objectForKey:nnr] mutableCopy] autorelease];   \
+		[current removeObject:rankf];\
+		if (current)     [userRanksAdv setObject:[[current copy] autorelease] forKey:nnr];\
+		NSLog(@"subtracting rank %@ to %@ %@ %d", rankf, nnr, userRanksAdv,modecnt);\
 		REFRESH_TABLE;}\
 }\
 modecnt++;\

@@ -19,6 +19,6 @@
 - (NSString *)stringWithNewLinesAsBRs;
 - (NSString *)stringByRemovingNewLinesAndWhitespace;
 - (NSString *)stringByLinkifyingURLs;
-- (NSString *)stringByStrippingTags __attribute__((deprecated));
-- (NSString*)stringByStrippingIRCMetadata;
+- (NSString *)stringByStrippingTags; 
+- (NSString *)stringByStrippingIRCMetadata;
 @end

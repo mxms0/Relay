@@ -735,12 +735,12 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
     NSString *pattern = @"(?<!=\")\\b((http|https|ftp|irc):\\/\\/[\\w\\-_]+(\\.[\\w\\-_]+)+([\\w\\-\\.,@?^=%%&amp;:/~\\+#]*[\\w\\-\\@?^=%%&amp;/~\\+#])?)";
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:0 error:nil];
     NSString *modifiedString = [regex stringByReplacingMatchesInString:self options:0 range:NSMakeRange(0, [self length])
-                                                           withTemplate:@"<a href=\"$1\" class=\"linkified\">$1</a>"];
+                                                           withTemplate:@"\x04\x30\x30<a href=\"$1\" class=\"linkified\">$1</a>\x05"];
     
-    NSString *pattern1 = @"([#][a-zA-Z0-9]{1,20})";
+    NSString *pattern1 = @"([#][a-zA-Z0-9]{1,70})";
     regex = [NSRegularExpression regularExpressionWithPattern:pattern1 options:0 error:nil];
     modifiedString = [[regex stringByReplacingMatchesInString:modifiedString options:0 range:NSMakeRange(0, [self length])
-												 withTemplate:@"<a href=\"channel:$1\" class=\"channel\">$1</a>"] retain];
+												 withTemplate:@"\x04\x30\x30<a href=\"channel:$1\" class=\"channel\">$1</a>\x04\x30\x30"] retain];
     
     [pool drain];
     return [modifiedString autorelease];
