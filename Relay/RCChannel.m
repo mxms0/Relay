@@ -522,7 +522,7 @@ NSLog(@"user has now rank %@ [%@]",cur_rank,full_user);\
 partialLen = [modes substringWithRange:NSMakeRange(stptr, endptr-stptr)];\
 for (int a = 0; a < [partialLen length]; a++) { \
 if (adding) {\
-    NSString* rankf = [[[delegate prefix] objectForKey:[partialLen substringWithRange:NSMakeRange(a, 1)]] objectAtIndex:1];\
+    NSString* rankf = [[[delegate prefix] objectForKey:[partialLen substringWithRange:NSMakeRange(a, 1)]] objectAtIndex:1];if(rankf){\
     NSString* full_user = [self nickAndRankForNick:[users objectAtIndex:modecnt]]; NSString* or = RCUserRank(full_user,[self delegate]);\
     NSString* nnr = NICK_NO_RANK(full_user, [self delegate]);\
     NSArray * current = [userRanksAdv objectForKey:nnr];   \
@@ -530,17 +530,17 @@ if (adding) {\
     current = [current arrayByAddingObject:rankf];\
     [userRanksAdv setObject:current forKey:nnr];\
     REFRESH_TABLE;\
-    NSLog(@"addin rank %@ to %@ %@ %d", rankf, nnr, userRanksAdv, modecnt);\
+		NSLog(@"addin rank %@ to %@ %@ %d", rankf, nnr, userRanksAdv, modecnt);}\
 }\
 else if (subtracting) {\
-    NSString* rankf = [[[delegate prefix] objectForKey:[partialLen substringWithRange:NSMakeRange(a, 1)]] objectAtIndex:1];\
+    NSString* rankf = [[[delegate prefix] objectForKey:[partialLen substringWithRange:NSMakeRange(a, 1)]] objectAtIndex:1]; if(rankf){\
     NSString* full_user = [self nickAndRankForNick:[users objectAtIndex:modecnt]];NSString* or = RCUserRank(full_user,[self delegate]);\
     NSString* nnr = NICK_NO_RANK(full_user, [self delegate]);\
     NSMutableArray * current = [[[userRanksAdv objectForKey:nnr] mutableCopy] autorelease];   \
     [current removeObject:rankf];\
     if (current)     [userRanksAdv setObject:[[current copy] autorelease] forKey:nnr];\
     NSLog(@"subtracting rank %@ to %@ %@ %d", rankf, nnr, userRanksAdv,modecnt);\
-    REFRESH_TABLE;\
+		REFRESH_TABLE;}\
 }\
 modecnt++;\
 }\
