@@ -303,14 +303,14 @@ static RCChannelBubble *questionabubble = nil;
 }
 
 - (void)scrollToBubble:(RCChannelBubble *)bubble {
-    if (!(bubble&&[bubble superview])) {
+    if (!(bubble && [bubble superview])) {
         return;
     }
     CGPoint point = bubble.frame.origin;
     point.y = 0;
-    CGFloat slide = MIN(point.x, MAX(0, ((UIScrollView*)[bubble superview]).contentSize.width-[bubble superview].frame.size.width));
+    CGFloat slide = MIN(point.x, MAX(0, ((UIScrollView *)[bubble superview]).contentSize.width-[bubble superview].frame.size.width));
     point.x = slide;
-    [(UIScrollView*)[bubble superview] setContentOffset:point animated:YES];
+    [(UIScrollView *)[bubble superview] setContentOffset:point animated:YES];
 }
 
 - (void)doSuicideConfirmationAlert:(RCChannelBubble *)questionAble {
@@ -347,12 +347,12 @@ static RCChannelBubble *questionabubble = nil;
 	if (!currentNetwork) NSLog(@"NO CURRENT WORK");
 	RCChannel *chan = [currentNetwork channelWithChannelName:bubble.titleLabel.text]; // unneeded. <.<
 	if (chan) {
-		if ([currentPanel isFirstResponder])
-			[[chan panel] becomeFirstResponderNoAnimate];
+		[[chan panel] setFrame:(currentPanel ? [currentPanel frame] : [self frameForChatTable])];
 		if (currentPanel) {
 			[currentPanel removeFromSuperview];
-		}
-		[[chan panel] setFrame:(currentPanel ? [currentPanel frame] : [self frameForChatTable])];
+		} // logic is flawed. means i could be calling isFirstResponder on a null object. i'll live with it.
+		if ([currentPanel isFirstResponder])
+			[[chan panel] becomeFirstResponderNoAnimate];
         [[chan panel] didPresentView];
 		[self insertSubview:[chan panel] belowSubview:bar];
 		currentPanel = [chan panel];
@@ -392,7 +392,6 @@ static RCChannelBubble *questionabubble = nil;
 	if (currentPanel) {
 		[currentPanel setFrame:[self frameForChatTable]];
 	}
-    [[currentPanel mainView] scrollToBottom]; 
 	if (_isLandscape) {
 		bar.frame = CGRectMake(0, 0, 480, 32);
 		bar.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"0_navbar_landscape"]];
@@ -406,6 +405,7 @@ static RCChannelBubble *questionabubble = nil;
 		scrollBar.frame = CGRectMake(0, 45, 320, 32);
 		titleLabel.frame = CGRectMake(47, 0, 225, bar.frame.size.height);
 	}
+	[[currentPanel mainView] scrollToBottom];
 	[plus setFrame:[self frameForPlusButton]];
 	[listr setFrame:[self frameForListButton]];
 	[memberPanel setFrame:[self frameForMemberPanel]];
@@ -438,7 +438,7 @@ static RCChannelBubble *questionabubble = nil;
 
 - (CGRect)frameForMemberPanel {
 	if (_isLandscape)
-		return CGRectMake(0, 33, 480, 267);
+		return CGRectMake(0, 32, 480, 268);
 	return CGRectMake(0, 77, 320, 383);
 }
 
