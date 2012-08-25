@@ -19,15 +19,17 @@
 #import "RCPrettyAlertView.h"
 #import <CoreGraphics/CoreGraphics.h>
 #import <QuartzCore/QuartzCore.h>
+#import "RCCoverView.h"
 
 @interface RCNavigator : UIView <UIAlertViewDelegate, UIActionSheetDelegate> {
 	RCNetwork *currentNetwork;
 	RCNavigationBar *bar;
 	RCChannelScrollView *scrollBar;
 	RCChatPanel *currentPanel;
+	RCCoverView *cover;
 	RCUserListPanel *memberPanel;
 	RCTitleLabel *titleLabel;
-	RCPopoverWindow *window;
+	RCPopoverWindow *nWindow;
     RCBarButton *plus;
     RCBarButton *listr;
 	BOOL _isLandscape;
@@ -41,6 +43,8 @@
 @property (nonatomic, readonly) RCUserListPanel *memberPanel;
 @property (nonatomic, readonly) BOOL _isLandscape;
 @property (nonatomic, readonly) UILabel *titleLabel;
+@property (nonatomic, retain) RCCoverView *cover;
+@property (nonatomic, retain) RCPopoverWindow *nWindow;
 + (id)sharedNavigator;
 - (void)addNetwork:(RCNetwork *)net;
 - (void)addChannel:(NSString *)chan toServer:(RCNetwork *)net;
@@ -55,6 +59,7 @@
 - (void)selectNetwork:(RCNetwork *)net;
 - (CGRect)frameForListButton;
 - (CGRect)frameForPlusButton;
+- (void)doSuicideConfirmationAlert:(RCChannelBubble *)questionAble;
 - (RCChannelBubble *)channelBubbleWithChannel:(id)channel;
 - (void)scrollToBubble:(RCChannelBubble *)bubble;
 @end

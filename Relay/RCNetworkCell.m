@@ -15,20 +15,21 @@
         // Initialization code
 		self.textLabel.textColor = [UIColor whiteColor];
 		self.backgroundColor = [UIColor clearColor];
-		self.selectionStyle = UITableViewCellSelectionStyleNone;
 		self.detailTextLabel.font = [UIFont systemFontOfSize:12];
-		self.detailTextLabel.textColor = [UIColor whiteColor];
+		self.detailTextLabel.textColor = UIColorFromRGB(0xAFB1B6);
 		self.detailTextLabel.shadowColor = [UIColor blackColor];
 		self.detailTextLabel.shadowOffset = CGSizeMake(0, 1);
 		self.textLabel.shadowOffset = CGSizeMake(0, 1);
 		self.textLabel.shadowColor = [UIColor blackColor];
+		underline = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"0_underline"]];
+		[self addSubview:underline];
+		[underline release];
     }
     return self;
 }
 
-- (void)layoutSubviews {
-	[super layoutSubviews];
-//	self.textLabel.frame = CGRectMake(self.textLabel.frame.origin.x, 1, self.textLabel.frame.size.width, self.textLabel.frame.size.height);
+- (void)willMoveToSuperview:(UIView *)newSuperview {
+	[underline setFrame:CGRectMake(6, 42, newSuperview.frame.size.width-12, 2)];
 }
 
 @end

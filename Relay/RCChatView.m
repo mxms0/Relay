@@ -100,7 +100,7 @@ NSString *colorForIRCColor(char irccolor) {
         if (!([ms string] && ms)) {\
             return;\
         } NSLog(@"rendering color %d", nickcolor);\
-        cstr = [NSString stringWithFormat:@"addToMessage('%@','%@','%@','%@','%@','%@','%@', '%@', '%d');", name, isBold ? @"YES" : @"NO", isUnderline ? @"YES" : @"NO", isItalic ? @"YES" : @"NO", bgcolor, fgcolor, [[[istring substringWithRange:NSMakeRange(lpos, cpos-lpos)] stringByReplacingOccurrencesOfString:@"\\R" withString:@"\x04"] stringByReplacingOccurrencesOfString:@"\\F" withString:@"\x05"], nDepth ? @"YES" : @"NO", nickcolor]; \
+        cstr = [NSString stringWithFormat:@"addToMessage('%@','%@','%@','%@','%@','%@','%@', '%@', '%d');", name, isBold ? @"YES" : @"NO", isUnderline ? @"YES" : @"NO", isItalic ? @"YES" : @"NO", bgcolor, fgcolor, [[[istring substringWithRange:NSMakeRange(lpos, cpos-lpos)] stringByReplacingOccurrencesOfString:@"\\R" withString:@"\x06"] stringByReplacingOccurrencesOfString:@"\\F" withString:@"\x05"], nDepth ? @"YES" : @"NO", nickcolor]; \
         if (![[self stringByEvaluatingJavaScriptFromString:cstr] isEqualToString:@"SUCCESS"]) { \
             NSLog(@"Could not exec: %@", cstr); \
         } else if ([ms  shouldColor]) {\

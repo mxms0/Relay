@@ -203,16 +203,13 @@ UIImage *RCImageForRank(NSString *rank, RCNetwork* network) {
 	
 }
 
-char user_hash(NSString* from);
-char user_hash(NSString* from)
-{
+char user_hash(NSString *from);
+char user_hash(NSString *from) {
     int uhash = 0;
-    @synchronized([[UIApplication sharedApplication] delegate])
-    {
+    @synchronized([[UIApplication sharedApplication] delegate]) {
         uhash = ([from hash] % (M_COLOR-2)) + 2;
-	}    
-	
-    return uhash % 0xFF;
+	}
+	return uhash % 0xFF;
 }
 
 #define MSG_HIGHLIGHT_CHECK(name) \
@@ -265,11 +262,11 @@ if (range.location != NSNotFound) {\
     NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSString *msg = @"";
 	NSString *time = @"";
-    from = [from stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
+    from = [from stringByReplacingOccurrencesOfString:@"\x06" withString:@""];
     from = [from stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
     char uhash = (![from isEqualToString:[delegate useNick]]) ? user_hash(from) : 1;
     if ([message isKindOfClass:[NSString class]]) {
-        message = [message stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
+        message = [message stringByReplacingOccurrencesOfString:@"\x06" withString:@""];
         message = [message stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
     }
     BOOL is_highlight = NO;
@@ -277,21 +274,20 @@ if (range.location != NSNotFound) {\
 	if ([time hasSuffix:@" "])
 		time = [time substringToIndex:time.length-1];
 	switch (type) {
-		case RCMessageTypeKick:
-        {
+		case RCMessageTypeKick: {
             NSString* mesg = [(NSArray*)message objectAtIndex:1];
             NSString* whog = [(NSArray*)message objectAtIndex:0];
             if ([mesg isKindOfClass:[NSString class]]) {
-                mesg = [mesg stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
+                mesg = [mesg stringByReplacingOccurrencesOfString:@"\x06" withString:@""];
                 mesg = [mesg stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
             }
             if ([whog isKindOfClass:[NSString class]]) {
-                whog = [whog stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
+                whog = [whog stringByReplacingOccurrencesOfString:@"\x06" withString:@""];
                 whog = [whog stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
             }
             [self setUserLeft:whog];
             msg = [[NSString stringWithFormat:@"%c[%@] %@%c has kicked %c%@%c%@",RCIRCAttributeBold, time, from, RCIRCAttributeBold, RCIRCAttributeBold, whog, RCIRCAttributeBold, (!mesg) ? @"" : [@" (" stringByAppendingFormat:@"%@)", mesg]] retain];
-        }
+		}
             break;
 		case RCMessageTypeBan:
             [self setUserLeft:message];
@@ -322,16 +318,17 @@ if (range.location != NSNotFound) {\
 			break;
 		case RCMessageTypeQuit:
             if ([self isUserInChannel:from]) {
-                [self setUserLeft:from];
-                if (![message isEqualToString:@""]) {
-                    msg = [[NSString stringWithFormat:@"%c[%@] %@%c left IRC. (%@)", RCIRCAttributeBold, time, from, RCIRCAttributeBold, message] retain];
-                }
-                else {
-                    msg = [[NSString stringWithFormat:@"%c[%@] %@%c left IRC.", RCIRCAttributeBold, time, from, RCIRCAttributeBold] retain];
-                }
-            } else {
-                return;
-            }
+				[self setUserLeft:from];
+				if (![message isEqualToString:@""]) {
+					msg = [[NSString stringWithFormat:@"%c[%@] %@%c left IRC. (%@)", RCIRCAttributeBold, time, from, RCIRCAttributeBold, message] retain];
+				}
+				else {
+					msg = [[NSString stringWithFormat:@"%c[%@] %@%c left IRC.", RCIRCAttributeBold, time, from, RCIRCAttributeBold] retain];
+				}
+			}
+			else {
+				return;
+			}
 			break;
 		case RCMessageTypeMode:
 			msg = [[NSString stringWithFormat:@"%c[%@] %@%c sets mode %c%@%c",RCIRCAttributeBold, time, from, RCIRCAttributeBold, RCIRCAttributeBold, message,RCIRCAttributeBold] retain];
@@ -346,7 +343,7 @@ if (range.location != NSNotFound) {\
 		case RCMessageTypeNormal:
 			if (![from isEqualToString:@""]) {
                 MSG_HIGHLIGHT_CHECK(msg);
-				msg = [[NSString stringWithFormat:@"%c[%@] %c%02d<%@>%c%c %@", RCIRCAttributeBold, time, RCIRCAttributeInternalNickname, uhash, [self nickAndRankForNick:from], RCIRCAttributeInternalNicknameEnd, RCIRCAttributeBold, message] retain];
+				msg = [[NSString stringWithFormat:@"%c[%@] %c%02d%@:%c%c %@", RCIRCAttributeBold, time, RCIRCAttributeInternalNickname, uhash, from, RCIRCAttributeInternalNicknameEnd, RCIRCAttributeBold, message] retain];
 			}
 			else {
 				msg = @"";
@@ -384,7 +381,7 @@ if (range.location != NSNotFound) {\
 }
 
 - (BOOL)isUserInChannel:(NSString*)user {
-    NSString* rnka = RCUserRank(user, [self delegate]);
+    NSString *rnka = RCUserRank(user, [self delegate]);
     user = [user substringFromIndex:[rnka length]];
     for (NSString* nickn in fullUserList) {
         NSString* rnk = RCUserRank(nickn, [self delegate]);
@@ -429,8 +426,7 @@ if (range.location != NSNotFound) {\
     return nick;
 }
 
-- (void)setUserJoined:(NSString *)_joined
-{
+- (void)setUserJoined:(NSString *)_joined {
     if (_joined && ![_joined isEqualToString:@""]) {
         [self setUserJoined:_joined cnt:0];
     }
@@ -443,7 +439,7 @@ if (range.location != NSNotFound) {\
     if (![[self delegate] prefix]) {
         double delayInSeconds = 0.1;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
             [self setUserJoined:_joined cnt:cnt_+1];
         });
         return;
@@ -543,8 +539,7 @@ modecnt++;\
 
 
 - (void)setMode:(NSString *)modes forUser:(NSString *)user {
-    @synchronized(userRanksAdv)
-    {
+    @synchronized(userRanksAdv) {
         @try {
             NSArray* users = [user componentsSeparatedByString:@" "];
             NSLog(@"usrs %@", users);
@@ -701,8 +696,7 @@ modecnt++;\
     }
 }
 
-- (BOOL)isPrivate
-{
+- (BOOL)isPrivate {
     return NO;
 }
 

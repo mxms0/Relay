@@ -82,7 +82,6 @@
 	OSStatus st;
 	OSStatus rts = SecItemCopyMatching((CFDictionaryRef)genericQuery, (CFTypeRef *)&attributes);
 	if (attributes) NSLog(@"hi%@", attributes);
-	NSLog(@"hi %ld", rts);
 	if (rts == noErr) {
 		upd = [NSMutableDictionary dictionaryWithDictionary:attributes];
 		[upd setObject:[genericQuery objectForKey:(id)kSecClass] forKey:(id)kSecClass];

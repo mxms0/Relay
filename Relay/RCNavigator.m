@@ -11,7 +11,7 @@
 #import "RCAddNetworkController.h"
 
 @implementation RCNavigator
-@synthesize currentPanel, memberPanel, _isLandscape, titleLabel, currentNetwork;
+@synthesize currentPanel, memberPanel, _isLandscape, titleLabel, currentNetwork, cover, nWindow;
 static id _sharedNavigator = nil;
 
 - (id)init {
@@ -25,7 +25,7 @@ static id _sharedNavigator = nil;
 			_rcViewController = [_rcViewController topViewController];
 		isFirstSetup = NO;
 		_isLandscape = NO;
-		window = [RCPopoverWindow sharedPopover];
+		nWindow = [[RCPopoverWindow alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
 		memberPanel = [[RCUserListPanel alloc] initWithFrame:CGRectMake(0, 77, 320, 383)];
 		memberPanel.backgroundColor = [UIColor clearColor];
 		memberPanel.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -147,16 +147,18 @@ static id _sharedNavigator = nil;
 }
 
 - (void)dismissNetworkPopover {
-	[window animateOut];
+	[nWindow animateOut];
 	// never used.
 	// may be needed later on.
 }
 
 - (void)presentNetworkPopover {
     if (!isFirstSetup) {
-        [window setFrame:CGRectMake(0, 0, 320, 480)];
-        [window reloadData];
-        [window animateIn];
+        [nWindow setFrame:CGRectMake(0, 0, (_isLandscape ? 480 : 320), (_isLandscape ? 320 : 480))];
+        [nWindow reloadData];
+		[self addSubview:nWindow];
+		[self bringSubviewToFront:nWindow];
+        [nWindow animateIn];
     }
 }
 
@@ -251,14 +253,6 @@ static id _sharedNavigator = nil;
 }
 
 - (void)tearDownForChannelList:(RCChannelBubble *)bubble {
-    if (![[bubble channel] joined]) {
-        questionabubble = bubble;
-        RCPrettyAlertView *alert = [[RCPrettyAlertView alloc] initWithTitle:@"Do you want to join?" message:[NSString stringWithFormat:@"Are you sure you want to join %@?", [bubble titleLabel].text] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Join", nil];
-        [alert setTag:13372];
-        [alert show];
-        [alert release];
-        return;
-    }
 	if (![[[currentPanel channel] bubble] isEqual:bubble]) {
 		[self channelSelected:bubble];
 	}
@@ -314,14 +308,31 @@ static RCChannelBubble *questionabubble = nil;
 }
 
 - (void)doSuicideConfirmationAlert:(RCChannelBubble *)questionAble {
-        RCPrettyAlertView *alert = [[RCPrettyAlertView alloc] initWithTitle:@"Are you sure?" message:[NSString stringWithFormat:@"Are you sure you want to delete %@?", [questionAble titleLabel].text] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Delete", nil];
-        [alert setTag:13371];
-        [alert show];
-        [alert release];
+	RCPrettyAlertView *alert = [[RCPrettyAlertView alloc] initWithTitle:@"Are you sure?" message:[NSString stringWithFormat:@"Are you sure you want to delete %@?", [questionAble titleLabel].text] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Delete", nil];
+	[alert setTag:13371];
+	[alert show];
+	[alert release];
 }
 
 - (BOOL)canBecomeFirstResponder {
 	return YES;
+}
+
+- (void)displayOptionsForChannel:(RCChannelBubble *)bbz {
+	if (cover != nil) return;
+	CGRect adj = CGRectMake(bbz.frame.origin.x-scrollBar.contentOffset.x, 0, bbz.frame.size.width, bbz.frame.size.height);
+	self.cover = [[RCCoverView alloc] initWithFrame:[self frameForOptionsCover] andChannel:[bbz channel]];
+	[cover setArrowPosition:CGPointMake((adj.origin.x+adj.size.width)-(bbz.frame.size.width/2)-6, scrollBar.frame.size.height+scrollBar.frame.origin.y-6)];
+	[self insertSubview:cover atIndex:0];
+	[self bringSubviewToFront:cover];
+	[cover show];
+	[cover release];
+}
+
+- (CGRect)frameForOptionsCover {
+	if (_isLandscape)
+		return CGRectMake(0, 0, 480, 320);
+	else return CGRectMake(0, 0, 320, 480);
 }
 
 - (void)channelSelected:(RCChannelBubble *)bubble {
@@ -334,16 +345,18 @@ static RCChannelBubble *questionabubble = nil;
 		memberPanel.dataSource = nil;
 		currentPanel = nil;
 	}
+	if (currentPanel) {
+		if ([[[currentPanel channel] bubble] isEqual:bubble]) {
+			if (![[bubble channel] isKindOfClass:[RCConsoleChannel class]])
+				[self displayOptionsForChannel:bubble];
+			return;
+		}
+	}
 	for (RCChannel *chan in [currentNetwork _channels]) {
 		[[chan bubble] _setSelected:NO];
 	}
 	[currentNetwork setCurrentChannel:[bubble channel]];
 	[bubble _setSelected:YES];
-	if ([[[currentPanel channel] bubble] isEqual:bubble]) {
-		if ([[bubble channel] isKindOfClass:[RCConsoleChannel class]] || [[bubble channel] isKindOfClass:[RCPMChannel class]]) return;
-		[self tearDownForChannelList:bubble];
-		return;
-	}
 	if (!currentNetwork) NSLog(@"NO CURRENT WORK");
 	RCChannel *chan = [currentNetwork channelWithChannelName:bubble.titleLabel.text]; // unneeded. <.<
 	if (chan) {
@@ -386,6 +399,8 @@ static RCChannelBubble *questionabubble = nil;
 }
 
 - (void)rotateToInterfaceOrientation:(UIInterfaceOrientation)oi {
+	[nWindow animateOut];
+	[cover hide];
 	_isLandscape = (UIInterfaceOrientationIsLandscape(oi));
 	[scrollBar drawBG];
 	[self setNeedsDisplay];
@@ -395,7 +410,7 @@ static RCChannelBubble *questionabubble = nil;
 	if (_isLandscape) {
 		bar.frame = CGRectMake(0, 0, 480, 32);
 		bar.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"0_navbar_landscape"]];
-		scrollBar.frame = CGRectMake(240, 0, 233, 33); // 233, for the hell of it.
+		scrollBar.frame = CGRectMake(240, 0, 240, 33);
 		[scrollBar clearBG];
 		titleLabel.frame = CGRectMake(45, 0, 150, bar.frame.size.height);
 	}
@@ -409,7 +424,7 @@ static RCChannelBubble *questionabubble = nil;
 	[plus setFrame:[self frameForPlusButton]];
 	[listr setFrame:[self frameForListButton]];
 	[memberPanel setFrame:[self frameForMemberPanel]];
-	[window correctAndRotateToInterfaceOrientation:oi];
+	[nWindow correctAndRotateToInterfaceOrientation:oi];
 }
 
 - (CGFloat)widthForTitleLabel {

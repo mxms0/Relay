@@ -101,7 +101,6 @@ static BOOL isSetup = NO;
 
 - (void)application:(UIApplication *)application willChangeStatusBarFrame:(CGRect)newStatusBarFrame {
 	isDoubleHeight = (newStatusBarFrame.size.height == 40);
-	NSLog(@"Meh %@", [[RCPopoverWindow sharedPopover] subviews]);
 	if (isDoubleHeight) {
 		//		[[RCPopoverWindow sharedPopover] setFrame:CGRectMake(0, 5, 320, 460)];
 	}

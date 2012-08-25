@@ -9,12 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "RCNetworkCell.h"
 
-@interface RCPopoverWindow : UIWindow <UITableViewDelegate, UITableViewDataSource> {
+@interface RCPopoverWindow : UIView <UITableViewDelegate, UITableViewDataSource> {
 	UIImageView *_pImg;
 	id applicationDelegate;
 	UITableView *networkTable;
 }
-+ (id)sharedPopover;
 - (void)reloadData;
 - (void)animateIn;
 - (void)animateOut;

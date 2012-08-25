@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "RCBasicTableViewCell.h"
 
-@interface RCNetworkCell : UITableViewCell
+@interface RCNetworkCell : RCBasicTableViewCell {
+	UIImageView *underline;
+}
 
 @end

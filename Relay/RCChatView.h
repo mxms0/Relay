@@ -67,7 +67,7 @@ enum RCIRCAttribute {
     RCIRCAttributeReset = 0x0F,
     RCIRCAttributeItalic = 0x16,
     RCIRCAttributeUnderline = 0x1F,
-    RCIRCAttributeInternalNickname = 0x04,
+    RCIRCAttributeInternalNickname = 0x06,
 	RCIRCAttributeInternalNicknameEnd = 0x05
 };
 

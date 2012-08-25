@@ -31,10 +31,6 @@ static UIImage *image = nil;
 		_rcount = 0;
 		self.exclusiveTouch = YES;
         channel = channel_;
-		//		UILongPressGestureRecognizer *pp = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressBegan:)];
-		//pp.minimumPressDuration = 1;
-		//[self addGestureRecognizer:pp];
-		//[pp release];
 		self.alpha = 1;
 		self.reversesTitleShadowWhenHighlighted = NO;
         self.adjustsImageWhenHighlighted = NO;
@@ -53,34 +49,8 @@ static UIImage *image = nil;
     return channel;
 }
 
-- (void)longPressBegan:(UIGestureRecognizer *)gg {
-	longPressed = ([gg state] == UIGestureRecognizerStateBegan);
-	if (longPressed) {
-		//id vv = [[gg view] retain];
-		//[[gg view] removeFromSuperview];
-		//		[self.superview addSubview:vv];
-	}
-}
-/*
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-	if (longPressed) {
-	UITouch *touch = [[event allTouches] anyObject];
-	CGPoint touchLocation = [touch locationInView:self.superview];
-	self.center = touchLocation;
-		
-	}
-}*/
-
 - (void)setTitle:(NSString *)title forState:(UIControlState)state {
 	[super setTitle:title forState:state];
-	if (![title isEqualToString:@"IRC"]) {
-		delegate = [[self allTargets] anyObject];
-		UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(suicide:)];
-		[longPress setNumberOfTapsRequired:1];
-		[longPress setMinimumPressDuration:0.5];
-		[self addGestureRecognizer:longPress];
-		[longPress release];
-	}
     [self fixColors];
 }
 
@@ -95,64 +65,62 @@ static UIImage *image = nil;
     [self fixColors];
 }
 
-- (void)suicide:(UIGestureRecognizer *)suicidee {
+- (void)tapPerformed:(UIGestureRecognizer *)suicidee {
 	if (delegate) {
 		if (suicidee.state == UIGestureRecognizerStateBegan) {
 			if (delegate) 
-				[delegate channelWantsSuicide:self];
+				[delegate displayOptionsForChannel:self];
 		}
 	}
     [self fixColors];
 }
 
-- (void)dealloc
-{
-    @synchronized(self)
-    {
+- (void)dealloc {
+    @synchronized(self) {
         [super dealloc];
     }
 }
 
 - (void)fixColors {
     [self retain];
-    dispatch_async(dispatch_get_main_queue(), ^(void){
-        @synchronized(self)
-        {
-            @synchronized([self channel])
-            {
-                NSLog(@"inside fixColors");
-                if (isSelected) {
-                    if ([self backgroundImageForState:UIControlStateNormal] != image) {
-                        [self setBackgroundImage:image forState:UIControlStateNormal];
+	dispatch_async(dispatch_get_main_queue(), ^(void) {
+		@synchronized(self) {
+			@synchronized([self channel]) {
+				if (isSelected) {
+					if ([self backgroundImageForState:UIControlStateNormal] != image) {
+						[self setBackgroundImage:image forState:UIControlStateNormal];
+					}
+					[self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+					[self setTitleShadowColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+					if (![(RCChannel *)[self channel] joined]) {
+						[self setTitleColor:UIColorFromRGB(0x8d9196) forState:UIControlStateNormal];
+						[self setTitleShadowColor:UIColorFromRGB(0x262729) forState:UIControlStateNormal];
+					}
+				}
+				else {
+					[self setBackgroundImage:nil forState:UIControlStateNormal];
+					if (hasNewHighlights) {
+						[self setTitleColor:UIColorFromRGB(0xDB4949) forState:UIControlStateNormal];
+						[self setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
+					}
+					else if (hasNewMessages) {
+						[self setTitleColor:UIColorFromRGB(0x498ADB) forState:UIControlStateNormal];
+						[self setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
                     }
-                    [self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-                    [self setTitleShadowColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
-                    if (![(RCChannel*)[self channel] joined]) {
-                        [self setTitleColor:UIColorFromRGB(0xc4c4c4) forState:UIControlStateNormal];
-                        [self setTitleShadowColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
-                    }
-                } else {
-                    [self setBackgroundImage:nil forState:UIControlStateNormal];
-                    if (hasNewHighlights) {
-                        [self setTitleColor:UIColorFromRGB(0xDB4949) forState:UIControlStateNormal];
-                        [self setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
-                    } else if (hasNewMessages) {
-                        [self setTitleColor:UIColorFromRGB(0x498ADB) forState:UIControlStateNormal];
-                        [self setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
-                    } else {
-                        [self setTitleColor:UIColorFromRGB(0x3e3f3f) forState:UIControlStateNormal];
-                        [self setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
-                    }
-                    if (![(RCChannel*)[self channel] joined]) {
-                        [self setTitleColor:UIColorFromRGB(0xc4c4c4) forState:UIControlStateNormal];
-                        [self setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
-                    }
-                }
-            }
-            [self layoutSubviews];
-        }
-        [self release];
-    });
+					else {
+						[self setTitleColor:UIColorFromRGB(0x3e3f3f) forState:UIControlStateNormal];
+						[self setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
+					}
+					if (![(RCChannel*)[self channel] joined]) {
+						[self setTitleColor:UIColorFromRGB(0xa7abb1) forState:UIControlStateNormal];
+						[self setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
+					}
+				}
+			}
+			[self layoutSubviews];
+		}
+		[self release];
+	});
 }
 
 - (void)_setSelected:(BOOL)selected {

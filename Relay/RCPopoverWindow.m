@@ -11,41 +11,26 @@
 
 @implementation RCPopoverWindow
 
-static id _instance = nil;
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
-		networkTable = [[UITableView alloc] initWithFrame:CGRectMake(40, 65, 240, 205)];
+		networkTable = [[UITableView alloc] initWithFrame:CGRectMake(40, 45, 240, 205)];
 		networkTable.delegate = self;
 		networkTable.backgroundColor = [UIColor clearColor];
 		networkTable.separatorStyle = UITableViewCellSeparatorStyleNone;
 		networkTable.dataSource = self;
-		_pImg = [[UIImageView alloc] initWithFrame:CGRectMake(26, 50, 268, 240)];
+		_pImg = [[UIImageView alloc] initWithFrame:CGRectMake(26, 30, 268, 240)];
 		[_pImg setImage:[UIImage imageNamed:@"0_popover"]];
 		[self addSubview:_pImg];
 		[_pImg release];
 		[self addSubview:networkTable];
         [networkTable setScrollsToTop:NO];
 		[networkTable release];
-		self.windowLevel = 7777;
 		self.hidden = YES;
 		self.opaque = NO;
 		self.alpha = 0;
 		applicationDelegate = [UIApp delegate];
     }
-    _instance = self;
-    return _instance;
-}
-
-- (void)setBasicFramesForElements {
-	[_pImg setTransform:CGAffineTransformMakeRotation(0)];
-	[_pImg setFrame:CGRectMake(26, 50, 268, 240)];
-	[networkTable setFrame:CGRectMake(40, 65, 240, 205)];
-	[networkTable setTransform:CGAffineTransformMakeRotation(0)];
-}
-
-+ (id)sharedPopover {
-    if (!_instance) [[self alloc] initWithFrame:CGRectMake(0,0,320,480)];
-    return _instance;
+    return self;
 }
 
 - (void)reloadData {
@@ -65,12 +50,12 @@ static id _instance = nil;
 	[UIView animateWithDuration:0.25 animations:^ {
 		self.alpha = 0;	
 	} completion:^(BOOL fin) {
+		[self removeFromSuperview];
 		self.hidden = YES;
 	}];
 }
 
 - (void)correctAndRotateToInterfaceOrientation:(UIInterfaceOrientation)oi {
-	[self setBasicFramesForElements];
 	BOOL animate = NO;
 	// NEED THIS BOOLEAN INCASE THE VIEW APPEARS WHILE THIS IS OCCURING 
 	if (!self.hidden) {
@@ -78,35 +63,16 @@ static id _instance = nil;
 		[UIView beginAnimations:nil context:nil];
 		[UIView setAnimationDuration:0.25];
 	}
-	networkTable.transform = CGAffineTransformMakeRotation(0);
 	if (UIInterfaceOrientationIsLandscape(oi)) {
-        switch (oi) {
-            case UIInterfaceOrientationLandscapeRight:
-                if (self.frame.origin.y == 20) {
-                    self.frame = CGRectMake(0,0,320,480);
-                }
-                networkTable.transform = CGAffineTransformMakeRotation(_deg(90));
-                networkTable.frame = CGRectMake(55, 10, networkTable.frame.size.width, networkTable.frame.size.height);
-                _pImg.frame = CGRectMake(20, 10, _pImg.frame.size.width, _pImg.frame.size.height);
-                break;
-            case UIInterfaceOrientationLandscapeLeft:
-                if (self.frame.origin.y == 20) {
-                    self.frame = CGRectMake(0,0,320,480);
-                }
-                networkTable.transform = CGAffineTransformMakeRotation(_deg(270));
-                networkTable.frame = CGRectMake(55, 10, networkTable.frame.size.width, networkTable.frame.size.height);
-                _pImg.frame = CGRectMake(20, 10, _pImg.frame.size.width, _pImg.frame.size.height);
-                break;
-            default:
-                break;
-        }
-		// i like 20.
+		[_pImg setImage:[UIImage imageNamed:@"0_popover_l"]];
+		_pImg.frame = CGRectMake(-1, 29, 242, 234);
+		networkTable.frame = CGRectMake(2, 35, 235, 206);	
 	}
 	else {
-		[self setBasicFramesForElements];
-		// necessary. don't. even. ask.
+		[_pImg setImage:[UIImage imageNamed:@"0_popover"]];
+		[networkTable setFrame:CGRectMake(40, 45, 240, 205)];
+		[_pImg setFrame:CGRectMake(26, 30, 268, 240)];
 	}
-	_pImg.transform = networkTable.transform;
 	if (animate) {
 		[UIView commitAnimations];
 	}
