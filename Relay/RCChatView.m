@@ -80,7 +80,7 @@ NSString *colorForIRCColor(char irccolor) {
 	else if ([requestString hasPrefix:@"channel:"]) {
 		NSLog(@"should join: %@", [requestString substringFromIndex:[@"channel:" length]]);
 		NSString *escaped = [[requestString substringFromIndex:[@"channel:" length]] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-		RCChannel *ch = [[(RCChannel*)[[self chatpanel] channel] delegate] addChannel:escaped join:YES];
+		RCChannel *ch = [[(RCChannel *)[[self chatpanel] channel] delegate] addChannel:escaped join:YES];
 		[[RCNavigator sharedNavigator] channelSelected:[ch bubble]];
 		[[RCNavigator sharedNavigator] scrollToBubble:[ch bubble]];
 		return NO;
@@ -128,7 +128,6 @@ NSString *colorForIRCColor(char irccolor) {
 _out_:
 	@synchronized(self) {
 		if (preloadPool) {
-			NSLog(@"DOM not ready! Queueing.");
 			[preloadPool addObject:ms];
 			return;
 		}
@@ -191,11 +190,12 @@ _out_:
 					int number2 = -2;
 					BOOL itc = YES;
 					if (readNumber(&number1, &itc, &cpos, istring) && itc) {
-						NSLog(@"comma!");
 						itc = NO;
 						readNumber(&number2, &itc, &cpos, istring);
 					}
+#if LOGALL
 					NSLog(@"Using %d and %d (%d,%d) [%@]", number1, number2, cpos, lpos, [istring substringFromIndex:cpos]);
+#endif
                     // BOOL readNumber(int* num, BOOL* isThereComma, int* size_of_num, char* data, int size);
 					fgcolor = colorForIRCColor(number1);
 					bgcolor = colorForIRCColor(number2);
@@ -206,11 +206,9 @@ _out_:
 					cpos++;
 					nDepth++;
                     if (nDepth) {
-						NSLog(@"+");
                         // begin tag
 						if ([istring length] >= cpos+2 && nDepth == 1) {
 							nickcolor = [[istring substringWithRange:NSMakeRange(cpos, 2)] intValue];
-							NSLog(@"enabling color %d [depth is %d]", nickcolor, nDepth);
 						}
 						cpos+=2;
 						lpos = cpos;

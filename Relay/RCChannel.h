@@ -50,9 +50,8 @@
 - (void)setMode:(NSString *)modes forUser:(NSString *)user;
 - (void)setJoined:(BOOL)joind withArgument:(NSString *)arg1;
 - (void)userWouldLikeToPartakeInThisConversation:(NSString *)message;
-- (void)peopleParticipateInConversationsNotPartake:(id)hai wtfWasIThinking:(BOOL)thinking;
 - (BOOL)joined;
-// yes, seriously. :P spent like 15 minutes and felt this was best suited. 
+- (NSMutableArray *)usersMatchingWord:(NSString *)word;
 - (void)parseAndHandleSlashCommand:(NSString *)cmd;
 - (void)setMyselfParted;	
 - (NSString *)userWithPrefix:(NSString *)prefix pastUser:(NSString *)user;

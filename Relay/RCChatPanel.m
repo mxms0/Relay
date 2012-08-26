@@ -137,18 +137,23 @@
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
 	if ([channel isPrivate]) return YES;
-	NSString *text = [textField text];
-	NSRange rr = NSMakeRange(0, range.location+string.length);
-	text = [text stringByReplacingCharactersInRange:range withString:string];
-	for (int i = (range.location + string.length-1); i >= 0; i--) {
-		if ([text characterAtIndex:i] == ' ') {
-			rr.location = i + 1;
-			rr.length = ((range.location + string.length) - rr.location);
-			break;
+	NSString *text = [[textField text] retain];
+	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH,0);
+	dispatch_async(queue, ^ {
+		NSString *lolhaiqwerty = text;
+		NSRange rr = NSMakeRange(0, range.location+string.length);
+		lolhaiqwerty = [lolhaiqwerty stringByReplacingCharactersInRange:range withString:string];
+		for (int i = (range.location + string.length-1); i >= 0; i--) {
+			if ([lolhaiqwerty characterAtIndex:i] == ' ') {
+				rr.location = i + 1;
+				rr.length = ((range.location + string.length) - rr.location);
+				break;
+			}
 		}
-	}
-	NSString *personMayb = [text substringWithRange:rr];
-	NSLog(@"HI FOUND %@",[channel usersMatchingWord:personMayb]);
+		NSString *personMayb = [lolhaiqwerty substringWithRange:rr];
+		NSLog(@"hai look wat i found :%@", [channel usersMatchingWord:personMayb]);
+		[text release];
+	});
 	return YES;
 }
 

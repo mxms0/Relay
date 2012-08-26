@@ -28,7 +28,7 @@
 }
 
 - (void)willMoveToSuperview:(UIView *)newSuperview {
-	[underline setFrame:CGRectMake(6, 42, newSuperview.frame.size.width-11, 2)];
+	[underline setFrame:CGRectMake(6, 41, newSuperview.frame.size.width-11, 2)];
 }
 
 @end
