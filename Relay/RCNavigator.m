@@ -159,6 +159,10 @@ static id _sharedNavigator = nil;
 		[self addSubview:nWindow];
 		[self bringSubviewToFront:nWindow];
         [nWindow animateIn];
+		if (currentPanel) {
+			[nWindow setShouldRePresentKeyboardOnDismiss:[currentPanel isFirstResponder]];
+			[currentPanel resignFirstResponder];
+		}
     }
 }
 
@@ -358,22 +362,18 @@ static RCChannelBubble *questionabubble = nil;
 	[currentNetwork setCurrentChannel:[bubble channel]];
 	[bubble _setSelected:YES];
 	if (!currentNetwork) NSLog(@"NO CURRENT WORK");
-	RCChannel *chan = [currentNetwork channelWithChannelName:bubble.titleLabel.text]; // unneeded. <.<
-	if (chan) {
-		[[chan panel] setFrame:(currentPanel ? [currentPanel frame] : [self frameForChatTable])];
-		if (currentPanel) {
-			[currentPanel removeFromSuperview];
-		} // logic is flawed. means i could be calling isFirstResponder on a null object. i'll live with it.
+	RCChannel *chan = [bubble channel];
+	[[[bubble channel] panel] setFrame:(currentPanel ? [currentPanel frame] : [self frameForChatTable])];
+	if (currentPanel) {
+		[currentPanel removeFromSuperview];
 		if ([currentPanel isFirstResponder])
 			[[chan panel] becomeFirstResponderNoAnimate];
-        [[chan panel] didPresentView];
-		[self insertSubview:[chan panel] belowSubview:bar];
-		currentPanel = [chan panel];
-		// if this fails, UIApplication->statusBarOrientation
+		// does not work perhaps due to adding to superview or someshit idfkx. meh btw cleaned up the logic here. :) 
 	}
-	else {
-		NSLog(@"WTF THE CHANNEL EXISTS, BUT THE RCCHANNELL DOESN'T. FR0ST FIX IT");
-	}
+	[[chan panel] didPresentView];
+	[self insertSubview:[chan panel] belowSubview:bar];
+	currentPanel = [chan panel];
+	// if this fails, UIApplication->statusBarOrientation
 }
 
 + (id)sharedNavigator {

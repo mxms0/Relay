@@ -99,7 +99,7 @@ NSString *colorForIRCColor(char irccolor) {
 #define RENDER_WITH_OPTS \
 	if (!([ms string] && ms)) {\
 		return;\
-	} NSLog(@"rendering color %d", nickcolor);\
+	}\
 	cstr = [NSString stringWithFormat:@"addToMessage('%@','%@','%@','%@','%@','%@','%@', '%@', '%d');", name, isBold ? @"YES" : @"NO", isUnderline ? @"YES" : @"NO", isItalic ? @"YES" : @"NO", bgcolor, fgcolor, [istring substringWithRange:NSMakeRange(lpos, cpos-lpos)], nDepth ? @"YES" : @"NO", nickcolor]; \
 	if (![[self stringByEvaluatingJavaScriptFromString:cstr] isEqualToString:@"SUCCESS"]) { \
 		NSLog(@"Could not exec: %@", cstr); \
@@ -117,7 +117,7 @@ NSString *colorForIRCColor(char irccolor) {
     @synchronized(self) {
 		NSMutableArray *pre_pool = preloadPool;
 		preloadPool = nil;
-		for (RCMessageFormatter* ms in pre_pool) {
+		for (RCMessageFormatter *ms in pre_pool) {
 			[self layoutMessage:ms];
 		}
 		[pre_pool release];
@@ -236,7 +236,6 @@ _out_:
 		RENDER_WITH_OPTS;
         //NSString* cstr = [NSString stringWithFormat:@"addToMessage('%@','NO','NO','NO','white','black','%@', 'YES');", name, ];
 	});
-	NSLog(@"meh %@ %@", [self stringByEvaluatingJavaScriptFromString:@"window.pageYOffset"], [self stringByEvaluatingJavaScriptFromString:@"window.innerHeight"]);
 }
 
 - (void)scrollToBottom {

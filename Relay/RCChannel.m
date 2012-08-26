@@ -19,9 +19,8 @@
 
 @synthesize channelName, joinOnConnect, panel, topic, bubble, usersPanel, password;
 
-NSString *RCUserRank(NSString *user, RCNetwork* network) {
-    @synchronized(network)
-    {
+NSString *RCUserRank(NSString *user, RCNetwork *network) {
+    @synchronized(network) {
         if (![network prefix]) {
             return @"";
         }
@@ -402,16 +401,18 @@ if (range.location != NSNotFound) {\
 	}
 }
 
-- (NSString *)userWithPrefix:(NSString *)prefix pastUser:(NSString *)user {
-	for (NSString *aUser in fullUserList) {
-		if ([[aUser lowercaseString] hasPrefix:[prefix lowercaseString]] && ![[aUser lowercaseString] isEqualToString:[user lowercaseString]])
-			return aUser;
-	}
-	return nil;
+- (NSMutableArray *)usersMatchingWord:(NSString *)word {
+	NSMutableArray *usrs = [[NSMutableArray alloc] init];
+	[fullUserList enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		NSInteger ln = [RCUserRank(obj, [self delegate]) length];
+		if ([[obj substringFromIndex:ln] hasPrefixNoCase:word])
+			[usrs addObject:obj];
+	}];
+	return [usrs autorelease];
 }
 
 - (NSString *)nickAndRankForNick:(NSString *)nick {
-    for (NSString* nickrank in fullUserList) {
+    for (NSString *nickrank in fullUserList) {
         if (nick && [nickrank hasSuffix:nick]) {
             NSInteger ln = [RCUserRank(nickrank, [self delegate]) length];
             if ([[nickrank substringFromIndex:ln] isEqualToString:nick]) {
@@ -445,7 +446,6 @@ if (range.location != NSNotFound) {\
         return;
     }
     @synchronized(self) {
-        NSLog(@"_joined: %@", _joined);
         if (![_joined isEqualToString:@""] && ![_joined isEqualToString:@" "] && ![_joined isEqualToString:@"\r\n"] && ![self isUserInChannel:_joined] && _joined) {
             NSUInteger newIndex = [fullUserList indexOfObject:_joined inSortedRange:(NSRange){0, [fullUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^NSComparisonResult(id obj1, id obj2) {
                 return sortRank(obj1, obj2, [self delegate]);
@@ -538,7 +538,6 @@ modecnt++;\
     @synchronized(userRanksAdv) {
         @try {
             NSArray* users = [user componentsSeparatedByString:@" "];
-            NSLog(@"usrs %@", users);
             BOOL adding = NO;
             BOOL subtracting = NO;
             int stptr = 0;
@@ -571,7 +570,6 @@ modecnt++;\
         @catch (NSException *exception) {
             NSLog(@"exc %@", exception);
         }
-        NSLog(@"setting %@ for %@", modes, user);
     }
 }
 

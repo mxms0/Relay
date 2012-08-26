@@ -10,6 +10,7 @@
 #import "RCNetworkManager.h"
 
 @implementation RCPopoverWindow
+@synthesize shouldRePresentKeyboardOnDismiss;
 
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
@@ -28,6 +29,7 @@
 		self.hidden = YES;
 		self.opaque = NO;
 		self.alpha = 0;
+		self.shouldRePresentKeyboardOnDismiss = NO;
 		applicationDelegate = [UIApp delegate];
     }
     return self;
@@ -52,12 +54,14 @@
 	} completion:^(BOOL fin) {
 		[self removeFromSuperview];
 		self.hidden = YES;
+		if (shouldRePresentKeyboardOnDismiss)
+			[[[RCNavigator sharedNavigator] currentPanel] becomeFirstResponder];
+		self.shouldRePresentKeyboardOnDismiss = NO;
 	}];
 }
 
 - (void)correctAndRotateToInterfaceOrientation:(UIInterfaceOrientation)oi {
 	BOOL animate = NO;
-	// NEED THIS BOOLEAN INCASE THE VIEW APPEARS WHILE THIS IS OCCURING 
 	if (!self.hidden) {
 		animate = YES;
 		[UIView beginAnimations:nil context:nil];

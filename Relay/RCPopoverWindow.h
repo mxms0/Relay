@@ -13,7 +13,9 @@
 	UIImageView *_pImg;
 	id applicationDelegate;
 	UITableView *networkTable;
+	BOOL shouldRePresentKeyboardOnDismiss;
 }
+@property (nonatomic, assign) BOOL shouldRePresentKeyboardOnDismiss;
 - (void)reloadData;
 - (void)animateIn;
 - (void)animateOut;

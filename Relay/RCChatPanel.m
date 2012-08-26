@@ -55,8 +55,7 @@
     return self;
 }
 
-- (void)didPresentView
-{
+- (void)didPresentView {
     [mainView scrollToBottom];
 }
 
@@ -71,7 +70,7 @@
 }
 
 - (BOOL)isFirstResponder {
-	return field.isFirstResponder;
+	return [field isFirstResponder];
 }
 
 - (BOOL)becomeFirstResponder {
@@ -134,6 +133,23 @@
 		return CGRectMake(0, (activ ? 66 : 227), 480, 40);
 	}
 	return CGRectMake(0, (activ ? 127 : 345), 320, 40);
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+	if ([channel isPrivate]) return YES;
+	NSString *text = [textField text];
+	NSRange rr = NSMakeRange(0, range.location+string.length);
+	text = [text stringByReplacingCharactersInRange:range withString:string];
+	for (int i = (range.location + string.length-1); i >= 0; i--) {
+		if ([text characterAtIndex:i] == ' ') {
+			rr.location = i + 1;
+			rr.length = ((range.location + string.length) - rr.location);
+			break;
+		}
+	}
+	NSString *personMayb = [text substringWithRange:rr];
+	NSLog(@"HI FOUND %@",[channel usersMatchingWord:personMayb]);
+	return YES;
 }
 
 - (void)postMessage:(NSString *)_message withType:(RCMessageType)type highlight:(BOOL)high {
