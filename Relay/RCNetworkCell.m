@@ -12,7 +12,6 @@
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
-        // Initialization code
 		self.textLabel.textColor = [UIColor whiteColor];
 		self.backgroundColor = [UIColor clearColor];
 		self.detailTextLabel.font = [UIFont systemFontOfSize:12];
@@ -29,7 +28,7 @@
 }
 
 - (void)willMoveToSuperview:(UIView *)newSuperview {
-	[underline setFrame:CGRectMake(6, 42, newSuperview.frame.size.width-12, 2)];
+	[underline setFrame:CGRectMake(6, 42, newSuperview.frame.size.width-11, 2)];
 }
 
 @end

@@ -97,21 +97,21 @@ NSString *colorForIRCColor(char irccolor) {
     [super dealloc];
 }
 #define RENDER_WITH_OPTS \
-        if (!([ms string] && ms)) {\
-            return;\
-        } NSLog(@"rendering color %d", nickcolor);\
-        cstr = [NSString stringWithFormat:@"addToMessage('%@','%@','%@','%@','%@','%@','%@', '%@', '%d');", name, isBold ? @"YES" : @"NO", isUnderline ? @"YES" : @"NO", isItalic ? @"YES" : @"NO", bgcolor, fgcolor, [[[istring substringWithRange:NSMakeRange(lpos, cpos-lpos)] stringByReplacingOccurrencesOfString:@"\\R" withString:@"\x06"] stringByReplacingOccurrencesOfString:@"\\F" withString:@"\x05"], nDepth ? @"YES" : @"NO", nickcolor]; \
-        if (![[self stringByEvaluatingJavaScriptFromString:cstr] isEqualToString:@"SUCCESS"]) { \
-            NSLog(@"Could not exec: %@", cstr); \
-        } else if ([ms  shouldColor]) {\
-        if([(RCChannel*)[[self chatpanel] channel] isPrivate]) \
-            [[(RCChannel*)[[self chatpanel] channel] bubble] setMentioned:YES];\
-        else {\
-            [[(RCChannel*)[[self chatpanel] channel] bubble] setMentioned:[ms  highlight]];\
-            [[(RCChannel*)[[self chatpanel] channel] bubble] setHasNewMessage:![ms  highlight]];\
-        }\
-        }\
-        lpos = cpos;    
+	if (!([ms string] && ms)) {\
+		return;\
+	} NSLog(@"rendering color %d", nickcolor);\
+	cstr = [NSString stringWithFormat:@"addToMessage('%@','%@','%@','%@','%@','%@','%@', '%@', '%d');", name, isBold ? @"YES" : @"NO", isUnderline ? @"YES" : @"NO", isItalic ? @"YES" : @"NO", bgcolor, fgcolor, [istring substringWithRange:NSMakeRange(lpos, cpos-lpos)], nDepth ? @"YES" : @"NO", nickcolor]; \
+	if (![[self stringByEvaluatingJavaScriptFromString:cstr] isEqualToString:@"SUCCESS"]) { \
+		NSLog(@"Could not exec: %@", cstr); \
+	} else if ([ms  shouldColor]) {\
+		if([(RCChannel*)[[self chatpanel] channel] isPrivate]) \
+			[[(RCChannel*)[[self chatpanel] channel] bubble] setMentioned:YES];\
+		else {\
+			[[(RCChannel*)[[self chatpanel] channel] bubble] setMentioned:[ms  highlight]];\
+			[[(RCChannel*)[[self chatpanel] channel] bubble] setHasNewMessage:![ms  highlight]];\
+		}\
+	}\
+	lpos = cpos;    
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     @synchronized(self) {

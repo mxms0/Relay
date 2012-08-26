@@ -33,7 +33,7 @@ static NSMutableArray *networks = nil;
 
 	if ([[info objectForKey:S_PASS_KEY] boolValue]) {
         //[network setSpass:([wrapper objectForKey:S_PASS_KEY] ?: @"")];
-		RCKeychainItem *item = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@spass", [network _description]] accessGroup:nil];
+		RCKeychainItem *item = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@spass", [network _description]]];
 		[network setSpass:([item objectForKey:(id)kSecValueData] ?: @"")];
 		if ([network spass] == nil || [[network spass] length] == 0) {
 			[network setShouldRequestSPass:YES];
@@ -42,7 +42,7 @@ static NSMutableArray *networks = nil;
 	}
 	if ([[info objectForKey:N_PASS_KEY] boolValue]) {
 		//[network setNpass:([wrapper objectForKey:N_PASS_KEY] ?: @"")];
-		RCKeychainItem *item = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@npass", [network _description]] accessGroup:nil];
+		RCKeychainItem *item = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@npass", [network _description]]];
         [network setNpass:([item objectForKey:(id)kSecValueData] ?: @"")];
 		if ([network npass] == nil || [[network npass] length] == 0) {
 			[network setShouldRequestNPass:YES];

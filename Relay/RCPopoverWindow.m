@@ -66,7 +66,7 @@
 	if (UIInterfaceOrientationIsLandscape(oi)) {
 		[_pImg setImage:[UIImage imageNamed:@"0_popover_l"]];
 		_pImg.frame = CGRectMake(-1, 29, 242, 234);
-		networkTable.frame = CGRectMake(2, 35, 235, 206);	
+		networkTable.frame = CGRectMake(2, 38, 235, 208);
 	}
 	else {
 		[_pImg setImage:[UIImage imageNamed:@"0_popover"]];

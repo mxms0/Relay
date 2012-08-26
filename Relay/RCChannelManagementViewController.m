@@ -21,7 +21,7 @@
 		jOC = NO;
 		if ((channel != nil) && ![channel isEqualToString:@""]) {
 			jOC = [[net channelWithChannelName:channel] joinOnConnect];
-			RCKeychainItem *item = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@%@rpass", [_net _description], channel]  accessGroup:nil];
+			RCKeychainItem *item = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@%@rpass", [_net _description], channel]];
 			pass = [item objectForKey:(id)kSecValueData];
 			[item release];
 		}

@@ -199,10 +199,6 @@ UIImage *RCImageForRank(NSString *rank, RCNetwork* network) {
 	return [NSString stringWithFormat:@"[%@ %@]", [super description], channelName];
 }
 
-- (void)recievedKick:(NSString *)kick from:(NSString *)from reason:(NSString *)rsn {
-	
-}
-
 char user_hash(NSString *from);
 char user_hash(NSString *from) {
     int uhash = 0;
@@ -262,11 +258,11 @@ if (range.location != NSNotFound) {\
     NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSString *msg = @"";
 	NSString *time = @"";
-    from = [from stringByReplacingOccurrencesOfString:@"\x06" withString:@""];
+    from = [from stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
     from = [from stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
     char uhash = (![from isEqualToString:[delegate useNick]]) ? user_hash(from) : 1;
     if ([message isKindOfClass:[NSString class]]) {
-        message = [message stringByReplacingOccurrencesOfString:@"\x06" withString:@""];
+        message = [message stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
         message = [message stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
     }
     BOOL is_highlight = NO;
@@ -278,11 +274,11 @@ if (range.location != NSNotFound) {\
             NSString* mesg = [(NSArray*)message objectAtIndex:1];
             NSString* whog = [(NSArray*)message objectAtIndex:0];
             if ([mesg isKindOfClass:[NSString class]]) {
-                mesg = [mesg stringByReplacingOccurrencesOfString:@"\x06" withString:@""];
+                mesg = [mesg stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
                 mesg = [mesg stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
             }
             if ([whog isKindOfClass:[NSString class]]) {
-                whog = [whog stringByReplacingOccurrencesOfString:@"\x06" withString:@""];
+                whog = [whog stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
                 whog = [whog stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
             }
             [self setUserLeft:whog];

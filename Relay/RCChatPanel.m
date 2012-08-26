@@ -42,7 +42,7 @@
 		[field setMinimumFontSize:17];
 		[field setAdjustsFontSizeToFitWidth:YES];
 		[field setDelegate:self];
-		[field setAutocapitalizationType:UITextAutocapitalizationTypeNone];
+		//	[field setAutocapitalizationType:UITextAutocapitalizationTypeNone];
 		[field setClearButtonMode:UITextFieldViewModeWhileEditing];
 		[_bar addSubview:field];
 		[field release];

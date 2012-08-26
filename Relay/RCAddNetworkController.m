@@ -149,7 +149,7 @@
 		[network setSpass:@""];
 	}
 	else {
-		RCKeychainItem *keychain = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@spass", [network _description]] accessGroup:nil];
+		RCKeychainItem *keychain = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@spass", [network _description]]];
         [keychain setObject:[network spass] forKey:(id)kSecValueData];
 		[keychain release];
 	}
@@ -157,7 +157,7 @@
 		[network setNpass:@""];
 	}
 	else {
-		RCKeychainItem *keychain = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@npass", [network _description]] accessGroup:nil];
+		RCKeychainItem *keychain = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@npass", [network _description]]];
         [keychain setObject:[network npass] forKey:(id)kSecValueData];
 		[keychain release];
 	}

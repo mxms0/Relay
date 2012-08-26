@@ -111,7 +111,7 @@
 		[self addChannel:chan join:NO];
 		RCChannel *_chan = [self channelWithChannelName:chan];
 		[_chan setJoinOnConnect:jOC];
-		RCKeychainItem *item = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@%@rpass", [self _description], chan] accessGroup:nil];
+		RCKeychainItem *item = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@%@rpass", [self _description], chan]];
 		[_chan setPassword:[item objectForKey:(id)kSecValueData]];
 		[item release];		
 	}

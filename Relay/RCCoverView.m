@@ -82,7 +82,7 @@
 }
 
 - (void)deletePressed:(id)arg1 {
-	[[RCNavigator sharedNavigator] doSuicideConfirmationAlert:[channel bubble]];
+	[[RCNavigator sharedNavigator] channelWantsSuicide:[channel bubble]];
 	[self hide];
 }
 
@@ -103,28 +103,23 @@
 	if ([[RCNavigator sharedNavigator] _isLandscape]) {
 		[arrow setFrame:CGRectMake(arrow.frame.origin.x+240, arrow.frame.origin.y, arrow.frame.size.width, arrow.frame.size.height)];
 		[mainView setFrame:CGRectMake(mainView.frame.origin.x+240, mainView.frame.origin.y, mainView.frame.size.width, mainView.frame.size.height)];
+		if (mainView.frame.origin.x+mainView.frame.size.width > 480)
+			mainView.frame = CGRectMake((480-mainView.frame.size.width), mainView.frame.origin.y, mainView.frame.size.width, mainView.frame.size.height);
+		if (arrow.frame.origin.x < 240)
+			arrow.frame = CGRectMake(243, arrow.frame.origin.y, arrow.frame.size.width, arrow.frame.size.height);
+		else if (arrow.frame.origin.x+arrow.frame.size.width > 480)
+			arrow.frame = CGRectMake(465-(arrow.frame.size.width), arrow.frame.origin.y, arrow.frame.size.width, arrow.frame.size.height);
 	}
 	else {
-		
+		if (mainView.frame.origin.x < 0)
+			[mainView setFrame:(CGRect){{0, mainView.frame.origin.y}, mainView.frame.size}];
+		else if (mainView.frame.origin.x + mainView.frame.size.width > 318)
+			[mainView setFrame:CGRectMake(320-mainView.frame.size.width, mainView.frame.origin.y, mainView.frame.size.width, mainView.frame.size.height)];
+		if (mainView.frame.origin.x+13 > arrow.frame.origin.x)
+			arrow.frame = CGRectMake(mainView.frame.origin.x+13, arrow.frame.origin.y, arrow.frame.size.width, arrow.frame.size.height);
+		else if (arrow.frame.origin.x+arrow.frame.size.width > 312)
+			arrow.frame = CGRectMake(((mainView.frame.size.width+mainView.frame.origin.x)-arrow.frame.size.width)-13, arrow.frame.origin.y, arrow.frame.size.width, arrow.frame.size.height);
 	}
-	
-	/*
-	if (![[RCNavigator sharedNavigator] _isLandscape]) {
-		if (arrow.frame.origin.x+arrow.frame.size.width >= 315) {
-			[arrow setFrame:CGRectMake(295, arrow.frame.origin.y, arrow.frame.size.width, arrow.frame.size.height)];
-		}
-		[mainView setFrame:CGRectMake(ppt.x-(mainView.frame.size.width/2), ppt.y-4, mainView.frame.size.width, 55)];
-		if (mainView.frame.origin.x < 0) {
-			[mainView setFrame:CGRectMake(5, mainView.frame.origin.y, mainView.frame.size.width, 55)];
-		}
-		else if (mainView.frame.origin.x+mainView.frame.size.width > 310) {
-			[mainView setFrame:CGRectMake(320-mainView.frame.size.width, mainView.frame.origin.y, mainView.frame.size.width, 55)];
-		}
-	}
-	else {
-		
-	}*/
-
 }
 
 - (void)show {

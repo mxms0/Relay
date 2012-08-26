@@ -9,11 +9,9 @@
 #import <UIKit/UIKit.h>
 
 @interface RCKeychainItem : NSObject {
-	NSMutableDictionary *data;
-	NSMutableDictionary *genericQuery;
+	NSMutableDictionary *base;
 }
-- (id)initWithIdentifier:(NSString *)ident accessGroup:(NSString *)group;
+- (id)initWithIdentifier:(NSString *)ident;
 - (NSString *)objectForKey:(NSString *)key;
 - (void)setObject:(NSString *)value forKey:(NSString *)key;
-- (void)resetKeychain;
 @end
