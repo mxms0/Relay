@@ -56,7 +56,7 @@ NSString *colorForIRCColor(char irccolor) {
             template = [[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"chatview" ofType:@"html"] encoding:NSUTF8StringEncoding error:nil] retain];
         }
         self.opaque = NO;
-        self.dataDetectorTypes = UIDataDetectorTypeNone;
+        self.dataDetectorTypes = (UIDataDetectorTypeLink | UIDataDetectorTypePhoneNumber);
         self.backgroundColor = [UIColor clearColor];
         self.delegate = (id<UIWebViewDelegate>) self;
         preloadPool = [NSMutableArray new];

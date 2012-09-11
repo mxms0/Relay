@@ -22,12 +22,12 @@
 	return [[self lowercaseString] hasSuffix:[string lowercaseString]];
 }
 
-- (NSString *)recursivelyRemovePrefix:(NSString *)prefix fromString:(NSString *)str {
-	if (!prefix || !str) return nil;
-	if ([str hasPrefix:prefix])
-		str = [str substringFromIndex:1];
-	else return str;
-	return [self recursivelyRemovePrefix:prefix fromString:str];
+- (NSString *)recursivelyRemovePrefix:(NSString *)prefix {
+	if (!prefix || !self) return nil;
+	if ([self hasPrefix:prefix])
+		self = [self substringFromIndex:[prefix length]];
+	else return self;
+	return [self recursivelyRemovePrefix:prefix];
 }
 
 

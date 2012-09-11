@@ -267,7 +267,7 @@ static id _sharedNavigator = nil;
 	chan.usersPanel = memberPanel;
 	[currentPanel removeFromSuperview];
 	currentPanel = nil;
-	[self addSubview:memberPanel];
+	[self insertSubview:memberPanel atIndex:0];
 }
 
 - (void)selectNetwork:(RCNetwork *)net {
@@ -361,7 +361,7 @@ static RCChannelBubble *questionabubble = nil;
 	}
 	[currentNetwork setCurrentChannel:[bubble channel]];
 	[bubble _setSelected:YES];
-	if (!currentNetwork) NSLog(@"NO CURRENT WORK");
+	if (!currentNetwork) NSLog(@"NO CURRENT NETWORK");
 	RCChannel *chan = [bubble channel];
 	[[[bubble channel] panel] setFrame:(currentPanel ? [currentPanel frame] : [self frameForChatTable])];
 	if (currentPanel) {
@@ -423,6 +423,7 @@ static RCChannelBubble *questionabubble = nil;
 	[[currentPanel mainView] scrollToBottom];
 	[plus setFrame:[self frameForPlusButton]];
 	[listr setFrame:[self frameForListButton]];
+	[scrollBar setContentSize:(CGSize)(scrollBar.frame.size)];
 	[memberPanel setFrame:[self frameForMemberPanel]];
 	[nWindow correctAndRotateToInterfaceOrientation:oi];
 }

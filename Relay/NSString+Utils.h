@@ -12,5 +12,5 @@
 - (BOOL)isEqualToStringNoCase:(NSString *)string;
 - (BOOL)hasPrefixNoCase:(NSString *)string;
 - (BOOL)hasSuffixNoCase:(NSString *)string;
-- (NSString *)recursivelyRemovePrefix:(NSString *)prefix fromString:(NSString *)str;
+- (NSString *)recursivelyRemovePrefix:(NSString *)prefix;
 @end

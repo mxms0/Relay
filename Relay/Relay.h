@@ -36,6 +36,8 @@ static inline void NOLog(NSString* a, ...)
 	#endif
 	#define PREFS_PLIST @"/Networks.plist"
 	#define NETS_PLIST @"/Chat.plist"
+	#define RCCurrentNetKey @"0_CURRENTNET"
+	#define RCCurrentChanKey @"0_CURRENTCHAN"
 	#define PREFS_ABSOLUT [[NSUserDefaults standardUserDefaults] objectForKey:PREFS_PLIST]
 	#define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 	#define isPad (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)

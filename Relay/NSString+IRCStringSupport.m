@@ -736,9 +736,10 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
 	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern1 options:0 error:nil];
 	NSString *modifiedString = [[regex stringByReplacingMatchesInString:self options:0 range:NSMakeRange(0, [self length]) withTemplate:@"$1\x04\x30\x30<a href=\"channel:$2\" class=\"channel\">$2</a>\x05"] retain];
 	
-    NSString *pattern = @"((http|irc|ftp|https):\\/\\/[^\\s]+)";
+ /*   NSString *pattern = @"\\(((https?|ftp|irc):\\/\\/[^\\s]+)\\)";
 	regex = [NSRegularExpression regularExpressionWithPattern:pattern options:0 error:nil];
 	modifiedString = [[regex stringByReplacingMatchesInString:modifiedString options:0 range:NSMakeRange(0, [self length]) withTemplate:@"\x04\x30\x30<a href=\"$1\" class=\"linkified\">$1</a>\x05"] retain];
+  */
     
     [pool drain];
     return [modifiedString autorelease];

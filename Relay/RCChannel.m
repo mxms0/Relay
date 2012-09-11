@@ -388,6 +388,7 @@ if (range.location != NSNotFound) {\
 			[nc setFireDate:[NSDate date]];
 			[nc setAlertBody:[msg stringByStrippingIRCMetadata]];
             [nc setSoundName:UILocalNotificationDefaultSoundName];
+			[nc setUserInfo:[NSDictionary dictionaryWithObjectsAndKeys:[delegate _description], RCCurrentNetKey, [self channelName], RCCurrentChanKey, nil]];
 			[[UIApplication sharedApplication] scheduleLocalNotification:nc];
 			[nc release];
 		}

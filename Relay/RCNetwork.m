@@ -201,7 +201,6 @@
 #pragma mark - SOCKET STUFF
 
 - (void)connect {
-	// [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:[sDescription stringByAppendingFormat:@"-%@%@%@-%d%d", nick, username, server, port, useSSL]];
 	if (useSSL) {
 		[self performSelectorInBackground:@selector(_ssl_connect) withObject:nil];
 	}
@@ -283,7 +282,7 @@
 			if (*(lbuf+kbytes) == '\r'||*(lbuf+kbytes) == '\n') {
 				pbytes = kbytes;
 				if (pbytes - dbytes) {
-					NSAutoreleasePool *pool = [NSAutoreleasePool new];
+					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 					kbytes ++;
 					NSString* message = [[[[[NSString alloc] initWithBytes:(uint8_t*)lbuf+dbytes length:pbytes-dbytes encoding:NSUTF8StringEncoding] autorelease] stringByReplacingOccurrencesOfString:@"\n" withString:@""] stringByReplacingOccurrencesOfString:@"\r" withString:@""];
 					dbytes = kbytes;
@@ -979,7 +978,7 @@ char *RCIPForURL(NSString *URL) {
 	if ([topicModes length] > 1)
 		topicModes = [topicModes substringFromIndex:1];
 	if ([topicModes isEqualToString:@" "]) topicModes = nil;
-	if ([topicModes hasPrefix:@" "]) topicModes = [topicModes recursivelyRemovePrefix:@" " fromString:topicModes];
+	if ([topicModes hasPrefix:@" "]) topicModes = [topicModes recursivelyRemovePrefix:@" "];
 	//[namesCallback recievedChannel:chan withCount:[count intValue] andTopic:topicModes];
 	NSLog(@"eeee %@:%@:%@",chan,count,topicModes);
 	[hi release];
@@ -1000,7 +999,6 @@ char *RCIPForURL(NSString *URL) {
 }
 
 - (void)handle353:(NSString *)_users {
-    
 	NSScanner *scanner = [[NSScanner alloc] initWithString:_users];
 	NSString *crap;
 	NSString *me;

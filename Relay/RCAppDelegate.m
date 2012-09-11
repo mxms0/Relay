@@ -53,7 +53,6 @@ static BOOL isSetup = NO;
     // nice DRM i won't be using. 
 	// thanks a lot nighthawk.
 	
-	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
 	UIViewController *rcv;
 	Class rcvClass = [RCiPadViewController class];
@@ -67,6 +66,7 @@ static BOOL isSetup = NO;
 	[rcv release];
 	self.window.rootViewController = self.navigationController;
     [self.window makeKeyAndVisible];
+	[self configureUI];
 	if (!isSetup) {
 		NSFileManager *manager = [NSFileManager defaultManager];
 		NSString *path = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingString:PREFS_PLIST];
@@ -87,8 +87,57 @@ static BOOL isSetup = NO;
 	return YES;
 }
 
-- (void)applicationWillResignActive:(UIApplication *)application {
+- (void)configureUI {
+	UINavigationBar *nb = [UINavigationBar appearance];
+	[nb setBackgroundImage:[UIImage imageNamed:@"0_addnav"] forBarMetrics:UIBarMetricsDefault];
+	NSDictionary *formatting = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont boldSystemFontOfSize:11], UITextAttributeFont, UIColorFromRGB(0x929292), UITextAttributeTextColor,
+								[NSValue valueWithUIOffset:UIOffsetMake(0, 1)], UITextAttributeTextShadowOffset,
+								[UIColor whiteColor], UITextAttributeTextShadowColor, nil];
+	UIBarButtonItem *btn = [UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], nil];
+	[btn setTitleTextAttributes:formatting forState:UIControlStateNormal];
+	[btn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
 
+}
+
+/*
+ UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 55, 30)];
+ [btn setTitle:@"Done" forState:UIControlStateNormal];
+ [[btn titleLabel] setTextAlignment:UITextAlignmentCenter];
+ [btn setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
+ [[btn titleLabel] setShadowOffset:CGSizeMake(0, 1)];
+ [[btn titleLabel] setFont:[UIFont boldSystemFontOfSize:11]];
+ [btn setTitleColor:UIColorFromRGB(0x929292) forState:UIControlStateDisabled];
+ [btn setTitleColor:UIColorFromRGB(0x454646) forState:UIControlStateNormal];
+ [btn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateNormal];
+ [btn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_p"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateHighlighted];
+ //	[btn setImage:[UIImage imageNamed:@"0_donebutton_disabled"] forState:UIControlStateDisabled];
+ btn.enabled = NO;
+ [btn addTarget:self action:@selector(doneConnection) forControlEvents:UIControlEventTouchUpInside];
+ UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithCustomView:btn];
+ [btn release];
+ btn.enabled = !isNew;
+ //	[self.navigationItem setRightBarButtonItem:done];
+ [done release];
+ 
+ UIButton *cBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 55, 30)];
+ [cBtn setTitle:@"Cancel" forState:UIControlStateNormal];
+ [cBtn setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
+ [[cBtn titleLabel] setShadowOffset:CGSizeMake(0, 1)];
+ [[cBtn titleLabel] setFont:[UIFont boldSystemFontOfSize:11]];
+ [cBtn setTitleColor:UIColorFromRGB(0x454646) forState:UIControlStateNormal];
+ [cBtn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateNormal];
+ [cBtn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_p"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateHighlighted];
+ [cBtn addTarget:self action:@selector(doneWithJoin) forControlEvents:UIControlEventTouchUpInside];
+ UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithCustomView:cBtn];
+ [cBtn release];
+ //	[self.navigationItem setLeftBarButtonItem:cancel];
+ [cancel release];
+ */
+// Do any additional setup after loading the view, typically from a nib.
+
+
+
+- (void)applicationWillResignActive:(UIApplication *)application {
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
@@ -99,17 +148,27 @@ static BOOL isSetup = NO;
 	 */
 }
 
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+	if (![notification userInfo]) return;
+	NSDictionary *dict = [notification userInfo];
+	RCNetwork *net = [[RCNetworkManager sharedNetworkManager] networkWithDescription:[dict objectForKey:RCCurrentNetKey]];
+	[[RCNavigator sharedNavigator] selectNetwork:net];;
+	RCChannel *chan = [net channelWithChannelName:[dict objectForKey:RCCurrentChanKey]];
+	if ([[RCNavigator sharedNavigator] currentPanel])
+		if (![[[[RCNavigator sharedNavigator] currentPanel] channel] isEqual:chan])
+			[[RCNavigator sharedNavigator] channelSelected:[chan bubble]];
+}
+
 - (void)application:(UIApplication *)application willChangeStatusBarFrame:(CGRect)newStatusBarFrame {
 	isDoubleHeight = (newStatusBarFrame.size.height == 40);
 	if (isDoubleHeight) {
-		//		[[RCPopoverWindow sharedPopover] setFrame:CGRectMake(0, 5, 320, 460)];
 	}
 	else {
-		//[[RCPopoverWindow sharedPopover] setFrame:CGRectMake(0, 0, 320, 480)];	
 	}
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
+
 	[[RCNetworkManager sharedNetworkManager] setIsBG:NO];
 	[[UIApplication sharedApplication] cancelAllLocalNotifications];
 	/*
