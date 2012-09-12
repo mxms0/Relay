@@ -18,6 +18,7 @@
 
 @interface RCAddNetworkController : RCBasicViewController <UITextFieldDelegate, UIScrollViewDelegate> {
 	RCNetwork *network;
+	NSString *name;
 	BOOL isNew;
 }
 - (id)initWithNetwork:(RCNetwork *)net;

@@ -18,6 +18,12 @@
 		if (!net) {
 			network = [[RCNetwork alloc] init];
 			isNew = YES;
+			name = [[UIDevice currentDevice] name];
+			int ix = [name length];
+			int px = [name rangeOfString:@" "].location;
+			if (px != NSNotFound)
+				ix = px;
+			[name substringToIndex:ix];
 		}
 	}
 	return self;
@@ -106,9 +112,9 @@
 - (void)doneConnection {
 	[self.view findAndResignFirstResponder];
 	if (![network server]) return;
-    [network setRealname:IS_STRING_OR([network realname], @"Guest")];
-    [network setNick:IS_STRING_OR([network nick], @"Guest")];
-    [network setUsername:IS_STRING_OR([network username], @"Guest")];
+    [network setRealname:IS_STRING_OR([network realname], DEFAULT_NICK)];
+    [network setNick:IS_STRING_OR([network nick], DEFAULT_NICK)];
+    [network setUsername:IS_STRING_OR([network username], DEFAULT_NICK)];
 	if (![network port]) [network setPort:6667];
 	if (![network sDescription]) [network setSDescription:[network server]];
     if (isNew) {
@@ -160,7 +166,7 @@
 		case 3:
 			return 4;
 	}
-	return (int)@"HAXX!!!";
+	return (int)[@"HAXX!!!" intValue];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
@@ -275,17 +281,14 @@
                         cell.textLabel.text = @"Nickname";
 						RCTextField *uField = (RCTextField *)[cell accessoryView];
 						[uField setAdjustsFontSizeToFitWidth:YES];
-						@try {
-                            NSString* name = [[UIDevice currentDevice] name];
-                            int ix = [name length];
-                            int px = [name rangeOfString:@" "].location;
-                            if (px != NSNotFound) {
-                                ix = px;
-                            }
-							[uField setPlaceholder:[name substringToIndex:ix]];
-						}
-						@catch (id bs) {
-							[uField setPlaceholder:@"Guest"];
+						if (name) [uField setPlaceholder:name];
+						else {
+							[uField setPlaceholder:DEFAULT_NICK];
+							if ([network nick]) {
+								if ([[network nick] length] < 1)
+									[network setNick:DEFAULT_NICK];
+							}
+							else [network setNick:DEFAULT_NICK];
 						}
 						[uField setTag:4];
 						[uField setText:[network nick]];
@@ -297,17 +300,14 @@
                         cell.textLabel.text = @"Username";
 						RCTextField *nField = (RCTextField *)[cell accessoryView];
 						[nField setAdjustsFontSizeToFitWidth:YES];
-                        @try {
-                            NSString* name = [[UIDevice currentDevice] name];
-                            int ix = [name length];
-                            int px = [name rangeOfString:@" "].location;
-                            if (px != NSNotFound) {
-                                ix = px;
-                            }
-							[nField setPlaceholder:[name substringToIndex:ix]];
-						}
-						@catch (id bs) {
-							[nField setPlaceholder:@"Guest"];
+						if (name) [nField setPlaceholder:name];
+						else {
+							[nField setPlaceholder:DEFAULT_NICK];
+							if ([network nick]) {
+								if ([[network username] length] < 1)
+									[network setUsername:DEFAULT_NICK];
+							}
+							else [network setUsername:DEFAULT_NICK];
 						}
 						[nField setTag:5];
 						[nField setText:[network username]];
@@ -319,11 +319,10 @@
 						cell.textLabel.text = @"Real Name";
 						RCTextField *rField = (RCTextField *)[cell accessoryView];
 						[rField setAdjustsFontSizeToFitWidth:YES];
-						@try {
-							[rField setPlaceholder:[[UIDevice currentDevice] name]];
-						}
-						@catch (id bs) {
-							[rField setPlaceholder:@"Guest"];
+						NSString *_name = [[UIDevice currentDevice] name];
+						if (_name && ![_name isEqualToString:@""]) {
+							[rField setPlaceholder:_name];
+							[network setRealname:_name];
 						}
 						[rField setTag:6];
 						[rField setText:[network realname]];
