@@ -10,12 +10,11 @@
 
 @implementation RCWelcomeNetwork
 
-- (RCChannel*)addChannel:(NSString *)_chan join:(BOOL)join {
+- (RCChannel *)addChannel:(NSString *)_chan join:(BOOL)join {
 	RCWelcomeChannel *chan = [[RCWelcomeChannel alloc] initWithChannelName:_chan];
 	[chan setDelegate:self];
 	[chan setSuccessfullyJoined:YES];
-    @synchronized(_channels)
-    {
+    @synchronized(_channels) {
         [_channels addObject:chan];
     }
 	[chan release];

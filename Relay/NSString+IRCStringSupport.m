@@ -762,8 +762,6 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
 	NSMutableSet *tags = [[NSMutableSet alloc] init];
 	NSString *tag;
 	do {
-		
-		// Scan up to <
 		tag = nil;
 		[scanner scanUpToString:@"<" intoString:NULL];
 		[scanner scanUpToString:@">" intoString:&tag];

@@ -90,54 +90,55 @@ static BOOL isSetup = NO;
 - (void)configureUI {
 	UINavigationBar *nb = [UINavigationBar appearance];
 	[nb setBackgroundImage:[UIImage imageNamed:@"0_addnav"] forBarMetrics:UIBarMetricsDefault];
-	NSDictionary *formatting = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont boldSystemFontOfSize:11], UITextAttributeFont, UIColorFromRGB(0x929292), UITextAttributeTextColor,
+	NSDictionary *formatting = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont boldSystemFontOfSize:11], UITextAttributeFont, UIColorFromRGB(0x454646), UITextAttributeTextColor,
 								[NSValue valueWithUIOffset:UIOffsetMake(0, 1)], UITextAttributeTextShadowOffset,
 								[UIColor whiteColor], UITextAttributeTextShadowColor, nil];
+	NSDictionary *dFormatting = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont boldSystemFontOfSize:11], UITextAttributeFont, UIColorFromRGB(0x929292), UITextAttributeTextColor,
+								 [NSValue valueWithUIOffset:UIOffsetMake(0, 1)], UITextAttributeTextShadowOffset,
+								 [UIColor whiteColor], UITextAttributeTextShadowColor, nil];
 	UIBarButtonItem *btn = [UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], nil];
 	[btn setTitleTextAttributes:formatting forState:UIControlStateNormal];
+	[btn setTitleTextAttributes:dFormatting forState:UIControlStateDisabled];
 	[btn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
-
+	[btn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_p"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
+	[btn setTitlePositionAdjustment:UIOffsetMake(0, 1) forBarMetrics:UIBarMetricsDefault];
+	[btn setBackButtonBackgroundImage:[[UIImage imageNamed:@"0_navback"] stretchableImageWithLeftCapWidth:15 topCapHeight:15] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+	[btn setBackButtonBackgroundImage:[[UIImage imageNamed:@"0_navback_pressed"] stretchableImageWithLeftCapWidth:15 topCapHeight:15] forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
+	[btn setBackButtonTitlePositionAdjustment:UIOffsetMake(-1, 1) forBarMetrics:UIBarMetricsDefault];
+	[btn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_d"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateNormal style:UIBarButtonItemStyleDone barMetrics:UIBarMetricsDefault];
+	[btn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_dp"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateHighlighted style:UIBarButtonItemStyleDone barMetrics:UIBarMetricsDefault];
+	
+	/*	UIButton *editBtn = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(edit)]
+	 UIButton *editBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 32)];
+	 [editBtn setTitle:@"Done" forState:UIControlStateNormal];
+	 [editBtn setTitleColor:UIColorFromRGB(0xf7f7f7) forState:UIControlStateNormal];
+	 [[editBtn titleLabel] setFont:[UIFont boldSystemFontOfSize:11]];
+	 [editBtn setTitleShadowColor:[UIColor blackColor] forState:UIControlStateNormal];
+	 [[editBtn titleLabel] setShadowOffset:CGSizeMake(0, 1)];
+	 [editBtn addTarget:self action:@selector(edit) forControlEvents:UIControlEventTouchUpInside];
+	 [editBtn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_d"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateNormal];
+	 [editBtn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_dp"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateHighlighted];
+	 UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithCustomView:editBtn];
+	 [self.navigationItem setRightBarButtonItem:edit];
+	 [edit release];
+	 [editBtn release];
+	 
+	 
+	 [editBtn setTitle:@"Edit" forState:UIControlStateNormal];
+	 [editBtn setTitleColor:UIColorFromRGB(0x454646) forState:UIControlStateNormal];
+	 [[editBtn titleLabel] setFont:[UIFont boldSystemFontOfSize:11]];
+	 [editBtn setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
+	 [[editBtn titleLabel] setShadowOffset:CGSizeMake(0, 1)];
+	 [editBtn addTarget:self action:@selector(edit) forControlEvents:UIControlEventTouchUpInside];
+	 [editBtn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateNormal];
+	 [editBtn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_p"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateHighlighted];
+	 UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithCustomView:editBtn];
+	 
+	 */
 }
 
-/*
- UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 55, 30)];
- [btn setTitle:@"Done" forState:UIControlStateNormal];
- [[btn titleLabel] setTextAlignment:UITextAlignmentCenter];
- [btn setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
- [[btn titleLabel] setShadowOffset:CGSizeMake(0, 1)];
- [[btn titleLabel] setFont:[UIFont boldSystemFontOfSize:11]];
- [btn setTitleColor:UIColorFromRGB(0x929292) forState:UIControlStateDisabled];
- [btn setTitleColor:UIColorFromRGB(0x454646) forState:UIControlStateNormal];
- [btn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateNormal];
- [btn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_p"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateHighlighted];
- //	[btn setImage:[UIImage imageNamed:@"0_donebutton_disabled"] forState:UIControlStateDisabled];
- btn.enabled = NO;
- [btn addTarget:self action:@selector(doneConnection) forControlEvents:UIControlEventTouchUpInside];
- UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithCustomView:btn];
- [btn release];
- btn.enabled = !isNew;
- //	[self.navigationItem setRightBarButtonItem:done];
- [done release];
- 
- UIButton *cBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 55, 30)];
- [cBtn setTitle:@"Cancel" forState:UIControlStateNormal];
- [cBtn setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
- [[cBtn titleLabel] setShadowOffset:CGSizeMake(0, 1)];
- [[cBtn titleLabel] setFont:[UIFont boldSystemFontOfSize:11]];
- [cBtn setTitleColor:UIColorFromRGB(0x454646) forState:UIControlStateNormal];
- [cBtn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateNormal];
- [cBtn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_p"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateHighlighted];
- [cBtn addTarget:self action:@selector(doneWithJoin) forControlEvents:UIControlEventTouchUpInside];
- UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithCustomView:cBtn];
- [cBtn release];
- //	[self.navigationItem setLeftBarButtonItem:cancel];
- [cancel release];
- */
-// Do any additional setup after loading the view, typically from a nib.
-
-
-
 - (void)applicationWillResignActive:(UIApplication *)application {
+
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
@@ -162,8 +163,10 @@ static BOOL isSetup = NO;
 - (void)application:(UIApplication *)application willChangeStatusBarFrame:(CGRect)newStatusBarFrame {
 	isDoubleHeight = (newStatusBarFrame.size.height == 40);
 	if (isDoubleHeight) {
+		
 	}
 	else {
+		
 	}
 }
 

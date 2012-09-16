@@ -25,7 +25,7 @@
 	[[UIApplication sharedApplication] registerForRemoteNotificationTypes:UIRemoteNotificationTypeAlert];
 	CGSize screenWidth = [[UIScreen mainScreen] applicationFrame].size;
 	RCNavigator *navigator = [RCNavigator sharedNavigator];
-	[navigator setFrame:CGRectMake(0, 0, 480, screenWidth.height)];
+	[navigator setFrame:CGRectMake(0, 0, 568, screenWidth.height)];
 	[self.view addSubview:navigator];
 	[self.navigationController setNavigationBarHidden:YES];
 }

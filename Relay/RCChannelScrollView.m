@@ -18,11 +18,8 @@
 		shouldDrawBG = YES;
 		[self setOpaque:NO];
 		[self setClearsContextBeforeDrawing:YES];
-		[self setClipsToBounds:YES];
-		[self.layer setMasksToBounds:YES];
 		[self setShowsHorizontalScrollIndicator:NO];
         [self setScrollsToTop:NO];
-        self.delegate = (id<UIScrollViewDelegate>)self;
 	}
 	return self;
 }
@@ -46,10 +43,6 @@
 		nothingLabel.font = [UIFont systemFontOfSize:10];
 		nothingLabel.backgroundColor = [UIColor clearColor];
 		nothingLabel.textColor = [UIColor darkGrayColor];
-		UITapGestureRecognizer *recog = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(wantsToJoinChannel:)];
-		[recog setNumberOfTapsRequired:2];
-		[self addGestureRecognizer:recog];
-		[recog release];
 		[self addSubview:nothingLabel];
 		[nothingLabel release];
 		return;
@@ -60,20 +53,22 @@
 		_chans = [[NSMutableArray alloc] initWithArray:channels];
 		for (RCChannelBubble *bub in _chans) {
 			if ([[bub titleLabel].text isEqualToString:@"IRC"]) {
+				[bub retain];
 				[_chans removeObject:bub];
 				[_chans insertObject:bub atIndex:0];
+				[bub release];
 				break;
 			}
 			else continue;
 		}
 		channels = _chans;
 	}
+	RCChannelBubble *pr = nil;
 	for (RCChannelBubble *bb in channels) {
-		UIView *sub = nil;
-		if ([[self subviews] count] != 0) sub = [[self subviews] objectAtIndex:[[self subviews] count]-1];
-		[bb setFrame:CGRectMake((sub ? sub.frame.size.width+sub.frame.origin.x : 10), 7, bb.frame.size.width, 20)];
+		[bb setFrame:CGRectMake((pr ? pr.frame.size.width+pr.frame.origin.x : 10), 7, bb.frame.size.width, 20)];
 		[self addSubview:bb];
         [bb fixColors];
+		pr = bb;
 	}
 	if (reorder) [channels release];
 	[self fixLayout];
@@ -81,9 +76,7 @@
 
 - (void)fixLayout {
 	if ([[self subviews] count] == 0) return;
-
-	UIView *sub = nil;
-	sub = [[self subviews] objectAtIndex:0];
+	UIView *sub = [[self subviews] objectAtIndex:0];
 	for (UIView *subv in [self subviews]) {
 		if ([subv frame].origin.x > sub.frame.origin.x) sub = subv;
 	}
@@ -93,21 +86,10 @@
 
 - (void)clearBG {
 	[self setNeedsDisplay];
-/* no to self
- when user rotates to landscape
- this is brillaint
- when they rotate back
- it doesn't draw.
- so derp. :P
- */
 }
 
 - (void)drawBG {
 	[self setNeedsDisplay];
-}
-
-- (void)wantsToJoinChannel:(UIGestureRecognizer *)recog {
-	NSLog(@"hai");
 }
 
 - (void)drawRect:(CGRect)rect {

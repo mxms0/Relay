@@ -21,7 +21,6 @@
 			
 		}
 		if ([v isKindOfClass:[UIButton class]]) {
-			NSLog(@"meh hi %@", [v imageForState:UIControlStateNormal]);
 			if ([v tag] == 1) {
 				[v setBackgroundImage:[[UIImage imageNamed:@"0_alertview_c"] stretchableImageWithLeftCapWidth:5 topCapHeight:5] forState:UIControlStateNormal];
 				[v setBackgroundImage:[[UIImage imageNamed:@"0_alertview_p"] stretchableImageWithLeftCapWidth:5 topCapHeight:5] forState:UIControlStateHighlighted];

@@ -18,7 +18,7 @@
 		if (!net) {
 			network = [[RCNetwork alloc] init];
 			isNew = YES;
-			name = [[UIDevice currentDevice] name];
+			name = [[[UIDevice currentDevice] name] retain];
 			int ix = [name length];
 			int px = [name rangeOfString:@" "].location;
 			if (px != NSNotFound)
@@ -66,6 +66,7 @@
 	[cancel release];
 	
 	UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleBordered target:self action:@selector(doneConnection)];
+	[done setEnabled:!isNew];
 	[self.navigationItem setRightBarButtonItem:done];
 	[done release];
 }
@@ -124,7 +125,6 @@
 	else {
 		if ([network isConnected])	[network disconnect];
 	}
-	NSLog(@"HELLO %@", network);
 	if (([network spass] == nil) || [[network spass] isEqualToString:@""]) {
 		[network setSpass:@""];
 	}
@@ -166,7 +166,7 @@
 		case 3:
 			return 4;
 	}
-	return (int)[@"HAXX!!!" intValue];
+	return 0;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
@@ -182,7 +182,7 @@
 		default:
 			break;
 	}
-	return @"  HAXXX !!! ";
+	return @"Error.";
 }
 
 - (void)showStupidWarningsRegardingMichiganUniversity {
@@ -210,6 +210,11 @@
 }
 
 - (BOOL)textField:(RCTextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+	if ([textField tag] == 2) {
+		NSString *fullTxt = [textField text];
+		fullTxt = [fullTxt stringByReplacingCharactersInRange:range withString:string];
+		self.navigationItem.rightBarButtonItem.enabled = ([fullTxt length] > 0);
+	}
     if ([textField tag] == 2 || [textField tag] == 3/* || [textField tag] == 12343*/) {
         if ([string isEqualToString:@" "]) {
             return NO;
@@ -284,11 +289,6 @@
 						if (name) [uField setPlaceholder:name];
 						else {
 							[uField setPlaceholder:DEFAULT_NICK];
-							if ([network nick]) {
-								if ([[network nick] length] < 1)
-									[network setNick:DEFAULT_NICK];
-							}
-							else [network setNick:DEFAULT_NICK];
 						}
 						[uField setTag:4];
 						[uField setText:[network nick]];
@@ -303,11 +303,6 @@
 						if (name) [nField setPlaceholder:name];
 						else {
 							[nField setPlaceholder:DEFAULT_NICK];
-							if ([network nick]) {
-								if ([[network username] length] < 1)
-									[network setUsername:DEFAULT_NICK];
-							}
-							else [network setUsername:DEFAULT_NICK];
 						}
 						[nField setTag:5];
 						[nField setText:[network username]];
@@ -322,7 +317,9 @@
 						NSString *_name = [[UIDevice currentDevice] name];
 						if (_name && ![_name isEqualToString:@""]) {
 							[rField setPlaceholder:_name];
-							[network setRealname:_name];
+						}
+						else {
+							[rField setPlaceholder:DEFAULT_NICK];
 						}
 						[rField setTag:6];
 						[rField setText:[network realname]];
@@ -404,6 +401,7 @@
 }
 
 - (void)dealloc {
+	[name release];
 	[super dealloc];
 }
 

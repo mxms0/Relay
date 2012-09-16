@@ -235,14 +235,11 @@ if (range.location != NSNotFound) {\
 }\
 }\
 
-- (void)changeNick:(NSString*)old toNick:(NSString*)new_
-{
-    if (new_)
-    {
+- (void)changeNick:(NSString *)old toNick:(NSString *)new_ {
+    if (new_) {
         NSString* full_old = [self nickAndRankForNick:old];
         NSString* old_rank = RCUserRank(full_old, [self delegate]);
-        if (old && full_old)
-        {
+        if (old && full_old) {
 			if (!old_rank) old_rank = @"";
             [self setUserLeft:old];
             [self recievedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" type:RCMessageTypeNormalE];
@@ -250,6 +247,7 @@ if (range.location != NSNotFound) {\
         }
     }
 }
+
 - (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type {
     NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSString *msg = @"";
@@ -267,8 +265,8 @@ if (range.location != NSNotFound) {\
 		time = [time substringToIndex:time.length-1];
 	switch (type) {
 		case RCMessageTypeKick: {
-            NSString* mesg = [(NSArray*)message objectAtIndex:1];
-            NSString* whog = [(NSArray*)message objectAtIndex:0];
+            NSString* mesg = [(NSArray *)message objectAtIndex:1];
+            NSString* whog = [(NSArray *)message objectAtIndex:0];
             if ([mesg isKindOfClass:[NSString class]]) {
                 mesg = [mesg stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
                 mesg = [mesg stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
@@ -303,7 +301,10 @@ if (range.location != NSNotFound) {\
 			msg = [[NSString stringWithFormat:@"%c[%@]%c %@", RCIRCAttributeBold, time, RCIRCAttributeBold, message] retain];
 			break;
 		case RCMessageTypeTopic:
-            if ([topic isEqualToString:message]) return;
+            if ([topic isEqualToString:message]) {
+				[p drain];
+				return;
+			}
             self.topic = message;
 			if (from) msg = [[NSString stringWithFormat:@"%c%@%c changed the topic to: %@", RCIRCAttributeBold, from, RCIRCAttributeBold, message] retain];
 			else msg = [message retain];
@@ -319,6 +320,7 @@ if (range.location != NSNotFound) {\
 				}
 			}
 			else {
+				[p drain];
 				return;
 			}
 			break;
@@ -368,7 +370,7 @@ if (range.location != NSNotFound) {\
 	[p drain];
 }
 
-- (BOOL)isUserInChannel:(NSString*)user {
+- (BOOL)isUserInChannel:(NSString *)user {
     NSString *rnka = RCUserRank(user, [self delegate]);
     user = [user substringFromIndex:[rnka length]];
     for (NSString* nickn in fullUserList) {

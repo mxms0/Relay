@@ -17,17 +17,15 @@
 
 @synthesize prefix, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _bubbles, _nicknames, shouldRequestSPass, shouldRequestNPass, namesCallback, currentChannel;
 
-- (RCChannel*) consoleChannel
-{
-    @synchronized(_channels)
-    {
-        for (RCChannel* chan in _channels) {
-            if ([[chan channelName] isEqualToString:@"IRC"]) {
-                return chan;
-            }
-        }
-        return nil;
-    }
+- (RCChannel *)consoleChannel {
+    @synchronized(_channels) {
+		for (RCChannel *chan in _channels) {
+			if ([[chan channelName] isEqualToString:@"IRC"]) {
+				return chan;
+			}
+		}
+		return nil;
+	}
 }
 
 - (id)init {
@@ -52,12 +50,16 @@
 - (id)infoDictionary {
 	NSMutableArray *chanArray = [[NSMutableArray alloc] init];
 	for (RCChannel *chan in _channels) {
-		NSDictionary *dict = [[NSDictionary alloc] initWithObjectsAndKeys:
+		if ([chan isKindOfClass:[RCChannel class]] || [chan isKindOfClass:[RCConsoleChannel class]]) {
+			// RCConsoleChannel check isn't really necesasry as it will be added as a new channel-
+			// if it does not exist on launch. I guess if i add it, it skips one step later on.
+			NSDictionary *dict = [[NSDictionary alloc] initWithObjectsAndKeys:
 							  [chan channelName], CHANNAMEKEY,
 							  ([chan joinOnConnect] ? (id)kCFBooleanTrue : (id)kCFBooleanFalse), @"0_CHANJOC",
 							  ([[chan password] length] > 0 ? (id)kCFBooleanTrue : (id)kCFBooleanFalse), @"0_CHANPASS", nil];
-		[chanArray addObject:dict];
-		[dict autorelease];
+			[chanArray addObject:dict];
+			[dict autorelease];
+		}
 	}
 	[chanArray autorelease];
 	return [NSDictionary dictionaryWithObjectsAndKeys:
@@ -152,8 +154,7 @@
         if ([_chan hasPrefix:@" "]) {
             _chan = [_chan stringByReplacingOccurrencesOfString:@" " withString:@""];
         }
-        for (RCChannel *aChan in _channels)
-        {
+        for (RCChannel *aChan in _channels) {
             if ([[[aChan channelName] lowercaseString] isEqualToString:[_chan lowercaseString]]) return aChan;
         }
         if (![self channelWithChannelName:_chan ifNilCreate:NO]) {
@@ -283,8 +284,9 @@
 				pbytes = kbytes;
 				if (pbytes - dbytes) {
 					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-					kbytes ++;
-					NSString* message = [[[[[NSString alloc] initWithBytes:(uint8_t*)lbuf+dbytes length:pbytes-dbytes encoding:NSUTF8StringEncoding] autorelease] stringByReplacingOccurrencesOfString:@"\n" withString:@""] stringByReplacingOccurrencesOfString:@"\r" withString:@""];
+					kbytes++;
+					NSString *
+					message = [[[[[NSString alloc] initWithBytes:(uint8_t*)lbuf+dbytes length:pbytes-dbytes encoding:NSUTF8StringEncoding] autorelease] stringByReplacingOccurrencesOfString:@"\n" withString:@""] stringByReplacingOccurrencesOfString:@"\r" withString:@""];
 					dbytes = kbytes;
 					[self recievedMessage:message];
 					[pool drain];
@@ -293,7 +295,7 @@
             }
 			else {
 			omg:
-				kbytes ++;
+				kbytes++;
 			}
 		}
 		cached = (kbytes) - dbytes;
@@ -452,7 +454,7 @@ SSL_CTX *RCInitContext(void) {
 
 char *RCIPForURL(NSString *URL) {
 	char *hostname = (char *)[URL UTF8String];
-	struct addrinfo hints, *res;
+	struct addrinfo hints, *res; // leaks says this is leaking. :C
 	struct in_addr addr;
 	int err;
 	memset(&hints, 0, sizeof(hints));
@@ -523,8 +525,7 @@ char *RCIPForURL(NSString *URL) {
 		NSLog(@"Errorz. %@:%@", msg, server);
 		NSString *error = [msg substringWithRange:NSMakeRange(5, [msg length]-5)];
 		if ([error hasPrefix:@" :"]) error = [error substringFromIndex:2];
-        @synchronized(self)
-        {
+        @synchronized(self) {
             RCChannel *chan = [self consoleChannel];
             [chan recievedMessage:error from:@"" type:RCMessageTypeNormal];
         }
@@ -560,7 +561,7 @@ char *RCIPForURL(NSString *URL) {
     return @"Relay 1.0"; // TODO: return something else if user wants to
 }
 
-- (BOOL)disconnectWithMessage:(NSString*)msg {
+- (BOOL)disconnectWithMessage:(NSString *)msg {
     if (_isDiconnecting) return NO;
 	_isDiconnecting = YES;
 	if (status == RCSocketStatusClosed) return NO;
@@ -572,7 +573,6 @@ char *RCIPForURL(NSString *URL) {
 		close(sockfd);
 		if (useSSL)
 			SSL_CTX_free(ctx);
-		// freeing ssl causes crash. need to fix.
 		[[UIApplication sharedApplication] endBackgroundTask:task];
 		task = UIBackgroundTaskInvalid;
 		status = RCSocketStatusClosed;
@@ -818,8 +818,7 @@ char *RCIPForURL(NSString *URL) {
     NSLog(@"kay %@ %@ %@", raw, chan, mesg);
 }
 
-- (void)handle474:(NSString *)args
-{
+- (void)handle474:(NSString *)args {
     if ([args hasPrefix:@":"]) {
         args = [args substringFromIndex:[args rangeOfString:@" "].location+1];
     }
@@ -844,29 +843,28 @@ char *RCIPForURL(NSString *URL) {
     NSLog(@"kay %@ %@ %@", raw, chan, mesg);
 }
 
-- (void)handle473:(NSString *)args
-{
-    if ([args hasPrefix:@":"]) {
-        args = [args substringFromIndex:[args rangeOfString:@" "].location+1];
-    }
-    NSScanner *scanner = [NSScanner scannerWithString:args];
-    NSString* raw = @"";
-    NSString* mnick = @"";
-    NSString* chan = @"";
-    NSString* mesg = @"";
-    [scanner scanUpToString:@" " intoString:&raw];
-    if (![raw isEqualToString:@"473"]) {
-        return;
-    }
-    [scanner scanUpToString:@" " intoString:&mnick];
-    [scanner scanUpToString:@" " intoString:&chan];
-    [scanner scanUpToString:@"" intoString:&mesg];
-    if ([mesg hasPrefix:@":"]) {
-        mesg = [mesg substringFromIndex:1];
-    }
-    RCChannel *kchan = [self channelWithChannelName:chan];
+- (void)handle473:(NSString *)args {
+	if ([args hasPrefix:@":"]) {
+		args = [args substringFromIndex:[args rangeOfString:@" "].location+1];
+	}
+	NSScanner *scanner = [NSScanner scannerWithString:args];
+	NSString* raw = @"";
+	NSString* mnick = @"";
+	NSString* chan = @"";
+	NSString* mesg = @"";
+	[scanner scanUpToString:@" " intoString:&raw];
+	if (![raw isEqualToString:@"473"]) {
+		return;
+	} // really not necessary.
+	[scanner scanUpToString:@" " intoString:&mnick];
+	[scanner scanUpToString:@" " intoString:&chan];
+	[scanner scanUpToString:@"" intoString:&mesg];
+	if ([mesg hasPrefix:@":"]) {
+		mesg = [mesg substringFromIndex:1];
+	}
+	RCChannel *kchan = [self channelWithChannelName:chan];
 	if (kchan) [kchan recievedMessage:mesg from:@"" type:RCMessageTypeError];
-    else [[self consoleChannel] recievedMessage:[args substringFromIndex:[[args substringFromIndex:[args rangeOfString:@" "].location+1] rangeOfString:@" "].location+1] from:@"" type:RCMessageTypeNormal];
+	else [[self consoleChannel] recievedMessage:[args substringFromIndex:[[args substringFromIndex:[args rangeOfString:@" "].location+1] rangeOfString:@" "].location+1] from:@"" type:RCMessageTypeNormal];
     NSLog(@"kay %@ %@ %@", raw, chan, mesg);
 }
 

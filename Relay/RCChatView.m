@@ -71,6 +71,8 @@ NSString *colorForIRCColor(char irccolor) {
 
 - (BOOL)webView:(UIWebView *)webView2 shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
 	NSString *requestString = [[request URL] absoluteString];
+	if ([requestString isEqualToString:@"file:///"])
+		return YES;
     if ([requestString hasPrefix:@"link:"]) {
         NSLog(@"should open link: %@", [requestString substringFromIndex:[@"link:" length]]);
         NSString *escaped = [[requestString substringFromIndex:[@"link:" length]] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
@@ -101,8 +103,9 @@ NSString *colorForIRCColor(char irccolor) {
 		return;\
 	}\
 	cstr = [NSString stringWithFormat:@"addToMessage('%@','%@','%@','%@','%@','%@','%@', '%@', '%d');", name, isBold ? @"YES" : @"NO", isUnderline ? @"YES" : @"NO", isItalic ? @"YES" : @"NO", bgcolor, fgcolor, [istring substringWithRange:NSMakeRange(lpos, cpos-lpos)], nDepth ? @"YES" : @"NO", nickcolor]; \
-	if (![[self stringByEvaluatingJavaScriptFromString:cstr] isEqualToString:@"SUCCESS"]) { \
-		NSLog(@"Could not exec: %@", cstr); \
+	NSString *rep = [self stringByEvaluatingJavaScriptFromString:cstr];\
+	if (![rep isEqualToString:@"SUCCESS"]) {\
+		NSLog(@"Could not exec: %@:%@", cstr, rep); \
 	} else if ([ms  shouldColor]) {\
 		if([(RCChannel*)[[self chatpanel] channel] isPrivate]) \
 			[[(RCChannel*)[[self chatpanel] channel] bubble] setMentioned:YES];\
@@ -128,6 +131,7 @@ NSString *colorForIRCColor(char irccolor) {
 _out_:
 	@synchronized(self) {
 		if (preloadPool) {
+			NSLog(@"ADDING TO POOL");
 			[preloadPool addObject:ms];
 			return;
 		}
@@ -161,19 +165,21 @@ _out_:
 					isBold = !isBold;
 					lpos = cpos;
 					break;
-				case RCIRCAttributeItalic:;;
+				case RCIRCAttributeItalic: {
 					RENDER_WITH_OPTS;
 					cpos++;
 					isItalic = !isItalic;
 					lpos = cpos;
 					break;
-				case RCIRCAttributeUnderline:;;
+				}
+				case RCIRCAttributeUnderline: {
 					RENDER_WITH_OPTS;
 					cpos++;
 					isUnderline = !isUnderline;
 					lpos = cpos;
 					break;
-				case RCIRCAttributeReset:;;
+				}
+				case RCIRCAttributeReset: {
 					RENDER_WITH_OPTS;
 					cpos++;
 					fgcolor = colorForIRCColor(-1);
@@ -183,7 +189,8 @@ _out_:
 					isUnderline = NO;
 					lpos = cpos;
 					break;
-				case RCIRCAttributeColor:;;
+				}
+				case RCIRCAttributeColor: {
 					RENDER_WITH_OPTS;
 					cpos++;
 					int number1 = -1;
@@ -201,7 +208,8 @@ _out_:
 					bgcolor = colorForIRCColor(number2);
 					lpos = cpos;
 					break;
-                case RCIRCAttributeInternalNickname:;;
+				}
+                case RCIRCAttributeInternalNickname: {
 					RENDER_WITH_OPTS;
 					cpos++;
 					nDepth++;
@@ -214,7 +222,8 @@ _out_:
 						lpos = cpos;
                     }
                     break;
-                case RCIRCAttributeInternalNicknameEnd:;;
+				}
+                case RCIRCAttributeInternalNicknameEnd: {
 					RENDER_WITH_OPTS;
 					cpos++;
 					if (nDepth) {
@@ -222,7 +231,7 @@ _out_:
 					}
                     lpos = cpos;
                     break;
-                    
+				}
 				default:
 					cpos++;
 					continue;

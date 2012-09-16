@@ -129,10 +129,7 @@
 }
 
 - (CGRect)frameForInputField:(BOOL)activ {
-	if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
-		return CGRectMake(0, (activ ? 66 : 227), 480, 40);
-	}
-	return CGRectMake(0, (activ ? 127 : 345), 320, 40);
+	return [[RCNavigator sharedNavigator] frameForInputField:activ];
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {

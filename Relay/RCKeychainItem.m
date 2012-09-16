@@ -51,4 +51,10 @@
 	SecItemDelete((CFDictionaryRef)dict);
 }
 
+- (void)dealloc {
+	[base release];
+	[super dealloc];
+	
+}
+
 @end

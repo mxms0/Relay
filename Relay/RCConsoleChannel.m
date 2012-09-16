@@ -19,8 +19,7 @@
     return self;
 }
 
-- (BOOL)joined
-{
+- (BOOL)joined {
     return YES;
 }
 
@@ -62,6 +61,9 @@
 	}
 	else if (type == RCMessageTypeNotice) {
         msg = [[NSString stringWithFormat:@"%c[%@] -%@-%c %@", RCIRCAttributeBold, time, from, RCIRCAttributeBold, message] retain];
+	}
+	else if (type == RCMessageTypeJoin) {
+		msg = [@"iPhone joined the channel." retain];
 	}
 	else {
 		[super recievedMessage:message from:from type:type];

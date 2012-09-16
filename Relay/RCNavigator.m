@@ -9,6 +9,7 @@
 #import "RCNavigator.h"
 #import "RCNetworkManager.h"
 #import "RCAddNetworkController.h"
+#import "RCLargeNavigator.h"
 
 @implementation RCNavigator
 @synthesize currentPanel, memberPanel, _isLandscape, titleLabel, currentNetwork, cover, nWindow;
@@ -49,6 +50,8 @@ static id _sharedNavigator = nil;
 		[self addSubview:bar];
         plus = [[RCBarButton alloc] initWithFrame:[self frameForPlusButton]];
         listr = [[RCBarButton alloc] initWithFrame:[self frameForListButton]];
+		plus.exclusiveTouch = YES;
+		listr.exclusiveTouch = YES;
         [plus setTitle:@"+" forState:UIControlStateNormal];
 		[plus setImage:[UIImage imageNamed:@"0_plusbtn"] forState:UIControlStateNormal];
 		[plus setImage:[UIImage imageNamed:@"0_plusbtn_pressed"] forState:UIControlStateHighlighted];
@@ -133,6 +136,12 @@ static id _sharedNavigator = nil;
         currentPanel = nil;
     }
 	isFirstSetup = ([net isKindOfClass:[RCWelcomeNetwork class]]);
+	if (isFirstSetup) {
+		[listr setEnabled:NO];
+	}
+	else {
+		[listr setEnabled:YES];
+	}
 	if (titleLabel.text == nil || ([titleLabel.text isEqualToString:@""])) {
 		[titleLabel setText:[net _description]];
 		currentNetwork = net;
@@ -351,7 +360,7 @@ static RCChannelBubble *questionabubble = nil;
 	}
 	if (currentPanel) {
 		if ([[[currentPanel channel] bubble] isEqual:bubble]) {
-			if (![[bubble channel] isKindOfClass:[RCConsoleChannel class]])
+			if (![[bubble channel] isKindOfClass:[RCConsoleChannel class]] && ![[bubble channel] isKindOfClass:[RCWelcomeChannel class]])
 				[self displayOptionsForChannel:bubble];
 			return;
 		}
@@ -377,7 +386,13 @@ static RCChannelBubble *questionabubble = nil;
 }
 
 + (id)sharedNavigator {
-	if (!_sharedNavigator) _sharedNavigator = [[self alloc] init];
+	if (!_sharedNavigator) {
+		CGRect ff = [[UIScreen mainScreen] applicationFrame];
+		if (ff.size.height > 480) {
+			_sharedNavigator = [[RCLargeNavigator alloc] init];
+		}
+		else _sharedNavigator = [[self alloc] init];
+	}
 	return _sharedNavigator;
 }
 
@@ -467,6 +482,13 @@ static RCChannelBubble *questionabubble = nil;
 	if (_isLandscape)
 		return CGRectMake(197, 2, 40, 30);
     return CGRectMake(275, 5, 40, 35);
+}
+
+- (CGRect)frameForInputField:(BOOL)activ {
+	if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
+		return CGRectMake(0, (activ ? 66 : 227), 480, 40);
+	}
+	return CGRectMake(0, (activ ? 127 : 345), 320, 40);
 }
 
 - (void)dealloc {

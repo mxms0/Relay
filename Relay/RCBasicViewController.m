@@ -56,7 +56,7 @@
 }
 
 - (NSString *)titleText {
-	return @"HAIRLYLONGSTRINGHERE HAI";
+	return @"An error occured.";
 }
 
 - (void)viewDidLoad {
@@ -73,34 +73,16 @@
 }
 
 - (void)setupDoneButton {
-	UIButton *editBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 32)];
-	[editBtn setTitle:@"Done" forState:UIControlStateNormal];
-	[editBtn setTitleColor:UIColorFromRGB(0xf7f7f7) forState:UIControlStateNormal];
-	[[editBtn titleLabel] setFont:[UIFont boldSystemFontOfSize:11]];
-	[editBtn setTitleShadowColor:[UIColor blackColor] forState:UIControlStateNormal];
-	[[editBtn titleLabel] setShadowOffset:CGSizeMake(0, 1)];
-	[editBtn addTarget:self action:@selector(edit) forControlEvents:UIControlEventTouchUpInside];
-	[editBtn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_d"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateNormal];
-	[editBtn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_dp"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateHighlighted];
-	UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithCustomView:editBtn];
-	[self.navigationItem setRightBarButtonItem:edit];
-	[edit release];
-	[editBtn release];
+	UIBarButtonItem *doneBtn = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(edit)];
+	[doneBtn setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:UIColorFromRGB(0xf7f7f7), UITextAttributeTextColor, [UIFont boldSystemFontOfSize:11],UITextAttributeFont, (CGSize){0,1},UITextAttributeTextShadowOffset, nil] forState:UIControlStateNormal];	
+	[doneBtn setTitlePositionAdjustment:UIOffsetMake(0, 0.5) forBarMetrics:UIBarMetricsDefault];
+	[self.navigationItem setRightBarButtonItem:doneBtn];
+	[doneBtn release];
 }
 
 - (void)setupEditButton {
-	UIButton *editBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 32)];
-	[editBtn setTitle:@"Edit" forState:UIControlStateNormal];
-	[editBtn setTitleColor:UIColorFromRGB(0x454646) forState:UIControlStateNormal];
-	[[editBtn titleLabel] setFont:[UIFont boldSystemFontOfSize:11]];
-	[editBtn setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
-	[[editBtn titleLabel] setShadowOffset:CGSizeMake(0, 1)];
-	[editBtn addTarget:self action:@selector(edit) forControlEvents:UIControlEventTouchUpInside];
-	[editBtn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateNormal];
-	[editBtn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_p"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateHighlighted];
-	UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithCustomView:editBtn];
-	[self.navigationItem setRightBarButtonItem:edit];
-	[edit release];
+	UIBarButtonItem *editBtn = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStyleBordered target:self action:@selector(edit)];
+	[self.navigationItem setRightBarButtonItem:editBtn];
 	[editBtn release];
 }
 

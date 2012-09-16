@@ -18,7 +18,7 @@
 		net = _net;
 		[self setOriginalChannel:_chan];
 		[self setChannel:_chan]; // botched.
-		jOC = NO;
+		jOC = YES; // should be default ;P
 		if ((channel != nil) && ![channel isEqualToString:@""]) {
 			jOC = [[net channelWithChannelName:channel] joinOnConnect];
 			RCKeychainItem *item = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@%@rpass", [_net _description], channel]];
