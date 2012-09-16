@@ -105,36 +105,7 @@ static BOOL isSetup = NO;
 	[btn setBackButtonBackgroundImage:[[UIImage imageNamed:@"0_navback"] stretchableImageWithLeftCapWidth:15 topCapHeight:15] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
 	[btn setBackButtonBackgroundImage:[[UIImage imageNamed:@"0_navback_pressed"] stretchableImageWithLeftCapWidth:15 topCapHeight:15] forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
 	[btn setBackButtonTitlePositionAdjustment:UIOffsetMake(-1, 1) forBarMetrics:UIBarMetricsDefault];
-	[btn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_d"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateNormal style:UIBarButtonItemStyleDone barMetrics:UIBarMetricsDefault];
-	[btn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_dp"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateHighlighted style:UIBarButtonItemStyleDone barMetrics:UIBarMetricsDefault];
-	
-	/*	UIButton *editBtn = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(edit)]
-	 UIButton *editBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 32)];
-	 [editBtn setTitle:@"Done" forState:UIControlStateNormal];
-	 [editBtn setTitleColor:UIColorFromRGB(0xf7f7f7) forState:UIControlStateNormal];
-	 [[editBtn titleLabel] setFont:[UIFont boldSystemFontOfSize:11]];
-	 [editBtn setTitleShadowColor:[UIColor blackColor] forState:UIControlStateNormal];
-	 [[editBtn titleLabel] setShadowOffset:CGSizeMake(0, 1)];
-	 [editBtn addTarget:self action:@selector(edit) forControlEvents:UIControlEventTouchUpInside];
-	 [editBtn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_d"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateNormal];
-	 [editBtn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_dp"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateHighlighted];
-	 UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithCustomView:editBtn];
-	 [self.navigationItem setRightBarButtonItem:edit];
-	 [edit release];
-	 [editBtn release];
-	 
-	 
-	 [editBtn setTitle:@"Edit" forState:UIControlStateNormal];
-	 [editBtn setTitleColor:UIColorFromRGB(0x454646) forState:UIControlStateNormal];
-	 [[editBtn titleLabel] setFont:[UIFont boldSystemFontOfSize:11]];
-	 [editBtn setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
-	 [[editBtn titleLabel] setShadowOffset:CGSizeMake(0, 1)];
-	 [editBtn addTarget:self action:@selector(edit) forControlEvents:UIControlEventTouchUpInside];
-	 [editBtn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateNormal];
-	 [editBtn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_p"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateHighlighted];
-	 UIBarButtonItem *edit = [[UIBarButtonItem alloc] initWithCustomView:editBtn];
-	 
-	 */
+
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
