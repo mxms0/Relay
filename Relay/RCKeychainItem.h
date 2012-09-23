@@ -3,7 +3,7 @@
 //  Relay
 //
 //  Created by Max Shavrick on 1/13/12.
-//	This codd is based on apple's GenericKeychain example.
+//	This code is based on apple's GenericKeychain example.
 //	i don't think above çovers me legally. :P
 
 #import <UIKit/UIKit.h>

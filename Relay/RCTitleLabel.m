@@ -3,7 +3,6 @@
 //  Relay
 //
 //  Created by Max Shavrick on 2/25/12.
-//  Copyright (c) 2012 American Heritage School. All rights reserved.
 //
 
 #import "RCTitleLabel.h"
@@ -24,15 +23,5 @@
     }
     return self;
 }
-
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
-}
-*/
 
 @end

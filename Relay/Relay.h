@@ -5,8 +5,7 @@
 //  Created by Maximus on 1/16/12.
 //
 
-static inline void NOLog(NSString* a, ...)
-{
+static inline void NOLog(NSString* a, ...) {
     
 }
 

@@ -3,7 +3,6 @@
 //  Relay
 //
 //  Created by David Murray on 12-07-10.
-//  Copyright (c) 2012 American Heritage School. All rights reserved.
 //
 
 #import "RCBasicViewController.h"

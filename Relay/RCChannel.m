@@ -207,8 +207,7 @@ char user_hash(NSString *from) {
 	return uhash % 0xFF;
 }
 
-#define MSG_HIGHLIGHT_CHECK(name) \
-{\
+#define MSG_HIGHLIGHT_CHECK(name) {\
 for (NSString* uname  in [fullUserList  sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {if ([obj1 length] > [obj2 length]) {return NSOrderedAscending;} else if ([obj1 length] < [obj2 length]) {return NSOrderedDescending;}return NSOrderedSame;}]) {\
 NSString *cmp = message; \
 int index = 0;\
@@ -373,9 +372,9 @@ if (range.location != NSNotFound) {\
 - (BOOL)isUserInChannel:(NSString *)user {
     NSString *rnka = RCUserRank(user, [self delegate]);
     user = [user substringFromIndex:[rnka length]];
-    for (NSString* nickn in fullUserList) {
-        NSString* rnk = RCUserRank(nickn, [self delegate]);
-        NSString* rln = [nickn substringFromIndex:[rnk length]];
+    for (NSString *nickn in fullUserList) {
+        NSString *rnk = RCUserRank(nickn, [self delegate]);
+        NSString *rln = [nickn substringFromIndex:[rnk length]];
         if ([rln isEqualToString:user]) {
             return YES;
         }
@@ -505,9 +504,9 @@ partialLen = [modes substringWithRange:NSMakeRange(stptr, endptr-stptr)];\
 for (int a = 0; a < [partialLen length]; a++) { \
 if (adding) {\
     NSString* rankf = [[[delegate prefix] objectForKey:[partialLen substringWithRange:NSMakeRange(a, 1)]] objectAtIndex:1];if(rankf){\
-		NSString* full_user = [self nickAndRankForNick:[users objectAtIndex:modecnt]]; NSString* or = RCUserRank(full_user,[self delegate]);\
-		NSString* nnr = NICK_NO_RANK(full_user, [self delegate]);\
-		NSArray * current = [userRanksAdv objectForKey:nnr];   \
+		NSString *full_user = [self nickAndRankForNick:[users objectAtIndex:modecnt]]; NSString* or = RCUserRank(full_user,[self delegate]);\
+		NSString *nnr = NICK_NO_RANK(full_user, [self delegate]);\
+		NSArray *current = [userRanksAdv objectForKey:nnr];   \
 		if (!current) current = [[NSArray new] autorelease]; \
 		current = [current arrayByAddingObject:rankf];\
 		[userRanksAdv setObject:current forKey:nnr];\

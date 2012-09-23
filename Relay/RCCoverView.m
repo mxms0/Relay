@@ -3,7 +3,6 @@
 //  Relay
 //
 //  Created by Max Shavrick on 8/23/12.
-//  Copyright (c) 2012 American Heritage School. All rights reserved.
 //
 
 #import "RCCoverView.h"
@@ -123,6 +122,7 @@
 }
 
 - (void)show {
+	self.hidden = NO;
 	self.alpha = 0;
 	[UIView animateWithDuration:0.25 animations:^{
 		self.alpha = 1;
@@ -131,6 +131,7 @@
 
 - (void)hide {
 	[UIView animateWithDuration:0.25 animations:^{
+		arrow.hidden = YES;
 		self.alpha = 0;
 	} completion:^(BOOL fin) {
 		if (fin) {
