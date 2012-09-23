@@ -30,7 +30,6 @@ static BOOL isSetup = NO;
 	@autoreleasepool {
 		[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
 	}
-
 	/*
     const char *cString = [[[NSBundle mainBundle] pathForResource:@"overdrive" ofType:@"dylib"] UTF8String];
     int ret = -1;
@@ -66,24 +65,26 @@ static BOOL isSetup = NO;
 	[rcv release];
 	self.window.rootViewController = self.navigationController;
     [self.window makeKeyAndVisible];
-	[self configureUI];
-	if (!isSetup) {
-		NSFileManager *manager = [NSFileManager defaultManager];
-		NSString *path = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingString:PREFS_PLIST];
-		[[NSUserDefaults standardUserDefaults] setObject:path forKey:PREFS_PLIST];
-		[[NSUserDefaults standardUserDefaults] synchronize];
-		if (![manager fileExistsAtPath:PREFS_ABSOLUT]) {
-			if (![manager createFileAtPath:PREFS_ABSOLUT contents:(NSData *)[NSDictionary dictionary] attributes:NULL]) {
-				NSLog(@"fucked.");
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[self configureUI];
+		if (!isSetup) {
+			NSFileManager *manager = [NSFileManager defaultManager];
+			NSString *path = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingString:PREFS_PLIST];
+			[[NSUserDefaults standardUserDefaults] setObject:path forKey:PREFS_PLIST];
+			[[NSUserDefaults standardUserDefaults] synchronize];
+			if (![manager fileExistsAtPath:PREFS_ABSOLUT]) {
+				if (![manager createFileAtPath:PREFS_ABSOLUT contents:(NSData *)[NSDictionary dictionary] attributes:NULL]) {
+					NSLog(@"fucked.");
 			// fucked.
+				}
 			}
+			[[RCNetworkManager sharedNetworkManager] setIsBG:NO];
+			[[RCNetworkManager sharedNetworkManager] unpack];
+			isSetup = YES;
+			[TestFlight takeOff:@"35b8aa0d259ae0c61c57bc770aeafe63_Mzk5NDYyMDExLTExLTA5IDE4OjQ0OjEwLjc4MTM3MQ"];
+			[TestFlight setDeviceIdentifier:[[UIDevice currentDevice] uniqueIdentifier]];
 		}
-		[[RCNetworkManager sharedNetworkManager] setIsBG:NO];
-		[[RCNetworkManager sharedNetworkManager] unpack];
-		isSetup = YES;
-		[TestFlight takeOff:@"35b8aa0d259ae0c61c57bc770aeafe63_Mzk5NDYyMDExLTExLTA5IDE4OjQ0OjEwLjc4MTM3MQ"];
-		[TestFlight setDeviceIdentifier:[[UIDevice currentDevice] uniqueIdentifier]];
-	}
+	});
 	return YES;
 }
 
@@ -113,11 +114,25 @@ static BOOL isSetup = NO;
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
+	NSLog(@"Meh %f", [UIApp backgroundTimeRemaining]);
+	double ttime = [UIApp backgroundTimeRemaining];
+	if (ttime > 60.00)
+		ttime -= 60.00;
+	[self performSelector:@selector(showExpirationWarning) withObject:nil afterDelay:ttime];
 	[[RCNetworkManager sharedNetworkManager] setIsBG:YES];
 	/*
 	 Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
 	 If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 	 */
+}
+
+- (void)showExpirationWarning {
+	UILocalNotification *nb = [[UILocalNotification alloc] init];
+	[nb setAlertAction:@"Open"];
+	[nb setAlertBody:@"You will be disconnected in less than a minute due to inactivity."];
+	[UIApp presentLocalNotificationNow:nb];
+	[nb release];
+	
 }
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
@@ -142,7 +157,7 @@ static BOOL isSetup = NO;
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-
+	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(showExpirationWarning) object:nil];
 	[[RCNetworkManager sharedNetworkManager] setIsBG:NO];
 	[[UIApplication sharedApplication] cancelAllLocalNotifications];
 	/*

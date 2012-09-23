@@ -59,10 +59,6 @@
     [mainView scrollToBottom];
 }
 
-- (void)suggestNick:(UIGestureRecognizer *)gestr {
-	prev = [channel userWithPrefix:currentWord pastUser:prev];
-}
-
 - (void)setFrame:(CGRect)frame {
 	[_bar setFrame:CGRectMake(0, frame.size.height, frame.size.width, 40)];
 	[self repositionKeyboardForUse:[field isFirstResponder] animated:NO];

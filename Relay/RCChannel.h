@@ -53,8 +53,7 @@
 - (BOOL)joined;
 - (NSMutableArray *)usersMatchingWord:(NSString *)word;
 - (void)parseAndHandleSlashCommand:(NSString *)cmd;
-- (void)setMyselfParted;	
-- (NSString *)userWithPrefix:(NSString *)prefix pastUser:(NSString *)user;
+- (void)setMyselfParted;
 - (BOOL)isUserInChannel:(NSString*)user;
 - (void)setSuccessfullyJoined:(BOOL)success;
 - (BOOL)isPrivate;
