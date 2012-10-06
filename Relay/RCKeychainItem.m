@@ -42,7 +42,6 @@
 		[base removeObjectForKey:(id)kSecValueData];
 		NSMutableDictionary *tmp = [NSMutableDictionary dictionaryWithObjectsAndKeys:pd, (id)kSecValueData, nil];
 		SecItemUpdate((CFDictionaryRef)base, (CFDictionaryRef)tmp);
-		
 	}
 }
 

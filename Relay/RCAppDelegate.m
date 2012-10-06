@@ -17,7 +17,6 @@
 @implementation RCAppDelegate
 
 @synthesize window = _window, navigationController = _navigationController, isDoubleHeight;
-
 static BOOL isSetup = NO;
 
 - (void)dealloc {
@@ -30,6 +29,7 @@ static BOOL isSetup = NO;
 	@autoreleasepool {
 		[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
 	}
+
 	/*
     const char *cString = [[[NSBundle mainBundle] pathForResource:@"overdrive" ofType:@"dylib"] UTF8String];
     int ret = -1;
@@ -49,7 +49,7 @@ static BOOL isSetup = NO;
 #endif
     NSLog(ret == 0 ? @"overdrive detected" : @"overdrive not found");
 	 */
-    // nice DRM i won't be using. 
+	// nice DRM i won't be using. 
 	// thanks a lot nighthawk.
 	
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];

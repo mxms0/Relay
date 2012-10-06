@@ -101,8 +101,8 @@
 
 - (CGRect)frameForMemberPanel {
 	if (_isLandscape)
-		return CGRectMake(0, 32, 480, 268);
-	return CGRectMake(0, 77, 320, 383);
+		return CGRectMake(0, 32, 568, 268);
+	return CGRectMake(0, 77, 320, 471);
 }
 
 - (CGRect)frameForListButton {
