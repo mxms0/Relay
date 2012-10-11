@@ -47,9 +47,6 @@
 		[field release];
 		[self addSubview:_bar];
 		[_bar release];
-		UISwipeGestureRecognizer *gesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(suggestNick:)];
-		[field addGestureRecognizer:gesture];
-		[gesture release];
     }
     return self;
 }
