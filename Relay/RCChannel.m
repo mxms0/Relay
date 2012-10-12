@@ -210,29 +210,18 @@ char user_hash(NSString *from) {
 #define MSG_HIGHLIGHT_CHECK(name) {\
 for (NSString* uname  in [fullUserList  sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {if ([obj1 length] > [obj2 length]) {return NSOrderedAscending;} else if ([obj1 length] < [obj2 length]) {return NSOrderedDescending;}return NSOrderedSame;}]) {\
 NSString *cmp = message; \
-int index = 0;\
 NSString *rank = RCUserRank(uname,[self delegate]);\
 NSString *namenorank = [uname substringFromIndex:[rank length]]; \
-NSCharacterSet* chset = [NSCharacterSet letterCharacterSet]; \
 int hhash = ([namenorank isEqualToString:[delegate useNick]]) ? 1 : user_hash(namenorank); \
-name ## _again:;\
-NSRange range = [cmp rangeOfString:namenorank options:NSCaseInsensitiveSearch];;\
-if (range.location != NSNotFound) {\
-	if ((range.location == 0 || ![chset characterIsMember:[cmp characterAtIndex:range.location-1]]) && (range.location+range.length == [cmp length] || ![chset characterIsMember:[cmp characterAtIndex:range.location+range.length]])) {\
-		index += range.location+range.length;\
-		is_highlight = (hhash == 1) ? 1 : is_highlight;\
-		cmp = [cmp substringFromIndex:range.location+range.length];\
-		message = [message stringByReplacingCharactersInRange:NSMakeRange(range.location, range.length) withString:[NSString stringWithFormat:@"%c%02d%@%c", RCIRCAttributeInternalNickname, hhash, [message substringWithRange:NSMakeRange(range.location, range.length)],RCIRCAttributeInternalNicknameEnd]];\
-		goto name ## _again;\
-	} else {\
-		goto name ## _nope_not_at_all;\
-	}\
-} else {\
-	name ## _nope_not_at_all:\
-	;;\
+NSString *pattern1 = [NSString stringWithFormat:@"(^|\\s)([^A-Za-z0-9#]*)(%@)($|\\s)",namenorank];\
+NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern1 options:NSRegularExpressionCaseInsensitive error:nil];\
+message = [regex stringByReplacingMatchesInString:cmp options:0 range:NSMakeRange(0, [cmp length]) withTemplate:[NSString stringWithFormat:@"$1$2%c%02d$3%c$4", RCIRCAttributeInternalNickname, hhash, RCIRCAttributeInternalNicknameEnd]];\
+NSString *pattern2 = [NSString stringWithFormat:@"(^|\\s)([^A-Za-z0-9]*)(%@)($|\\s)",namenorank];\
+if ([[NSRegularExpression regularExpressionWithPattern:pattern2 options:NSRegularExpressionCaseInsensitive error:nil] numberOfMatchesInString:cmp options:0 range:NSMakeRange(0, [cmp length])]) {\
+    is_highlight = (hhash == 1) ? 1 : is_highlight;\
 }\
 }\
-}\
+}
 
 - (void)changeNick:(NSString *)old toNick:(NSString *)new_ {
     if (new_) {
