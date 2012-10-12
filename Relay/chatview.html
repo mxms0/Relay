@@ -258,22 +258,22 @@
                 var type = olddiv.type;
                 if (isBold == "YES") {
                     pre += "<b>";
-                    post += "</b>";
+					post = "</b>" + post;
                 }
                 if (isUnderlined == "YES") {
                     pre += "<u>";
-                    post += "</u>";
+					post = "</u>" + post;
                 }
                 if (isItalic == "YES") {
                     pre += "<i>";
-                    post += "</i>";
+					post = "</i>" + post;
                 } 
                 if (isNick == "YES") {
                     pre += "<font color=\"" + fgcolor + "\" class=\"color" + nickColor + "\" style=\"background: " + bgcolor + ";\">"
-                    post += "</font>"
+                    post = "</font>" + post;
                 } else {
                     pre += "<font color=\"" + fgcolor + "\" class=\"color0\" style=\"background: " + bgcolor + ";\">"
-                    post += "</font>"
+                    post = "</font>" + post;
                 }
                 olddiv.innerHTML += pre + text + post;
 				scrollToBottom();
