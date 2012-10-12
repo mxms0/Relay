@@ -17,5 +17,4 @@ Handle INVITEs properly.
 Show topic when rejoining a channel
 Channel/user list scrolling breaks after rotating
 Add option to disable chat autocapitalization
-Fix nicks in URLs/#chans
 Scroll to channel/user window when you /join or /privmsg
