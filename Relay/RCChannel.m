@@ -213,10 +213,10 @@ NSString *cmp = message; \
 NSString *rank = RCUserRank(uname,[self delegate]);\
 NSString *namenorank = [uname substringFromIndex:[rank length]]; \
 int hhash = ([namenorank isEqualToString:[delegate useNick]]) ? 1 : user_hash(namenorank); \
-NSString *pattern1 = [NSString stringWithFormat:@"(^|\\s)([^A-Za-z0-9#]*)(%@)($|\\s)",namenorank];\
+NSString *pattern1 = [NSString stringWithFormat:@"(^|\\s)([^A-Za-z0-9#]*)(%@)([^A-Za-z0-9]*)($|\\s)",namenorank];\
 NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern1 options:NSRegularExpressionCaseInsensitive error:nil];\
-message = [regex stringByReplacingMatchesInString:cmp options:0 range:NSMakeRange(0, [cmp length]) withTemplate:[NSString stringWithFormat:@"$1$2%c%02d$3%c$4", RCIRCAttributeInternalNickname, hhash, RCIRCAttributeInternalNicknameEnd]];\
-NSString *pattern2 = [NSString stringWithFormat:@"(^|\\s)([^A-Za-z0-9]*)(%@)($|\\s)",namenorank];\
+message = [regex stringByReplacingMatchesInString:cmp options:0 range:NSMakeRange(0, [cmp length]) withTemplate:[NSString stringWithFormat:@"$1$2%c%02d$3%c$4$5", RCIRCAttributeInternalNickname, hhash, RCIRCAttributeInternalNicknameEnd]];\
+NSString *pattern2 = [NSString stringWithFormat:@"(^|\\s)([^A-Za-z0-9]*)(%@)([^A-Za-z0-9]*)($|\\s)",namenorank];\
 if ([[NSRegularExpression regularExpressionWithPattern:pattern2 options:NSRegularExpressionCaseInsensitive error:nil] numberOfMatchesInString:cmp options:0 range:NSMakeRange(0, [cmp length])]) {\
     is_highlight = (hhash == 1) ? 1 : is_highlight;\
 }\
