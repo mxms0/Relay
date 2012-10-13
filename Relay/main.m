@@ -10,11 +10,14 @@
 #import <objc/runtime.h>
 #import <objc/message.h>
 
-static id _RCSpecialBackgroundImage(Class self, SEL _cmd) {
+UIImage *_RCSpecialBackgroundImage(Class self, SEL _cmd);
+UIImage *_RCSpecialHighlightedBackgroundImage(Class self, SEL _cmd);
+
+UIImage *_RCSpecialBackgroundImage(Class self, SEL _cmd) {
 	return [[UIImage imageNamed:@"0_removebtn"] stretchableImageWithLeftCapWidth:5 topCapHeight:5];
 }
 
-static id _RCSpecialHighlightedBackgroundImage(Class self, SEL _cmd) {
+UIImage *_RCSpecialHighlightedBackgroundImage(Class self, SEL _cmd) {
 	return [[UIImage imageNamed:@"0_removebtnpres"] stretchableImageWithLeftCapWidth:5 topCapHeight:5];
 }
 
