@@ -1029,10 +1029,8 @@
 				INFOPLIST_FILE = "Relay/Relay-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
+					"$(SRCROOT)",
 					"$(inherited)",
-					"\"$(SRCROOT)/../../Downloads/TestFlightSDK0.8.3\"",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/../../Downloads/TestFlightSDK0.8.2\"",
 					"\"$(SDKROOT)/usr/lib/system\"",
 				);
 				OTHER_CFLAGS = (
@@ -1113,10 +1111,8 @@
 				INFOPLIST_FILE = "Relay/Relay-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
+					"$(SRCROOT)",
 					"$(inherited)",
-					"\"$(SRCROOT)/../../Downloads/TestFlightSDK0.8.3\"",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/../../Downloads/TestFlightSDK0.8.2\"",
 					"\"$(SDKROOT)/usr/lib/system\"",
 				);
 				OTHER_CFLAGS = (
@@ -1147,10 +1143,8 @@
 				INFOPLIST_FILE = "Relay/Relay-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
+					"$(SRCROOT)",
 					"$(inherited)",
-					"\"$(SRCROOT)/../../Downloads/TestFlightSDK0.8.3\"",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/../../Downloads/TestFlightSDK0.8.2\"",
 					"\"$(SDKROOT)/usr/lib/system\"",
 				);
 				OTHER_CFLAGS = (

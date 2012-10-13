@@ -62,4 +62,5 @@
 - (void)doSuicideConfirmationAlert:(RCChannelBubble *)questionAble;
 - (RCChannelBubble *)channelBubbleWithChannel:(id)channel;
 - (void)scrollToBubble:(RCChannelBubble *)bubble;
+- (void)displayOptionsForChannel:(RCChannelBubble *)bbz;
 @end

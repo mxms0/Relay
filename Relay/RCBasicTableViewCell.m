@@ -7,6 +7,12 @@
 
 #import "RCBasicTableViewCell.h"
 
+#if USE_PRIVATE
+@interface UITableViewCell (_RCPrivate)
+- (void)editControlWasClicked:(id)arg1;
+@end
+#endif
+
 @implementation RCBasicTableViewCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)ident {

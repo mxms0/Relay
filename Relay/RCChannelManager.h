@@ -20,4 +20,5 @@
 - (id)initWithStyle:(UITableViewStyle)style andNetwork:(RCNetwork *)net;
 - (void)addStupidWarningView;
 - (void)removeStupidWarningView;
+- (void)addChannel:(NSString *)chan;
 @end

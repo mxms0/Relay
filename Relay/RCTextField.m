@@ -7,6 +7,12 @@
 
 #import "RCTextField.h"
 
+#if USE_PRIVATE
+@interface RCTextField (RCPrivate_)
+- (void)setInsertionPointColor:(UIColor *)color;
+@end
+#endif
+
 @implementation RCTextField
 
 - (id)initWithFrame:(CGRect)frame {
