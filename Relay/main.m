@@ -10,29 +10,24 @@
 #import <objc/runtime.h>
 #import <objc/message.h>
 
-@interface RCSpecialClass : NSObject 
-+ (id)backgroundImage;
-+ (id)_pBackgroundImage;
-@end
-@implementation RCSpecialClass
-+ (id)backgroundImage {
+static id _RCSpecialBackgroundImage(Class self, SEL _cmd) {
 	return [[UIImage imageNamed:@"0_removebtn"] stretchableImageWithLeftCapWidth:5 topCapHeight:5];
 }
-+ (id)_pBackgroundImage {
+
+static id _RCSpecialHighlightedBackgroundImage(Class self, SEL _cmd) {
 	return [[UIImage imageNamed:@"0_removebtnpres"] stretchableImageWithLeftCapWidth:5 topCapHeight:5];
 }
-@end
 
-
-int main(int argc, char *argv[]) {
-	Method orig = class_getClassMethod([objc_getClass("_UITableViewCellDeleteConfirmationControl") class], @selector(_backgroundImage));
-	Method rep = class_getClassMethod([RCSpecialClass class], @selector(backgroundImage));
-	method_exchangeImplementations(orig, rep);
-	Method orig2 = class_getClassMethod([objc_getClass("_UITableViewCellDeleteConfirmationControl") class], @selector(_highlightedBackgroundImage));
-	Method rep2 = class_getClassMethod([RCSpecialClass class], @selector(_pBackgroundImage));
-	method_exchangeImplementations(orig2, rep2);
-
-	@autoreleasepool {
+int main(int argc, char **argv) {
+    Class deleteControl = objc_getMetaClass("_UITableViewCellDeleteConfirmationControl");
+    
+    Method bgOrig = class_getClassMethod(deleteControl, @selector(_backgroundImage));
+    method_setImplementation(bgOrig, (IMP)_RCSpecialBackgroundImage);
+    
+    Method hiOrig = class_getClassMethod(deleteControl, @selector(_highlightedBackgroundImage));
+    method_setImplementation(hiOrig, (IMP)_RCSpecialHighlightedBackgroundImage);
+    
+    @autoreleasepool {
 	    return UIApplicationMain(argc, argv, nil, @"RCAppDelegate");
 	}
 }
