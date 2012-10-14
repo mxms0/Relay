@@ -257,7 +257,7 @@ static id _sharedNavigator = nil;
         return [chan bubble];
     }
 	CGSize size = [[chan channelName] sizeWithFont:[UIFont boldSystemFontOfSize:14]];
-	RCChannelBubble *bubble = [[RCChannelBubble alloc] initWithFrame:CGRectMake(0, 0, size.width+=14, 18) andChan:chan];
+	RCChannelBubble *bubble = [[RCChannelBubble alloc] initWithFrame:CGRectMake(0, 0, size.width+=14, 32) andChan:chan];
 	[bubble addTarget:self action:@selector(channelSelected:) forControlEvents:UIControlEventTouchUpInside];
 	[bubble setTitle:[chan channelName] forState:UIControlStateNormal];
     [chan setBubble:bubble];
