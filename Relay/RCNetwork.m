@@ -10,6 +10,7 @@
 #import "RCNetworkManager.h"
 #import "TestFlight.h"
 #import "RCChannelManager.h"
+#import "RCPrettyAlertView.h"
 
 #define RECV_BUF_LEN 10240
 
@@ -1220,17 +1221,24 @@ char *RCIPForURL(NSString *URL) {
 	[_scanner release];
 }
 - (void)handleINVITE:(NSString *)invite {
-    
-    NSRange channelRange = [invite rangeOfString:@"#"];
-    
-    if (channelRange.location == NSNotFound)
-        return;
-    
-    NSRange finalRange = NSMakeRange(channelRange.location, invite.length-channelRange.location);    
-    NSString *channel = [invite substringWithRange:finalRange];
-    
-    [self addChannel:channel join:YES];
+    [self performSelectorOnMainThread:@selector(showInviteAlert:) withObject:invite waitUntilDone:YES];
 }
+
+- (void)showInviteAlert:(NSString*)invite{
+    NSScanner *_scanner = [[NSScanner alloc] initWithString:invite];
+	NSString *from = @"";
+    NSString *chan = @"";
+    [_scanner scanUpToString:@" " intoString:&from];
+    [_scanner scanUpToString:@" " intoString:&from];
+    [_scanner scanUpToString:@" " intoString:&from];
+    [_scanner scanUpToString:@" " intoString:&chan];
+    
+    chan = [chan substringFromIndex:1];    RCPrettyAlertView *alert = [[RCPrettyAlertView alloc] initWithTitle:[NSString stringWithFormat:@"%@",chan] message:[NSString stringWithFormat:@"%@ has invited you to %@", from, chan] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Join", nil];
+	[alert setTag:11586];
+	[alert show];
+	[alert release];
+}
+
 - (void)handleKICK:(NSString *)aKick {
     NSLog(@"%@", aKick);
 	NSScanner *_scanner = [[NSScanner alloc] initWithString:aKick];
@@ -1575,6 +1583,29 @@ void RCParseUserMask(NSString *mask, NSString **_nick, NSString **user, NSString
 	if ([scanr isAtEnd]) return;
 	if (!hostmask) return;
 	[scanr scanUpToString:@"" intoString:hostmask];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    switch (alertView.tag) {
+        case 11586:
+            switch (buttonIndex) {
+                case 0:
+                    break;
+                case 1:
+                {
+                    RCChannel* chan = [self addChannel:alertView.title join:YES];
+                    [[RCNavigator sharedNavigator] channelSelected:[chan bubble]];
+                    [[RCNavigator sharedNavigator] scrollToBubble:[chan bubble]];
+                    break;
+                }
+                default:
+                    break;
+            }
+            break;
+            
+        default:
+            break;
+    }
 }
 
 @end

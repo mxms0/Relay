@@ -34,7 +34,7 @@ typedef enum RCSocketStatus {
 	RCSocketStatusClosed
 } RCSocketStatus;
 
-@interface RCNetwork : NSObject {
+@interface RCNetwork : NSObject <UIAlertViewDelegate> {
 	NSMutableArray *_channels;
     NSMutableArray *_nicknames;
 	NSMutableArray *_bubbles;
