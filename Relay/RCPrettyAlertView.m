@@ -9,8 +9,8 @@
 
 @implementation RCPrettyAlertView
 
-- (void)show {
-	[super show];
+- (void)layoutSubviews {
+	[super layoutSubviews];
 	for (id v in [self subviews]) {
 		if ([v isKindOfClass:[UIImageView class]]) {
 			[(UIImageView *)v setImage:[[UIImage imageNamed:@"0_alertview"] resizableImageWithCapInsets:UIEdgeInsetsMake(10, 10, 10, 10)]];

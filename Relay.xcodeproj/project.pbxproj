@@ -118,6 +118,7 @@
 		50AAE7EA151AD8B900E631FD /* RCAddCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 50AAE7E9151AD8B900E631FD /* RCAddCell.m */; };
 		50AAE7ED151ADDAB00E631FD /* 0_r_shadow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50AAE7EB151ADDAB00E631FD /* 0_r_shadow@2x.png */; };
 		50AAE7EE151ADDAB00E631FD /* 0_r_shadow.png in Resources */ = {isa = PBXBuildFile; fileRef = 50AAE7EC151ADDAB00E631FD /* 0_r_shadow.png */; };
+		50CBC371162B83D300E9EB43 /* RCInviteRequestAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 50CBC370162B83D300E9EB43 /* RCInviteRequestAlert.m */; };
 		50E0C34A15BCBD8100B79C50 /* RCPrettyAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E0C34915BCBD8100B79C50 /* RCPrettyAlertView.m */; };
 		50E3694115D0E4DD005DD077 /* RCChannelManagementViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E3694015D0E4DD005DD077 /* RCChannelManagementViewController.m */; };
 		50E492341522A27A00EF676B /* 0_navbar_landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 50E492321522A27300EF676B /* 0_navbar_landscape.png */; };
@@ -309,6 +310,8 @@
 		50AAE7EB151ADDAB00E631FD /* 0_r_shadow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_r_shadow@2x.png"; sourceTree = "<group>"; };
 		50AAE7EC151ADDAB00E631FD /* 0_r_shadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_r_shadow.png; sourceTree = "<group>"; };
 		50B0DB21154233EB00689EDC /* RCKeychainItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCKeychainItem.h; sourceTree = "<group>"; };
+		50CBC36F162B83D300E9EB43 /* RCInviteRequestAlert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCInviteRequestAlert.h; sourceTree = "<group>"; };
+		50CBC370162B83D300E9EB43 /* RCInviteRequestAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCInviteRequestAlert.m; sourceTree = "<group>"; };
 		50E0C34815BCBD8100B79C50 /* RCPrettyAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCPrettyAlertView.h; sourceTree = "<group>"; };
 		50E0C34915BCBD8100B79C50 /* RCPrettyAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCPrettyAlertView.m; sourceTree = "<group>"; };
 		50E3693F15D0E4DD005DD077 /* RCChannelManagementViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCChannelManagementViewController.h; sourceTree = "<group>"; };
@@ -452,6 +455,8 @@
 			children = (
 				500DD85415BBDBC700F2E59D /* RCPasswordRequestAlert.h */,
 				500DD85515BBDBC700F2E59D /* RCPasswordRequestAlert.m */,
+				50CBC36F162B83D300E9EB43 /* RCInviteRequestAlert.h */,
+				50CBC370162B83D300E9EB43 /* RCInviteRequestAlert.m */,
 				50E0C34815BCBD8100B79C50 /* RCPrettyAlertView.h */,
 				50E0C34915BCBD8100B79C50 /* RCPrettyAlertView.m */,
 				501F2B3B150995DE0099C9C3 /* RCTableView.h */,
@@ -957,6 +962,7 @@
 				50F0BFCE15DF73DC001B3F50 /* RCChannelInfo.m in Sources */,
 				508808FD15E6FDDA00B6FD8F /* RCCoverView.m in Sources */,
 				508254BA1605816E00F55F97 /* RCLargeNavigator.m in Sources */,
+				50CBC371162B83D300E9EB43 /* RCInviteRequestAlert.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
