@@ -155,6 +155,8 @@
 		50EEDA2A1512C8540011618C /* 0_ops@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50EEDA281512C8540011618C /* 0_ops@2x.png */; };
 		50EEDA2D1512C92F0011618C /* 0_mListr.png in Resources */ = {isa = PBXBuildFile; fileRef = 50EEDA2B1512C92F0011618C /* 0_mListr.png */; };
 		50EEDA301512CA520011618C /* 0_mListr@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50EEDA2F1512CA520011618C /* 0_mListr@2x.png */; };
+		50EF9310162CD54C00DE3443 /* RCBasicCommands.m in Sources */ = {isa = PBXBuildFile; fileRef = 50EF930F162CD54C00DE3443 /* RCBasicCommands.m */; };
+		50EF9313162CD57E00DE3443 /* RCCommandEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 50EF9312162CD57E00DE3443 /* RCCommandEngine.m */; };
 		50EF954215E840E2004A2F45 /* 0_popover.png in Resources */ = {isa = PBXBuildFile; fileRef = 50EF954015E840E2004A2F45 /* 0_popover.png */; };
 		50EF954315E840E2004A2F45 /* 0_popover@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50EF954115E840E2004A2F45 /* 0_popover@2x.png */; };
 		50F0BFCE15DF73DC001B3F50 /* RCChannelInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 50F0BFCD15DF73DC001B3F50 /* RCChannelInfo.m */; };
@@ -370,6 +372,10 @@
 		50EEDA281512C8540011618C /* 0_ops@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_ops@2x.png"; sourceTree = "<group>"; };
 		50EEDA2B1512C92F0011618C /* 0_mListr.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_mListr.png; sourceTree = "<group>"; };
 		50EEDA2F1512CA520011618C /* 0_mListr@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_mListr@2x.png"; sourceTree = "<group>"; };
+		50EF930E162CD54C00DE3443 /* RCBasicCommands.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCBasicCommands.h; sourceTree = "<group>"; };
+		50EF930F162CD54C00DE3443 /* RCBasicCommands.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCBasicCommands.m; sourceTree = "<group>"; };
+		50EF9311162CD57E00DE3443 /* RCCommandEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCCommandEngine.h; sourceTree = "<group>"; };
+		50EF9312162CD57E00DE3443 /* RCCommandEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCCommandEngine.m; sourceTree = "<group>"; };
 		50EF954015E840E2004A2F45 /* 0_popover.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_popover.png; sourceTree = "<group>"; };
 		50EF954115E840E2004A2F45 /* 0_popover@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_popover@2x.png"; sourceTree = "<group>"; };
 		50F0BFCC15DF73DC001B3F50 /* RCChannelInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCChannelInfo.h; sourceTree = "<group>"; };
@@ -699,6 +705,7 @@
 		50A7FBAA14C0F7E200ABADEA /* Backend */ = {
 			isa = PBXGroup;
 			children = (
+				50EF930C162CD52600DE3443 /* Command Engine */,
 				50376D2815B3CCAD00E13006 /* RCDateManager.h */,
 				50376D2915B3CCAD00E13006 /* RCDateManager.m */,
 				50E77A761505A21500E75C64 /* NSString+Utils.h */,
@@ -731,6 +738,17 @@
 				50E77A8E1505A29100E75C64 /* main.m */,
 			);
 			name = Backend;
+			sourceTree = "<group>";
+		};
+		50EF930C162CD52600DE3443 /* Command Engine */ = {
+			isa = PBXGroup;
+			children = (
+				50EF930E162CD54C00DE3443 /* RCBasicCommands.h */,
+				50EF930F162CD54C00DE3443 /* RCBasicCommands.m */,
+				50EF9311162CD57E00DE3443 /* RCCommandEngine.h */,
+				50EF9312162CD57E00DE3443 /* RCCommandEngine.m */,
+			);
+			name = "Command Engine";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -963,6 +981,8 @@
 				508808FD15E6FDDA00B6FD8F /* RCCoverView.m in Sources */,
 				508254BA1605816E00F55F97 /* RCLargeNavigator.m in Sources */,
 				50CBC371162B83D300E9EB43 /* RCInviteRequestAlert.m in Sources */,
+				50EF9310162CD54C00DE3443 /* RCBasicCommands.m in Sources */,
+				50EF9313162CD57E00DE3443 /* RCCommandEngine.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

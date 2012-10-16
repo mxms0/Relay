@@ -183,8 +183,7 @@ UIImage *RCImageForRank(NSString *rank, RCNetwork* network) {
 }
 
 - (void)dealloc {
-    @synchronized(self)
-    {
+    @synchronized(self) {
         [channelName release];
         [panel release];
         [bubble setChannel:nil];
@@ -642,16 +641,8 @@ modecnt++;\
 	}
 	NSScanner *scanr = [[NSScanner alloc] initWithString:msg];
 	NSString *cmd = @"";
-	NSString *args = cmd;
 	[scanr scanUpToString:@" " intoString:&cmd];
-	[scanr scanUpToString:@"" intoString:&args];
-	NSString *realCmd = [NSString stringWithFormat:@"handleSlash%@:", [cmd uppercaseString]];
-    SEL _pSEL = NSSelectorFromString(realCmd);
-	if ([self respondsToSelector:_pSEL]) [self performSelector:_pSEL withObject:args];
-	else {
-		[[self delegate] sendMessage:msg canWait:YES];
-	}
-	
+	[[RCCommandEngine sharedInstance] handleCommand:cmd fromNetwork:[self delegate]];
 	[scanr release];
 }
 

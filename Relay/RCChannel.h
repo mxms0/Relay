@@ -14,6 +14,7 @@
 #import "RCUserListPanel.h"
 #import "RCUserTableCell.h"
 #import "RCDateManager.h"
+#import "RCCommandEngine.h"
 
 @class RCNetwork;
 @class RCNavigator;
