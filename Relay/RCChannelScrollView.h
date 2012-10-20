@@ -14,6 +14,5 @@
     RCShadowLayer *sLayer;
 }
 - (void)layoutChannels:(NSArray *)channels;
-- (void)clearBG;
-- (void)drawBG;
+
 @end

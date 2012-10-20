@@ -42,7 +42,7 @@ static id _sharedNavigator = nil;
 		[dble release];
 		[bar addSubview:titleLabel];
 		[titleLabel release];
-		scrollBar = [[RCChannelScrollView alloc] initWithFrame:CGRectMake(0, 45, 320, 32)];
+		scrollBar = [[RCChannelScrollView alloc] initWithFrame:CGRectMake(0, 45, 320, 44)];
 		scrollBar.tag = 200;
 		[self addSubview:scrollBar];
 		[scrollBar release];
@@ -334,7 +334,9 @@ static RCChannelBubble *questionabubble = nil;
 	if (cover != nil) return;
 	CGRect adj = CGRectMake(bbz.frame.origin.x-scrollBar.contentOffset.x, 0, bbz.frame.size.width, bbz.frame.size.height);
 	self.cover = [[RCCoverView alloc] initWithFrame:[self frameForOptionsCover] andChannel:[bbz channel]];
-	[cover setArrowPosition:CGPointMake((adj.origin.x+adj.size.width)-(bbz.frame.size.width/2)-6, scrollBar.frame.size.height+scrollBar.frame.origin.y-6)];
+	int fixy = 10;
+	if (_isLandscape) fixy = 5;
+	[cover setArrowPosition:CGPointMake((adj.origin.x+adj.size.width)-(bbz.frame.size.width/2)-6, scrollBar.frame.size.height+scrollBar.frame.origin.y-fixy)];
 	[self insertSubview:cover atIndex:0];
 	[self bringSubviewToFront:cover];
 	[cover show];
@@ -416,7 +418,6 @@ static RCChannelBubble *questionabubble = nil;
 	[nWindow animateOut];
 	[cover hide];
 	_isLandscape = (UIInterfaceOrientationIsLandscape(oi));
-	[scrollBar drawBG];
 	[self setNeedsDisplay];
 	if (currentPanel) {
 		[currentPanel setFrame:[self frameForChatTable]];
@@ -425,19 +426,20 @@ static RCChannelBubble *questionabubble = nil;
 		bar.frame = CGRectMake(0, 0, 480, 32);
 		bar.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"0_navbar_landscape"]];
 		scrollBar.frame = CGRectMake(240, 0, 240, 33);
-		[scrollBar clearBG];
 		titleLabel.frame = CGRectMake(45, 0, 150, bar.frame.size.height);
 	}
 	else {
 		bar.frame = CGRectMake(0, 0, 320, 45);
 		bar.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"0_navbar"]];
-		scrollBar.frame = CGRectMake(0, 45, 320, 32);
+		scrollBar.frame = CGRectMake(0, 45, 320, 44);
 		titleLabel.frame = CGRectMake(47, 0, 225, bar.frame.size.height);
 	}
 	[[currentPanel mainView] scrollToBottom];
 	[plus setFrame:[self frameForPlusButton]];
 	[listr setFrame:[self frameForListButton]];
 	[scrollBar setContentSize:(CGSize)(scrollBar.frame.size)];
+	[scrollBar setNeedsDisplay];
+	[scrollBar layoutChannels:[currentNetwork _bubbles]];
 	[memberPanel setFrame:[self frameForMemberPanel]];
 	[nWindow correctAndRotateToInterfaceOrientation:oi];
 }
@@ -463,13 +465,13 @@ static RCChannelBubble *questionabubble = nil;
 - (CGRect)frameForChatTable {
 	if (_isLandscape)
 		return CGRectMake(0, 32, 480, 227);
-	return CGRectMake(0, 77, 320, 344);
+	return CGRectMake(0, bar.frame.size.height+scrollBar.frame.size.height, 320, 332);
 }
 
 - (CGRect)frameForMemberPanel {
 	if (_isLandscape)
 		return CGRectMake(0, 32, 480, 268);
-	return CGRectMake(0, 77, 320, 383);
+	return CGRectMake(0, bar.frame.size.height+scrollBar.frame.size.height, 320, 371);
 }
 
 - (CGRect)frameForListButton {
@@ -487,7 +489,7 @@ static RCChannelBubble *questionabubble = nil;
 	if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
 		return CGRectMake(0, (activ ? 66 : 227), 480, 40);
 	}
-	return CGRectMake(0, (activ ? 127 : 345), 320, 40);
+	return CGRectMake(0, (activ ? 115 : 333), 320, 40);
 }
 
 - (void)dealloc {

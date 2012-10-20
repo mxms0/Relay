@@ -64,7 +64,7 @@
 	}
 	RCChannelBubble *pr = nil;
 	for (RCChannelBubble *bb in channels) {
-		[bb setFrame:CGRectMake((pr ? pr.frame.size.width+pr.frame.origin.x : 10), (self.frame.size.height/2)-(bb.frame.size.height/2), bb.frame.size.width, 32)];
+		[bb setFrame:CGRectMake((pr ? pr.frame.size.width+pr.frame.origin.x : 10),(self.frame.size.height/2)-(bb.frame.size.height/2), bb.frame.size.width, 32)];
 		[self addSubview:bb];
         [bb fixColors];
 		pr = bb;
@@ -81,14 +81,6 @@
 	}
 	[self setContentSize:CGSizeMake((sub.frame.origin.x + sub.frame.size.width+10), self.frame.size.height)];
 	[self setScrollEnabled:YES];
-}
-
-- (void)clearBG {
-	[self setNeedsDisplay];
-}
-
-- (void)drawBG {
-	[self setNeedsDisplay];
 }
 
 - (void)drawRect:(CGRect)rect {

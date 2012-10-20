@@ -17,10 +17,10 @@
 		RCShadowLayer *shadow = [[RCShadowLayer alloc] init];
 		UIImage *shd = [UIImage imageNamed:@"0_r_shadow"];
 		shadow.contents = (id)shd.CGImage;
-		[shadow setFrame:CGRectMake(0, self.frame.size.height+32, self.frame.size.width, 15)];
+		[shadow setFrame:CGRectMake(0, self.frame.size.height+44, self.frame.size.width, 15)];
 		[shadow setOpacity:0.3];
 		[shadow setShouldRasterize:YES];
-        shadow.zPosition = 10000000;
+        shadow.zPosition = 100;
 		[self.layer addSublayer:shadow];
 		[shadow release];
     }
@@ -31,7 +31,7 @@
 	[super layoutSubviews];
 	float y = self.frame.size.height;
 	if (self.frame.size.width == 320.0f) {
-		y += 32;
+		y += 44;
 	}
 	for (CALayer *ll in [self.layer sublayers]) {
 		if ([ll isKindOfClass:[RCShadowLayer class]]) {

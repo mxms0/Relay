@@ -20,7 +20,7 @@ static UIImage *image = nil;
 - (id)initWithFrame:(CGRect)frame andChan:(RCChannel *)channel_ {
 	if ((self = [super initWithFrame:frame])) {
         if (!image) {
-            image = [[[UIImage imageNamed:@"0_bble"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 9, 0, 9)] retain];
+            image = [[[UIImage imageNamed:@"0_bble"] resizableImageWithCapInsets:UIEdgeInsetsMake(0,10, 0, 10)] retain];
         }
 		[[self titleLabel] setFont:[UIFont boldSystemFontOfSize:13]];
 		[[self titleLabel] setShadowOffset:CGSizeMake(0, 1)];
