@@ -19,6 +19,7 @@
 		networkTable.backgroundColor = [UIColor clearColor];
 		networkTable.separatorStyle = UITableViewCellSeparatorStyleNone;
 		networkTable.dataSource = self;
+		[networkTable setBackgroundColor:[UIColor clearColor]];
 		[networkTable setShowsVerticalScrollIndicator:NO];
 		_pImg = [[UIImageView alloc] initWithFrame:CGRectMake(26, 28, 268, 300)];
 		[_pImg setImage:[UIImage imageNamed:@"0_popover"]];
@@ -108,7 +109,7 @@
 	RCNetworkHeaderButton *btn = [[RCNetworkHeaderButton alloc] initWithFrame:CGRectMake(0, 0, 300, 45)];
 	[btn setSection:section];
 	[btn setNetwork:[[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:section]];
-
+	[btn setBackgroundColor:[UIColor clearColor]];
 	[btn addTarget:self action:@selector(headerTouched:) forControlEvents:UIControlEventTouchUpInside];
 	return [btn autorelease];
 }
