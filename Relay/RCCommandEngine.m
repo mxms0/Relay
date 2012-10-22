@@ -25,16 +25,16 @@ static id _eInstance = nil;
 
 - (void)registerSelector:(SEL)selector forCommands:(id)commands usingClass:(Class)mee {
 	if ([commands isKindOfClass:[NSString class]])
-		[cmds setObject:[NSArray arrayWithObjects:NSStringFromSelector(selector), NSStringFromClass(mee), nil] forKey:commands];
+		[cmds setObject:[NSArray arrayWithObjects:NSStringFromSelector(selector), NSStringFromClass(mee), nil] forKey:[commands lowercaseString]];
 	else {
 		for (NSString *command in commands) {
 			if ([command isKindOfClass:[NSString class]])
-				[cmds setObject:[NSArray arrayWithObjects:NSStringFromSelector(selector), NSStringFromClass(mee), nil] forKey:command];
+				[cmds setObject:[NSArray arrayWithObjects:NSStringFromSelector(selector), NSStringFromClass(mee), nil] forKey:[command lowercaseString]];
 		}
 	}
 }
 
-- (void)handleCommand:(NSString *)command fromNetwork:(RCNetwork *)net {
+- (void)handleCommand:(NSString *)command fromNetwork:(RCNetwork *)net forChannel:(RCChannel *)chan {
 	@synchronized(self) {
 		NSString *_cmd;
 		NSString *_crap;
@@ -51,10 +51,8 @@ static id _eInstance = nil;
 			}
 			id obj = [[target alloc] init];
 			[scan scanUpToString:@"" intoString:&_crap];
-			if ([scan scanLocation] == [_cmd length])
-				_crap = nil;
 			@try {
-				objc_msgSend(obj, call, _crap, net);
+				objc_msgSend(obj, call, _crap, net, chan);
 			}
 			@catch (NSException *e) {
 				NSLog(@"RELAY:: BAD SELECTOR [%@] CLASS: [%@]", NSStringFromSelector(call), NSStringFromClass(target));;

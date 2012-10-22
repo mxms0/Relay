@@ -7,12 +7,13 @@
 
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
+#import "RCChannel.h"
 
 @class RCNetwork;
 @interface RCCommandEngine : NSObject {
 	NSMutableDictionary *cmds;
 }
 + (id)sharedInstance;
-- (void)handleCommand:(NSString *)command fromNetwork:(RCNetwork *)net;
+- (void)handleCommand:(NSString *)command fromNetwork:(RCNetwork *)net forChannel:(RCChannel *)chan;
 - (void)registerSelector:(SEL)selector forCommands:(id)commands usingClass:(Class)mee;
 @end

@@ -18,8 +18,8 @@
 		[self setChannel:chan];
 		mainView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ([chan isPrivate] ? 60 : 180), 55)];
 		[self addSubview:mainView];
-		backgroundImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, mainView.frame.size.width, 55)];
-		[backgroundImage setImage:[[UIImage imageNamed:@"0_chanover"] stretchableImageWithLeftCapWidth:17 topCapHeight:17]];
+		backgroundImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 5, mainView.frame.size.width, 55)];
+		[backgroundImage setImage:[[UIImage imageNamed:@"0_chanover"] stretchableImageWithLeftCapWidth:20 topCapHeight:20]];
 		backgroundImage.contentMode = UIViewContentModeScaleToFill;
 		[mainView addSubview:backgroundImage];
 		[backgroundImage release];
@@ -34,9 +34,14 @@
 
 - (void)layoutButtons {
 	if (!channel) return;
-	CGRect delRect = CGRectMake(62, 18, 20, 20);
+	CGRect delRect = CGRectMake(50, 10, 40, 40);
 	if (![channel isPrivate]) {
-		UIButton *join = [[UIButton alloc] initWithFrame:CGRectMake(20, 18, 25, 20)];
+		UIImage *pic = [UIImage imageNamed:@"0_divd"];
+		UIImageView *divd = [[UIImageView alloc] initWithImage:pic];
+		UIButton *join = [[UIButton alloc] initWithFrame:CGRectMake(8, 10, 42, 40)];
+		[divd setFrame:CGRectMake(48, 10, 2, 38)];
+		[mainView addSubview:divd];
+		[divd release];
 		[join setBackgroundColor:[UIColor clearColor]];
 		[join setImage:[UIImage imageNamed:@"0_joinbtn"] forState:UIControlStateNormal];
 		[join addTarget:self action:@selector(joinPressed:) forControlEvents:UIControlEventTouchUpInside];
@@ -44,13 +49,21 @@
 		else [join setEnabled:YES];
 		[mainView addSubview:join];
 		[join release];
-		UIButton *user = [[UIButton alloc] initWithFrame:CGRectMake(102, 18, 23, 20)];
+		UIButton *user = [[UIButton alloc] initWithFrame:CGRectMake(92, 10, 40, 40)];
+		UIImageView *divw = [[UIImageView alloc] initWithImage:pic];
+		[divw setFrame:CGRectMake(132, 10, 2, 38)];
+		[mainView addSubview:divw];
+		[divw release];
 		[user setBackgroundColor:[UIColor clearColor]];
 		[user addTarget:self action:@selector(userPressed:) forControlEvents:UIControlEventTouchUpInside];
 		[user setImage:[UIImage imageNamed:@"0_usericon"] forState:UIControlStateNormal];
 		[mainView addSubview:user];
 		[user release];
-		UIButton *part = [[UIButton alloc] initWithFrame:CGRectMake(138, 18, 25, 20)];
+		UIImageView *dive = [[UIImageView alloc] initWithImage:pic];
+		[dive setFrame:CGRectMake(90, 10, 2, 38)];
+		[mainView addSubview:dive];
+		[dive release];
+		UIButton *part = [[UIButton alloc] initWithFrame:CGRectMake(132, 10, 40, 40)];
 		[part setBackgroundColor:[UIColor clearColor]];
 		[part addTarget:self action:@selector(partPressed:) forControlEvents:UIControlEventTouchUpInside];
 		[part setImage:[UIImage imageNamed:@"0_partbtn"] forState:UIControlStateNormal];

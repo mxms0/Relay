@@ -176,7 +176,7 @@ static id _sharedNavigator = nil;
 
 - (void)editNetwork {
     if (isFirstSetup) return;
-	UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"What do you want to do for %@", [currentNetwork _description]] delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Delete" otherButtonTitles:@"Edit", ([currentNetwork isTryingToConnectOrConnected] ? @"Disconnect" : @"Connect"), nil];
+	RCPrettyActionSheet *sheet = [[RCPrettyActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"What do you want to do for %@?", [currentNetwork _description]] delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Delete" otherButtonTitles:@"Edit", ([currentNetwork isTryingToConnectOrConnected] ? @"Disconnect" : @"Connect"), nil];
 	[sheet showInView:self];
 	[sheet release];
 }
@@ -280,6 +280,7 @@ static id _sharedNavigator = nil;
 
 - (void)selectNetwork:(RCNetwork *)net {
 	@synchronized(self) {
+		[nWindow checkSelection:net];
 		if (currentPanel) {
 			[currentPanel removeFromSuperview];
 			currentPanel = nil;
@@ -373,7 +374,7 @@ static RCChannelBubble *questionabubble = nil;
 	[bubble _setSelected:YES];
 	if (!currentNetwork) NSLog(@"NO CURRENT NETWORK");
 	RCChannel *chan = [bubble channel];
-	[[[bubble channel] panel] setFrame:(currentPanel ? [currentPanel frame] : [self frameForChatTable])];
+	[[[bubble channel] panel] setFrame:[self frameForChatTable]];
 	if (currentPanel) {
 		[currentPanel removeFromSuperview];
 		if ([currentPanel isFirstResponder])

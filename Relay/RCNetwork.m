@@ -38,6 +38,7 @@
 		canSend = YES;
 		ctx = NULL;
 		ssl = NULL;
+		_selected = NO;
         prefix = nil;
 		_bubbles = [[NSMutableArray alloc] init];
 		_channels = [[NSMutableArray alloc] init];

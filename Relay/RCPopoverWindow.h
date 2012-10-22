@@ -7,7 +7,9 @@
 
 #import <UIKit/UIKit.h>
 #import "RCNetworkCell.h"
+#import "RCNetworkHeaderButton.h"
 
+@class RCNetwork;
 @interface RCPopoverWindow : UIView <UITableViewDelegate, UITableViewDataSource> {
 	UIImageView *_pImg;
 	id applicationDelegate;
@@ -19,4 +21,5 @@
 - (void)animateIn;
 - (void)animateOut;
 - (void)correctAndRotateToInterfaceOrientation:(UIInterfaceOrientation)oi;
+- (void)checkSelection:(RCNetwork *)net;
 @end

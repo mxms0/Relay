@@ -42,8 +42,7 @@ BOOL RCIsRankHigher(NSString *rank, NSString *rank2, RCNetwork* network) {
     return (rankToNumber([rank characterAtIndex:0],network) < rankToNumber([rank2 characterAtIndex:0],network));
 }
 
-NSInteger rankToNumber(unichar rank, RCNetwork* network)
-{
+NSInteger rankToNumber(unichar rank, RCNetwork* network) {
     for (NSArray* arr in [[network prefix] allValues]) {
         if ([arr count] == 2) {
             if ([[arr objectAtIndex:1] characterAtIndex:0] == rank) {
@@ -639,11 +638,7 @@ modecnt++;\
 			[self recievedMessage:msg from:[delegate useNick] type:RCMessageTypeNormal];
 		return;
 	}
-	NSScanner *scanr = [[NSScanner alloc] initWithString:msg];
-	NSString *cmd = @"";
-	[scanr scanUpToString:@" " intoString:&cmd];
-	[[RCCommandEngine sharedInstance] handleCommand:cmd fromNetwork:[self delegate]];
-	[scanr release];
+	[[RCCommandEngine sharedInstance] handleCommand:msg fromNetwork:[self delegate] forChannel:self];
 }
 
 - (void)handleSlashJOIN:(NSString *)join {

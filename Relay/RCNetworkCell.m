@@ -19,6 +19,10 @@
 		self.detailTextLabel.shadowOffset = CGSizeMake(0, 1);
 		self.textLabel.shadowOffset = CGSizeMake(0, 1);
 		self.textLabel.shadowColor = [UIColor blackColor];
+		RCNetworkCellBackgroundView *bg = [[RCNetworkCellBackgroundView alloc] initWithFrame:CGRectMake(20, 0, 200, 50)];
+		self.selectedBackgroundView = bg;
+		[bg release];
+		[self setSelectionStyle:UITableViewCellSelectionStyleBlue];
 		underline = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"0_underline"]];
 		[self addSubview:underline];
 		[underline release];
@@ -27,7 +31,12 @@
 }
 
 - (void)willMoveToSuperview:(UIView *)newSuperview {
-	[underline setFrame:CGRectMake(6, 41, newSuperview.frame.size.width-11, 2)];
+	[underline setFrame:CGRectMake(6, 40, newSuperview.frame.size.width-11, 2)];
+}
+
+- (void)setSelected:(BOOL)selected {
+	[self setNeedsDisplay];
+		[self.selectedBackgroundView setFrame:CGRectMake(20, 50, 200, 50)];
 }
 
 @end

@@ -50,8 +50,12 @@
 	[super viewDidDisappear:animated];
 }
 
+- (BOOL)shouldAutorotate {
+	return NO;
+}
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-	return !(interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown);
+	return NO;
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {

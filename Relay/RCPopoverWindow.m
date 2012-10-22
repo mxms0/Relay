@@ -13,12 +13,14 @@
 
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
-		networkTable = [[UITableView alloc] initWithFrame:CGRectMake(40, 45, 240, 205)];
+		networkTable = [[UITableView alloc] initWithFrame:CGRectMake(33, 43, 253, 267)];
+		networkTable.layer.cornerRadius = 14;
 		networkTable.delegate = self;
 		networkTable.backgroundColor = [UIColor clearColor];
 		networkTable.separatorStyle = UITableViewCellSeparatorStyleNone;
 		networkTable.dataSource = self;
-		_pImg = [[UIImageView alloc] initWithFrame:CGRectMake(26, 30, 268, 240)];
+		[networkTable setShowsVerticalScrollIndicator:NO];
+		_pImg = [[UIImageView alloc] initWithFrame:CGRectMake(26, 28, 268, 300)];
 		[_pImg setImage:[UIImage imageNamed:@"0_popover"]];
 		[self addSubview:_pImg];
 		[_pImg release];
@@ -59,6 +61,14 @@
 	}];
 }
 
+- (void)checkSelection:(RCNetwork *)net {
+	NSArray *s = [networkTable indexPathsForSelectedRows];
+	for (NSIndexPath *pp in s) {
+		[networkTable deselectRowAtIndexPath:pp animated:NO];
+	}
+#warning FIX THIS !!11
+}
+
 - (void)correctAndRotateToInterfaceOrientation:(UIInterfaceOrientation)oi {
 	BOOL animate = NO;
 	if (!self.hidden) {
@@ -69,12 +79,13 @@
 	if (UIInterfaceOrientationIsLandscape(oi)) {
 		[_pImg setImage:[UIImage imageNamed:@"0_popover_l"]];
 		_pImg.frame = CGRectMake(-1, 29, 242, 234);
-		networkTable.frame = CGRectMake(2, 38, 235, 208);
+		networkTable.frame = CGRectMake(2, 38, 253, 300);
 	}
+	/* XXXX: FIX THESE NUMBERS WHEN SURENIX GETS TO IT */
 	else {
 		[_pImg setImage:[UIImage imageNamed:@"0_popover"]];
-		[networkTable setFrame:CGRectMake(40, 45, 240, 205)];
-		[_pImg setFrame:CGRectMake(26, 30, 268, 240)];
+		[networkTable setFrame:CGRectMake(33, 43, 253, 300)];
+		[_pImg setFrame:CGRectMake(26, 28, 268, 300)];
 	}
 	if (animate) {
 		[UIView commitAnimations];
@@ -85,27 +96,55 @@
 	return 40;
 }
 
+- (NSInteger)tableView:(UITableView *)tableView indentationLevelForRowAtIndexPath:(NSIndexPath *)indexPath {
+	return 1.2;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+	return 44;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+	RCNetworkHeaderButton *btn = [[RCNetworkHeaderButton alloc] initWithFrame:CGRectMake(0, 0, 300, 45)];
+	[btn setSection:section];
+	[btn setNetwork:[[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:section]];
+
+	[btn addTarget:self action:@selector(headerTouched:) forControlEvents:UIControlEventTouchUpInside];
+	return [btn autorelease];
+}
+
+- (void)headerTouched:(RCNetworkHeaderButton *)headr {
+	NSArray *nets = [[RCNetworkManager sharedNetworkManager] networks];
+	for (RCNetwork *net in nets) {
+		[net set_selected:NO];
+	}
+	[[headr net] set_selected:YES];
+	[networkTable reloadData];
+	[[RCNavigator sharedNavigator] selectNetwork:[headr net]];
+	[self animateOut];
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	static NSString *ident = @"0_networkcell";
 	RCNetworkCell *cell = [tableView dequeueReusableCellWithIdentifier:ident];
 	if (!cell) {
 		cell = [[[RCNetworkCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:ident] autorelease];
 	}
-	cell.textLabel.text = [[[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.row] _description];
+
 	return cell;
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-	cell.detailTextLabel.text = [NSString stringWithFormat:@"(%@)", [[[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.row] server]];	
+
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	[[RCNavigator sharedNavigator] selectNetwork:[[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.row]];
-	[self animateOut];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	return [[[RCNetworkManager sharedNetworkManager] networks] count];
+	return 0;
+	return [[[[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:section] _channels] count];
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -113,7 +152,7 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-	return 1;
+	return [[[RCNetworkManager sharedNetworkManager] networks] count];
 }
 
 @end

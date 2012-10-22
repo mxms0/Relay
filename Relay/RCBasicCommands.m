@@ -12,13 +12,26 @@
 
 + (void)load {
 	RCCommandEngine *e = [RCCommandEngine sharedInstance];
-	[e registerSelector:@selector(handleME:net:) forCommands:@"me" usingClass:self];
-	[e registerSelector:@selector(handleNP:net:) forCommands:[NSArray arrayWithObjects:@"nowplaying", @"np", @"ipod", nil] usingClass:self];
-	[e registerSelector:@selector(someTest:net:) forCommands:@"test" usingClass:self];
+	[e registerSelector:@selector(handleME:net:channel:) forCommands:@"me" usingClass:self];
+	[e registerSelector:@selector(handleJOIN:net:channel:) forCommands:@"join" usingClass:self];
 }
 
-- (void)handleNP:(NSString *)np net:(RCNetwork *)net {
-		
+- (void)handleME:(NSString *)me net:(RCNetwork *)net channel:(RCChannel *)chan {
+	if (!me) return;
+	NSString *msg = [NSString stringWithFormat:@"PRIVMSG %@ :%c%@ %@%c", [chan channelName], 0x01, @"ACTION", me, 0x01];
+	if ([net sendMessage:msg])
+		[chan recievedMessage:me from:[net useNick] type:RCMessageTypeAction];
+}
+
+- (void)handleJOIN:(NSString *)aJ net:(RCNetwork *)net channel:(RCChannel *)aChan {
+	if (!aJ) return;
+	NSArray *channels = [aJ componentsSeparatedByString:@" "];
+	for (NSString *chan in channels) {
+		NSString *geh = [[chan stringByReplacingOccurrencesOfString:@"," withString:@""] stringByReplacingOccurrencesOfString:@" " withString:@" "];
+		if (geh != nil && [geh length] > 1) {
+			[net sendMessage:[NSString stringWithFormat:@"JOIN %@", geh]];
+		}
+	}
 }
 
 @end

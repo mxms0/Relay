@@ -65,6 +65,11 @@ static BOOL isSetup = NO;
 	[rcv release];
 	self.window.rootViewController = self.navigationController;
     [self.window makeKeyAndVisible];
+	[self performSelectorInBackground:@selector(_setup) withObject:nil];
+	return YES;
+}
+
+- (void)_setup {
 	dispatch_async(dispatch_get_main_queue(), ^{
 		[self configureUI];
 		if (!isSetup) {
@@ -75,7 +80,7 @@ static BOOL isSetup = NO;
 			if (![manager fileExistsAtPath:PREFS_ABSOLUT]) {
 				if (![manager createFileAtPath:PREFS_ABSOLUT contents:(NSData *)[NSDictionary dictionary] attributes:NULL]) {
 					NSLog(@"fucked.");
-			// fucked.
+					// fucked.
 				}
 			}
 			[[RCNetworkManager sharedNetworkManager] setIsBG:NO];
@@ -84,8 +89,7 @@ static BOOL isSetup = NO;
 			[TestFlight takeOff:@"35b8aa0d259ae0c61c57bc770aeafe63_Mzk5NDYyMDExLTExLTA5IDE4OjQ0OjEwLjc4MTM3MQ"];
 			[TestFlight setDeviceIdentifier:[[UIDevice currentDevice] uniqueIdentifier]];
 		}
-	});
-	return YES;
+	});	
 }
 
 - (void)configureUI {
