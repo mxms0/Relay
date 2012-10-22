@@ -64,7 +64,7 @@
 	}
 	RCChannelBubble *pr = nil;
 	for (RCChannelBubble *bb in channels) {
-		[bb setFrame:CGRectMake((pr ? pr.frame.size.width+pr.frame.origin.x : 10),(self.frame.size.height/2)-(bb.frame.size.height/2), bb.frame.size.width, 32)];
+		[bb setFrame:CGRectMake((pr ? pr.frame.size.width+pr.frame.origin.x : 10),(self.frame.size.height/2)-(bb.frame.size.height/2), bb.frame.size.width, 22)];
 		[self addSubview:bb];
         [bb fixColors];
 		pr = bb;

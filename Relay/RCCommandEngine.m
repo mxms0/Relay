@@ -7,6 +7,7 @@
 
 #import "RCCommandEngine.h"
 #import "RCNetwork.h"
+#include <objc/message.h>
 
 @implementation RCCommandEngine
 static id _eInstance = nil;
