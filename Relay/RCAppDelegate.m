@@ -55,12 +55,12 @@ static BOOL isSetup = NO;
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
 	UIViewController *rcv;
 	Class rcvClass = [RCiPadViewController class];
-	NSString *xib = @"RCViewController_iPad";
+
 	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-		xib = @"RCViewController_iPhone";
 		rcvClass = [RCViewController class];
 	}
-	rcv = [[rcvClass alloc] initWithNibName:xib bundle:nil];
+	
+    rcv = [[rcvClass alloc] init];
 	self.navigationController = [[[UINavigationController alloc] initWithRootViewController:rcv] autorelease];
 	[rcv release];
 	self.window.rootViewController = self.navigationController;

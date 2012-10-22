@@ -48,7 +48,7 @@ static inline void NOLog(NSString* a, ...) {
 	#define LOGALL 0
 	#define CMLog(format, ...) NSLog(@"(%s) in [%s:%d] ::: %@", __PRETTY_FUNCTION__, __FILE__, __LINE__, [NSString stringWithFormat:format, ## __VA_ARGS__])
 	#define MARK CMLog(@"%s", __PRETTY_FUNCTION__);
-	typedef NSMutableAttributedString RCAttributedString;
+	//typedef NSMutableAttributedString RCAttributedString;
 	typedef enum RCMessageType {
 		RCMessageTypeAction = 0,
 		RCMessageTypeNormal,
