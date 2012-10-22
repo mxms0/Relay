@@ -117,8 +117,6 @@
 		50A7FB8314C0F0A800ABADEA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A7FB8214C0F0A800ABADEA /* Foundation.framework */; };
 		50A7FB8514C0F0A800ABADEA /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A7FB8414C0F0A800ABADEA /* CoreGraphics.framework */; };
 		50A7FB8B14C0F0A800ABADEA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 50A7FB8914C0F0A800ABADEA /* InfoPlist.strings */; };
-		50A7FB9714C0F0A800ABADEA /* RCViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50A7FB9514C0F0A800ABADEA /* RCViewController_iPhone.xib */; };
-		50A7FB9A14C0F0A800ABADEA /* RCViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50A7FB9814C0F0A800ABADEA /* RCViewController_iPad.xib */; };
 		50A7FBB314C0FAB800ABADEA /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A7FBB214C0FAB700ABADEA /* QuartzCore.framework */; };
 		50AAE7E7151AD6A500E631FD /* RCTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 50AAE7E6151AD6A500E631FD /* RCTextField.m */; };
 		50AAE7EA151AD8B900E631FD /* RCAddCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 50AAE7E9151AD8B900E631FD /* RCAddCell.m */; };
@@ -330,8 +328,6 @@
 		50A7FB8214C0F0A800ABADEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		50A7FB8414C0F0A800ABADEA /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		50A7FB8A14C0F0A800ABADEA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		50A7FB9614C0F0A800ABADEA /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/RCViewController_iPhone.xib; sourceTree = "<group>"; };
-		50A7FB9914C0F0A800ABADEA /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/RCViewController_iPad.xib; sourceTree = "<group>"; };
 		50A7FBB214C0FAB700ABADEA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		50AAE7E5151AD6A500E631FD /* RCTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTextField.h; sourceTree = "<group>"; };
 		50AAE7E6151AD6A500E631FD /* RCTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTextField.m; sourceTree = "<group>"; };
@@ -744,8 +740,6 @@
 				50E492321522A27300EF676B /* 0_navbar_landscape.png */,
 				50E492331522A27500EF676B /* 0_navbar_landscape@2x.png */,
 				508254C41605865900F55F97 /* 0_bg568h@2x.png */,
-				50A7FB9514C0F0A800ABADEA /* RCViewController_iPhone.xib */,
-				50A7FB9814C0F0A800ABADEA /* RCViewController_iPad.xib */,
 				50E77A8C1505A28400E75C64 /* Relay-Info.plist */,
 				50A7FB8914C0F0A800ABADEA /* InfoPlist.strings */,
 			);
@@ -865,8 +859,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				50A7FB8B14C0F0A800ABADEA /* InfoPlist.strings in Resources */,
-				50A7FB9714C0F0A800ABADEA /* RCViewController_iPhone.xib in Resources */,
-				50A7FB9A14C0F0A800ABADEA /* RCViewController_iPad.xib in Resources */,
 				5049385914FAAAD3003221FC /* 0_chatcell.png in Resources */,
 				5049385A14FAAAD3003221FC /* 0_chatcell@2x.png in Resources */,
 				5049386914FAAAE3003221FC /* 0_bg@2x.png in Resources */,
@@ -1075,22 +1067,6 @@
 				50A7FB8A14C0F0A800ABADEA /* en */,
 			);
 			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		50A7FB9514C0F0A800ABADEA /* RCViewController_iPhone.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				50A7FB9614C0F0A800ABADEA /* en */,
-			);
-			name = RCViewController_iPhone.xib;
-			sourceTree = "<group>";
-		};
-		50A7FB9814C0F0A800ABADEA /* RCViewController_iPad.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				50A7FB9914C0F0A800ABADEA /* en */,
-			);
-			name = RCViewController_iPad.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
