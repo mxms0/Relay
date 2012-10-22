@@ -431,7 +431,6 @@
 		50F1A65B15D216CA0013CD13 /* RCBasicTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCBasicTableViewCell.m; sourceTree = "<group>"; };
 		50F9036C15C5B105001BC6F0 /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libcrypto.a; sourceTree = "<group>"; };
 		50F9036D15C5B105001BC6F0 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libssl.a; sourceTree = "<group>"; };
-		50F9037115C5B126001BC6F0 /* openssl */ = {isa = PBXFileReference; lastKnownFileType = folder; path = openssl; sourceTree = "<group>"; };
 		7EF931D7159A137B0031CDD0 /* RCBarButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCBarButton.h; sourceTree = "<group>"; };
 		7EF931D8159A137B0031CDD0 /* RCBarButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCBarButton.m; sourceTree = "<group>"; };
 		AA503EED15AD2C5A00EF223E /* RCAlternateNicknamesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCAlternateNicknamesManager.h; sourceTree = "<group>"; };
@@ -470,7 +469,6 @@
 		503D4E7A14F18491002E5E38 /* Imports */ = {
 			isa = PBXGroup;
 			children = (
-				50F9037115C5B126001BC6F0 /* openssl */,
 				5052343D1556D77C002EC9AC /* TestFlight.h */,
 			);
 			name = Imports;

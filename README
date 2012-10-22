@@ -18,4 +18,3 @@ Show topic when rejoining a channel
 Channel/user list scrolling breaks after rotating
 Add option to disable chat autocapitalization
 Scroll to channel/user window when you /join or /privmsg
-There is some weird bug with scrolling at the channel scroll view where the RCChannelBubble will have a bad y placed.

@@ -38,7 +38,7 @@
 	if ([channels count] == 0) {
 		UILabel *nothingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 7.5, 320, 16)];
 		nothingLabel.textAlignment = UITextAlignmentCenter;
-		nothingLabel.text = @"You have no rooms for this server.. :(";
+		nothingLabel.text = @"You have no rooms for this server... :(";
 		nothingLabel.font = [UIFont systemFontOfSize:10];
 		nothingLabel.backgroundColor = [UIColor clearColor];
 		nothingLabel.textColor = [UIColor darkGrayColor];
