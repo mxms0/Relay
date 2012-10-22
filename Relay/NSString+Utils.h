@@ -7,7 +7,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSString (Utils)
+@interface NSString (RCUtils)
 - (BOOL)isEqualToStringNoCase:(NSString *)string;
 - (BOOL)hasPrefixNoCase:(NSString *)string;
 - (BOOL)hasSuffixNoCase:(NSString *)string;

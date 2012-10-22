@@ -8,27 +8,27 @@
 
 #import "NSString+Utils.h"
 
-@implementation NSString (Utils)
-
+@implementation NSString (RCUtils)
 - (BOOL)isEqualToStringNoCase:(NSString *)string {
-	return [[self lowercaseString] isEqualToString:[string lowercaseString]];
+	return (CFStringCompare((CFStringRef)self, (CFStringRef)string, kCFCompareCaseInsensitive) == kCFCompareEqualTo);
 }
 
 - (BOOL)hasPrefixNoCase:(NSString *)string {
-	return [[self lowercaseString] hasPrefix:[string lowercaseString]];
+	return ([self rangeOfString:string options:(NSCaseInsensitiveSearch | NSAnchoredSearch)].location != NSNotFound);
 }
 
 - (BOOL)hasSuffixNoCase:(NSString *)string {
-	return [[self lowercaseString] hasSuffix:[string lowercaseString]];
+	return ([self rangeOfString:string options:(NSCaseInsensitiveSearch | NSAnchoredSearch | NSBackwardsSearch)].location != NSNotFound);
 }
 
 - (NSString *)recursivelyRemovePrefix:(NSString *)prefix {
 	if (!prefix || !self) return nil;
-	if ([self hasPrefix:prefix])
+	
+    if ([self hasPrefix:prefix])
 		self = [self substringFromIndex:[prefix length]];
-	else return self;
-	return [self recursivelyRemovePrefix:prefix];
+	else
+        return self;
+	
+    return [self recursivelyRemovePrefix:prefix];
 }
-
-
 @end
