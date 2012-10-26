@@ -114,8 +114,11 @@
 	}
 	[_bar setFrame:[self frameForInputField:key]];
 	field.frame = CGRectMake(15, 5, _bar.frame.size.width-21, 31);
+	if (key)
+		[mainView setFrame:CGRectMake(0, 0, _bar.frame.size.width, _bar.frame.origin.y)];
 	if (anim) [UIView commitAnimations];
-	[mainView setFrame:CGRectMake(0, 0, _bar.frame.size.width, _bar.frame.origin.y)];
+	if (!key)
+		[mainView setFrame:CGRectMake(0, 0, _bar.frame.size.width, _bar.frame.origin.y)];
 	[mainView setNeedsDisplay];
 	[_bar performSelectorOnMainThread:@selector(setNeedsDisplay) withObject:nil waitUntilDone:NO];
 }

@@ -89,13 +89,13 @@
 			[network setPort:[[textField text] intValue]];
 			break;
 		case 4:
-			[network setNick:IS_STRING_OR([textField text],[textField placeholder])];
+			[network setNick:[textField text]];
 			break;
 		case 5:
-			[network setUsername:IS_STRING_OR([textField text],[textField placeholder])];
+			[network setUsername:[textField text]];
 			break;
 		case 6:
-            [network setRealname:IS_STRING_OR([textField text],[textField placeholder])];
+            [network setRealname:[textField text]];
 			break;
 		case 7:
 			MARK;
@@ -112,9 +112,9 @@
 - (void)doneConnection {
 	[self.view findAndResignFirstResponder];
 	if (![network server]) return;
-    [network setRealname:IS_STRING_OR([network realname], DEFAULT_NICK)];
-    [network setNick:IS_STRING_OR([network nick], DEFAULT_NICK)];
-    [network setUsername:IS_STRING_OR([network username], DEFAULT_NICK)];
+    [network setRealname:([network realname] ?: name)];
+    [network setNick:([network nick] ?: name)];
+    [network setUsername:([network username] ?: name)];
 	if (![network port]) [network setPort:6667];
 	if (![network sDescription]) [network setSDescription:[network server]];
     if (isNew) {
@@ -161,7 +161,7 @@
 		case 1:
 			return 3;
 		case 2:
-			return 2;
+			return 3;
 		case 3:
 			return 4;
 	}
@@ -354,6 +354,13 @@
 						[seField setKeyboardAppearance:UIKeyboardAppearanceDefault];
 						[seField setReturnKeyType:UIReturnKeyNext];
 						break;
+					case 2:
+						cell.textLabel.text = @"Attempt SASL";
+						UISwitch *fsc = [[UISwitch alloc] init];
+						[fsc addTarget:self action:@selector(saslSwitched:) forControlEvents:UIControlEventValueChanged];
+						[cell setAccessoryView:fsc];
+						[fsc release];
+						break;
 				}
 				break;
 			case 3:
@@ -393,6 +400,10 @@
 
 - (void)sslSwitched:(UISwitch *)s {
 	[network setUseSSL:s.on];
+}
+
+- (void)saslSwitched:(UISwitch *)s {
+	[network setSASL:s.on];
 }
 
 - (void)launchSwitched:(UISwitch *)s {

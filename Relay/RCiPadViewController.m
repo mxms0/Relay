@@ -20,13 +20,11 @@
     return self;
 }
 
-- (void)loadView {
-    // If you create your views manually, you MUST override this method and use it to create your views.
-    // If you use Interface Builder to create your views, then you must NOT override this method.
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
+	UILabel *ffs = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, 300, 300)];
+	[ffs setText:@"hihi"];
+	[self.view addSubview:ffs];
 	// Do any additional setup after loading the view, typically from a nib.
 }
 

@@ -19,6 +19,7 @@
 @class RCNetwork;
 @class RCNavigator;
 @interface RCChannel : NSObject <UITableViewDelegate, UITableViewDataSource> {
+@public
 	NSString *channelName;
 	NSString *topic;
 	NSString *password;
@@ -62,4 +63,6 @@
 NSString *RCUserRank(NSString *user, RCNetwork* network);
 UIImage *RCImageForRank(NSString *rank, RCNetwork* network);
 BOOL RCIsRankHigher(NSString *rank, NSString *rank2, RCNetwork* network);
+inline BOOL RCHighlightCheck(RCChannel *self, NSString **message);
+char user_hash(NSString *from);
 @end

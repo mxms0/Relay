@@ -13,7 +13,7 @@
 + (void)load {
 	RCCommandEngine *e = [RCCommandEngine sharedInstance];
 	[e registerSelector:@selector(handleME:net:channel:) forCommands:@"me" usingClass:self];
-	[e registerSelector:@selector(handleJOIN:net:channel:) forCommands:@"join" usingClass:self];
+	[e registerSelector:@selector(handleJOIN:net:channel:) forCommands:[NSArray arrayWithObjects:@"join", @"j", nil] usingClass:self];
 }
 
 - (void)handleME:(NSString *)me net:(RCNetwork *)net channel:(RCChannel *)chan {

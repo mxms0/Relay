@@ -9,11 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface RCNetworkCellBackgroundView : UIView {
-	BOOL isTop;
-	BOOL isBottom;
 }
-@property (nonatomic, assign) BOOL isTop;
-@property (nonatomic, assign) BOOL isBottom;
 
 - (void)drawRect:(CGRect)rect;
 

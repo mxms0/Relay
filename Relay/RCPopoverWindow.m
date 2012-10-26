@@ -13,13 +13,14 @@
 
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
-		networkTable = [[UITableView alloc] initWithFrame:CGRectMake(33, 43, 253, 267)];
+		networkTable = [[RCSpecialTableView alloc] initWithFrame:CGRectMake(33, 43, 253, 267) style:UITableViewStylePlain];
 		networkTable.layer.cornerRadius = 14;
 		networkTable.delegate = self;
 		networkTable.backgroundColor = [UIColor clearColor];
 		networkTable.separatorStyle = UITableViewCellSeparatorStyleNone;
 		networkTable.dataSource = self;
 		[networkTable setBackgroundColor:[UIColor clearColor]];
+		[networkTable setBackgroundView:nil];
 		[networkTable setShowsVerticalScrollIndicator:NO];
 		_pImg = [[UIImageView alloc] initWithFrame:CGRectMake(26, 28, 268, 300)];
 		[_pImg setImage:[UIImage imageNamed:@"0_popover"]];
@@ -106,12 +107,43 @@
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-	RCNetworkHeaderButton *btn = [[RCNetworkHeaderButton alloc] initWithFrame:CGRectMake(0, 0, 300, 45)];
+	RCNetworkHeaderButton *btn = [[RCNetworkHeaderButton alloc] initWithFrame:CGRectMake(0, 0, 300, 44)];
+	UILongPressGestureRecognizer *pp = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(headerLongPress:)];
+	[btn addGestureRecognizer:pp];
+	[pp release];
 	[btn setSection:section];
 	[btn setNetwork:[[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:section]];
 	[btn setBackgroundColor:[UIColor clearColor]];
 	[btn addTarget:self action:@selector(headerTouched:) forControlEvents:UIControlEventTouchUpInside];
 	return [btn autorelease];
+}
+
+- (void)headerLongPress:(UILongPressGestureRecognizer *)press {
+	if ([press state] != UIGestureRecognizerStateBegan)
+		return;
+	RCNetworkHeaderButton *hb = (RCNetworkHeaderButton *)[press view];
+	if ([[hb net] expanded]) {
+		[[hb net] setExpanded:NO];
+		NSMutableArray *adds = [[NSMutableArray alloc] init];
+		for (int i = 0; i < [[[hb net] _channels] count]; i++) {
+			[adds addObject:[NSIndexPath indexPathForRow:i inSection:[hb section]]];
+		}
+		[networkTable beginUpdates];
+		[networkTable deleteRowsAtIndexPaths:adds withRowAnimation:UITableViewRowAnimationAutomatic];
+		[networkTable endUpdates];
+		[adds release];
+	}
+	else {
+		[[hb net] setExpanded:YES];
+		NSMutableArray *adds = [[NSMutableArray alloc] init];
+		for (int i = 0; i < [[[hb net] _channels] count]; i++) {
+			[adds addObject:[NSIndexPath indexPathForRow:i inSection:[hb section]]];
+		}
+		[networkTable beginUpdates];
+		[networkTable insertRowsAtIndexPaths:adds withRowAnimation:UITableViewRowAnimationAutomatic];
+		[networkTable endUpdates];
+		[adds release];
+	}
 }
 
 - (void)headerTouched:(RCNetworkHeaderButton *)headr {
@@ -120,7 +152,6 @@
 		[net set_selected:NO];
 	}
 	[[headr net] set_selected:YES];
-	[networkTable reloadData];
 	[[RCNavigator sharedNavigator] selectNetwork:[headr net]];
 	[self animateOut];
 }
@@ -131,21 +162,29 @@
 	if (!cell) {
 		cell = [[[RCNetworkCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:ident] autorelease];
 	}
-
+	RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.section];
+	[cell setChannel:[[[net _channels] objectAtIndex:indexPath.row] channelName]];
 	return cell;
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-
+	[cell setNeedsDisplay];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	[[RCNavigator sharedNavigator] selectNetwork:[[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.row]];
+	RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.section];
+	if (![[net _description] isEqualToString:[[[RCNavigator sharedNavigator] currentNetwork] _description]]) {
+		[[RCNavigator sharedNavigator] selectNetwork:net];
+	}
+	RCNetworkCell *cc = (RCNetworkCell *)[tableView cellForRowAtIndexPath:indexPath];
+	RCChannel *chan = [net channelWithChannelName:[cc channel]];
+	[[RCNavigator sharedNavigator] channelSelected:[chan bubble]];
+	[self animateOut];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	return 0;
-	return [[[[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:section] _channels] count];
+	RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:section];
+	return (net.expanded ? [[net _channels] count] : 0);
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {

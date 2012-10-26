@@ -28,6 +28,7 @@ static inline void NOLog(NSString* a, ...) {
 	#define NET_INFO_KEY @"0_NET_INFO"
 	#define COL_KEY @"0_CONNECT_ON_LAUNCH"
 	#define RELOAD_KEY @"0_RELOAD_LIST"
+	#define SASL_KEY @"0_SASLK"
 	#define BG_NOTIF @"0_BGNOTIF"
 	#define CHANNAMEKEY @"0_CHANKEYNAME"
 	#ifndef kCFCoreFoundationVersionNumber_iPhoneOS_4_0

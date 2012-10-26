@@ -196,7 +196,6 @@ UIImage *RCImageForRank(NSString *rank, RCNetwork* network) {
 	return [NSString stringWithFormat:@"[%@ %@]", [super description], channelName];
 }
 
-char user_hash(NSString *from);
 char user_hash(NSString *from) {
     int uhash = 0;
     @synchronized([[UIApplication sharedApplication] delegate]) {
@@ -205,33 +204,43 @@ char user_hash(NSString *from) {
 	return uhash % 0xFF;
 }
 
-#define MSG_HIGHLIGHT_CHECK(name) {\
-for (NSString* uname  in [fullUserList  sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {if ([obj1 length] > [obj2 length]) {return NSOrderedAscending;} else if ([obj1 length] < [obj2 length]) {return NSOrderedDescending;}return NSOrderedSame;}]) {\
-NSString *cmp = message; \
-NSString *rank = RCUserRank(uname,[self delegate]);\
-NSString *namenorank = [uname substringFromIndex:[rank length]]; \
-int hhash = ([namenorank isEqualToString:[delegate useNick]]) ? 1 : user_hash(namenorank); \
-NSString *pattern1 = [NSString stringWithFormat:@"(^|\\s)([^A-Za-z0-9#]*)(%@)([^A-Za-z0-9]*)($|\\s)",namenorank];\
-NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern1 options:NSRegularExpressionCaseInsensitive error:nil];\
-message = [regex stringByReplacingMatchesInString:cmp options:0 range:NSMakeRange(0, [cmp length]) withTemplate:[NSString stringWithFormat:@"$1$2%c%02d$3%c$4$5", RCIRCAttributeInternalNickname, hhash, RCIRCAttributeInternalNicknameEnd]];\
-NSString *pattern2 = [NSString stringWithFormat:@"(^|\\s)([^A-Za-z0-9]*)(%@)([^A-Za-z0-9]*)($|\\s)",namenorank];\
-if ([[NSRegularExpression regularExpressionWithPattern:pattern2 options:NSRegularExpressionCaseInsensitive error:nil] numberOfMatchesInString:cmp options:0 range:NSMakeRange(0, [cmp length])]) {\
-    is_highlight = (hhash == 1) ? 1 : is_highlight;\
-}\
-}\
+BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
+	BOOL is_highlight = NO;
+	NSMutableArray *fullUserList = self->fullUserList;
+	for (NSString *uname in [fullUserList sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+		if ([obj1 length] > [obj2 length]) return NSOrderedAscending;
+		else if ([obj1 length] < [obj2 length]) return NSOrderedAscending;
+		return NSOrderedSame;
+	}]) {
+		NSString *cmp = *message;
+		if (!cmp) continue;
+		NSString *rank = RCUserRank(uname, [self delegate]);
+		if (!rank) continue;
+		NSString *nameOrRank = [uname substringFromIndex:[rank length]];
+		if (!nameOrRank) continue;
+		int hhash = ([nameOrRank isEqualToString:[[self delegate] useNick]]) ? 1 : user_hash(nameOrRank);
+		NSString *patternuno = [NSString stringWithFormat:@"(^|\\s)([^A-Za-z0-9#]*)(%@)([^A-Za-z0-9]*)($|\\s)", nameOrRank];
+		NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:patternuno options:NSRegularExpressionCaseInsensitive error:nil];
+		*message = [regex stringByReplacingMatchesInString:cmp options:0 range:NSMakeRange(0, [cmp length]) withTemplate:[NSString stringWithFormat:@"$1$2%c%02d$3%c$4$5", RCIRCAttributeInternalNickname, hhash, RCIRCAttributeInternalNicknameEnd]];
+		NSString *patterndos = [NSString stringWithFormat:@"(^|\\s)([^A-Za-z0-9]*)(%@)([^A-Za-z0-9]*)($|\\s)", nameOrRank];
+		if ([[NSRegularExpression regularExpressionWithPattern:patterndos options:NSRegularExpressionCaseInsensitive error:nil] numberOfMatchesInString:cmp options:0 range:NSMakeRange(0, [cmp length])]) {
+			is_highlight = (hhash == 1) ? 1 : is_highlight;
+		}
+	}
+	return is_highlight;
 }
 
 - (void)changeNick:(NSString *)old toNick:(NSString *)new_ {
-    if (new_) {
-        NSString* full_old = [self nickAndRankForNick:old];
-        NSString* old_rank = RCUserRank(full_old, [self delegate]);
-        if (old && full_old) {
+	if (new_) {
+		NSString* full_old = [self nickAndRankForNick:old];
+		NSString* old_rank = RCUserRank(full_old, [self delegate]);
+		if (old && full_old) {
 			if (!old_rank) old_rank = @"";
-            [self setUserLeft:old];
-            [self recievedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" type:RCMessageTypeNormalE];
-            [self setUserJoined:[old_rank stringByAppendingString:new_]];
-        }
-    }
+			[self setUserLeft:old];
+			[self recievedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" type:RCMessageTypeNormalE];
+			[self setUserJoined:[old_rank stringByAppendingString:new_]];
+		}
+	}
 }
 
 - (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type {
@@ -317,12 +326,12 @@ if ([[NSRegularExpression regularExpressionWithPattern:pattern2 options:NSRegula
 			msg = [[NSString stringWithFormat:@"%c[%@] Error%c: %@", RCIRCAttributeBold, time, RCIRCAttributeBold, message] retain];
 			break;
 		case RCMessageTypeAction:
-            MSG_HIGHLIGHT_CHECK(highlight);
+			is_highlight = RCHighlightCheck(self, &message);
 			msg = [[NSString stringWithFormat:@"%c[%@] %c%02d\u2022 %@%c%c %@", RCIRCAttributeBold, time, RCIRCAttributeInternalNickname, uhash, from, RCIRCAttributeInternalNicknameEnd, RCIRCAttributeBold, message] retain];
 			break;
 		case RCMessageTypeNormal:
 			if (![from isEqualToString:@""]) {
-                MSG_HIGHLIGHT_CHECK(msg);
+				is_highlight = RCHighlightCheck(self, &message);
 				msg = [[NSString stringWithFormat:@"%c[%@] %c%02d%@:%c%c %@", RCIRCAttributeBold, time, RCIRCAttributeInternalNickname, uhash, from, RCIRCAttributeInternalNicknameEnd, RCIRCAttributeBold, message] retain];
 			}
 			else {
@@ -332,7 +341,7 @@ if ([[NSRegularExpression regularExpressionWithPattern:pattern2 options:NSRegula
 			break;
 		case RCMessageTypeNotice:
             if ([self isUserInChannel:from]) {
-                MSG_HIGHLIGHT_CHECK(notice);
+				is_highlight = RCHighlightCheck(self, &message);
                 msg = [[NSString stringWithFormat:@"%c[%@] -%c%02d%@%c-%c %@", RCIRCAttributeBold, time, RCIRCAttributeInternalNickname, uhash, from, RCIRCAttributeInternalNicknameEnd, RCIRCAttributeBold, message] retain];
             } else {
                 [[[self delegate] consoleChannel] recievedMessage:[message retain] from:from type:RCMessageTypeNotice];

@@ -17,7 +17,7 @@
 
 @implementation RCNetwork
 
-@synthesize prefix, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _bubbles, _nicknames, shouldRequestSPass, shouldRequestNPass, namesCallback, currentChannel;
+@synthesize prefix, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _bubbles, _nicknames, shouldRequestSPass, shouldRequestNPass, namesCallback, currentChannel, expanded, _selected, SASL;
 
 - (RCChannel *)consoleChannel {
     @synchronized(_channels) {
@@ -40,6 +40,7 @@
 		ssl = NULL;
 		_selected = NO;
         prefix = nil;
+		expanded = NO;
 		_bubbles = [[NSMutableArray alloc] init];
 		_channels = [[NSMutableArray alloc] init];
 		_isDiconnecting = NO;
@@ -73,6 +74,7 @@
 			([npass length] > 0 ? (id)kCFBooleanTrue : (id)kCFBooleanFalse), N_PASS_KEY,
 			sDescription, DESCRIPTION_KEY,
 			server, SERVR_ADDR_KEY,
+			SASL, SASL_KEY,
 			[NSNumber numberWithInt:port], PORT_KEY,
 			[NSNumber numberWithBool:useSSL], SSL_KEY,
 			chanArray, CHANNELS_KEY,
@@ -245,6 +247,8 @@
 		return;
 	}
 	sockfd = socket(PF_INET, SOCK_STREAM, 0);
+	int set = 1;
+	setsockopt(sockfd, SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(int));
 	bzero(&addr, sizeof(addr));
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(port);
@@ -266,6 +270,9 @@
 	char *lbuf = malloc(RECV_BUF_LEN);
 	char *pbuf = lbuf;
 	int blen = RECV_BUF_LEN;
+	if (SASL) {
+		[self sendMessage:@"CAP LS" canWait:NO];
+	}
 	if ([spass length] > 0) {
 		[self sendMessage:[@"PASS " stringByAppendingString:spass] canWait:NO];
 	}
@@ -358,6 +365,8 @@ out_:
 		[self disconnectWithMessage:@"Error socketing"];
 		goto errme;
     }
+	int set = 1;
+	setsockopt(sockfd, SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(int));
     memset(&serv_addr, '0', sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(port);
@@ -612,16 +621,19 @@ char *RCIPForURL(NSString *URL) {
 	[self networkDidRegister:YES];
 	NSScanner *scanner = [[NSScanner alloc] initWithString:welcome];
 	NSString *crap;
+	NSString *meee = nil;
 	@try {
 		[scanner scanUpToString:@" " intoString:&crap];
 		[scanner scanUpToString:@" " intoString:&crap];
-		[scanner scanUpToString:@" " intoString:&crap];
+		[scanner scanUpToString:@" " intoString:&meee];
 		[scanner setScanLocation:[scanner scanLocation]+1];
 		[scanner scanUpToString:@"\r\n" intoString:&crap];
 	}
 	@catch (NSException *exception) {
 		NSLog(@"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF %s", (char *)_cmd);
 	}
+	meee = [meee stringByReplacingOccurrencesOfString:@" " withString:@" "];
+	useNick = [meee retain];
 	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
 	RCChannel *chan = [self consoleChannel];
 	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
@@ -1110,6 +1122,10 @@ char *RCIPForURL(NSString *URL) {
 	[self sendMessage:[@"NICK " stringByAppendingString:useNick] canWait:NO];
 }
 
+- (void)handle903:(NSString *)saslsuc {
+	[self sendMessage:@"CAP END"];
+}
+
 - (void)handle998:(NSString *)fuckyouumich {
 	if (!fuckyouumich) return; //there's never a time where fuck umich is not true. FUCK YOU UMICH.
 	NSLog(@"FUCK. YOU. UMICH:%@",fuckyouumich);
@@ -1565,6 +1581,25 @@ char *RCIPForURL(NSString *URL) {
 		NSLog(@"hi %@ %@ %@ %@", from, cmd,room, newTopic);
 	[[self channelWithChannelName:room] recievedMessage:newTopic from:from type:RCMessageTypeTopic];
 	[_scan release];
+}
+
+- (void)handleCAP:(NSString *)cap {
+	NSString *meh = nil;
+	NSString *crap = nil;
+	NSScanner *scs = [[NSScanner alloc] initWithString:cap];
+	[scs scanUpToString:@" " intoString:&crap];
+	[scs scanUpToString:@" " intoString:&crap];
+	[scs scanUpToString:@" " intoString:&meh];
+	meh = [meh stringByReplacingOccurrencesOfString:@" " withString:@""];
+	if ([meh isEqualToString:@"*"]) {
+		[self sendMessage:@"CAP REQ :multi-prefix sasl"];
+	}
+	else {
+		[self sendMessage:@"AUTHENTICATE PLAIN"];
+		[self sendMessage:@"AUTHENTICATE +"];
+		NSString *b64 = [[NSString stringWithFormat:@"AUTHENTICATE %@\0%@0%@", useNick, useNick, npass] base64];
+		[self sendMessage:b64];
+	}
 }
 
 void RCParseUserMask(NSString *mask, NSString **_nick, NSString **user, NSString **hostmask) {

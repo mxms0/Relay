@@ -9,7 +9,6 @@
 #import "RCNetworkCellBackgroundView.h"
 
 @implementation RCNetworkCellBackgroundView
-@synthesize isTop, isBottom;
 
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
@@ -20,7 +19,7 @@
 
 - (void)drawRect:(CGRect)rect {
 	UIImage *img = [UIImage imageNamed:@"0_cell_selec"];
-	[img drawAsPatternInRect:CGRectMake(6, (isTop ? 0 : 2), 242, 50)];
+	[img drawAsPatternInRect:CGRectMake(6, 0, 242, 50)];
 }
 
 @end

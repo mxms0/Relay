@@ -36,12 +36,13 @@
 }
 
 - (void)drawRect:(CGRect)rect {
+	
 	if ([net _selected]) {
 		UIImage *img = [UIImage imageNamed:@"0_cell_selec"];
 		[img drawAsPatternInRect:CGRectMake(6, 0, 242, 42)];
 	}
 	UIImage *ul = [UIImage imageNamed:@"0_underline"];
-	[ul drawAsPatternInRect:CGRectMake(6, 42, 243, 2)];
+	[ul drawAsPatternInRect:CGRectMake(6, 42, 242, 2)];
 	NSString *text = [net _description];
 	NSString *detail = [net server];
 	CGContextRef ctx = UIGraphicsGetCurrentContext();

@@ -61,7 +61,9 @@ typedef enum RCSocketStatus {
 	BOOL COL;
 	BOOL shouldSave;
 	BOOL canSend;
+	BOOL SASL;
 	BOOL _selected;
+	BOOL expanded;
 	BOOL _isDiconnecting;
 	BOOL shouldRequestSPass;
 	BOOL shouldRequestNPass;
@@ -86,11 +88,13 @@ typedef enum RCSocketStatus {
 @property (nonatomic, assign) BOOL isRegistered;
 @property (nonatomic, assign) BOOL useSSL;
 @property (nonatomic, assign) BOOL COL;
+@property (nonatomic, assign) BOOL SASL;
 @property (nonatomic, assign) BOOL shouldRequestSPass;
 @property (nonatomic, assign) BOOL shouldRequestNPass;
 @property (nonatomic, assign) RCChannelManager *namesCallback;
 @property (nonatomic, assign) RCChannel *currentChannel;
 @property (nonatomic, assign) BOOL _selected;
+@property (nonatomic, assign) BOOL expanded;
 - (RCChannel *)channelWithChannelName:(NSString *)chan;
 - (NSString *)_description;
 - (void)connect;

@@ -8,12 +8,13 @@
 #import <UIKit/UIKit.h>
 #import "RCNetworkCell.h"
 #import "RCNetworkHeaderButton.h"
+#import "RCSpecialTableView.h"
 
 @class RCNetwork;
 @interface RCPopoverWindow : UIView <UITableViewDelegate, UITableViewDataSource> {
 	UIImageView *_pImg;
 	id applicationDelegate;
-	UITableView *networkTable;
+	RCSpecialTableView *networkTable;
 	BOOL shouldRePresentKeyboardOnDismiss;
 }
 @property (nonatomic, assign) BOOL shouldRePresentKeyboardOnDismiss;
