@@ -30,7 +30,7 @@
 
 - (NSString *)titleText {
 	if (isNew) {
-		return @"Add A Network";
+		return @"Add a Network";
 	}
 	else {
 		return [network _description];
