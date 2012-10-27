@@ -21,13 +21,34 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-	//	NSLog(@"%@", [AVCaptureDevice devices]);
+
 	[[UIApplication sharedApplication] registerForRemoteNotificationTypes:UIRemoteNotificationTypeAlert];
 	CGSize screenWidth = [[UIScreen mainScreen] applicationFrame].size;
-	RCNavigator *navigator = [RCNavigator sharedNavigator];
-	[navigator setFrame:CGRectMake(0, 0, 568, screenWidth.height)];
-	[self.view addSubview:navigator];
 	[self.navigationController setNavigationBarHidden:YES];
+	rootView = [[UIViewController alloc] init]; 
+	navigationController = [[UINavigationController alloc] initWithRootViewController:rootView];
+	[self.view addSubview:navigationController.view];
+	[self.view setFrame:CGRectMake(0, 0, 320, 460)];
+	[navigationController setNavigationBarHidden:YES];
+	[navigationController setNavigationBarHidden:NO]; // strange hack to make toolbar at top of screen.. :s
+	[[navigationController navigationBar] setBackgroundImage:[UIImage imageNamed:@"0_headr"] forBarMetrics:UIBarMetricsDefault];
+leftView = [[RCChatsListViewController alloc] init];
+	[self.view insertSubview:leftView.view atIndex:0];
+	UIButton *listr = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 42, 31)];
+	[listr setImage:[UIImage imageNamed:@"0_listrbtn"] forState:UIControlStateNormal];
+	[listr setImage:[UIImage imageNamed:@"0_listrbtn_pressed"] forState:UIControlStateHighlighted];
+	UIBarButtonItem *fs = [[UIBarButtonItem alloc] initWithCustomView:listr];
+	[[rootView navigationItem] setLeftBarButtonItem:fs];
+	[fs release];
+	[listr release];
+	UIButton *ppls = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 41, 31)];
+	[ppls setImage:[UIImage imageNamed:@"0_pple"] forState:UIControlStateNormal];
+	[ppls setImage:[UIImage imageNamed:@"0_pple_press"] forState:UIControlStateHighlighted];
+	UIBarButtonItem *bs = [[UIBarButtonItem alloc] initWithCustomView:ppls];
+	[[rootView navigationItem] setRightBarButtonItem:bs];
+	[bs release];
+	[ppls release];
+
 }
 
 - (void)viewDidUnload {

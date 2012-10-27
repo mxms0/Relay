@@ -110,7 +110,6 @@ static BOOL isSetup = NO;
 	[btn setBackButtonBackgroundImage:[[UIImage imageNamed:@"0_navback"] stretchableImageWithLeftCapWidth:15 topCapHeight:15] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
 	[btn setBackButtonBackgroundImage:[[UIImage imageNamed:@"0_navback_pressed"] stretchableImageWithLeftCapWidth:15 topCapHeight:15] forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
 	[btn setBackButtonTitlePositionAdjustment:UIOffsetMake(-1, 1) forBarMetrics:UIBarMetricsDefault];
-
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

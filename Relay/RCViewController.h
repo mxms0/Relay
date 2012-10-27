@@ -7,10 +7,12 @@
 
 #import <UIKit/UIKit.h>
 #import "RCChannel.h"
-#import "TestFlight.h"
-#import <AVFoundation/AVFoundation.h>
+#import "RCChatController.h"
+#import "RCChatsListViewController.h"
 
 @interface RCViewController : UIViewController {
-
+	UIViewController *rootView;
+	UINavigationController *navigationController;
+	RCChatsListViewController *leftView;
 }
 @end
