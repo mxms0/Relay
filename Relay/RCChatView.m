@@ -130,7 +130,7 @@ NSString *colorForIRCColor(char irccolor) {
 _out_:
 	@synchronized(self) {
 		if (preloadPool) {
-			NSLog(@"ADDING TO POOL");
+			NSLog(@"GOING SWIMMMING");
 			[preloadPool addObject:ms];
 			return;
 		}

@@ -133,6 +133,7 @@ static NSMutableArray *networks = nil;
 			[self ircNetworkWithInfo:_info isNew:NO];
 		}
 	}
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"us.mxms.relay.reload" object:nil];
 	isSetup = NO;
 }
 

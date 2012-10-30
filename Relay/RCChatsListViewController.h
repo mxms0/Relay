@@ -7,7 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "RCNetworkManager.h"
+#import "RCNetworkHeaderButton.h"
+#import "RCBaseNavigationViewController.h"
 
-@interface RCChatsListViewController : UINavigationController
+@interface RCChatsListViewController : RCBaseNavigationViewController <UITableViewDataSource, UITableViewDelegate> {
+	UITableView *datas;
+}
 
 @end
