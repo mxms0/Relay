@@ -9,10 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "RCNetworkManager.h"
 #import "RCNetworkHeaderButton.h"
+#import "RCSpecialTableView.h"
 #import "RCBaseNavigationViewController.h"
 
 @interface RCChatsListViewController : RCBaseNavigationViewController <UITableViewDataSource, UITableViewDelegate> {
-	UITableView *datas;
+	RCSpecialTableView *datas;
 }
 
 @end

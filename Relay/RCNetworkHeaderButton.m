@@ -35,28 +35,34 @@
 	[self setNeedsDisplay];
 }
 
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+	_pSelected = NO;
+	[self setNeedsDisplay];
+	[super touchesEnded:touches withEvent:event];
+}
+
 - (void)drawRect:(CGRect)rect {
 	
-	if ([net _selected]) {
+	if ([net expanded] || _pSelected) {
 		UIImage *img = [UIImage imageNamed:@"0_cell_selec"];
-		[img drawAsPatternInRect:CGRectMake(6, 0, 242, 42)];
+		[img drawAsPatternInRect:CGRectMake(0, 0, rect.size.width, 42)];
 	}
 	UIImage *ul = [UIImage imageNamed:@"0_underline"];
-	[ul drawAsPatternInRect:CGRectMake(6, 42, 242, 2)];
+	[ul drawAsPatternInRect:CGRectMake(0, 42, rect.size.width, 2)];
 	NSString *text = [net _description];
 	NSString *detail = [net server];
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	CGContextSetShadowWithColor(ctx, CGSizeMake(0, 1), 0, [UIColor blackColor].CGColor);
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
 	CGContextScaleCTM(ctx, [[UIScreen mainScreen] scale], [[UIScreen mainScreen] scale]);
-	[text drawInRect:CGRectMake(10, 1, 200, 40) withFont:[UIFont boldSystemFontOfSize:9] lineBreakMode:UILineBreakModeCharacterWrap alignment:UITextAlignmentLeft];
-	CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.8 alpha:0.8].CGColor);
-	[detail drawInRect:CGRectMake(10, 12, 200, 30) withFont:[UIFont boldSystemFontOfSize:5.5]];
+	[text drawInRect:CGRectMake(5, 1, 200, 40) withFont:[UIFont boldSystemFontOfSize:9] lineBreakMode:UILineBreakModeCharacterWrap alignment:UITextAlignmentLeft];
+	CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.909 alpha:0.800].CGColor);
+	[detail drawInRect:CGRectMake(5, 12, 200, 30) withFont:[UIFont systemFontOfSize:5.5]];
 }
 
 - (void)setNetwork:(RCNetwork *)_net {
 	net = [_net retain];
-	_pSelected = [net _selected];
+	_pSelected = [net expanded];
 }
 
 - (RCNetwork *)net {

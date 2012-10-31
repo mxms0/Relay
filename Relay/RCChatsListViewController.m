@@ -13,9 +13,10 @@
 - (id)initWithRootViewController:(UIViewController *)rootViewController {
 	if ((self = [super initWithRootViewController:rootViewController])) {
 		[self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"0_bg"]]];
-		datas = [[UITableView alloc] initWithFrame:CGRectMake(0, 44, 320, 504) style:UITableViewStylePlain];
+		datas = [[RCSpecialTableView alloc] initWithFrame:CGRectMake(0, 44, 320, 504) style:UITableViewStylePlain];
 		[datas setDelegate:self];
 		[datas setDataSource:self];
+		[datas setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 		[datas setBackgroundColor:[UIColor clearColor]];
 		[self.view addSubview:datas];
 		[datas release];
@@ -60,12 +61,42 @@
 	return cell;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+	return 44;
+}
+
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
 	RCNetworkHeaderButton *bts = [[RCNetworkHeaderButton alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
 	[bts setSection:section];
 	[bts setNetwork:[[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:section]];
 	[bts setBackgroundColor:[UIColor clearColor]];
+	[bts addTarget:self action:@selector(headerTapped:) forControlEvents:UIControlEventTouchUpInside];
 	return [bts autorelease];
+}
+
+- (void)headerTapped:(RCNetworkHeaderButton *)hb {
+	if ([[hb net] expanded]) {
+		[[hb net] setExpanded:NO];
+		NSMutableArray *adds = [[NSMutableArray alloc] init];
+		for (int i = 0; i < [[[hb net] _channels] count]; i++) {
+			[adds addObject:[NSIndexPath indexPathForRow:i inSection:[hb section]]];
+		}
+		[datas beginUpdates];
+		[datas deleteRowsAtIndexPaths:adds withRowAnimation:UITableViewRowAnimationAutomatic];
+		[datas endUpdates];
+		[adds release];
+	}
+	else {
+		[[hb net] setExpanded:YES];
+		NSMutableArray *adds = [[NSMutableArray alloc] init];
+		for (int i = 0; i < [[[hb net] _channels] count]; i++) {
+			[adds addObject:[NSIndexPath indexPathForRow:i inSection:[hb section]]];
+		}
+		[datas beginUpdates];
+		[datas insertRowsAtIndexPaths:adds withRowAnimation:UITableViewRowAnimationAutomatic];
+		[datas endUpdates];
+		[adds release];
+	}
 }
 
 - (void)dealloc {
