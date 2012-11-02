@@ -280,7 +280,6 @@ static id _sharedNavigator = nil;
 
 - (void)selectNetwork:(RCNetwork *)net {
 	@synchronized(self) {
-		[nWindow checkSelection:net];
 		if (currentPanel) {
 			[currentPanel removeFromSuperview];
 			currentPanel = nil;

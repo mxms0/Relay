@@ -10,7 +10,6 @@
 #import "RCNetworkCellBackgroundView.h"
 
 @interface RCNetworkCell : RCBasicTableViewCell {
-	UIImageView *underline;
 	NSString *channel;
 }
 @property (nonatomic, retain) NSString *channel;

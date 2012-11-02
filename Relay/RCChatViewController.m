@@ -20,14 +20,6 @@
 		[shdw setFrame:CGRectMake(-mfs.size.width, 0, mfs.size.width, self.view.frame.size.height)];
 		[self.view.layer addSublayer:shdw];
 		[shdw release];
-		CALayer *hshdw = [[CALayer alloc] init];
-		UIImage *hfs/*wo*/= [UIImage imageNamed:@"0_vzshdw"];
-		[hshdw setContents:(id)hfs.CGImage];
-		[hshdw setShouldRasterize:YES];
-		[hshdw setFrame:CGRectMake(0, 44, [self navigationBar].frame.size.width, hfs.size.height)];
-		[[self navigationBar].layer setMasksToBounds:NO];
-		[[self navigationBar].layer addSublayer:hshdw];
-		[hshdw release];
 	}
 	return self;
 }

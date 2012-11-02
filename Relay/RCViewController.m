@@ -27,17 +27,18 @@
 	UIViewController *base = [[UIViewController alloc] init];
 	UIViewController *baseTwo = [[UIViewController alloc] init];
 	navigationController = [[RCChatViewController alloc] initWithRootViewController:baseTwo];
+	[navigationController.view setFrame:CGRectMake(0, 0, frame.width, frame.height)];
+	[baseTwo.view setFrame:navigationController.view.frame];
 	[((RCChatNavigationBar *)[navigationController navigationBar]) setTitle:@"Relay"];
 	[((RCChatNavigationBar *)[navigationController navigationBar]) setSubtitle:@"Welcome to Relay"];
 	[[navigationController navigationBar] setNeedsDisplay];
 	[self.view addSubview:navigationController.view];
-	[self.view setFrame:CGRectMake(0, 0, 320, 460)];
 	[navigationController setNavigationBarHidden:YES];
 	[navigationController setNavigationBarHidden:NO]; // strange hack to make toolbar at top of screen.. :s
 	[[navigationController navigationBar] setBackgroundImage:[UIImage imageNamed:@"0_headr"] forBarMetrics:UIBarMetricsDefault];
 	leftView = [[RCChatsListViewController alloc] initWithRootViewController:base];
 	[self.view insertSubview:leftView.view atIndex:0];
-	[leftView.view setFrame:CGRectMake(0, 0, 320, 520)];
+	[leftView.view setFrame:CGRectMake(0, 0, frame.width, frame.height)];
 	[leftView setNavigationBarHidden:YES];
 	[leftView setNavigationBarHidden:NO]; // again. ffs
 	UIButton *listr = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 42, 31)];
@@ -55,7 +56,6 @@
 	[[[navigationController topViewController] navigationItem] setRightBarButtonItem:bs];
 	[bs release];
 	[ppls release];
-	NSLog(@"meh %@", [self.view recursiveDescription]);
 }
 
 - (void)menuButtonPressed:(id)unused {

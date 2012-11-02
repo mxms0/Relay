@@ -63,14 +63,6 @@
 	}];
 }
 
-- (void)checkSelection:(RCNetwork *)net {
-	NSArray *s = [networkTable indexPathsForSelectedRows];
-	for (NSIndexPath *pp in s) {
-		[networkTable deselectRowAtIndexPath:pp animated:NO];
-	}
-#warning FIX THIS !!11
-}
-
 - (void)correctAndRotateToInterfaceOrientation:(UIInterfaceOrientation)oi {
 	BOOL animate = NO;
 	if (!self.hidden) {

@@ -22,5 +22,4 @@
 - (void)animateIn;
 - (void)animateOut;
 - (void)correctAndRotateToInterfaceOrientation:(UIInterfaceOrientation)oi;
-- (void)checkSelection:(RCNetwork *)net;
 @end

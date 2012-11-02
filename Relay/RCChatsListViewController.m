@@ -13,7 +13,7 @@
 - (id)initWithRootViewController:(UIViewController *)rootViewController {
 	if ((self = [super initWithRootViewController:rootViewController])) {
 		[self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"0_bg"]]];
-		datas = [[RCSpecialTableView alloc] initWithFrame:CGRectMake(0, 44, 320, 504) style:UITableViewStylePlain];
+		datas = [[RCSpecialTableView alloc] initWithFrame:CGRectMake(0, 44, 320, rootViewController.view.frame.size.height-44) style:UITableViewStylePlain];
 		[datas setDelegate:self];
 		[datas setDataSource:self];
 		[datas setSeparatorStyle:UITableViewCellSeparatorStyleNone];
@@ -52,12 +52,15 @@
 	return [[[RCNetworkManager sharedNetworkManager] networks] count];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (RCNetworkCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	static NSString *ident = @"0_fcell";
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ident];
+	RCNetworkCell *cell = (RCNetworkCell *)[tableView dequeueReusableCellWithIdentifier:ident];
 	if (!cell) {
-		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:ident];
+		cell = [[RCNetworkCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:ident];
 	}
+	RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.section];
+	[cell setChannel:[[[net _channels] objectAtIndex:indexPath.row] channelName]];
+	
 	return cell;
 }
 
@@ -72,6 +75,12 @@
 	[bts setBackgroundColor:[UIColor clearColor]];
 	[bts addTarget:self action:@selector(headerTapped:) forControlEvents:UIControlEventTouchUpInside];
 	return [bts autorelease];
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	RCNetworkCell *cc = (RCNetworkCell *)[tableView cellForRowAtIndexPath:indexPath];
+	RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.section];
+	
 }
 
 - (void)headerTapped:(RCNetworkHeaderButton *)hb {

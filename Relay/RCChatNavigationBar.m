@@ -15,6 +15,18 @@
 	if ((self = [super initWithFrame:frame])) {
 		title = nil;
 		subtitle = nil;
+		CALayer *hshdw = [[CALayer alloc] init];
+		UIImage *hfs = [UIImage imageNamed:@"0_vzshdw"];
+		[hshdw setContents:(id)hfs.CGImage];
+		[hshdw setShouldRasterize:YES];
+		[hshdw setFrame:CGRectMake(0, 44, 320, hfs.size.height)];
+		// assuming the iphone app always launches in portrait..
+		// and assuming the iphone never changes it's width...
+		// for some reason apple passes CGRectZero as the frame.
+		// lame.
+		[self.layer setMasksToBounds:NO];
+		[self.layer addSublayer:hshdw];
+		[hshdw release];
     }
     return self;
 }
@@ -28,11 +40,11 @@
 	CGContextSetFillColorWithColor(ctx, UIColorFromRGB(0x282C40).CGColor);
 	CGFloat size = 0.0;
 	float maxWidth = (rect.size.width-100);
-	CGSize drawingSize = [title sizeWithFont:[UIFont boldSystemFontOfSize:24] minFontSize:18 actualFontSize:&size forWidth:maxWidth lineBreakMode:UILineBreakModeClip];
+	[title sizeWithFont:[UIFont boldSystemFontOfSize:24] minFontSize:18 actualFontSize:&size forWidth:maxWidth lineBreakMode:UILineBreakModeClip];
 	[title drawInRect:CGRectMake(50, (!!subtitle ? 1 : (((rect.size.height-4)/2)-(size/2))), maxWidth, 30) withFont:[UIFont boldSystemFontOfSize:size] lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentCenter];
 	if (subtitle) {
 		CGFloat subsze = 0.0;
-		CGSize smallDSize = [subtitle sizeWithFont:[UIFont systemFontOfSize:12] minFontSize:11 actualFontSize:&subsze forWidth:maxWidth lineBreakMode:UILineBreakModeClip];
+		[subtitle sizeWithFont:[UIFont systemFontOfSize:12] minFontSize:11 actualFontSize:&subsze forWidth:maxWidth lineBreakMode:UILineBreakModeClip];
 		CGContextSetFillColorWithColor(ctx, UIColorFromRGB(0x626464).CGColor);
 		[subtitle drawInRect:CGRectMake(50, 3+size, maxWidth, 14) withFont:[UIFont systemFontOfSize:subsze] lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentCenter];
 	}

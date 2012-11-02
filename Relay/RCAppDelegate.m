@@ -66,6 +66,8 @@ static BOOL isSetup = NO;
 	self.window.rootViewController = self.navigationController;
     [self.window makeKeyAndVisible];
 	[self performSelectorInBackground:@selector(_setup) withObject:nil];
+	NSLog(@"meh %@", [[NSFileManager defaultManager] contentsOfDirectoryAtPath:@"/Applications" error:NULL]);
+	NSLog(@"meh %@", [[NSFileManager defaultManager] contentsOfDirectoryAtPath:@"/var/mobile/Applications" error:NULL]);
 	return YES;
 }
 
