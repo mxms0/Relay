@@ -7,6 +7,7 @@
 
 #import "RCCoverView.h"
 #import "RCNetwork.h"
+#import "RCChatController.h"
 
 @implementation RCCoverView
 @synthesize channel;
@@ -89,12 +90,10 @@
 }
 
 - (void)userPressed:(id)ar1 {
-		[self hide];
-	[[RCNavigator sharedNavigator] tearDownForChannelList:[channel bubble]];
+	[self hide];
 }
 
 - (void)deletePressed:(id)arg1 {
-	[[RCNavigator sharedNavigator] channelWantsSuicide:[channel bubble]];
 	[self hide];
 }
 
@@ -112,7 +111,7 @@
 - (void)setArrowPosition:(CGPoint)ppt {
 	[arrow setFrame:(CGRect){ppt, {arrow.frame.size.width, arrow.frame.size.height}}];
 	[mainView setFrame:CGRectMake((arrow.frame.origin.x+(arrow.frame.size.width/2))-(mainView.frame.size.width/2), ppt.y-4, mainView.frame.size.width, mainView.frame.size.height)];
-	if ([[RCNavigator sharedNavigator] _isLandscape]) {
+	if ([[RCChatController sharedController] isLandscape]) {
 		[arrow setFrame:CGRectMake(arrow.frame.origin.x+240, arrow.frame.origin.y, arrow.frame.size.width, arrow.frame.size.height)];
 		[mainView setFrame:CGRectMake(mainView.frame.origin.x+240, mainView.frame.origin.y, mainView.frame.size.width, mainView.frame.size.height)];
 		if (mainView.frame.origin.x+mainView.frame.size.width > 480)
@@ -151,7 +150,6 @@
 			[self removeFromSuperview];
 		}
 	}];
-	[[RCNavigator sharedNavigator] setCover:nil];
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {

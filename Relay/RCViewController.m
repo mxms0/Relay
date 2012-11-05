@@ -7,7 +7,6 @@
 
 #import "RCViewController.h"
 #import "RCNetworkManager.h"
-#import "RCNavigator.h"
 #import "RCPrettyAlertView.h"
 
 @implementation RCViewController
@@ -23,52 +22,7 @@
     [super viewDidLoad];
 	[[UIApplication sharedApplication] registerForRemoteNotificationTypes:UIRemoteNotificationTypeAlert];
 	[self.navigationController setNavigationBarHidden:YES];
-	CGSize frame = [[UIScreen mainScreen] applicationFrame].size;
-	UIViewController *base = [[UIViewController alloc] init];
-	UIViewController *baseTwo = [[UIViewController alloc] init];
-	navigationController = [[RCChatViewController alloc] initWithRootViewController:baseTwo];
-	[navigationController.view setFrame:CGRectMake(0, 0, frame.width, frame.height)];
-	[baseTwo.view setFrame:navigationController.view.frame];
-	[((RCChatNavigationBar *)[navigationController navigationBar]) setTitle:@"Relay"];
-	[((RCChatNavigationBar *)[navigationController navigationBar]) setSubtitle:@"Welcome to Relay"];
-	[[navigationController navigationBar] setNeedsDisplay];
-	[self.view addSubview:navigationController.view];
-	[navigationController setNavigationBarHidden:YES];
-	[navigationController setNavigationBarHidden:NO]; // strange hack to make toolbar at top of screen.. :s
-	[[navigationController navigationBar] setBackgroundImage:[UIImage imageNamed:@"0_headr"] forBarMetrics:UIBarMetricsDefault];
-	leftView = [[RCChatsListViewController alloc] initWithRootViewController:base];
-	[self.view insertSubview:leftView.view atIndex:0];
-	[leftView.view setFrame:CGRectMake(0, 0, frame.width, frame.height)];
-	[leftView setNavigationBarHidden:YES];
-	[leftView setNavigationBarHidden:NO]; // again. ffs
-	UIButton *listr = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 42, 31)];
-	[listr setImage:[UIImage imageNamed:@"0_listrbtn"] forState:UIControlStateNormal];
-	[listr setImage:[UIImage imageNamed:@"0_listrbtn_pressed"] forState:UIControlStateHighlighted];
-	[listr addTarget:self action:@selector(menuButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-	UIBarButtonItem *fs = [[UIBarButtonItem alloc] initWithCustomView:listr];
-	[[[navigationController topViewController] navigationItem] setLeftBarButtonItem:fs];
-	[fs release];
-	[listr release];
-	UIButton *ppls = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 41, 31)];
-	[ppls setImage:[UIImage imageNamed:@"0_pple"] forState:UIControlStateNormal];
-	[ppls setImage:[UIImage imageNamed:@"0_pple_press"] forState:UIControlStateHighlighted];
-	UIBarButtonItem *bs = [[UIBarButtonItem alloc] initWithCustomView:ppls];
-	[[[navigationController topViewController] navigationItem] setRightBarButtonItem:bs];
-	[bs release];
-	[ppls release];
-}
-
-- (void)menuButtonPressed:(id)unused {
-	CGRect frame = navigationController.view.frame;
-	if (frame.origin.x == 0.0) {
-		frame.origin.x = 267;
-	}
-	else {
-		frame.origin.x = 0;
-	}
-	[UIView beginAnimations:nil context:nil];
-	[navigationController setFrame:frame];
-	[UIView commitAnimations];
+	[[RCChatController alloc] initWithRootViewController:self];
 }
 
 - (void)viewDidUnload {
@@ -100,7 +54,6 @@
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-	[[RCNavigator sharedNavigator] rotateToInterfaceOrientation:toInterfaceOrientation];
 }
 
 @end

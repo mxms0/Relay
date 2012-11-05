@@ -66,8 +66,6 @@ static BOOL isSetup = NO;
 	self.window.rootViewController = self.navigationController;
     [self.window makeKeyAndVisible];
 	[self performSelectorInBackground:@selector(_setup) withObject:nil];
-	NSLog(@"meh %@", [[NSFileManager defaultManager] contentsOfDirectoryAtPath:@"/Applications" error:NULL]);
-	NSLog(@"meh %@", [[NSFileManager defaultManager] contentsOfDirectoryAtPath:@"/var/mobile/Applications" error:NULL]);
 	return YES;
 }
 
@@ -144,11 +142,8 @@ static BOOL isSetup = NO;
 	if (![notification userInfo]) return;
 	NSDictionary *dict = [notification userInfo];
 	RCNetwork *net = [[RCNetworkManager sharedNetworkManager] networkWithDescription:[dict objectForKey:RCCurrentNetKey]];
-	[[RCNavigator sharedNavigator] selectNetwork:net];;
-	RCChannel *chan = [net channelWithChannelName:[dict objectForKey:RCCurrentChanKey]];
-	if ([[RCNavigator sharedNavigator] currentPanel])
-		if (![[[[RCNavigator sharedNavigator] currentPanel] channel] isEqual:chan])
-			[[RCNavigator sharedNavigator] channelSelected:[chan bubble]];
+	NSString *chan = [dict objectForKey:RCCurrentChanKey];
+	[[RCChatController sharedController] selectChannel:chan fromNetwork:net];
 }
 
 - (void)application:(UIApplication *)application willChangeStatusBarFrame:(CGRect)newStatusBarFrame {

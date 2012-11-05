@@ -55,6 +55,11 @@
     <head>
 		<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
         <style>
+
+			.ridgs {
+				background-image:%@ no-repeat;
+				height:10px;
+			}
             html, body { width:100%; height:100%;}
             body {
                 font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", "HelveticaNeue-Light", "Helvetica Neue Light", sans-serif; 
@@ -78,6 +83,9 @@
 				padding-bottom:2px;
                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f2f5f7), color-stop(100%,#e1e5e8));
             }
+			.ridgs {
+
+			}
             /*
              Nickname colors
              */
@@ -131,9 +139,7 @@
             var isBottom = true;
             /* This makes the chat view unscrollable if it's not overflowing vertically */
             
-            document.ontouchmove = function(event) {
-                if (document.body.scrollHeight == document.body.clientHeight) event.preventDefault();
-            }
+
             
             /*
              createMessage() - REQUIRED BY RELAY
@@ -164,7 +170,7 @@
 				} else {
                     isBottom = false;
                 }
-                document.body.appendChild(newdiv);
+				document.body.insertBefore(newdiv, document.body.childNodes[document.body.childNodes.length-2]);
                 return cnt;
             }
             
@@ -299,5 +305,6 @@
             </script>
     </head>
     <body style="background-color: transparent;" onload="atttach();">
+		<div class="ridgs"></div>
     </body>
 </html>

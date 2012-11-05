@@ -27,21 +27,34 @@
 		[self.layer setMasksToBounds:NO];
 		[self.layer addSublayer:hshdw];
 		[hshdw release];
+		UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0, 0, 320, 48) byRoundingCorners:UIRectCornerTopLeft| UIRectCornerTopRight cornerRadii:CGSizeMake(4.5, 4.5)];
+		CAShapeLayer *maskLayer = [CAShapeLayer layer];
+		maskLayer.frame = CGRectMake(0, 0, 320, 48);
+		maskLayer.path = maskPath.CGPath;
+		self.layer.mask = maskLayer;
     }
     return self;
+}
+
+- (void)setFrame:(CGRect)frame {
+	[super setFrame:frame];
+	self.layer.mask.frame = CGRectMake(0, 0, frame.size.width, frame.size.height+4);
+	UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:self.layer.mask.frame byRoundingCorners:UIRectCornerTopLeft| UIRectCornerTopRight cornerRadii:CGSizeMake(5, 5)];
+	CAShapeLayer *shp = (CAShapeLayer *)self.layer.mask;
+	shp.path = maskPath.CGPath;
 }
 
 - (void)drawRect:(CGRect)rect {
 	[super drawRect:rect];
 	UIImage *bg = [UIImage imageNamed:@"0_headr"];
-	[bg drawAtPoint:CGPointMake(0, 0)];
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
+	[bg drawAtPoint:CGPointMake(0, 0)];
 	CGContextSetShadowWithColor(ctx, CGSizeMake(0, 1), 0, [UIColor whiteColor].CGColor);
 	CGContextSetFillColorWithColor(ctx, UIColorFromRGB(0x282C40).CGColor);
 	CGFloat size = 0.0;
 	float maxWidth = (rect.size.width-100);
 	[title sizeWithFont:[UIFont boldSystemFontOfSize:24] minFontSize:18 actualFontSize:&size forWidth:maxWidth lineBreakMode:UILineBreakModeClip];
-	[title drawInRect:CGRectMake(50, (!!subtitle ? 1 : (((rect.size.height-4)/2)-(size/2))), maxWidth, 30) withFont:[UIFont boldSystemFontOfSize:size] lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentCenter];
+	[title drawInRect:CGRectMake((!!subtitle ? 50 : 30), (!!subtitle ? 1 : (((rect.size.height-4)/2)-(size/2))), maxWidth, 30) withFont:[UIFont boldSystemFontOfSize:size] lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentCenter];
 	if (subtitle) {
 		CGFloat subsze = 0.0;
 		[subtitle sizeWithFont:[UIFont systemFontOfSize:12] minFontSize:11 actualFontSize:&subsze forWidth:maxWidth lineBreakMode:UILineBreakModeClip];

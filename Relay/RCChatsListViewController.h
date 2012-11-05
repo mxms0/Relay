@@ -12,6 +12,7 @@
 #import "RCSpecialTableView.h"
 #import "RCBaseNavigationViewController.h"
 #import "RCNetworkCell.h"
+#import "RCChatController.h"
 
 @interface RCChatsListViewController : RCBaseNavigationViewController <UITableViewDataSource, UITableViewDelegate> {
 	RCSpecialTableView *datas;

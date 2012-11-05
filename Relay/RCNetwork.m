@@ -12,6 +12,7 @@
 #import "RCChannelManager.h"
 #import "RCInviteRequestAlert.h"
 #import "RCPrettyAlertView.h"
+#import "RCChatController.h"
 
 #define RECV_BUF_LEN 10240
 
@@ -168,14 +169,12 @@
             else if ([_chan hasPrefix:@"#"]) chan = [[RCChannel alloc] initWithChannelName:_chan];
             else {
                 chan = [[RCPMChannel alloc] initWithChannelName:_chan];
-                [[RCNavigator sharedNavigator] scrollToBubble:[chan bubble]];
             }
             [chan setDelegate:self];
             [[self _channels] addObject:chan];
             [chan release];
             if (join) [chan setJoined:YES withArgument:nil];
             if (isRegistered) {
-                [[RCNavigator sharedNavigator] addChannel:_chan toServer:self];
                 [[RCNetworkManager sharedNetworkManager] saveNetworks];
                 shouldSave = YES; // if we aren't registered.. it's _likely_ just setup.
             }
@@ -198,7 +197,7 @@
         if ([[self.currentChannel channelName] isEqual:[chan channelName]])
             self.currentChannel = [self consoleChannel];
         [chan setJoined:NO withArgument:quitter];
-        [[RCNavigator sharedNavigator] removeChannel:chan fromServer:self];
+		reloadNetworks();
         [_channels removeObject:chan];
         [[RCNetworkManager sharedNetworkManager] saveNetworks];
     }
@@ -950,9 +949,9 @@ char *RCIPForURL(NSString *URL) {
 - (void)handle305:(NSString *)athreeo_five {
 	NSLog(@"Implying this is a znc.");
 	NSLog(@"YAY I'M NO LONGER AWAY.");
-	if ([[[[[RCNavigator sharedNavigator] currentPanel] channel] delegate] isEqual:self]) {
-		[[[RCNavigator sharedNavigator] currentPanel] postMessage:@"You are no longer being marked as away" withType:RCMessageTypeEvent	highlight:NO];
-	}
+	//	if ([[[[[RCNavigator sharedNavigator] currentPanel] channel] delegate] isEqual:self]) {
+	//	[[[RCNavigator sharedNavigator] currentPanel] postMessage:@"You are no longer being marked as away" withType:RCMessageTypeEvent	highlight:NO];
+	//}
     
 }
 
@@ -1165,9 +1164,9 @@ char *RCIPForURL(NSString *URL) {
 		msg = [msg substringFromIndex:1];
 	}
 	from = [from substringFromIndex:1];
-	if ([[RCNavigator sharedNavigator] currentPanel]) {
-		if ([[[[[RCNavigator sharedNavigator] currentPanel] channel] delegate] isEqual:self]) {
-			[[[[RCNavigator sharedNavigator] currentPanel] channel] recievedMessage:msg from:from type:RCMessageTypeNotice];
+	if ([[RCChatController sharedController] currentPanel]) {
+		if ([[[[[RCChatController sharedController] currentPanel] channel] delegate] isEqual:self]) {
+			[[[[RCChatController sharedController] currentPanel] channel] recievedMessage:msg from:from type:RCMessageTypeNotice];
 		}
 		else {
 			goto end;
@@ -1282,7 +1281,6 @@ char *RCIPForURL(NSString *URL) {
     [[self channelWithChannelName:room] recievedMessage:(NSString*)[NSArray arrayWithObjects:usr,msg,nil] from:_nick type:RCMessageTypeKick];
 	if ([usr isEqualToString:useNick]) {
         [[self channelWithChannelName:room] setJoined:NO];
-        [[[self channelWithChannelName:room] bubble] fixColors];
 	}
 	[_scanner release];
 }
@@ -1442,7 +1440,6 @@ char *RCIPForURL(NSString *URL) {
 	if ([_nick isEqualToString:useNick]) {
 		NSLog(@"I went byebye. Notify the police");
         [[self channelWithChannelName:room] setJoined:NO];
-        [[[self channelWithChannelName:room] bubble] fixColors];
         [[self channelWithChannelName:room] recievedMessage:msg from:_nick type:RCMessageTypePart];
 		[_scanner release];
 		return;
@@ -1628,8 +1625,8 @@ void RCParseUserMask(NSString *mask, NSString **_nick, NSString **user, NSString
 				break;
 			case 1: {
 				RCChannel *chan = [self addChannel:alertView.title join:YES];
-				[[RCNavigator sharedNavigator] channelSelected:[chan bubble]];
-				[[RCNavigator sharedNavigator] scrollToBubble:[chan bubble]];
+				reloadNetworks();
+				// select network here
 				break;
 			}
 			default:

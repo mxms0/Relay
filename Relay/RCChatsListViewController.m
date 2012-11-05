@@ -80,7 +80,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	RCNetworkCell *cc = (RCNetworkCell *)[tableView cellForRowAtIndexPath:indexPath];
 	RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.section];
-	
+	[[RCChatController sharedController] selectChannel:[cc channel] fromNetwork:net];
 }
 
 - (void)headerTapped:(RCNetworkHeaderButton *)hb {

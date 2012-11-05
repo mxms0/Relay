@@ -13,8 +13,6 @@
 #import "RCChatViewController.h"
 
 @interface RCViewController : UIViewController {
-	UIViewController *rootView;
-	RCChatViewController *navigationController;
-	RCChatsListViewController *leftView;
+
 }
 @end

@@ -7,7 +7,6 @@
 
 #import "RCChannelManagementViewController.h"
 #import "RCNetwork.h"
-#import "RCNavigator.h"
 
 @implementation RCChannelManagementViewController
 @synthesize channel, originalChannel, delegate;
@@ -131,7 +130,7 @@
 	}
 	[rchan setJoinOnConnect:jOC];
 	if (jOC) [rchan setJoined:YES withArgument:nil];
-	[[RCNavigator sharedNavigator] addChannel:_chan toServer:net];
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"us.mxms.relay.reload" object:nil];
 	[delegate addChannel:_chan];
 	[self.navigationController popViewControllerAnimated:YES];
 }

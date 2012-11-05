@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 #import "RCBaseNavigationViewController.h"
+#import "RCChatController.h"
 
 @interface RCChatViewController : RCBaseNavigationViewController
 - (void)setFrame:(CGRect)frame;

@@ -8,16 +8,16 @@
 #import "RCChannel.h"
 #import "RCNetwork.h"
 #import "RCNetworkManager.h"
-#import "RCNavigator.h"
 #import "TestFlight.h"
-#import <MediaPlayer/MediaPlayer.h>
 #import "RCChatView.h"
 #import "NSString+IRCStringSupport.h"
 #import "RCChannelManager.h"
+#import "RCChatController.h"
+
 #define M_COLOR 32
 @implementation RCChannel
 
-@synthesize channelName, joinOnConnect, panel, topic, bubble, usersPanel, password;
+@synthesize channelName, joinOnConnect, panel, topic, usersPanel, password;
 
 NSString *RCUserRank(NSString *user, RCNetwork *network) {
     @synchronized(network) {
@@ -175,9 +175,7 @@ UIImage *RCImageForRank(NSString *rank, RCNetwork* network) {
 	if (indexPath.row == 0) return;
 	else {
 		[delegate addChannel:c.textLabel.text join:NO];
-		if ([[[RCNavigator sharedNavigator] currentNetwork] isEqual:delegate]) {
-			[[RCNavigator sharedNavigator] channelSelected:[[delegate channelWithChannelName:c.textLabel.text] bubble]];
-		}
+		//	[[RCChatController sharedController] channelSelected:[[delegate channelWithChannelName:c.textLabel.text] bubble]];
 	}
 }
 
@@ -185,8 +183,6 @@ UIImage *RCImageForRank(NSString *rank, RCNetwork* network) {
     @synchronized(self) {
         [channelName release];
         [panel release];
-        [bubble setChannel:nil];
-        [self setBubble:nil];
         [userRanksAdv release];
         [super dealloc];
     }
@@ -567,7 +563,6 @@ modecnt++;\
 	}
     if (!joind) joined = joind;
     else [self setJoined:joind withArgument:@""];
-    [[self bubble] fixColors];
 }
 
 - (void)setJoined:(BOOL)joind withArgument:(NSString *)arg1 {
@@ -586,14 +581,12 @@ modecnt++;\
 			[delegate sendMessage:[NSString stringWithFormat:@"PART %@ %@", channelName, (arg1 ? arg1 : @"Leaving...")]];
 		}
 	}
-    [[self bubble] fixColors];
 }
 
 - (void)setSuccessfullyJoined:(BOOL)success {
 	@synchronized(self) {
 		joined = success;
 		dispatch_async(dispatch_get_main_queue(), ^(void){
-			[bubble fixColors];
 			[self recievedMessage:nil from:[delegate useNick] type:RCMessageTypeJoin];
 		});
 	}
@@ -648,21 +641,6 @@ modecnt++;\
 		return;
 	}
 	[[RCCommandEngine sharedInstance] handleCommand:msg fromNetwork:[self delegate] forChannel:self];
-}
-
-- (void)handleSlashJOIN:(NSString *)join {
-    for (NSString* piece in [join componentsSeparatedByString:@","]) {
-        if ([piece isEqualToString:@" "]||[piece isEqualToString:@""]||!piece)
-        {
-            continue;
-        }
-        if (!([piece hasPrefix:@"#"])||([piece hasPrefix:@"&"])) {
-            piece = [@"#" stringByAppendingString:piece];
-        }
-        id ch = [delegate addChannel:piece join:YES];
-        [[RCNavigator sharedNavigator] channelSelected:[ch bubble]];
-		[[RCNavigator sharedNavigator] scrollToBubble:[ch bubble]];
-    }
 }
 
 - (BOOL)isPrivate {

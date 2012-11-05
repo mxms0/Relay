@@ -9,7 +9,6 @@
 #import "RCChannel.h"
 #import "RCConsoleChannel.h"
 #import "RCPMChannel.h"
-#import "RCNavigator.h"
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>

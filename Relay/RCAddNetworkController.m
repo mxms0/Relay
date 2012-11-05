@@ -71,7 +71,7 @@
 }
 
 - (void)doneWithJoin {
-	[[RCNavigator sharedNavigator] rotateToInterfaceOrientation:self.interfaceOrientation];
+	[[RCChatController sharedController] rotateToInterfaceOrientation:self.interfaceOrientation];
 	[self dismissModalViewControllerAnimated:YES];
 }
 #define IS_STRING_OR(a,b) (((!a) || [a isEqualToString:@""]) ? b : a)
@@ -141,7 +141,7 @@
 		[keychain release];
 	}
 	[[RCNetworkManager sharedNetworkManager] saveNetworks];
-	[[RCNavigator sharedNavigator] refreshTitleBar:network];
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"us.mxms.relay.reload" object:nil];
 	[self doneWithJoin];
 }
 

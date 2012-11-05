@@ -10,7 +10,6 @@
 #import "RCChatPanel.h"
 #import "RCAppDelegate.h"
 #import "NSString+Utils.h"
-#import "RCChannelBubble.h"
 #import "RCUserListPanel.h"
 #import "RCUserTableCell.h"
 #import "RCDateManager.h"
@@ -29,7 +28,6 @@
 	BOOL joinOnConnect;
     BOOL shouldJoin;
 	RCNetwork *delegate;
-	RCChannelBubble *bubble;
     NSMutableArray *fullUserList;
     NSMutableDictionary *userRanksAdv;
 }
@@ -38,7 +36,6 @@
 @property (nonatomic, assign) RCChatPanel *panel;
 @property (nonatomic, retain) NSString *topic;
 @property (nonatomic, retain) NSString *password;
-@property (nonatomic, retain) RCChannelBubble *bubble;
 @property (nonatomic, assign) RCUserListPanel *usersPanel;
 - (void)disconnected:(NSString*)msg;
 - (void)changeNick:(NSString*)old toNick:(NSString*)new_;

@@ -10,7 +10,7 @@
 #import "RCMessageFormatter.h"
 #import "NSString+IRCStringSupport.h"
 #import "RCChannel.h"
-#import "RCNavigator.h"
+#import "RCChatController.h"
 
 static NSString* template = nil;
 
@@ -52,7 +52,8 @@ NSString *colorForIRCColor(char irccolor) {
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
         if (!template) {
-            template = [[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"chatview" ofType:@"html"] encoding:NSUTF8StringEncoding error:nil] retain];
+            template = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"chatview" ofType:@"html"] encoding:NSUTF8StringEncoding error:nil];
+			template = [[NSString stringWithFormat:template, [[NSBundle mainBundle] pathForResource:@"jaggs@2x" ofType:@"png"]] retain];
         }
         self.opaque = NO;
         self.dataDetectorTypes = (UIDataDetectorTypeLink | UIDataDetectorTypePhoneNumber);
@@ -66,6 +67,13 @@ NSString *colorForIRCColor(char irccolor) {
         [[self scrollView] setScrollsToTop:YES];
 	}
 	return self;
+}
+
+- (void)layoutSubviews {
+	for (UIView *subv in [[[self subviews] objectAtIndex:0] subviews]) {
+		if ([subv isKindOfClass:[UIImageView class]])
+			[subv setHidden:YES];
+	}
 }
 
 - (BOOL)webView:(UIWebView *)webView2 shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
@@ -82,8 +90,8 @@ NSString *colorForIRCColor(char irccolor) {
 		NSLog(@"should join: %@", [requestString substringFromIndex:[@"channel:" length]]);
 		NSString *escaped = [[requestString substringFromIndex:[@"channel:" length]] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 		RCChannel *ch = [[(RCChannel *)[[self chatpanel] channel] delegate] addChannel:escaped join:YES];
-		[[RCNavigator sharedNavigator] channelSelected:[ch bubble]];
-		[[RCNavigator sharedNavigator] scrollToBubble:[ch bubble]];
+		reloadNetworks();
+		// select network here.
 		return NO;
 		
 	}
@@ -105,13 +113,6 @@ NSString *colorForIRCColor(char irccolor) {
 	NSString *rep = [self stringByEvaluatingJavaScriptFromString:cstr];\
 	if (![rep isEqualToString:@"SUCCESS"]) {\
 		NSLog(@"Could not exec: %@:%@", cstr, rep); \
-	} else if ([ms  shouldColor]) {\
-		if([(RCChannel*)[[self chatpanel] channel] isPrivate]) \
-			[[(RCChannel*)[[self chatpanel] channel] bubble] setMentioned:YES];\
-		else {\
-			[[(RCChannel*)[[self chatpanel] channel] bubble] setMentioned:[ms  highlight]];\
-			[[(RCChannel*)[[self chatpanel] channel] bubble] setHasNewMessage:![ms  highlight]];\
-		}\
 	}\
 	lpos = cpos;    
 

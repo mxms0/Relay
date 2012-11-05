@@ -6,7 +6,6 @@
 //
 
 #import "RCNetworkManager.h"
-#import "RCNavigator.h"
 
 @implementation RCNetworkManager
 @synthesize isBG, _printMotd;
@@ -55,7 +54,6 @@ static NSMutableArray *networks = nil;
 	}
 	[network _setupRooms:rooms];
 	[networks addObject:network];
-	[[RCNavigator sharedNavigator] addNetwork:network];
 	[network release];
     if ([network COL]) {
         [network connect];
@@ -71,7 +69,7 @@ static NSMutableArray *networks = nil;
 	}
 	if (![_net consoleChannel]) [_net addChannel:@"IRC" join:NO];
 	[networks addObject:_net];
-	[[RCNavigator sharedNavigator] addNetwork:_net];
+	reloadNetworks();
 	if ([_net COL]) [_net connect];
 	if (!isSetup) [self saveNetworks];
 }
@@ -107,11 +105,15 @@ static NSMutableArray *networks = nil;
 				[self setupWelcomeView];
 			}
 			else {
-				[[RCNavigator sharedNavigator] selectNetwork:[networks objectAtIndex:0]];
+				reloadNetworks();
 			}
 			[self saveNetworks];
 		});
 	}
+}
+
+- (void)setupWelcomeView {
+	NSLog(@"SHOULD BRING UP ADD NETWORK CONTROLLERR !!11");
 }
 
 - (void)unpack {
@@ -135,23 +137,6 @@ static NSMutableArray *networks = nil;
 	}
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"us.mxms.relay.reload" object:nil];
 	isSetup = NO;
-}
-
-- (void)setupWelcomeView {
-	RCWelcomeNetwork *net = [[RCWelcomeNetwork alloc] init];
-	[net setSDescription:@"Welcome!"];	
-	[net setServer:@"irc.nightcoast.net"]; // olol.
-	[net addChannel:@"#Relay" join:YES];
-    [[self networks] addObject:net];
-	[[RCNavigator sharedNavigator] addNetwork:net];
-	[[RCNavigator sharedNavigator] selectNetwork:net];
-	RCChannel *chan = [net channelWithChannelName:@"#Relay"];
-    [[RCNavigator sharedNavigator] channelSelected:[chan bubble]];
-	[chan recievedMessage:@"Welcome to Relay!" from:@"" type:RCMessageTypeTopic];
-	[[chan panel] setHidesEntryField:YES];
-	[chan recievedMessage:@"Try out some cool features! :D" from:@"" type:RCMessageTypeNormal];
-	[chan recievedMessage:@"Blah, Blah, more blah!" from:@"" type:RCMessageTypeNormal];
-	[net release];
 }
 
 - (RCNetwork *)networkWithDescription:(NSString *)_desc {

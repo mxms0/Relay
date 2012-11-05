@@ -7,7 +7,7 @@
 
 #import "RCChatPanel.h"
 #import "RCChannel.h"
-#import "RCNavigator.h"
+#import "RCChatController.h"
 
 @implementation RCChatPanel
 @synthesize messages, channel, mainView;
@@ -124,7 +124,7 @@
 }
 
 - (CGRect)frameForInputField:(BOOL)activ {
-	return [[RCNavigator sharedNavigator] frameForInputField:activ];
+	return [[RCChatController sharedController] frameForInputField:activ];
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {

@@ -20,6 +20,21 @@
 		[shdw setFrame:CGRectMake(-mfs.size.width, 0, mfs.size.width, self.view.frame.size.height)];
 		[self.view.layer addSublayer:shdw];
 		[shdw release];
+		UIButton *listr = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 42, 31)];
+		[listr setImage:[UIImage imageNamed:@"0_listrbtn"] forState:UIControlStateNormal];
+		[listr setImage:[UIImage imageNamed:@"0_listrbtn_pressed"] forState:UIControlStateHighlighted];
+		[listr addTarget:[RCChatController sharedController] action:@selector(menuButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+		UIBarButtonItem *fs = [[UIBarButtonItem alloc] initWithCustomView:listr];
+		[[[self topViewController] navigationItem] setLeftBarButtonItem:fs];
+		[fs release];
+		[listr release];
+		UIButton *ppls = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 41, 31)];
+		[ppls setImage:[UIImage imageNamed:@"0_pple"] forState:UIControlStateNormal];
+		[ppls setImage:[UIImage imageNamed:@"0_pple_press"] forState:UIControlStateHighlighted];
+		UIBarButtonItem *bs = [[UIBarButtonItem alloc] initWithCustomView:ppls];
+		[[[self topViewController] navigationItem] setRightBarButtonItem:bs];
+		[bs release];
+		[ppls release];
 	}
 	return self;
 }

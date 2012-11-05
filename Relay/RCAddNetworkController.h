@@ -12,6 +12,7 @@
 #import "RCBasicTextInputCell.h"
 #import "RCChannelManager.h"
 #import "RCBasicViewController.h"
+#import "RCChatController.h"
 #import "RCAlternateNicknamesManager.h"
 #import "RCPrettyAlertView.h"
 

@@ -36,11 +36,12 @@
 	CGContextSetShadowWithColor(ctx, CGSizeMake(0, 1), 0, [UIColor blackColor].CGColor);
 	CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:0.705 green:0.718 blue:0.754 alpha:1.000].CGColor);
 	CGContextScaleCTM(ctx, [[UIScreen mainScreen] scale], [[UIScreen mainScreen] scale]);
-	[channel drawInRect:CGRectMake(5, 4, 200, 40) withFont:[UIFont boldSystemFontOfSize:9] lineBreakMode:UILineBreakModeCharacterWrap alignment:UITextAlignmentLeft];
+	[channel drawInRect:CGRectMake(5, 5, 200, 40) withFont:[UIFont boldSystemFontOfSize:9] lineBreakMode:UILineBreakModeCharacterWrap alignment:UITextAlignmentLeft];
 }
 
 - (void)setSelected:(BOOL)selected {
 	[self setNeedsDisplay];
+	[super setSelected:selected];
 }
 
 @end

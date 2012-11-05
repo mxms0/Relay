@@ -24,6 +24,23 @@
 }
 
 - (void)handleJOIN:(NSString *)aJ net:(RCNetwork *)net channel:(RCChannel *)aChan {
+	/*
+	 
+	 for (NSString *piece in [join componentsSeparatedByString:@","]) {
+	 if ([piece isEqualToString:@" "]||[piece isEqualToString:@""] || !piece) {
+	 continue;
+	 }
+	 if (!([piece hasPrefix:@"#"]) || ([piece hasPrefix:@"&"])) {
+	 piece = [@"#" stringByAppendingString:piece];
+	 }
+	 id ch = [delegate addChannel:piece join:YES];
+	 [[RCNavigator sharedNavigator] channelSelected:[ch bubble]];
+	 [[RCNavigator sharedNavigator] scrollToBubble:[ch bubble]];
+	 }
+	 
+	 */
+	
+	
 	if (!aJ) return;
 	NSArray *channels = [aJ componentsSeparatedByString:@" "];
 	for (NSString *chan in channels) {
