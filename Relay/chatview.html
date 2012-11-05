@@ -55,11 +55,6 @@
     <head>
 		<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
         <style>
-
-			.ridgs {
-				background-image:%@ no-repeat;
-				height:10px;
-			}
             html, body { width:100%; height:100%;}
             body {
                 font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", "HelveticaNeue-Light", "Helvetica Neue Light", sans-serif; 
@@ -137,9 +132,6 @@
             var flags = {};
             var types = {};
             var isBottom = true;
-            /* This makes the chat view unscrollable if it's not overflowing vertically */
-            
-
             
             /*
              createMessage() - REQUIRED BY RELAY
@@ -305,6 +297,5 @@
             </script>
     </head>
     <body style="background-color: transparent;" onload="atttach();">
-		<div class="ridgs"></div>
     </body>
 </html>
