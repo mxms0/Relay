@@ -51,7 +51,7 @@ static BOOL isSetup = NO;
 	 */
 	// nice DRM i won't be using. 
 	// thanks a lot nighthawk.
-	
+	[NSClassFromString(@"WebView") _enableRemoteInspector];
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
 	UIViewController *rcv;
 	Class rcvClass = [RCiPadViewController class];

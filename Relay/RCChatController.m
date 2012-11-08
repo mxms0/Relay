@@ -69,9 +69,9 @@ static id _inst = nil;
 
 - (CGRect)frameForChatPanel {
 	if ([self isLandscape])
-		return CGRectMake(0, 44, 480, 212);
+		return CGRectMake(0, 43, 480, 213);
 	else
-		return CGRectMake(0, 44, 320, 372);
+		return CGRectMake(0, 43, 320, 376);
 }
 
 - (CGRect)frameForInputField:(BOOL)activ {
@@ -97,7 +97,7 @@ static id _inst = nil;
 	RCChatPanel *panel = [chan panel];
 	[panel setFrame:[self frameForChatPanel]];
 	currentPanel = panel;
-	[navigationController.view addSubview:panel];
+	[navigationController.view insertSubview:panel atIndex:1];
 	[self menuButtonPressed:nil];
 }
 

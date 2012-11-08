@@ -17,8 +17,8 @@
 		UIImage *mfs = [UIImage imageNamed:@"0_hzshdw"];
 		[shdw setContents:(id)mfs.CGImage];
 		[shdw setShouldRasterize:YES];
-		[shdw setFrame:CGRectMake(-mfs.size.width, 0, mfs.size.width, self.view.frame.size.height)];
-		[self.view.layer addSublayer:shdw];
+		[shdw setFrame:CGRectMake(-mfs.size.width+3, 0, mfs.size.width, self.view.frame.size.height)];
+		[self.view.layer insertSublayer:shdw atIndex:0];
 		[shdw release];
 		UIButton *listr = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 42, 31)];
 		[listr setImage:[UIImage imageNamed:@"0_listrbtn"] forState:UIControlStateNormal];
@@ -52,7 +52,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-	[self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"0_cbg"]]];
+	CALayer *bg = [[CALayer alloc] init];
+	[bg setContents:(id)([UIImage imageNamed:@"0_cbg"].CGImage)];
+	[bg setFrame:CGRectMake(0, 0, 568, 568)];
+	[self.view.layer insertSublayer:bg atIndex:[self.view.layer.sublayers count]];
+	[bg release];
 	// Do any additional setup after loading the view.
 }
 

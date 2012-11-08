@@ -29,7 +29,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-	UIButton *renchthing = [[UIButton alloc] initWithFrame:CGRectMake(10, 10, 41, 31)];
+	/* UIButton *renchthing = [[UIButton alloc] initWithFrame:CGRectMake(10, 10, 41, 31)];
 	[renchthing addTarget:self action:@selector(showPreferences:) forControlEvents:UIControlEventTouchUpInside];
 	[renchthing setImage:[UIImage imageNamed:@"0_prefs"] forState:UIControlStateNormal];
 	[renchthing setImage:[UIImage imageNamed:@"0_prefs_p"] forState:UIControlStateHighlighted];
@@ -37,6 +37,13 @@
 	[[[[self viewControllers]  objectAtIndex:0] navigationItem] setLeftBarButtonItem:bbs animated:NO];
 	[bbs release];
 	[renchthing release];
+	 */
+	UIView *meh = [[[[self viewControllers] objectAtIndex:0] navigationController] navigationBar];
+	meh.layer.shadowOffset = CGSizeMake(0, 1);
+	meh.layer.shadowColor = [UIColor blackColor].CGColor;
+	meh.layer.shadowOpacity = 0.6;
+	meh.layer.shadowPath = nil;
+	meh.layer.shadowRadius = 1;
 }
 
 - (void)showPreferences:(id)unused {

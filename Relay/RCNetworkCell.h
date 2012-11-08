@@ -7,7 +7,6 @@
 
 #import <UIKit/UIKit.h>
 #import "RCBasicTableViewCell.h"
-#import "RCNetworkCellBackgroundView.h"
 
 @interface RCNetworkCell : RCBasicTableViewCell {
 	NSString *channel;

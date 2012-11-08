@@ -45,10 +45,12 @@
 	
 	if ([net expanded] || _pSelected) {
 		UIImage *img = [UIImage imageNamed:@"0_cell_selec"];
-		[img drawAsPatternInRect:CGRectMake(0, 0, rect.size.width, 42)];
+		[img drawAsPatternInRect:CGRectMake(0, 0, rect.size.width, 44)];
 	}
-	UIImage *ul = [UIImage imageNamed:@"0_underline"];
-	[ul drawAsPatternInRect:CGRectMake(0, 42, rect.size.width, 2)];
+	else {
+		UIImage *ul = [UIImage imageNamed:@"0_underline"];
+		[ul drawAsPatternInRect:CGRectMake(0, 42, rect.size.width, 2)];
+	}
 	NSString *text = [net _description];
 	NSString *detail = [net server];
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
