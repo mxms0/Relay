@@ -52,6 +52,42 @@
 	return self;
 }
 
++ (RCNetwork *)networkWithInfoDictionary:(NSDictionary *)info {
+	RCNetwork *network = [[RCNetwork alloc] init];
+	[network setUsername:[info objectForKey:USER_KEY]];
+	[network setNick:[info objectForKey:NICK_KEY]];
+	[network setRealname:[info objectForKey:NAME_KEY]];
+	[network setSDescription:[info objectForKey:DESCRIPTION_KEY]];
+	[network setServer:[info objectForKey:SERVR_ADDR_KEY]];
+	[network setPort:[[info objectForKey:PORT_KEY] intValue]];
+	[network setUseSSL:[[info objectForKey:SSL_KEY] boolValue]];
+	[network setCOL:[[info objectForKey:COL_KEY] boolValue]];	
+	if ([[info objectForKey:S_PASS_KEY] boolValue]) {
+        //[network setSpass:([wrapper objectForKey:S_PASS_KEY] ?: @"")];
+		RCKeychainItem *item = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@spass", [network _description]]];
+		[network setSpass:([item objectForKey:(id)kSecValueData] ?: @"")];
+		if ([network spass] == nil || [[network spass] length] == 0) {
+			[network setShouldRequestSPass:YES];
+		}
+		[item release];
+	}
+	if ([[info objectForKey:N_PASS_KEY] boolValue]) {
+		//[network setNpass:([wrapper objectForKey:N_PASS_KEY] ?: @"")];
+		RCKeychainItem *item = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@npass", [network _description]]];
+        [network setNpass:([item objectForKey:(id)kSecValueData] ?: @"")];
+		if ([network npass] == nil || [[network npass] length] == 0) {
+			[network setShouldRequestNPass:YES];
+		}
+		[item release];
+	}
+	NSMutableArray *rooms = [[[info objectForKey:CHANNELS_KEY] mutableCopy] autorelease];
+	if (!rooms) {
+		[network addChannel:@"IRC" join:NO];
+	}
+	[network _setupRooms:rooms];
+	return [network autorelease];
+}
+
 - (id)infoDictionary {
 	NSMutableArray *chanArray = [[NSMutableArray alloc] init];
 	for (RCChannel *chan in _channels) {
@@ -68,14 +104,13 @@
 	}
 	[chanArray autorelease];
 	return [NSDictionary dictionaryWithObjectsAndKeys:
-			username, USER_KEY,
-			nick, NICK_KEY,
-			realname, NAME_KEY,
-			([spass length] > 0 ? (id)kCFBooleanTrue : (id)kCFBooleanFalse), S_PASS_KEY,
-			([npass length] > 0 ? (id)kCFBooleanTrue : (id)kCFBooleanFalse), N_PASS_KEY,
-			sDescription, DESCRIPTION_KEY,
-			server, SERVR_ADDR_KEY,
-			SASL, SASL_KEY,
+			username, USER_KEY,//
+			nick, NICK_KEY,//
+			realname, NAME_KEY, //
+			([spass length] > 0 ? (id)kCFBooleanTrue : (id)kCFBooleanFalse), S_PASS_KEY,//			([npass length] > 0 ? (id)kCFBooleanTrue : (id)kCFBooleanFalse), N_PASS_KEY, //
+			sDescription, DESCRIPTION_KEY, //
+			server, SERVR_ADDR_KEY, //
+			(SASL ? (id)kCFBooleanTrue : (id)kCFBooleanFalse), SASL_KEY,
 			[NSNumber numberWithInt:port], PORT_KEY,
 			[NSNumber numberWithBool:useSSL], SSL_KEY,
 			chanArray, CHANNELS_KEY,
@@ -132,6 +167,12 @@
 		[self addChannel:_chan join:NO];
 	}
 	[rooms release];
+}
+
+- (void)connectOrDisconnectDependingOnCurrentStatus {
+	if ([self isTryingToConnectOrConnected])
+		[self disconnect];
+	else [self connect];
 }
 
 - (RCChannel *)channelWithChannelName:(NSString *)chan {
@@ -206,6 +247,16 @@
 #pragma mark - SOCKET STUFF
 
 - (void)connect {
+	if (shouldRequestNPass || shouldRequestSPass) {
+		RCPasswordRequestAlertType type;
+		if (shouldRequestSPass) type = RCPasswordRequestAlertTypeServer;
+		else if (shouldRequestNPass) type = RCPasswordRequestAlertTypeNickServ;
+		RCPasswordRequestAlert *rs = [[RCPasswordRequestAlert alloc] initWithNetwork:self type:type];
+		[rs show];
+		[rs release];
+		return;
+	}
+	
 	if (useSSL) {
 		[self performSelectorInBackground:@selector(_ssl_connect) withObject:nil];
 	}

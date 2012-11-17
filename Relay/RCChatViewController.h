@@ -10,7 +10,11 @@
 #import <QuartzCore/QuartzCore.h>
 #import "RCBaseNavigationViewController.h"
 #import "RCChatController.h"
+#import "RCPrettyActionSheet.h"
+#import "RCAddNetworkController.h"
 
-@interface RCChatViewController : RCBaseNavigationViewController
+@interface RCChatViewController : RCBaseNavigationViewController <UIActionSheetDelegate> {
+	RCNetwork *currentNetwork; // only exists during options period.
+}
 - (void)setFrame:(CGRect)frame;
 @end

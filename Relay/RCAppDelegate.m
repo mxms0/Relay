@@ -26,10 +26,6 @@ static BOOL isSetup = NO;
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-	@autoreleasepool {
-		[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
-	}
-
 	/*
     const char *cString = [[[NSBundle mainBundle] pathForResource:@"overdrive" ofType:@"dylib"] UTF8String];
     int ret = -1;
@@ -51,7 +47,7 @@ static BOOL isSetup = NO;
 	 */
 	// nice DRM i won't be using. 
 	// thanks a lot nighthawk.
-	[NSClassFromString(@"WebView") _enableRemoteInspector];
+	//	[NSClassFromString(@"WebView") _enableRemoteInspector];
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
 	UIViewController *rcv;
 	Class rcvClass = [RCiPadViewController class];

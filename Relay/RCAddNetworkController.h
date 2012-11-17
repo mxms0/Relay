@@ -17,6 +17,7 @@
 #import "RCPrettyAlertView.h"
 
 @interface RCAddNetworkController : RCBasicViewController <UITextFieldDelegate, UIScrollViewDelegate> {
+	NSMutableDictionary *datas;
 	RCNetwork *network;
 	NSString *name;
 	BOOL isNew;

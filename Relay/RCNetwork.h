@@ -55,6 +55,7 @@ typedef enum RCSocketStatus {
 	int port;
 	int maxStatusLength;
 	int sockfd;
+	BOOL finishedSetup;
 	BOOL isRegistered;
 	BOOL useSSL;
 	BOOL COL;
@@ -94,12 +95,14 @@ typedef enum RCSocketStatus {
 @property (nonatomic, assign) RCChannel *currentChannel;
 @property (nonatomic, assign) BOOL _selected;
 @property (nonatomic, assign) BOOL expanded;
++ (RCNetwork *)networkWithInfoDictionary:(NSDictionary *)dict;
 - (RCChannel *)channelWithChannelName:(NSString *)chan;
 - (NSString *)_description;
 - (void)connect;
 - (BOOL)disconnect;
 - (RCChannel*)consoleChannel;
 - (BOOL)isConnected;
+- (void)connectOrDisconnectDependingOnCurrentStatus;
 - (BOOL)sendMessage:(NSString *)msg;
 - (BOOL)sendMessage:(NSString *)msg canWait:(BOOL)canWait;
 - (void)recievedMessage:(NSString *)msg;

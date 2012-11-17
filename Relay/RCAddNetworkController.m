@@ -12,17 +12,21 @@
 
 - (id)initWithNetwork:(RCNetwork *)net {
 	if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
-		network = net;
 		isNew = NO;
+		datas = nil;
+		name = [[[UIDevice currentDevice] name] retain];
+		int ix = [name length];
+		int px = [name rangeOfString:@" "].location;
+		if (px != NSNotFound)
+			ix = px;
+		[name substringToIndex:ix];
 		if (!net) {
 			network = [[RCNetwork alloc] init];
 			isNew = YES;
-			name = [[[UIDevice currentDevice] name] retain];
-			int ix = [name length];
-			int px = [name rangeOfString:@" "].location;
-			if (px != NSNotFound)
-				ix = px;
-			[name substringToIndex:ix];
+		}
+		else {
+			network = [net retain];
+			datas = [[[network infoDictionary] mutableCopy] retain];
 		}
 	}
 	return self;
@@ -77,53 +81,94 @@
 #define IS_STRING_OR(a,b) (((!a) || [a isEqualToString:@""]) ? b : a)
 
 - (void)textFieldDidEndEditing:(RCTextField *)textField {
+	if ([textField tag] == 3) {
+		[datas setObject:[NSNumber numberWithInt:[[textField text] intValue]] forKey:PORT_KEY];
+		return;
+	}
+	NSString *key = nil;
 	switch ([textField tag]) {
 		case 1:
-			[network setSDescription:[textField text]];
+			key = DESCRIPTION_KEY;
 			break;
 		case 2:
-			[network setServer:[textField text]];
-			[self.navigationItem.rightBarButtonItem setEnabled:([network server].length > 0)];
-			break;
-		case 3:
-			[network setPort:[[textField text] intValue]];
+			key = SERVR_ADDR_KEY;
+			[self.navigationItem.rightBarButtonItem setEnabled:([textField text].length > 0)];
 			break;
 		case 4:
-			[network setNick:[textField text]];
+			key = NICK_KEY;
 			break;
 		case 5:
-			[network setUsername:[textField text]];
+			key = USER_KEY;
 			break;
 		case 6:
-            [network setRealname:[textField text]];
+			key = NAME_KEY;
 			break;
 		case 7:
-			MARK;
-			[network setNpass:[textField text]];
+			key = N_PASS_KEY;
 			break;
 		case 8:
-			MARK;
-			[network setSpass:[textField text]];
+			key = S_PASS_KEY;
 			break;
 		default:
 			break;
 	}
+	if (key)
+		[datas setObject:[textField text] forKey:key];
 }
 - (void)doneConnection {
 	[self.view findAndResignFirstResponder];
-	if (![network server]) return;
+	if ([[[datas description] base64] isEqualToString:[[[network infoDictionary] description] base64]]) {
+		goto _end;
+	}
+	if (![datas objectForKey:SERVR_ADDR_KEY]) {
+		// error jump to whatever blah
+		goto _end;
+	}
+	for (NSString *key in [datas allKeys]) {
+		NSString *nb64 = [[[datas objectForKey:key] description] base64];
+		NSString *ob64 = [[[[network infoDictionary] objectForKey:key] description] base64];
+		if ([nb64 isEqualToString:ob64]) continue;
+		else {
+			if ([key isEqualToString:SERVR_ADDR_KEY]) {
+				[network setServer:[datas objectForKey:SERVR_ADDR_KEY]];
+			}
+			else if ([key isEqualToString:NAME_KEY]) {
+				[network setRealname:[datas objectForKey:NAME_KEY]];
+			}
+			else if ([key isEqualToString:USER_KEY]) {
+				[network setUsername:[datas objectForKey:USER_KEY]];
+			}
+			else if ([key isEqualToString:NICK_KEY]) {
+				[network setNick:[datas objectForKey:NICK_KEY]];
+			}
+			else if ([key isEqualToString:PORT_KEY]) {
+				[network setPort:[[datas objectForKey:PORT_KEY] intValue]];
+			}
+			else if ([key isEqualToString:S_PASS_KEY]) {
+				[network setSpass:[datas objectForKey:S_PASS_KEY]];
+			}
+			else if ([key isEqualToString:N_PASS_KEY]) {
+				[network setNpass:[datas objectForKey:N_PASS_KEY]];
+			}
+			else if ([key isEqualToString:SSL_KEY]) {
+				[network setUseSSL:[[datas objectForKey:SSL_KEY] boolValue]];
+			}
+			else if ([key isEqualToString:COL_KEY]) {
+				[network setCOL:[[datas objectForKey:COL_KEY] boolValue]];
+			}
+			else if ([key isEqualToString:SASL_KEY]) {
+				[network setSASL:[[datas objectForKey:SASL_KEY] boolValue]];
+			}
+			else if ([key isEqualToString:DESCRIPTION_KEY]) {
+				[network setSDescription:[datas objectForKey:DESCRIPTION_KEY]];
+			}
+		}
+	}
     [network setRealname:([network realname] ?: name)];
     [network setNick:([network nick] ?: name)];
     [network setUsername:([network username] ?: name)];
 	if (![network port]) [network setPort:6667];
 	if (![network sDescription]) [network setSDescription:[network server]];
-    if (isNew) {
-		[network setupRooms:[NSArray arrayWithObject:@"IRC"]];
-		[[RCNetworkManager sharedNetworkManager] addNetwork:network];
-	}
-	else {
-		if ([network isConnected])	[network disconnect];
-	}
 	if (([network spass] == nil) || [[network spass] isEqualToString:@""]) {
 		[network setSpass:@""];
 	}
@@ -140,8 +185,14 @@
         [keychain setObject:[network npass] forKey:(id)kSecValueData];
 		[keychain release];
 	}
+	if (isNew) {
+		[network setupRooms:[NSArray arrayWithObject:@"IRC"]];
+		[[RCNetworkManager sharedNetworkManager] addNetwork:network];
+	}
+	
 	[[RCNetworkManager sharedNetworkManager] saveNetworks];
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"us.mxms.relay.reload" object:nil];
+_end:
 	[self doneWithJoin];
 }
 
@@ -412,6 +463,8 @@
 
 - (void)dealloc {
 	[name release];
+	[network release];
+	[datas release];
 	[super dealloc];
 }
 

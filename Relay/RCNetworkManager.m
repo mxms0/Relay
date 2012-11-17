@@ -6,6 +6,7 @@
 //
 
 #import "RCNetworkManager.h"
+#import "RCChatController.h"
 
 @implementation RCNetworkManager
 @synthesize isBG, _printMotd;
@@ -13,52 +14,8 @@ static id snManager = nil;
 static NSMutableArray *networks = nil;
 
 - (void)ircNetworkWithInfo:(NSDictionary *)info isNew:(BOOL)n {
-	RCNetwork *network = [[RCNetwork alloc] init];
-	[network setUsername:[info objectForKey:USER_KEY]];
-	[network setNick:[info objectForKey:NICK_KEY]];
-	[network setRealname:[info objectForKey:NAME_KEY]];
-	[network setSDescription:[info objectForKey:DESCRIPTION_KEY]];
-	[network setServer:[info objectForKey:SERVR_ADDR_KEY]];
-	[network setPort:[[info objectForKey:PORT_KEY] intValue]];
-	[network setUseSSL:[[info objectForKey:SSL_KEY] boolValue]];
-	[network setCOL:[[info objectForKey:COL_KEY] boolValue]];
-	for (RCNetwork *net in networks) {
-		if ([[network _description] isEqualToString:[net _description]]) {
-			[network release];
-			NSLog(@"Returning..");
-			return;
-		}
-	}
-
-	if ([[info objectForKey:S_PASS_KEY] boolValue]) {
-        //[network setSpass:([wrapper objectForKey:S_PASS_KEY] ?: @"")];
-		RCKeychainItem *item = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@spass", [network _description]]];
-		[network setSpass:([item objectForKey:(id)kSecValueData] ?: @"")];
-		if ([network spass] == nil || [[network spass] length] == 0) {
-			[network setShouldRequestSPass:YES];
-		}
-		[item release];
-	}
-	if ([[info objectForKey:N_PASS_KEY] boolValue]) {
-		//[network setNpass:([wrapper objectForKey:N_PASS_KEY] ?: @"")];
-		RCKeychainItem *item = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@npass", [network _description]]];
-        [network setNpass:([item objectForKey:(id)kSecValueData] ?: @"")];
-		if ([network npass] == nil || [[network npass] length] == 0) {
-			[network setShouldRequestNPass:YES];
-		}
-		[item release];
-	}
-	NSMutableArray *rooms = [[[info objectForKey:CHANNELS_KEY] mutableCopy] autorelease];
-	if (!rooms) {
-		[network addChannel:@"IRC" join:NO];
-	}
-	[network _setupRooms:rooms];
-	[networks addObject:network];
-	[network release];
-    if ([network COL]) {
-        [network connect];
-    }
-	[self performSelectorInBackground:@selector(saveNetworks) withObject:nil];
+	RCNetwork *network = [RCNetwork networkWithInfoDictionary:info];
+	[self addNetwork:network];
 }
 
 - (void)addNetwork:(RCNetwork *)_net {
@@ -68,10 +25,25 @@ static NSMutableArray *networks = nil;
 		}
 	}
 	if (![_net consoleChannel]) [_net addChannel:@"IRC" join:NO];
+	[self finishSetupForNetwork:_net];
 	[networks addObject:_net];
 	reloadNetworks();
 	if ([_net COL]) [_net connect];
 	if (!isSetup) [self saveNetworks];
+}
+
+- (BOOL)replaceNetwork:(RCNetwork *)orig withNetwork:(RCNetwork *)anew {
+	for (int i = 0; i < [networks count]; i++) {
+		RCNetwork *someNet = [networks objectAtIndex:i];
+		if ([[someNet _description] isEqualToString:[orig _description]]) {
+			[networks removeObjectAtIndex:i];
+			someNet = nil;
+			[networks insertObject:anew atIndex:i];
+			[anew release];
+			return YES;
+		}
+	}
+	return NO;
 }
 
 - (void)finishSetupForNetwork:(RCNetwork *)net {
@@ -106,10 +78,16 @@ static NSMutableArray *networks = nil;
 			}
 			else {
 				reloadNetworks();
+				[self jumpToFirstNetworkAndConsole];
 			}
 			[self saveNetworks];
 		});
 	}
+}
+
+- (void)jumpToFirstNetworkAndConsole {
+	if ([networks count] < 1) return;
+	[[RCChatController sharedController] selectChannel:@"IRC" fromNetwork:[networks objectAtIndex:0]];
 }
 
 - (void)setupWelcomeView {
@@ -135,6 +113,8 @@ static NSMutableArray *networks = nil;
 			[self ircNetworkWithInfo:_info isNew:NO];
 		}
 	}
+	NSLog(@"hi %p", networks);
+	[self jumpToFirstNetworkAndConsole];
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"us.mxms.relay.reload" object:nil];
 	isSetup = NO;
 }
@@ -148,7 +128,7 @@ static NSMutableArray *networks = nil;
 
 - (void)saveNetworks {
 	if (isSetup) return;
-	NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:PREFS_PLIST] ?: [NSMutableDictionary dictionary];
+	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 	for (RCNetwork *net in networks) {
 		if (![net isKindOfClass:[RCWelcomeNetwork class]])
 			if ([net _description])	[dict setObject:[net infoDictionary] forKey:[net _description]];
@@ -157,7 +137,6 @@ static NSMutableArray *networks = nil;
 	NSData *saveData = [NSPropertyListSerialization dataFromPropertyList:dict format:NSPropertyListBinaryFormat_v1_0 errorDescription:&error];
 	if (![saveData writeToFile:PREFS_ABSOLUT atomically:NO]) {
 		NSLog(@"Couldn't save.. :(%@)", error);
-		return;
 	}
 }
 

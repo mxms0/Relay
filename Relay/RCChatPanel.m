@@ -47,8 +47,15 @@
 		[field release];
 		[self addSubview:_bar];
 		[_bar release];
-    }
-    return self;
+		CGRect sc = [[UIScreen mainScreen] applicationFrame];
+		chatViewHeights[0] = sc.size.height-83;
+		chatViewHeights[1] = sc.size.height-299;
+		UIPanGestureRecognizer *panr = [[UIPanGestureRecognizer alloc] initWithTarget:[RCChatController sharedController] action:@selector(userSwiped:)];
+		[panr setDelegate:[RCChatController sharedController]];
+		[[[self mainView] scrollView] addGestureRecognizer:panr];
+		[panr release];
+	}
+	return self;
 }
 
 - (void)didPresentView {
@@ -112,13 +119,14 @@
 		[UIView beginAnimations:nil context:NULL];
 		[UIView setAnimationDuration:0.25];
 	}
-	[_bar setFrame:[self frameForInputField:key]];
-	field.frame = CGRectMake(15, 5, _bar.frame.size.width-21, 31);
+	CGRect main = CGRectMake(0, 0, 320, chatViewHeights[(int)key]);
 	if (key)
-		[mainView setFrame:CGRectMake(0, 0, _bar.frame.size.width, _bar.frame.origin.y)];
+		[mainView setFrame:main];
+	else
+		[mainView setFrame:main];
+	[_bar setFrame:CGRectMake(0, mainView.frame.origin.x+mainView.frame.size.height, mainView.frame.size.width, 40)];
+	field.frame = CGRectMake(15, 5, _bar.frame.size.width-21, 31);
 	if (anim) [UIView commitAnimations];
-	if (!key)
-		[mainView setFrame:CGRectMake(0, 0, _bar.frame.size.width, _bar.frame.origin.y)];
 	[mainView setNeedsDisplay];
 	[_bar performSelectorOnMainThread:@selector(setNeedsDisplay) withObject:nil waitUntilDone:NO];
 }

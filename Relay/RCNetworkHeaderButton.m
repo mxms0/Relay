@@ -15,6 +15,7 @@
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
 		_pSelected = NO;
+		net = nil;
 	}
 	return self;
 }
@@ -46,6 +47,8 @@
 	if ([net expanded] || _pSelected) {
 		UIImage *img = [UIImage imageNamed:@"0_cell_selec"];
 		[img drawAsPatternInRect:CGRectMake(0, 0, rect.size.width, 44)];
+		UIImage *arrow = [UIImage imageNamed:@"0_arrowd"];
+		[arrow drawInRect:CGRectMake(232,15, 16, 16)];
 	}
 	else {
 		UIImage *ul = [UIImage imageNamed:@"0_underline"];
@@ -59,10 +62,11 @@
 	CGContextScaleCTM(ctx, [[UIScreen mainScreen] scale], [[UIScreen mainScreen] scale]);
 	[text drawInRect:CGRectMake(5, 1, 200, 40) withFont:[UIFont boldSystemFontOfSize:9] lineBreakMode:UILineBreakModeCharacterWrap alignment:UITextAlignmentLeft];
 	CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0.909 alpha:0.800].CGColor);
-	[detail drawInRect:CGRectMake(5, 12, 200, 30) withFont:[UIFont systemFontOfSize:5.5]];
+	[detail drawInRect:CGRectMake(5, 13, 200, 30) withFont:[UIFont systemFontOfSize:5.5]];
 }
 
 - (void)setNetwork:(RCNetwork *)_net {
+	[net release];
 	net = [_net retain];
 	_pSelected = [net expanded];
 }

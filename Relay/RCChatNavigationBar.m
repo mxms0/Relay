@@ -9,12 +9,14 @@
 #import "RCChatNavigationBar.h"
 
 @implementation RCChatNavigationBar
-@synthesize subtitle, title;
+@synthesize subtitle, title, isMain;
 
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
 		title = nil;
 		subtitle = nil;
+		drawIndent = NO;
+		isMain = NO;
 		CALayer *hshdw = [[CALayer alloc] init];
 		UIImage *hfs = [UIImage imageNamed:@"0_vzshdw"];
 		[hshdw setContents:(id)hfs.CGImage];
@@ -44,17 +46,36 @@
 	shp.path = maskPath.CGPath;
 }
 
+- (void)setIsMain:(BOOL)isMain {
+	UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+	[btn setFrame:CGRectMake(55, 2, 218, 40)];
+	[btn setBackgroundColor:[UIColor clearColor]];
+	[btn addTarget:self action:@selector(showMenuOptions:) forControlEvents:UIControlEventTouchUpInside];
+	[self addSubview:btn];
+	[btn release];
+}
+
+- (void)showMenuOptions:(id)unused {
+	drawIndent = YES;
+	[self setNeedsDisplay];
+}
+
 - (void)drawRect:(CGRect)rect {
 	[super drawRect:rect];
 	UIImage *bg = [UIImage imageNamed:@"0_headr"];
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	[bg drawAtPoint:CGPointMake(0, 0)];
+	if (drawIndent) {
+		UIImage *indent = [UIImage imageNamed:@"0_indents"];
+		[indent drawAtPoint:CGPointMake(0, 2)];
+		return;
+	}
 	CGContextSetShadowWithColor(ctx, CGSizeMake(0, 1), 0, [UIColor whiteColor].CGColor);
 	CGContextSetFillColorWithColor(ctx, UIColorFromRGB(0x282C40).CGColor);
 	CGFloat size = 0.0;
 	float maxWidth = (rect.size.width-100);
-	[title sizeWithFont:[UIFont boldSystemFontOfSize:24] minFontSize:18 actualFontSize:&size forWidth:maxWidth lineBreakMode:UILineBreakModeClip];
-	[title drawInRect:CGRectMake((!!subtitle ? 50 : 30), (!!subtitle ? 1 : (((rect.size.height-4)/2)-(size/2))), maxWidth, 30) withFont:[UIFont boldSystemFontOfSize:size] lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentCenter];
+	[title sizeWithFont:[UIFont boldSystemFontOfSize:22] minFontSize:18 actualFontSize:&size forWidth:maxWidth lineBreakMode:UILineBreakModeClip];
+	[title drawInRect:CGRectMake((!!subtitle ? 50 : 30), (!!subtitle ? 2 : (((rect.size.height-4)/2)-(size/2))), maxWidth, 30) withFont:[UIFont boldSystemFontOfSize:size] lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentCenter];
 	if (subtitle) {
 		CGFloat subsze = 0.0;
 		[subtitle sizeWithFont:[UIFont systemFontOfSize:12] minFontSize:11 actualFontSize:&subsze forWidth:maxWidth lineBreakMode:UILineBreakModeClip];

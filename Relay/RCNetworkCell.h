@@ -10,6 +10,9 @@
 
 @interface RCNetworkCell : RCBasicTableViewCell {
 	NSString *channel;
+	BOOL white;
+	BOOL fakeWhite;
 }
 @property (nonatomic, retain) NSString *channel;
+@property (nonatomic, assign) BOOL white;
 @end

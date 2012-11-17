@@ -11,13 +11,16 @@
 
 - (void)layoutSubviews {
 	[super layoutSubviews];
+	BOOL setbg = NO;
 	for (id v in [self subviews]) {
 		if ([v isKindOfClass:[UIImageView class]]) {
-			[(UIImageView *)v setImage:[[UIImage imageNamed:@"0_alertview"] resizableImageWithCapInsets:UIEdgeInsetsMake(10, 10, 10, 10)]];
-			UIImageView *gradient = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"0_alertview_mask"]];
-			[v addSubview:gradient];
-			[gradient release];
-			
+			if (!setbg) {
+				[(UIImageView *)v setImage:[[UIImage imageNamed:@"0_alertview"] resizableImageWithCapInsets:UIEdgeInsetsMake(10, 10, 10, 10)]];
+				UIImageView *gradient = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"0_alertview_mask"]];
+				[v addSubview:gradient];
+				[gradient release];
+				setbg = YES;
+			}
 		}
 		if ([v isKindOfClass:[UIButton class]]) {
 			if ([v tag] == 1) {

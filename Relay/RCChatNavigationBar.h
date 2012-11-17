@@ -12,7 +12,10 @@
 @interface RCChatNavigationBar : UINavigationBar {
 	NSString *title;
 	NSString *subtitle;
+	BOOL isMain;
+	BOOL drawIndent;
 }
 @property (nonatomic, retain) NSString *title;
 @property (nonatomic, retain) NSString *subtitle;
+@property (nonatomic, assign) BOOL isMain;
 @end

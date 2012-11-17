@@ -27,18 +27,20 @@
 		case 1:// ok
 			if (type == RCPasswordRequestAlertTypeNickServ) {
 				[net setNpass:[[self textFieldAtIndex:0] text]];
+				[net setShouldRequestNPass:NO];
 			}
 			else if (type == RCPasswordRequestAlertTypeServer) {
 				[net setSpass:[[self textFieldAtIndex:0] text]];
+				[net setShouldRequestSPass:NO];
 			}
 			break;
 		default:
 			// fuck
 			break;
 	}
+	[super dismissWithClickedButtonIndex:buttonIndex animated:animated];
 	if ([net COL]) [net connect];
 	[[RCNetworkManager sharedNetworkManager] saveNetworks];
-	[super dismissWithClickedButtonIndex:buttonIndex animated:animated];
 }
 
 @end

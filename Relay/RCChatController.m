@@ -7,12 +7,13 @@
 
 #import "RCChatController.h"
 #import "RCChatsListViewController.h"
+#import "RCXLChatController.h"
 
 @implementation RCChatController
 @synthesize currentPanel;
 static id _inst = nil;
 
-+ (id)sharedController; {
++ (id)sharedController {
 	return _inst;
 }
 
@@ -23,6 +24,13 @@ static id _inst = nil;
 
 - (id)initWithRootViewController:(RCViewController *)rc {
 	if ((self = [super init])) {
+		if (![self isKindOfClass:[RCXLChatController class]]) {
+			CGFloat height = [[UIScreen mainScreen] applicationFrame].size.height;
+			if (height > 480) {
+				self = [[RCXLChatController alloc] initWithRootViewController:rc];
+				return self;
+			}
+		}
 		_inst = self;
 		currentPanel = nil;
 		rootView = rc;
@@ -54,16 +62,31 @@ static id _inst = nil;
 }
 
 - (void)menuButtonPressed:(id)unused {
+	[self menuButtonPressed:unused withSpeed:0.25];
+}
+
+- (void)menuButtonPressed:(id)unused withSpeed:(NSTimeInterval)sped {
 	[currentPanel resignFirstResponder];
 	CGRect frame = navigationController.view.frame;
 	if (frame.origin.x == 0.0) {
-		frame.origin.x = 267;
+		[self openWithDuration:sped];
 	}
 	else {
-		frame.origin.x = 0;
+		[self closeWithDuration:sped];
 	}
+}
+
+- (void)closeWithDuration:(NSTimeInterval)dr {
 	[UIView beginAnimations:nil context:nil];
-	[navigationController setFrame:frame];
+	[UIView setAnimationDuration:dr];
+	[navigationController.view setFrame:CGRectMake(0, 0, navigationController.view.frame.size.width, navigationController.view.frame.size.height)];
+	[UIView commitAnimations];
+}
+
+- (void)openWithDuration:(NSTimeInterval)dr {
+	[UIView beginAnimations:nil context:nil];
+	[UIView setAnimationDuration:dr];
+	[navigationController.view setFrame:CGRectMake(267, 0, navigationController.view.frame.size.width, navigationController.view.frame.size.height)];
 	[UIView commitAnimations];
 }
 
@@ -74,14 +97,30 @@ static id _inst = nil;
 		return CGRectMake(0, 43, 320, 376);
 }
 
-- (CGRect)frameForInputField:(BOOL)activ {
-	float y = 376;
-	float w = 320;
-	if (activ)
-		y = 161;
-	if ([self isLandscape])
-		w = 480;
-	return CGRectMake(0, y, w, 40);
+- (void)userSwiped:(UIPanGestureRecognizer *)pan {
+	if (pan.state == UIGestureRecognizerStateChanged) {
+		CGPoint tr = [pan translationInView:[navigationController.view superview]];
+		CGPoint centr = CGPointMake([navigationController.view center].x +tr.x, [navigationController.view center].y);
+		if (centr.x < 157) return;
+		[navigationController setCenter:centr];
+		[pan setTranslation:CGPointZero inView:[navigationController.view superview]];
+	}
+	if (pan.state == UIGestureRecognizerStateEnded) {
+		if ([pan velocityInView:navigationController.view.superview].x > 0) {
+			[self openWithDuration:0.30];
+		}
+		else
+			[self closeWithDuration:0.30];
+	}
+}
+
+- (BOOL)gestureRecognizerShouldBegin:(UIPanGestureRecognizer *)pan {
+	CGPoint translation = [pan translationInView:navigationController.view.superview];
+	return fabs(translation.x) > fabs(translation.y);
+}
+
+- (void)rotateToInterfaceOrientation:(UIInterfaceOrientation)oi {
+	// hi.
 }
 
 - (void)selectChannel:(NSString *)channel fromNetwork:(RCNetwork *)net {
@@ -97,8 +136,16 @@ static id _inst = nil;
 	RCChatPanel *panel = [chan panel];
 	[panel setFrame:[self frameForChatPanel]];
 	currentPanel = panel;
-	[navigationController.view insertSubview:panel atIndex:1];
-	[self menuButtonPressed:nil];
+	[navigationController.view insertSubview:panel atIndex:3];
+	[((RCChatNavigationBar *)[navigationController navigationBar]) setTitle:[chan channelName]];
+	NSString *sub = [net _description];
+	if (![[net server] isEqualToString:[net _description]])
+		sub = [NSString stringWithFormat:@"%@ – %@", [net _description], [net server]];
+	[((RCChatNavigationBar *)[navigationController navigationBar]) setSubtitle:sub];
+	[((RCChatNavigationBar *)[navigationController navigationBar]) setNeedsDisplay];
+	if (navigationController.view.frame.origin.x > 0) {
+		[self menuButtonPressed:nil];	
+	}
 }
 
 @end
