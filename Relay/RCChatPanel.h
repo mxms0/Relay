@@ -33,5 +33,6 @@
 - (void)repositionKeyboardForUse:(BOOL)key animated:(BOOL)an;
 - (void)setHidesEntryField:(BOOL)entry;
 - (void)becomeFirstResponderNoAnimate;
+- (void)setEntryFieldEnabled:(BOOL)en;
 - (void)didPresentView;
 @end

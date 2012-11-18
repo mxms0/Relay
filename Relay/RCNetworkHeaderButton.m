@@ -16,6 +16,7 @@
 	if ((self = [super initWithFrame:frame])) {
 		_pSelected = NO;
 		net = nil;
+		[self setOpaque:YES];
 	}
 	return self;
 }
@@ -43,14 +44,15 @@
 }
 
 - (void)drawRect:(CGRect)rect {
-	
 	if ([net expanded] || _pSelected) {
-		UIImage *img = [UIImage imageNamed:@"0_cell_selec"];
-		[img drawAsPatternInRect:CGRectMake(0, 0, rect.size.width, 44)];
+		UIImage *bg = [UIImage imageNamed:@"0_cell_selec"];
+		[bg drawAsPatternInRect:CGRectMake(0, 0, rect.size.width, 44)];
 		UIImage *arrow = [UIImage imageNamed:@"0_arrowd"];
 		[arrow drawInRect:CGRectMake(232,15, 16, 16)];
 	}
 	else {
+		UIImage *bg = [UIImage imageNamed:@"0_sbg"];
+		[bg drawAsPatternInRect:CGRectMake(0, 0, rect.size.width, 44)];
 		UIImage *ul = [UIImage imageNamed:@"0_underline"];
 		[ul drawAsPatternInRect:CGRectMake(0, 42, rect.size.width, 2)];
 	}

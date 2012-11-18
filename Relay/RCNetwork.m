@@ -224,7 +224,8 @@
         else {
             RCChannel *chan = [self channelWithChannelName:_chan];
             return chan;
-        }
+		}
+		reloadNetworks();
     }
 }
 
@@ -658,7 +659,7 @@ char *RCIPForURL(NSString *URL) {
 	if (chan) [chan recievedMessage:@"Connected to host." from:@"" type:RCMessageTypeNormal];
 	if ([npass length] > 0)	[self sendMessage:[@"PRIVMSG NickServ :IDENTIFY " stringByAppendingString:npass]];
 	for (RCChannel *chan in _channels) {
-		if ([chan joinOnConnect]) [chan setJoined:YES withArgument:nil];
+		if ([chan joinOnConnect] || [chan temporaryJoinOnConnect]) [chan setJoined:YES withArgument:nil];
 	}
 }
 

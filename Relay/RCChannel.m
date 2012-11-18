@@ -17,7 +17,7 @@
 #define M_COLOR 32
 @implementation RCChannel
 
-@synthesize channelName, joinOnConnect, panel, topic, usersPanel, password;
+@synthesize channelName, joinOnConnect, panel, topic, usersPanel, password, temporaryJoinOnConnect;
 
 NSString *RCUserRank(NSString *user, RCNetwork *network) {
     @synchronized(network) {

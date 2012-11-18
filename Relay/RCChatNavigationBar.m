@@ -3,13 +3,13 @@
 //  Relay
 //
 //  Created by Max Shavrick on 10/27/12.
-//  Copyright (c) 2012 American Heritage School. All rights reserved.
 //
 
 #import "RCChatNavigationBar.h"
+#import "RCChatController.h"
 
 @implementation RCChatNavigationBar
-@synthesize subtitle, title, isMain;
+@synthesize subtitle, title, isMain, drawIndent;
 
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
@@ -46,18 +46,15 @@
 	shp.path = maskPath.CGPath;
 }
 
-- (void)setIsMain:(BOOL)isMain {
+- (void)setIsMain:(BOOL)_isMain {
+	if (isMain) return;
 	UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
 	[btn setFrame:CGRectMake(55, 2, 218, 40)];
 	[btn setBackgroundColor:[UIColor clearColor]];
-	[btn addTarget:self action:@selector(showMenuOptions:) forControlEvents:UIControlEventTouchUpInside];
+	[btn addTarget:[RCChatController sharedController] action:@selector(showMenuOptions:) forControlEvents:UIControlEventTouchUpInside];
+	[btn setTag:1132];
 	[self addSubview:btn];
-	[btn release];
-}
-
-- (void)showMenuOptions:(id)unused {
-	drawIndent = YES;
-	[self setNeedsDisplay];
+	isMain = _isMain;
 }
 
 - (void)drawRect:(CGRect)rect {

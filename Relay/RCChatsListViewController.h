@@ -16,6 +16,7 @@
 
 @interface RCChatsListViewController : RCBaseNavigationViewController <UITableViewDataSource, UITableViewDelegate> {
 	RCSpecialTableView *datas;
+	BOOL _reloading;
 }
 
 @end

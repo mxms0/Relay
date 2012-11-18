@@ -81,6 +81,7 @@ static id _inst = nil;
 	[UIView setAnimationDuration:dr];
 	[navigationController.view setFrame:CGRectMake(0, 0, navigationController.view.frame.size.width, navigationController.view.frame.size.height)];
 	[UIView commitAnimations];
+	[currentPanel setEntryFieldEnabled:YES];
 }
 
 - (void)openWithDuration:(NSTimeInterval)dr {
@@ -88,6 +89,7 @@ static id _inst = nil;
 	[UIView setAnimationDuration:dr];
 	[navigationController.view setFrame:CGRectMake(267, 0, navigationController.view.frame.size.width, navigationController.view.frame.size.height)];
 	[UIView commitAnimations];
+	[currentPanel setEntryFieldEnabled:NO];
 }
 
 - (CGRect)frameForChatPanel {
@@ -112,6 +114,114 @@ static id _inst = nil;
 		else
 			[self closeWithDuration:0.30];
 	}
+}
+
+- (void)showMenuOptions:(id)unused {
+	if ([[currentPanel channel] isKindOfClass:[RCConsoleChannel class]]) return;
+	RCChatNavigationBar *rc = (RCChatNavigationBar *)[navigationController navigationBar];
+	NSMutableArray *buttons = [[NSMutableArray alloc] init];
+	UIButton *joinr = [[UIButton alloc] init];
+	if (![[currentPanel channel] joined]) {
+		[joinr setImage:[UIImage imageNamed:@"0_joinliv"] forState:UIControlStateNormal];
+	}
+	else {
+		[joinr setImage:[UIImage imageNamed:@"0_joindis"] forState:UIControlStateNormal];
+		[joinr setEnabled:NO];
+	}
+	[joinr addTarget:self action:@selector(joinOrConnectDependingOnState) forControlEvents:UIControlEventTouchUpInside];
+	[buttons addObject:joinr];
+	[joinr release];
+	UIButton *trsh = [[UIButton alloc] init];
+	[trsh setImage:[UIImage imageNamed:@"0_trshdis"] forState:UIControlStateNormal];
+	[trsh addTarget:self action:@selector(deleteCurrentChannel) forControlEvents:UIControlEventTouchUpInside];
+	[buttons addObject:trsh];
+	[trsh release];
+	UIButton *meml = [[UIButton alloc] init];
+	[meml setImage:[UIImage imageNamed:@"0_meml"] forState:UIControlStateNormal];
+	[meml addTarget:self action:@selector(showMemberList) forControlEvents:UIControlEventTouchUpInside];
+	[buttons addObject:meml];
+	[meml release];
+	UIButton *lev = [[UIButton alloc] init];
+	UIImage *levi = nil;
+	if ([[currentPanel channel] joined]) {
+		levi = [UIImage imageNamed:@"0_lev"];
+	}
+	else {
+		levi = [UIImage imageNamed:@"0_levdis"];
+		[lev setEnabled:NO];
+	}
+	[lev setImage:levi forState:UIControlStateNormal];
+	[lev addTarget:self action:@selector(leaveCurrentChannel) forControlEvents:UIControlEventTouchUpInside];
+	[buttons addObject:lev];
+	[lev release];
+	[rc setDrawIndent:YES];
+	[rc setNeedsDisplay];
+	for (int i = 0; i < [buttons count]; i++) {
+		CGRect frame = CGRectMake(65, 2, [rc frame].size.width-130, 43);
+		CGFloat indivSize = frame.size.width/[buttons count];
+		UIButton *b = (UIButton *)[buttons objectAtIndex:i];
+		[b setFrame:CGRectMake(i*indivSize+(frame.origin.x), 1, indivSize, frame.size.height)];
+		[b setAlpha:0];
+		[UIView beginAnimations:nil context:nil];
+		[rc addSubview:b];
+		[b setAlpha:1];
+		[UIView commitAnimations];
+	}
+}
+
+- (void)dismissMenuOptions {
+	RCChatNavigationBar *rc = (RCChatNavigationBar *)[navigationController navigationBar];
+	[UIView beginAnimations:nil context:nil];
+	for (UIButton *subv in [rc subviews]) {
+		if ([subv isKindOfClass:[UIButton class]]) {
+			if ([subv tag] != 1132)
+				[subv removeFromSuperview];
+		}
+	}
+	[rc setDrawIndent:NO];
+	[rc setNeedsDisplay];
+	[UIView commitAnimations];
+}
+
+- (void)deleteCurrentChannel {
+	RCPrettyAlertView *confirm = [[RCPrettyAlertView alloc] initWithTitle:@"Are you sure?" message:[NSString stringWithFormat:@"Are you sure you want to remove %@", [[currentPanel channel] channelName]] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Remove", nil];
+	[confirm show];
+	[confirm release];
+	[self dismissMenuOptions];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+	switch (buttonIndex) {
+		case 0:
+			// cancel
+			break;
+		case 1:
+			NSLog(@"SHOULD REMOVE CHANNEL %@", [currentPanel channel]);
+			break;
+		default:
+			break;
+	}
+}
+
+- (void)leaveCurrentChannel {
+	if ([[[currentPanel channel] delegate] isConnected])
+		[[currentPanel channel] setJoined:NO withArgument:@"Relay."];
+	[self dismissMenuOptions];
+}
+
+- (void)joinOrConnectDependingOnState {
+	if ([[[currentPanel channel] delegate] isConnected]) {
+		[[currentPanel channel] setJoined:YES withArgument:nil];
+	}
+	else {
+		[[currentPanel channel] setTemporaryJoinOnConnect:YES];
+	}
+	[self dismissMenuOptions];
+}
+
+- (void)showMemberList {
+	
+	[self dismissMenuOptions];
 }
 
 - (BOOL)gestureRecognizerShouldBegin:(UIPanGestureRecognizer *)pan {

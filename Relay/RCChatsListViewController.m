@@ -13,6 +13,7 @@
 - (id)initWithRootViewController:(UIViewController *)rootViewController {
 	if ((self = [super initWithRootViewController:rootViewController])) {
 		[self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"0_bg"]]];
+		_reloading = NO;
 		datas = [[RCSpecialTableView alloc] initWithFrame:CGRectMake(0, 44, 320, rootViewController.view.frame.size.height-44) style:UITableViewStylePlain];
 		[datas setDelegate:self];
 		[datas setDataSource:self];
@@ -22,9 +23,16 @@
 		[datas release];
 		[self.view setOpaque:YES];
 		self.title = @"";
-		[[NSNotificationCenter defaultCenter] addObserver:datas selector:@selector(reloadData) name:@"us.mxms.relay.reload" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadData) name:@"us.mxms.relay.reload" object:nil];
 	}
 	return self;
+}
+
+- (void)reloadData {
+	_reloading = YES;
+	[datas reloadData];
+	_reloading = NO;
+	[datas reloadData];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -49,6 +57,7 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+	if (_reloading) return 0;
 	return [[[RCNetworkManager sharedNetworkManager] networks] count];
 }
 

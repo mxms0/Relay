@@ -27,12 +27,14 @@
 	BOOL joined;
 	BOOL joinOnConnect;
     BOOL shouldJoin;
+	BOOL temporaryJoinOnConnect;
 	RCNetwork *delegate;
     NSMutableArray *fullUserList;
     NSMutableDictionary *userRanksAdv;
 }
 @property (nonatomic, retain) NSString *channelName;
 @property (nonatomic, assign) BOOL joinOnConnect;
+@property (nonatomic, assign) BOOL temporaryJoinOnConnect;
 @property (nonatomic, assign) RCChatPanel *panel;
 @property (nonatomic, retain) NSString *topic;
 @property (nonatomic, retain) NSString *password;

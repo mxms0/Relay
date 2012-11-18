@@ -114,6 +114,10 @@
     [mainView scrollToBottom];
 }
 
+- (void)setEntryFieldEnabled:(BOOL)en {
+	[field setEnabled:en];
+}
+
 - (void)repositionKeyboardForUse:(BOOL)key animated:(BOOL)anim {
 	if (anim) {
 		[UIView beginAnimations:nil context:NULL];

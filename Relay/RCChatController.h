@@ -9,7 +9,7 @@
 #import "RCViewController.h"
 
 @class RCChatViewController, RCChatsListViewController;
-@interface RCChatController : NSObject {
+@interface RCChatController : NSObject <UIAlertViewDelegate> {
 	RCViewController *rootView;
 	RCChatViewController *navigationController;
 	RCChatsListViewController *leftView;
@@ -22,4 +22,5 @@
 - (BOOL)isLandscape;
 - (void)selectChannel:(NSString *)channel fromNetwork:(RCNetwork *)net;
 - (void)rotateToInterfaceOrientation:(UIInterfaceOrientation)oi;
+- (void)showMenuOptions:(id)unused;
 @end

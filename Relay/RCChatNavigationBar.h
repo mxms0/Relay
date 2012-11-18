@@ -18,4 +18,5 @@
 @property (nonatomic, retain) NSString *title;
 @property (nonatomic, retain) NSString *subtitle;
 @property (nonatomic, assign) BOOL isMain;
+@property (nonatomic, assign) BOOL drawIndent;
 @end
