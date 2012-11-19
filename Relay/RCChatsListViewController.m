@@ -52,6 +52,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+	if (_reloading) return 0;
 	RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:section];
 	return (net.expanded ? [[net _channels] count] : 0);
 }

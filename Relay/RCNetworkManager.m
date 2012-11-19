@@ -27,7 +27,6 @@ static NSMutableArray *networks = nil;
 	if (![_net consoleChannel]) [_net addChannel:@"IRC" join:NO];
 	[self finishSetupForNetwork:_net];
 	[networks addObject:_net];
-	reloadNetworks();
 	if ([_net COL]) [_net connect];
 	if (!isSetup) [self saveNetworks];
 }
@@ -113,6 +112,7 @@ static NSMutableArray *networks = nil;
 			[self ircNetworkWithInfo:_info isNew:NO];
 		}
 	}
+	reloadNetworks();
 	NSLog(@"hi %p", networks);
 	[self jumpToFirstNetworkAndConsole];
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"us.mxms.relay.reload" object:nil];

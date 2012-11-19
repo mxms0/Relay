@@ -218,6 +218,7 @@
             if (isRegistered) {
                 [[RCNetworkManager sharedNetworkManager] saveNetworks];
                 shouldSave = YES; // if we aren't registered.. it's _likely_ just setup.
+				reloadNetworks();
             }
             return chan;
         }
@@ -225,7 +226,6 @@
             RCChannel *chan = [self channelWithChannelName:_chan];
             return chan;
 		}
-		reloadNetworks();
     }
 }
 
@@ -407,9 +407,6 @@ out_:
     status = RCSocketStatusConnecting;
     sockfd = 0;
     int fd = 0;
-    char *lbuf = malloc(RECV_BUF_LEN);
-    char *pbuf = lbuf;
-    int blen   = RECV_BUF_LEN;
     struct sockaddr_in serv_addr;
     if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         NSLog(@"ERRRRRRRR00");
@@ -444,59 +441,28 @@ out_:
     }
     [self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
     [self sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
-    /*
-     Buffered read() implementation.
-     Designed to fix non-aligned messages being dropped, and improve performance overall.
-     -- This may have some logic flaws. Please investigate on it. Xoxo, qwertyoruiop.
-     */
-	int kbytes = 0;
-	int pbytes = 0;
-	int dbytes = 0;
-	int bindex = 0;
-	int cached = 0;
-	while ((fd = read(sockfd, lbuf+cached, blen-cached)) > 0) {
-		while (kbytes != fd+cached && kbytes != blen) {
-			if (*(lbuf+kbytes) == '\r'||*(lbuf+kbytes) == '\n') {
-				pbytes = kbytes;
-				if (pbytes - dbytes) {
-					NSAutoreleasePool *pool = [NSAutoreleasePool new];
-					kbytes ++;
-					NSString* message = [[[[[NSString alloc] initWithBytes:(uint8_t*)lbuf+dbytes length:pbytes-dbytes encoding:NSUTF8StringEncoding] autorelease] stringByReplacingOccurrencesOfString:@"\n" withString:@""] stringByReplacingOccurrencesOfString:@"\r" withString:@""];
-					dbytes = kbytes;
-					[self recievedMessage:message];
-					[pool drain];
-				}
-				else goto omg;
-            }
-			else {
-			omg:
-				kbytes ++;
+	NSMutableString *cache = [@"" mutableCopy];
+	char buf[512];
+	while ((fd = read(sockfd, buf, 512)) > 0) {
+		NSString *appenddee = [[NSString alloc] initWithBytesNoCopy:buf length:fd encoding:NSUTF8StringEncoding freeWhenDone:NO];
+		if (appenddee) {
+			[cache appendString:appenddee];
+			[appenddee release];
+			while (([cache rangeOfString:@"\r\n"].location != NSNotFound)) {
+				int loc = [cache rangeOfString:@"\r\n"].location+2;
+				NSString *cbuf = [cache substringToIndex:loc];
+				[self recievedMessage:cbuf];
+				[cache deleteCharactersInRange:NSMakeRange(0, loc)];
 			}
 		}
-		cached = (kbytes) - dbytes;
-		bindex -= dbytes;
-		bindex += cached;
-		if (bindex > blen) {
-			[self disconnectWithMessage:@"Excess Flood"];
-			goto out_;
-		}
-		if (cached > blen && dbytes + cached > blen) {
-			[self disconnectWithMessage:@"Excess Flood"];
-			goto out_;
-		}
-		memcpy(lbuf, lbuf+dbytes, cached);
-		kbytes = cached;
-		dbytes = 0;
-		pbytes = 0;
 	}
 	if ([self isConnected]) {
 		[self disconnectWithMessage:@"End of stream"];
 	}
-out_:
-	[p drain];
-	free(pbuf);
 errme:
 	tryingToConnect = oTT;
+out_:
+	[p drain];
 }
 
 SSL_CTX *RCInitContext(void) {
@@ -658,9 +624,16 @@ char *RCIPForURL(NSString *URL) {
 	RCChannel *chan = [self consoleChannel];
 	if (chan) [chan recievedMessage:@"Connected to host." from:@"" type:RCMessageTypeNormal];
 	if ([npass length] > 0)	[self sendMessage:[@"PRIVMSG NickServ :IDENTIFY " stringByAppendingString:npass]];
+	NSMutableArray *chans = [[NSMutableArray alloc] init];
 	for (RCChannel *chan in _channels) {
-		if ([chan joinOnConnect] || [chan temporaryJoinOnConnect]) [chan setJoined:YES withArgument:nil];
+		if ([chan joinOnConnect] || [chan temporaryJoinOnConnect]) [chans addObject:[chan channelName]];
 	}
+	NSString *mesh = @"";
+	for (NSString *str in chans) {
+		mesh = [mesh stringByAppendingFormat:@"JOIN %@\r\n", str];
+	}
+	[self sendMessage:mesh];
+	[chans release];
 }
 
 - (BOOL)isConnected {

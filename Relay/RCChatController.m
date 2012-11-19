@@ -90,6 +90,7 @@ static id _inst = nil;
 	[navigationController.view setFrame:CGRectMake(267, 0, navigationController.view.frame.size.width, navigationController.view.frame.size.height)];
 	[UIView commitAnimations];
 	[currentPanel setEntryFieldEnabled:NO];
+	[self dismissMenuOptions];
 }
 
 - (CGRect)frameForChatPanel {
@@ -121,14 +122,15 @@ static id _inst = nil;
 	RCChatNavigationBar *rc = (RCChatNavigationBar *)[navigationController navigationBar];
 	NSMutableArray *buttons = [[NSMutableArray alloc] init];
 	UIButton *joinr = [[UIButton alloc] init];
+	SEL jsel = @selector(joinOrConnectDependingOnState);
 	if (![[currentPanel channel] joined]) {
 		[joinr setImage:[UIImage imageNamed:@"0_joinliv"] forState:UIControlStateNormal];
 	}
 	else {
-		[joinr setImage:[UIImage imageNamed:@"0_joindis"] forState:UIControlStateNormal];
-		[joinr setEnabled:NO];
+		[joinr setImage:[UIImage imageNamed:@"0_cncl"] forState:UIControlStateNormal];
+		jsel = @selector(dismissMenuOptions);
 	}
-	[joinr addTarget:self action:@selector(joinOrConnectDependingOnState) forControlEvents:UIControlEventTouchUpInside];
+	[joinr addTarget:self action:jsel forControlEvents:UIControlEventTouchUpInside];
 	[buttons addObject:joinr];
 	[joinr release];
 	UIButton *trsh = [[UIButton alloc] init];
@@ -143,15 +145,16 @@ static id _inst = nil;
 	[meml release];
 	UIButton *lev = [[UIButton alloc] init];
 	UIImage *levi = nil;
+	SEL fsel = @selector(leaveCurrentChannel);
 	if ([[currentPanel channel] joined]) {
 		levi = [UIImage imageNamed:@"0_lev"];
 	}
 	else {
-		levi = [UIImage imageNamed:@"0_levdis"];
-		[lev setEnabled:NO];
+		levi = [UIImage imageNamed:@"0_cncl"];
+		fsel = @selector(dismissMenuOptions);
 	}
 	[lev setImage:levi forState:UIControlStateNormal];
-	[lev addTarget:self action:@selector(leaveCurrentChannel) forControlEvents:UIControlEventTouchUpInside];
+	[lev addTarget:self action:fsel forControlEvents:UIControlEventTouchUpInside];
 	[buttons addObject:lev];
 	[lev release];
 	[rc setDrawIndent:YES];
@@ -171,16 +174,15 @@ static id _inst = nil;
 
 - (void)dismissMenuOptions {
 	RCChatNavigationBar *rc = (RCChatNavigationBar *)[navigationController navigationBar];
-	[UIView beginAnimations:nil context:nil];
 	for (UIButton *subv in [rc subviews]) {
 		if ([subv isKindOfClass:[UIButton class]]) {
-			if ([subv tag] != 1132)
+			if ([subv tag] != 1132) {
 				[subv removeFromSuperview];
+			}
 		}
 	}
 	[rc setDrawIndent:NO];
 	[rc setNeedsDisplay];
-	[UIView commitAnimations];
 }
 
 - (void)deleteCurrentChannel {

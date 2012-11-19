@@ -55,6 +55,8 @@
 		[bg drawAsPatternInRect:CGRectMake(0, 0, rect.size.width, 44)];
 		UIImage *ul = [UIImage imageNamed:@"0_underline"];
 		[ul drawAsPatternInRect:CGRectMake(0, 42, rect.size.width, 2)];
+		UIImage *arrow = [UIImage imageNamed:@"0_arrowr"];
+		[arrow drawInRect:CGRectMake(232, 15, 16, 16)];
 	}
 	NSString *text = [net _description];
 	NSString *detail = [net server];
