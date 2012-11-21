@@ -72,7 +72,7 @@
 	CGFloat size = 0.0;
 	float maxWidth = (rect.size.width-100);
 	[title sizeWithFont:[UIFont boldSystemFontOfSize:22] minFontSize:18 actualFontSize:&size forWidth:maxWidth lineBreakMode:UILineBreakModeClip];
-	[title drawInRect:CGRectMake((!!subtitle ? 50 : 30), (!!subtitle ? 2 : (((rect.size.height-4)/2)-(size/2))), maxWidth, 30) withFont:[UIFont boldSystemFontOfSize:size] lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentCenter];
+	[title drawInRect:CGRectMake((!!subtitle ? 50 : 30), (!!subtitle ? 1.5 : (((rect.size.height-4)/2)-(size/2))), maxWidth, 30) withFont:[UIFont boldSystemFontOfSize:size] lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentCenter];
 	if (subtitle) {
 		CGFloat subsze = 0.0;
 		[subtitle sizeWithFont:[UIFont systemFontOfSize:12] minFontSize:11 actualFontSize:&subsze forWidth:maxWidth lineBreakMode:UILineBreakModeClip];

@@ -37,7 +37,6 @@ typedef enum RCSocketStatus {
 @interface RCNetwork : NSObject <UIAlertViewDelegate> {
 	NSMutableArray *_channels;
     NSMutableArray *_nicknames;
-	NSMutableArray *_bubbles;
 	NSString *sDescription;
 	NSString *server;
 	NSString *nick;
@@ -53,9 +52,7 @@ typedef enum RCSocketStatus {
 	RCSocketStatus status;
 	int task;
 	int port;
-	int maxStatusLength;
 	int sockfd;
-	BOOL finishedSetup;
 	BOOL isRegistered;
 	BOOL useSSL;
 	BOOL COL;
@@ -67,14 +64,13 @@ typedef enum RCSocketStatus {
 	BOOL _isDiconnecting;
 	BOOL shouldRequestSPass;
 	BOOL shouldRequestNPass;
-	RCChannelManager* namesCallback;
+	RCChannelManager *namesCallback;
     BOOL tryingToConnect;
-    NSDictionary* prefix;
+    NSDictionary *prefix;
 }
 @property (nonatomic, retain) NSDictionary* prefix;
 @property (nonatomic, retain) NSMutableArray *_channels;
 @property (nonatomic, retain) NSMutableArray *_nicknames;
-@property (nonatomic, readonly) NSMutableArray *_bubbles;
 @property (nonatomic, retain) NSString *sDescription;
 @property (nonatomic, retain) NSString *server;
 @property (nonatomic, retain) NSString *nick;

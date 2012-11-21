@@ -18,7 +18,7 @@
 
 @implementation RCNetwork
 
-@synthesize prefix, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _bubbles, _nicknames, shouldRequestSPass, shouldRequestNPass, namesCallback, currentChannel, expanded, _selected, SASL;
+@synthesize prefix, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _nicknames, shouldRequestSPass, shouldRequestNPass, namesCallback, currentChannel, expanded, _selected, SASL;
 
 - (RCChannel *)consoleChannel {
     @synchronized(_channels) {
@@ -42,7 +42,6 @@
 		_selected = NO;
         prefix = nil;
 		expanded = NO;
-		_bubbles = [[NSMutableArray alloc] init];
 		_channels = [[NSMutableArray alloc] init];
 		_isDiconnecting = NO;
         _nicknames = [[NSMutableArray alloc] init];
