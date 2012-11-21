@@ -256,7 +256,6 @@
 		[rs release];
 		return;
 	}
-	
 	if (useSSL) {
 		[self performSelectorInBackground:@selector(_ssl_connect) withObject:nil];
 	}
@@ -317,9 +316,6 @@
 	}
 	
 	int fd = 0;
-	char *lbuf = malloc(RECV_BUF_LEN);
-	char *pbuf = lbuf;
-	int blen = RECV_BUF_LEN;
 	if (SASL) {
 		[self sendMessage:@"CAP LS" canWait:NO];
 	}
@@ -328,50 +324,20 @@
 	}
 	[self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
 	[self sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
-	/*
-     Buffered read() implementation.
-     Designed to fix non-aligned messages being dropped, and improve performance overall.
-     -- This may have some logic flaws. Please investigate on it. Xoxo, qwertyoruiop.
-     */
-	int kbytes = 0;
-	int pbytes = 0;
-	int dbytes = 0;
-	int bindex = 0;
-	int cached = 0;
-	while ((fd = SSL_read(ssl, lbuf+cached, blen-cached)) > 0) {
-		while (kbytes != fd+cached && kbytes != blen) {
-			if (*(lbuf+kbytes) == '\r'||*(lbuf+kbytes) == '\n') {
-				pbytes = kbytes;
-				if (pbytes - dbytes) {
-					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-					kbytes++;
-					NSString *
-					message = [[[[[NSString alloc] initWithBytes:(uint8_t*)lbuf+dbytes length:pbytes-dbytes encoding:NSUTF8StringEncoding] autorelease] stringByReplacingOccurrencesOfString:@"\n" withString:@""] stringByReplacingOccurrencesOfString:@"\r" withString:@""];
-					dbytes = kbytes;
-					[self recievedMessage:message];
-					[pool drain];
-				}
-				else goto omg;
-            }
-			else {
-			omg:
-				kbytes++;
+	NSMutableString *cache = [@"" mutableCopy];
+	char buf[512];
+	while ((fd = SSL_read(ssl, buf, 512)) > 0) {
+		NSString *appenddee = [[NSString alloc] initWithBytesNoCopy:buf length:fd encoding:NSUTF8StringEncoding freeWhenDone:NO];
+		if (appenddee) {
+			[cache appendString:appenddee];
+			[appenddee release];
+			while (([cache rangeOfString:@"\r\n"].location != NSNotFound)) {
+				int loc = [cache rangeOfString:@"\r\n"].location+2;
+				NSString *cbuf = [cache substringToIndex:loc];
+				[self recievedMessage:cbuf];
+				[cache deleteCharactersInRange:NSMakeRange(0, loc)];
 			}
 		}
-		cached = (kbytes) - dbytes;
-		bindex -= dbytes;
-		bindex += cached;
-		if (bindex > blen) {
-			[self disconnectWithMessage:@"Excess Flood"];
-			goto out_;
-		}
-		if (cached > blen && dbytes + cached > blen) {
-			[self disconnectWithMessage:@"Excess Flood"];
-			goto out_;
-		}
-		memcpy(lbuf, lbuf+dbytes, cached);
-		kbytes = cached;
-		dbytes = 0;
 	}
 	if ([self isConnected]) {
 		[self disconnectWithMessage:@"End of stream"];
@@ -380,7 +346,6 @@ errme:
 	tryingToConnect = oTT;
 out_:
 	[p drain];
-	free(pbuf);
 }
 
 - (void)_connect {
@@ -413,6 +378,7 @@ out_:
 		goto errme;
     }
 	int set = 1;
+	int x = 1;
 	setsockopt(sockfd, SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(int));
     memset(&serv_addr, '0', sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;
@@ -440,6 +406,7 @@ out_:
     }
     [self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
     [self sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
+	
 	NSMutableString *cache = [@"" mutableCopy];
 	char buf[512];
 	while ((fd = read(sockfd, buf, 512)) > 0) {
