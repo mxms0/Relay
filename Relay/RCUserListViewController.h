@@ -12,6 +12,7 @@
 @interface RCUserListViewController : RCBaseNavigationViewController <UITableViewDataSource, UITableViewDelegate> {
 	RCSuperSpecialTableView *tableView;
 }
+- (void)findShadowAndDoStuffToIt;
 - (void)setCenter:(CGPoint)cc;
 - (void)setFrame:(CGRect)frm;
 @end

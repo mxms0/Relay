@@ -53,8 +53,8 @@
 	return 1;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-	RCUserTableCell *c = (RCUserTableCell *)[tableView dequeueReusableCellWithIdentifier:@"0_usc"];
+- (UITableViewCell *)tableView:(UITableView *)_tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+	RCUserTableCell *c = (RCUserTableCell *)[_tableView dequeueReusableCellWithIdentifier:@"0_usc"];
 	if (!c) {
 		c = [[[RCUserTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"0_usc"] autorelease];
 	}
@@ -67,7 +67,6 @@
 	self.view.center = ct;
 	[self findShadowAndDoStuffToIt];
 	[self correctTableViewFrame];
-	[tableView setFrame:self.view.frame];
 }
 
 - (void)findShadowAndDoStuffToIt {
@@ -95,13 +94,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+	// /Users/Max/Desktop/pepperoni.jpeg
 	CALayer *bg = [[CALayer alloc] init];
 	[bg setContents:(id)([UIImage imageNamed:@"0_cbg"].CGImage)];
 	[bg setFrame:CGRectMake(0, 0, 320, 568)];
 	[bg setShouldRasterize:YES];
 	[self.view.layer insertSublayer:bg atIndex:[self.view.layer.sublayers count]];
 	[bg release];
-	// Do any additional setup after loading the view.
 }
 
 - (void)didReceiveMemoryWarning {
