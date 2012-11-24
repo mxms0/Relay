@@ -25,7 +25,6 @@ static NSMutableArray *networks = nil;
 		}
 	}
 	if (![_net consoleChannel]) [_net addChannel:@"IRC" join:NO];
-	[self finishSetupForNetwork:_net];
 	[networks addObject:_net];
 	if ([_net COL]) [_net connect];
 	if (!isSetup) [self saveNetworks];
@@ -43,26 +42,6 @@ static NSMutableArray *networks = nil;
 		}
 	}
 	return NO;
-}
-
-- (void)finishSetupForNetwork:(RCNetwork *)net {
-	// the alerts do not stop the connection to process to wait for the user to enter the password
-	// so we dont want the network connecting until we get the users password or not.
-	BOOL sc = NO;
-	if ([net shouldRequestNPass]) {
-		RCPasswordRequestAlert *alert = [[RCPasswordRequestAlert alloc] initWithNetwork:net type:RCPasswordRequestAlertTypeNickServ];
-		[alert show];
-		[alert release];
-		sc = YES;
-	}
-	if ([net shouldRequestSPass]) {
-		RCPasswordRequestAlert *alert = [[RCPasswordRequestAlert alloc] initWithNetwork:net type:RCPasswordRequestAlertTypeServer];
-		[alert show];
-		[alert release];
-		sc = YES;
-	}
-	if (sc) return;
-	if ([net COL]) [net connect];
 }
 
 - (void)removeNet:(RCNetwork *)net {

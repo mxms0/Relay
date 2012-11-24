@@ -372,15 +372,15 @@ out_:
     sockfd = 0;
     int fd = 0;
     struct sockaddr_in serv_addr;
-    if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+	sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	if (sockfd < 0) {
         NSLog(@"ERRRRRRRR00");
 		[self disconnectWithMessage:@"Error socketing"];
 		goto errme;
     }
 	int set = 1;
-	int x = 1;
 	setsockopt(sockfd, SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(int));
-    memset(&serv_addr, '0', sizeof(serv_addr));
+    memset(&serv_addr, 0, sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(port);
     char *ip = RCIPForURL(server);
@@ -1585,9 +1585,10 @@ char *RCIPForURL(NSString *URL) {
 	else {
 		[self sendMessage:@"AUTHENTICATE PLAIN"];
 		[self sendMessage:@"AUTHENTICATE +"];
-		NSString *b64 = [[NSString stringWithFormat:@"AUTHENTICATE %@\0%@0%@", useNick, useNick, npass] base64];
-		[self sendMessage:b64];
+		NSString *b64 = [[NSString stringWithFormat:@"%@\0%@0%@", useNick, useNick, npass] base64];
+		[self sendMessage:[NSString stringWithFormat:@"AUTHENTICATE %@", b64]];
 	}
+	[scs release];
 }
 
 void RCParseUserMask(NSString *mask, NSString **_nick, NSString **user, NSString **hostmask) {

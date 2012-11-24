@@ -25,6 +25,7 @@
 		[listr setImage:[UIImage imageNamed:@"0_listrbtn"] forState:UIControlStateNormal];
 		[listr setImage:[UIImage imageNamed:@"0_listrbtn_pressed"] forState:UIControlStateHighlighted];
 		[listr addTarget:[RCChatController sharedController] action:@selector(menuButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+		[listr setExclusiveTouch:YES];
 		UIBarButtonItem *fs = [[UIBarButtonItem alloc] initWithCustomView:listr];
 		[[[self topViewController] navigationItem] setLeftBarButtonItem:fs];
 		[fs release];
@@ -32,7 +33,8 @@
 		UIButton *ppls = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 41, 31)];
 		[ppls setImage:[UIImage imageNamed:@"0_pple"] forState:UIControlStateNormal];
 		[ppls setImage:[UIImage imageNamed:@"0_pple_press"] forState:UIControlStateHighlighted];
-		[ppls addTarget:self action:@selector(showNetworkOptions:) forControlEvents:UIControlEventTouchUpInside];
+		[ppls setExclusiveTouch:YES];
+		[ppls addTarget:[RCChatController sharedController] action:@selector(pushUserListWithDefaultDuration) forControlEvents:UIControlEventTouchUpInside];
 		UIBarButtonItem *bs = [[UIBarButtonItem alloc] initWithCustomView:ppls];
 		[[[self topViewController] navigationItem] setRightBarButtonItem:bs];
 		[bs release];
@@ -43,51 +45,6 @@
 		[swip release];
 	}
 	return self;
-}
-
-- (void)showNetworkOptions:(id)arg1 {
-	currentNetwork = nil;
-	for (UIView *vv in [self.view subviews]) {
-		if ([vv isKindOfClass:[RCChatPanel class]]) {
-			currentNetwork = [[(RCChatPanel *)vv channel] delegate];
-		}
-	}
-	if (currentNetwork == nil) return;
-	RCPrettyActionSheet *sheet = [[RCPrettyActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"What do you want to do for %@?", [currentNetwork _description]] delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Delete" otherButtonTitles:@"Edit", ([currentNetwork isTryingToConnectOrConnected] ? @"Disconnect" : @"Connect"), nil];
-	[sheet showInView:self.view];
-	[sheet release];
-}
-
-- (void)presentViewControllerInMainViewController:(UIViewController *)hi {
-	UIViewController *rc = [((RCAppDelegate *)[[UIApplication sharedApplication] delegate]) navigationController];
-	UINavigationController *ctrl = [[UINavigationController alloc] initWithRootViewController:hi];
-	[ctrl setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
-	[rc presentModalViewController:ctrl animated:YES];
-	[ctrl release];
-}
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-	if (buttonIndex == 0) {
-		// delete.
-		[[RCNetworkManager sharedNetworkManager] removeNet:currentNetwork];
-		reloadNetworks();
-		//	currentIndex--;
-	}
-	else if (buttonIndex == 1) {
-		RCNetwork *net = [[[[RCChatController sharedController] currentPanel] channel] delegate];
-		RCAddNetworkController *addNet = [[RCAddNetworkController alloc] initWithNetwork:net];
-		[self presentViewControllerInMainViewController:addNet];
-		[addNet release];
-		// edit.
-	}
-	else if (buttonIndex == 2) {
-		[currentNetwork connectOrDisconnectDependingOnCurrentStatus];
-		//connect
-	}
-	else if (buttonIndex == 4) {
-		// cancel.
-		// kbye
-	}
 }
 
 - (void)setFrame:(CGRect)rect {
@@ -116,7 +73,7 @@
     [super viewDidLoad];
 	CALayer *bg = [[CALayer alloc] init];
 	[bg setContents:(id)([UIImage imageNamed:@"0_cbg"].CGImage)];
-	[bg setFrame:CGRectMake(0, 0, 568, 568)];
+	[bg setFrame:CGRectMake(0, 0, 320, 568)];
 	[bg setShouldRasterize:YES];
 	[self.view.layer insertSublayer:bg atIndex:[self.view.layer.sublayers count]];
 	[bg release];

@@ -17,4 +17,5 @@
 	RCNetwork *currentNetwork; // only exists during options period.
 }
 - (void)setFrame:(CGRect)frame;
+- (void)setCenter:(CGPoint)centr;
 @end

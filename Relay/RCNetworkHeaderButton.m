@@ -8,6 +8,7 @@
 
 #import "RCNetworkHeaderButton.h"
 #import "RCnetwork.h"
+#import "RCChatController.h"
 
 @implementation RCNetworkHeaderButton
 @synthesize section;
@@ -17,6 +18,12 @@
 		_pSelected = NO;
 		net = nil;
 		[self setOpaque:YES];
+		UIButton *cogGEARWHAT = [[UIButton alloc] initWithFrame:CGRectMake(192, 4, 34, 34)];
+		[cogGEARWHAT setImage:[UIImage imageNamed:@"0_COGGEARWAT"] forState:UIControlStateNormal];
+		[cogGEARWHAT setImage:[UIImage imageNamed:@"0_COGGEARWHAT_pres"] forState:UIControlStateHighlighted];
+		[cogGEARWHAT addTarget:[RCChatController sharedController] action:@selector(showNetworkOptions:) forControlEvents:UIControlEventTouchUpInside];
+		[self addSubview:cogGEARWHAT];
+		[cogGEARWHAT release];
 	}
 	return self;
 }
@@ -48,7 +55,7 @@
 		UIImage *bg = [UIImage imageNamed:@"0_cell_selec"];
 		[bg drawAsPatternInRect:CGRectMake(0, 0, rect.size.width, 44)];
 		UIImage *arrow = [UIImage imageNamed:@"0_arrowd"];
-		[arrow drawInRect:CGRectMake(232,15, 16, 16)];
+		[arrow drawInRect:CGRectMake(232,14, 16, 16)];
 	}
 	else {
 		UIImage *bg = [UIImage imageNamed:@"0_sbg"];
@@ -56,7 +63,7 @@
 		UIImage *ul = [UIImage imageNamed:@"0_underline"];
 		[ul drawAsPatternInRect:CGRectMake(0, 42, rect.size.width, 2)];
 		UIImage *arrow = [UIImage imageNamed:@"0_arrowr"];
-		[arrow drawInRect:CGRectMake(232, 15, 16, 16)];
+		[arrow drawInRect:CGRectMake(232, 14, 16, 16)];
 	}
 	NSString *text = [net _description];
 	NSString *detail = [net server];

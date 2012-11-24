@@ -36,10 +36,11 @@
 	if (white || fakeWhite) def = [UIColor whiteColor];
 	CGContextSetFillColorWithColor(ctx, def.CGColor);
 	CGContextScaleCTM(ctx, [[UIScreen mainScreen] scale], [[UIScreen mainScreen] scale]);
-	[channel drawInRect:CGRectMake((isPM ? 21 : 5), (isPM ? 4 : 5), 200, 40) withFont:[UIFont boldSystemFontOfSize:9] lineBreakMode:UILineBreakModeCharacterWrap alignment:UITextAlignmentLeft];
+	[channel drawInRect:CGRectMake((isPM ? 18 : 5), (isPM ? 4 : 5), 200, 40) withFont:[UIFont boldSystemFontOfSize:9] lineBreakMode:UILineBreakModeCharacterWrap alignment:UITextAlignmentLeft];
 	if (isPM) {
 		UIImage *bubl = [UIImage imageNamed:@"0_pbubl"];
-		[bubl drawInRect:CGRectMake(5, 5, 13, 12)];
+		NSLog(@"HI %@", NSStringFromCGSize(bubl.size));
+		[bubl drawInRect:CGRectMake(4, 4, 12, 12)];
 	}
 }
 

@@ -25,6 +25,7 @@
 #include "openssl/ssl.h"
 #include "openssl/err.h"
 #include <ifaddrs.h>
+#import "TestFlight.h"
 
 @class RCChannelManager;
 typedef enum RCSocketStatus {

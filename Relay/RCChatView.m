@@ -53,7 +53,7 @@ NSString *colorForIRCColor(char irccolor) {
 	if ((self = [super initWithFrame:frame])) {
         if (!template) {
             template = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"chatview" ofType:@"html"] encoding:NSUTF8StringEncoding error:nil];
-			template = [[NSString stringWithFormat:template, [[NSBundle mainBundle] pathForResource:@"jaggs@2x" ofType:@"png"]] retain];
+			template = [[NSString stringWithFormat:template, [[NSBundle mainBundle] pathForResource:@"0_jaggs@2x" ofType:@"png"]] retain];
         }
         self.opaque = NO;
         self.dataDetectorTypes = (UIDataDetectorTypeLink | UIDataDetectorTypePhoneNumber);

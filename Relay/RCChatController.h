@@ -8,14 +8,18 @@
 #import <Foundation/Foundation.h>
 #import "RCViewController.h"
 
-@class RCChatViewController, RCChatsListViewController;
+@class RCChatViewController, RCChatsListViewController, RCUserListViewController;
 @interface RCChatController : NSObject <UIAlertViewDelegate> {
 	RCViewController *rootView;
 	RCChatViewController *navigationController;
 	RCChatsListViewController *leftView;
 	RCChatPanel *currentPanel;
+	RCUserListViewController *topView;
+	BOOL draggingUserList;
+	BOOL canDragMainView;
 }
 @property (nonatomic, retain) RCChatPanel *currentPanel;
+@property (nonatomic, assign) BOOL canDragMainView;
 - (id)initWithRootViewController:(RCViewController *)rc;
 + (id)sharedController;
 - (CGRect)frameForChatPanel;
