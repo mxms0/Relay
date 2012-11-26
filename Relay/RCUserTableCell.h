@@ -8,6 +8,8 @@
 #import <UIKit/UIKit.h>
 #import "RCBasicTableViewCell.h"
 
-@interface RCUserTableCell : RCBasicTableViewCell
-
+@interface RCUserTableCell : RCBasicTableViewCell {
+	BOOL isLast;
+}
+@property (nonatomic, assign) BOOL isLast;
 @end

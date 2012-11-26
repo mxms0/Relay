@@ -10,6 +10,7 @@
 #import "RCChatController.h"
 
 @implementation RCUserListViewController
+@synthesize currentChan;
 
 - (id)initWithRootViewController:(UIViewController *)rootViewController {
 	if ((self = [super initWithRootViewController:rootViewController])) {
@@ -45,7 +46,15 @@
 	return self;
 }
 
+- (void)setChannel:(RCChannel *)chan {
+	[self setCurrentChan:chan];
+	[tableView reloadData];
+	[chan setUsersPanel:(RCUserListPanel *)tableView];
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+	if (![currentChan isKindOfClass:[RCConsoleChannel class]])
+		return [[currentChan fullUserList] count];
 	return 1;
 }
 
@@ -58,8 +67,18 @@
 	if (!c) {
 		c = [[[RCUserTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"0_usc"] autorelease];
 	}
-	c.textLabel.text = @"There are no users in this channel.";
-	c.detailTextLabel.text = @":(";
+	[c setIsLast:NO];
+	if ([currentChan isKindOfClass:[RCConsoleChannel class]]) {
+		c.textLabel.text = @"There are no users in this channel.";
+		c.detailTextLabel.text = @":(";
+		[c setIsLast:YES];
+	}
+	else {
+		c.textLabel.text = [[currentChan fullUserList] objectAtIndex:indexPath.row];
+		if (indexPath.row == [[currentChan fullUserList] count])
+			[c setIsLast:YES];
+	}
+	[c setNeedsDisplay];
 	return c;
 }
 

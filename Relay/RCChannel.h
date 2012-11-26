@@ -39,8 +39,9 @@
 @property (nonatomic, retain) NSString *topic;
 @property (nonatomic, retain) NSString *password;
 @property (nonatomic, assign) RCUserListPanel *usersPanel;
-- (void)disconnected:(NSString*)msg;
-- (void)changeNick:(NSString*)old toNick:(NSString*)new_;
+@property (nonatomic, readonly) NSMutableArray *fullUserList;
+- (void)disconnected:(NSString *)msg;
+- (void)changeNick:(NSString *)old toNick:(NSString *)new_;
 - (id)initWithChannelName:(NSString *)_name;
 - (void)setDelegate:(RCNetwork *)delegate;
 - (RCNetwork *)delegate;

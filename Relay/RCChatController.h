@@ -27,4 +27,5 @@
 - (void)selectChannel:(NSString *)channel fromNetwork:(RCNetwork *)net;
 - (void)rotateToInterfaceOrientation:(UIInterfaceOrientation)oi;
 - (void)showMenuOptions:(id)unused;
+- (void)reloadUserCount;
 @end

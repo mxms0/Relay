@@ -590,16 +590,19 @@ char *RCIPForURL(NSString *URL) {
 	RCChannel *chan = [self consoleChannel];
 	if (chan) [chan recievedMessage:@"Connected to host." from:@"" type:RCMessageTypeNormal];
 	if ([npass length] > 0)	[self sendMessage:[@"PRIVMSG NickServ :IDENTIFY " stringByAppendingString:npass]];
-	NSMutableArray *chans = [[NSMutableArray alloc] init];
+	NSMutableString *joinList = [[NSMutableString alloc] initWithString:@"JOIN "];
 	for (RCChannel *chan in _channels) {
-		if ([chan joinOnConnect] || [chan temporaryJoinOnConnect]) [chans addObject:[chan channelName]];
+		if (![chan isKindOfClass:[RCConsoleChannel class]] && ![chan isKindOfClass:[RCPMChannel class]]) {
+			if ([chan joinOnConnect]) {
+				[joinList appendFormat:@"%@,", [chan channelName]];
+			}
+		}
 	}
-	NSString *mesh = @"";
-	for (NSString *str in chans) {
-		mesh = [mesh stringByAppendingFormat:@"JOIN %@\r\n", str];
+	if ([joinList hasSuffix:@","]) {
+		[joinList deleteCharactersInRange:NSMakeRange([joinList length]-1, 1)];
 	}
-	[self sendMessage:mesh];
-	[chans release];
+	[self sendMessage:joinList];
+	[joinList release];
 }
 
 - (BOOL)isConnected {

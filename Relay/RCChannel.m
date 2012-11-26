@@ -17,7 +17,7 @@
 #define M_COLOR 32
 @implementation RCChannel
 
-@synthesize channelName, joinOnConnect, panel, topic, usersPanel, password, temporaryJoinOnConnect;
+@synthesize channelName, joinOnConnect, panel, topic, usersPanel, password, temporaryJoinOnConnect, fullUserList;
 
 NSString *RCUserRank(NSString *user, RCNetwork *network) {
     @synchronized(network) {
@@ -159,7 +159,7 @@ UIImage *RCImageForRank(NSString *rank, RCNetwork* network) {
 	else {
 		c.detailTextLabel.text = @"";
         NSString *el = [fullUserList objectAtIndex:indexPath.row-1];
-        NSString *rank = RCUserRank(el,[self delegate]);
+        NSString *rank = RCUserRank(el, [self delegate]);
 		c.textLabel.text = [el substringFromIndex:[rank length]];
 		c.imageView.image = RCImageForRank(rank, delegate);
 	}
@@ -434,10 +434,14 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
     }
     @synchronized(self) {
         if (![_joined isEqualToString:@""] && ![_joined isEqualToString:@" "] && ![_joined isEqualToString:@"\r\n"] && ![self isUserInChannel:_joined] && _joined) {
+			[usersPanel reloadData];
             NSUInteger newIndex = [fullUserList indexOfObject:_joined inSortedRange:(NSRange){0, [fullUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^NSComparisonResult(id obj1, id obj2) {
                 return sortRank(obj1, obj2, [self delegate]);
             }];
             [fullUserList insertObject:_joined atIndex:newIndex];
+			[[RCChatController sharedController] reloadUserCount];
+			[usersPanel reloadData];
+			return;
             [usersPanel insertRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:newIndex+1 inSection:0], nil] withRowAnimation:UITableViewRowAnimationLeft];
         }
     }
@@ -453,6 +457,9 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 			NSInteger newIndex = [fullUserList indexOfObject:left];
 			if (newIndex != NSNotFound) {
 				[fullUserList removeObjectAtIndex:newIndex];
+				[[RCChatController sharedController] reloadUserCount];
+				[usersPanel reloadData];
+				return;
 				[usersPanel deleteRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:newIndex+1 inSection:0], nil] withRowAnimation:UITableViewRowAnimationRight];
 			}
 		}

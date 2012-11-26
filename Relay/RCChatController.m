@@ -52,6 +52,7 @@ static id _inst = nil;
 		[[navigationController navigationBar] setBackgroundImage:[UIImage imageNamed:@"0_headr"] forBarMetrics:UIBarMetricsDefault];
 		leftView = [[RCChatsListViewController alloc] initWithRootViewController:base];
 		[((RCChatNavigationBar *)[leftView navigationBar]) setTitle:@"Chats"];
+		[((RCChatNavigationBar *)[leftView navigationBar]) setSuperSpecialLikeAc3xx2:YES];
 		[rc.view insertSubview:leftView.view atIndex:0];
 		[leftView.view setFrame:CGRectMake(0, 0, frame.width, frame.height)];
 		[leftView setNavigationBarHidden:YES];
@@ -59,6 +60,7 @@ static id _inst = nil;
 		topView = [[RCUserListViewController alloc] initWithRootViewController:baseThree];
 		[topView.view setFrame:CGRectMake(frame.width, 0, frame.width, frame.height)];
 		[((RCChatNavigationBar *)[topView navigationBar]) setTitle:@"Memberlist"];
+		[((RCChatNavigationBar *)[topView navigationBar]) setSuperSpecialLikeAc3xx2:YES];
 		[rc.view insertSubview:topView.view atIndex:[[rc.view subviews] count]];
 		[baseThree.view setFrame:topView.view.frame];
 		[topView setNavigationBarHidden:YES];
@@ -112,8 +114,7 @@ static RCNetwork *currentNetwork = nil;
 		//	currentIndex--;
 	}
 	else if (buttonIndex == 1) {
-		RCNetwork *net = [[[[RCChatController sharedController] currentPanel] channel] delegate];
-		RCAddNetworkController *addNet = [[RCAddNetworkController alloc] initWithNetwork:net];
+		RCAddNetworkController *addNet = [[RCAddNetworkController alloc] initWithNetwork:currentNetwork];
 		[self presentViewControllerInMainViewController:addNet];
 		[addNet release];
 		// edit.
@@ -360,7 +361,6 @@ static RCNetwork *currentNetwork = nil;
 }
 
 - (void)showMemberList {
-	
 	[self dismissMenuOptions];
 }
 
@@ -373,12 +373,24 @@ static RCNetwork *currentNetwork = nil;
 	// hi.
 }
 
+- (void)reloadUserCount {
+	RCChannel *chan = [currentPanel channel];
+	[((RCChatNavigationBar *)[topView navigationBar]) setSubtitle:[NSString stringWithFormat:@"%d users in %@", [[chan fullUserList] count], [chan channelName]]];
+}
+
 - (void)selectChannel:(NSString *)channel fromNetwork:(RCNetwork *)net {
 	for (UIView *subv in [navigationController.view subviews]) {
 		if ([subv isKindOfClass:[RCChatPanel class]])
 			[subv removeFromSuperview];
 	}
 	RCChannel *chan = [net channelWithChannelName:channel];
+	if ([chan isKindOfClass:[RCConsoleChannel class]]) {
+		[((RCChatNavigationBar *)[topView navigationBar]) setSubtitle:nil];
+	}
+	else {
+		[((RCChatNavigationBar *)[topView navigationBar]) setSubtitle:[NSString stringWithFormat:@"%d users in %@", [[chan fullUserList] count], channel]];
+	}
+	[((RCChatNavigationBar *)[topView navigationBar]) setNeedsDisplay];
 	if (!chan) {
 		NSLog(@"AN ERROR OCCURED. THIS CHANNEL DOES NOT EXIST BUT IS IN THE TABLE VIEW ANYWAYS.");
 		return;
@@ -386,6 +398,7 @@ static RCNetwork *currentNetwork = nil;
 	RCChatPanel *panel = [chan panel];
 	[panel setFrame:[self frameForChatPanel]];
 	currentPanel = panel;
+	[topView setChannel:chan];
 	[navigationController.view insertSubview:panel atIndex:3];
 	[((RCChatNavigationBar *)[navigationController navigationBar]) setTitle:[chan channelName]];
 	NSString *sub = [net _description];
