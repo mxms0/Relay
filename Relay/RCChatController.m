@@ -384,6 +384,7 @@ static RCNetwork *currentNetwork = nil;
 			[subv removeFromSuperview];
 	}
 	RCChannel *chan = [net channelWithChannelName:channel];
+	[chan setHasNewMessages:NO];
 	if ([chan isKindOfClass:[RCConsoleChannel class]]) {
 		[((RCChatNavigationBar *)[topView navigationBar]) setSubtitle:nil];
 	}

@@ -3,7 +3,6 @@
 //  Relay
 //
 //  Created by Max Shavrick on 10/21/12.
-//  Copyright (c) 2012 American Heritage School. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -12,9 +11,12 @@
 @interface RCNetworkHeaderButton : UIButton {
 	NSInteger section;
 	RCNetwork *net;
+	UIButton *coggearwhat;
+	BOOL showsGlow;
 	BOOL _pSelected;
 }
 @property (nonatomic, assign) NSInteger section;
+@property (nonatomic, assign) BOOL showsGlow;
 - (void)setNetwork:(RCNetwork *)net;
 - (RCNetwork *)net;
 @end

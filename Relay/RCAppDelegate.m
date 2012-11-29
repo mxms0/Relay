@@ -74,10 +74,13 @@ static BOOL isSetup = NO;
 			[[NSUserDefaults standardUserDefaults] setObject:path forKey:PREFS_PLIST];
 			[[NSUserDefaults standardUserDefaults] synchronize];
 			if (![manager fileExistsAtPath:PREFS_ABSOLUT]) {
-				if (![manager createFileAtPath:PREFS_ABSOLUT contents:(NSData *)[NSDictionary dictionary] attributes:NULL]) {
+				NSDictionary *tmp = [[NSDictionary alloc] initWithContentsOfURL:[NSURL URLWithString:@"http://mxms.us/Networks.plist"]];
+				//		if (![manager createFileAtPath:PREFS_ABSOLUT contents:(NSData *)[NSDictionary dictionary] attributes:NULL]) {
+				if (![manager createFileAtPath:PREFS_ABSOLUT contents:(NSData *)tmp attributes:NULL]) {
 					NSLog(@"fucked.");
 					// fucked.
 				}
+				[tmp release];
 			}
 			[[RCNetworkManager sharedNetworkManager] setIsBG:NO];
 			[[RCNetworkManager sharedNetworkManager] unpack];

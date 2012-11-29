@@ -38,6 +38,7 @@
 		tableView = [[RCSuperSpecialTableView alloc] initWithFrame:CGRectZero];
 		[tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 		[tableView setBackgroundColor:[UIColor clearColor]];
+		[tableView setShowsVerticalScrollIndicator:YES];
 		[tableView setDelegate:self];
 		[tableView setDataSource:self];
 		[self.view addSubview:tableView];
@@ -75,7 +76,7 @@
 	}
 	else {
 		c.textLabel.text = [[currentChan fullUserList] objectAtIndex:indexPath.row];
-		if (indexPath.row == [[currentChan fullUserList] count])
+		if (indexPath.row == [[currentChan fullUserList] count]-1)
 			[c setIsLast:YES];
 	}
 	[c setNeedsDisplay];

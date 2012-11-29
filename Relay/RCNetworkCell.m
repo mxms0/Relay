@@ -22,6 +22,7 @@
 }
 
 - (void)drawRect:(CGRect)rect {
+	[[UIColor colorWithRed:0.079 green:0.089 blue:0.118 alpha:1.000] set];
 	[UIColorFromRGB(0x1B1B23) set];
 	UIRectFill(CGRectMake(0, 0, rect.size.width, rect.size.height));
 	UIImage *arrow = [UIImage imageNamed:@"0_arrowr"];

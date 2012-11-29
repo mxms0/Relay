@@ -17,7 +17,7 @@
 #define M_COLOR 32
 @implementation RCChannel
 
-@synthesize channelName, joinOnConnect, panel, topic, usersPanel, password, temporaryJoinOnConnect, fullUserList;
+@synthesize channelName, joinOnConnect, panel, topic, usersPanel, password, temporaryJoinOnConnect, fullUserList, hasNewMessages;
 
 NSString *RCUserRank(NSString *user, RCNetwork *network) {
     @synchronized(network) {
@@ -112,6 +112,7 @@ UIImage *RCImageForRank(NSString *rank, RCNetwork* network) {
     channelName = [chan retain];
     joinOnConnect = YES;
     joined = NO;
+	hasNewMessages = NO;
     userRanksAdv = [NSMutableDictionary new];
     fullUserList = [[NSMutableArray alloc] init];
     panel = [[RCChatPanel alloc] initWithStyle:UITableViewStylePlain andChannel:self];
@@ -385,6 +386,9 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 			[[UIApplication sharedApplication] scheduleLocalNotification:nc];
 			[nc release];
 		}
+	}
+	if (![[[[RCChatController sharedController] currentPanel] channel] isEqual:self]) {
+		hasNewMessages = YES;
 	}
 }
 

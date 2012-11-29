@@ -88,10 +88,19 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
 	if ([[[RCNetworkManager sharedNetworkManager] networks] count] < 1) return nil;
 	RCNetworkHeaderButton *bts = [[RCNetworkHeaderButton alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+	RCNetwork *use = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:section];
 	[bts setSection:section];
-	[bts setNetwork:[[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:section]];
+	[bts setNetwork:use];
 	[bts setBackgroundColor:[UIColor clearColor]];
 	[bts addTarget:self action:@selector(headerTapped:) forControlEvents:UIControlEventTouchUpInside];
+	BOOL shouldGlow_ = NO;
+	for (RCChannel *chan in [use _channels]) {
+		if ([chan hasNewMessages]) {
+			shouldGlow_ = YES;
+			break;
+		}
+	}
+	[bts setShowsGlow:shouldGlow_];
 	return [bts autorelease];
 }
 
@@ -106,6 +115,7 @@
 
 - (void)headerTapped:(RCNetworkHeaderButton *)hb {
 	if ([[hb net] expanded]) {
+		[hb setSelected:NO];
 		[[hb net] setExpanded:NO];
 		NSMutableArray *adds = [[NSMutableArray alloc] init];
 		for (int i = 0; i < [[[hb net] _channels] count]; i++) {
@@ -117,6 +127,7 @@
 		[adds release];
 	}
 	else {
+		[hb setSelected:YES];
 		[[hb net] setExpanded:YES];
 		NSMutableArray *adds = [[NSMutableArray alloc] init];
 		for (int i = 0; i < [[[hb net] _channels] count]; i++) {
