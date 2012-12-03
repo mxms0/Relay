@@ -69,8 +69,10 @@
 		cell = [[RCNetworkCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:ident];
 	}
 	RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.section];
-	[cell setChannel:[[[net _channels] objectAtIndex:indexPath.row] channelName]];
+	RCChannel *indexChannel = [[net _channels] objectAtIndex:indexPath.row];
+	[cell setChannel:[indexChannel channelName]];
 	[cell setWhite:NO];
+	[cell setNewMessageCount:[indexChannel newMessageCount]];
 	RCChannel *chan = [[[RCChatController sharedController] currentPanel] channel];
 	if ([[net _description] isEqual:[[chan delegate] _description]]) {
 		if ([cell.channel isEqualToString:[chan channelName]]) {
@@ -95,7 +97,7 @@
 	[bts addTarget:self action:@selector(headerTapped:) forControlEvents:UIControlEventTouchUpInside];
 	BOOL shouldGlow_ = NO;
 	for (RCChannel *chan in [use _channels]) {
-		if ([chan hasNewMessages]) {
+		if ([chan newMessageCount] > 0) {
 			shouldGlow_ = YES;
 			break;
 		}

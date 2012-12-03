@@ -12,7 +12,11 @@
 	NSString *channel;
 	BOOL white;
 	BOOL fakeWhite;
+	BOOL joined;
+	int newMessageCount;
 }
 @property (nonatomic, retain) NSString *channel;
 @property (nonatomic, assign) BOOL white;
+@property (nonatomic, assign) BOOL joined;
+@property (nonatomic, assign) int newMessageCount;
 @end

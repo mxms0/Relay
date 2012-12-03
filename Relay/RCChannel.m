@@ -17,7 +17,7 @@
 #define M_COLOR 32
 @implementation RCChannel
 
-@synthesize channelName, joinOnConnect, panel, topic, usersPanel, password, temporaryJoinOnConnect, fullUserList, hasNewMessages;
+@synthesize channelName, joinOnConnect, panel, topic, usersPanel, password, temporaryJoinOnConnect, fullUserList, newMessageCount;
 
 NSString *RCUserRank(NSString *user, RCNetwork *network) {
     @synchronized(network) {
@@ -112,7 +112,7 @@ UIImage *RCImageForRank(NSString *rank, RCNetwork* network) {
     channelName = [chan retain];
     joinOnConnect = YES;
     joined = NO;
-	hasNewMessages = NO;
+	newMessageCount = 0;
     userRanksAdv = [NSMutableDictionary new];
     fullUserList = [[NSMutableArray alloc] init];
     panel = [[RCChatPanel alloc] initWithStyle:UITableViewStylePlain andChannel:self];
@@ -120,13 +120,14 @@ UIImage *RCImageForRank(NSString *rank, RCNetwork* network) {
 
 - (id)initWithChannelName:(NSString *)_chan {
 	if ((self = [super init])) {
-        if (dispatch_get_main_queue() == dispatch_get_current_queue()) {
-            [self initialize_me:_chan];
-        } else {
-            dispatch_sync(dispatch_get_main_queue(), ^(void){
-                [self initialize_me:_chan];
-            });
-        }
+		if (dispatch_get_main_queue() == dispatch_get_current_queue()) {
+			[self initialize_me:_chan];
+		}
+		else {
+			dispatch_sync(dispatch_get_main_queue(), ^(void) {
+				[self initialize_me:_chan];
+			});
+		}
 	}
 	return self;
 }
@@ -357,7 +358,8 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 	BOOL isHighlight = NO;
 	if ((type == RCMessageTypeNormal || type == RCMessageTypeAction || type == RCMessageTypeNotice) && ![from isEqualToStringNoCase:[delegate useNick]]) isHighlight = is_highlight;
 	[panel postMessage:msg withType:type highlight:isHighlight isMine:([from isEqualToString:[delegate useNick]])];
-	[self shouldPost:isHighlight withMessage:msg];
+	if (type != RCMessageTypeTopic && type != RCMessageTypePart && type != RCMessageTypeMode && type != RCMessageTypeJoin)
+		[self shouldPost:isHighlight withMessage:msg];
 	[msg release];
 	[p drain];
 }
@@ -388,7 +390,10 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 		}
 	}
 	if (![[[[RCChatController sharedController] currentPanel] channel] isEqual:self]) {
-		hasNewMessages = YES;
+		newMessageCount++;
+		if ([[RCChatController sharedController] isShowingChatListView]) {
+			reloadNetworks();
+		}
 	}
 }
 
@@ -531,13 +536,13 @@ modecnt++;\
 - (void)setMode:(NSString *)modes forUser:(NSString *)user {
     @synchronized(userRanksAdv) {
         @try {
-            NSArray* users = [user componentsSeparatedByString:@" "];
+            NSArray *users = [user componentsSeparatedByString:@" "];
             BOOL adding = NO;
             BOOL subtracting = NO;
             int stptr = 0;
             int endptr = 0;
             int modecnt = 0;
-            NSString* partialLen = nil;
+            NSString *partialLen = nil;
             for (int i = 0; i < [modes length]; i++) {
                 switch ([modes characterAtIndex:i]) {
                     case '+':

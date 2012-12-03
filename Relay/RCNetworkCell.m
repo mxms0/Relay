@@ -8,7 +8,7 @@
 #import "RCNetworkCell.h"
 
 @implementation RCNetworkCell
-@synthesize channel, white;
+@synthesize channel, white, newMessageCount, joined;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
@@ -17,6 +17,7 @@
 		self.backgroundColor = [UIColor clearColor];
 		self.white = NO;
 		fakeWhite = NO;
+		newMessageCount = 0;
     }
     return self;
 }
@@ -40,8 +41,39 @@
 	[channel drawInRect:CGRectMake((isPM ? 18 : 5), (isPM ? 4 : 5), 200, 40) withFont:[UIFont boldSystemFontOfSize:9] lineBreakMode:UILineBreakModeCharacterWrap alignment:UITextAlignmentLeft];
 	if (isPM) {
 		UIImage *bubl = [UIImage imageNamed:@"0_pbubl"];
-		NSLog(@"HI %@", NSStringFromCGSize(bubl.size));
 		[bubl drawInRect:CGRectMake(4, 4, 12, 12)];
+	}
+	if (newMessageCount > 0) {
+		int len = 0;
+		NSString *rendr = @"";
+		if (newMessageCount > 99) {
+			rendr = @"99+";
+		}
+		else {
+			rendr = [NSString stringWithFormat:@"%d", newMessageCount];
+		}
+		len = [rendr sizeWithFont:[UIFont boldSystemFontOfSize:7.5]].width;
+		NSLog(@"meh %@: %d", rendr,len);
+		// sorry. :s
+		// it's not my fault! i promise. surenix did it!
+		BOOL longerThanNormal = ([rendr isEqualToString:@"99+"]);
+		CGFloat radius = 5.4;;
+		CGRect ovalThing = CGRectMake((longerThanNormal ? 95 : 100), 5, (longerThanNormal ? 16 : 11), 11);
+		CGContextRef context = UIGraphicsGetCurrentContext();
+		CGContextSetRGBFillColor(context, 76, 78, 84, 0.4);
+		CGContextMoveToPoint(context, ovalThing.origin.x, ovalThing.origin.y + radius);
+		CGContextAddLineToPoint(context, ovalThing.origin.x, ovalThing.origin.y + ovalThing.size.height - radius);
+		CGContextAddArc(context, ovalThing.origin.x + radius, ovalThing.origin.y + ovalThing.size.height - radius, radius, M_PI, M_PI / 2, 1);
+		CGContextAddLineToPoint(context, ovalThing.origin.x + ovalThing.size.width - radius, ovalThing.origin.y + ovalThing.size.height);
+		CGContextAddArc(context, ovalThing.origin.x + ovalThing.size.width - radius, ovalThing.origin.y + ovalThing.size.height - radius, radius, M_PI / 2, 0.0f, 1);
+		CGContextAddLineToPoint(context, ovalThing.origin.x + ovalThing.size.width, ovalThing.origin.y + radius);
+		CGContextAddArc(context, ovalThing.origin.x + ovalThing.size.width - radius, ovalThing.origin.y + radius, radius, 0.0f, -M_PI / 2, 1);
+		CGContextAddLineToPoint(context, ovalThing.origin.x + radius, ovalThing.origin.y);
+		CGContextAddArc(context, ovalThing.origin.x + radius, ovalThing.origin.y + radius, radius, -M_PI / 2, M_PI, 1);
+		CGContextFillPath(context);
+		CGContextSetFillColorWithColor(context, UIColorFromRGB(0x191A26).CGColor);
+		CGContextSetShadowWithColor(context, CGSizeMake(0, 1), 0.5, [UIColor colorWithWhite:1 alpha:0.2].CGColor);
+		[rendr drawAtPoint:CGPointMake((longerThanNormal ? 97 : 101), 5) forWidth:50 withFont:[UIFont boldSystemFontOfSize:7.5] fontSize:7.5 lineBreakMode:UILineBreakModeClip baselineAdjustment:UIBaselineAdjustmentAlignCenters];
 	}
 }
 

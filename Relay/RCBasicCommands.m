@@ -13,6 +13,7 @@
 	RCCommandEngine *e = [RCCommandEngine sharedInstance];
 	[e registerSelector:@selector(handleME:net:channel:) forCommands:@"me" usingClass:self];
 	[e registerSelector:@selector(handleJOIN:net:channel:) forCommands:[NSArray arrayWithObjects:@"join", @"j", nil] usingClass:self];
+	[e registerSelector:@selector(handlePART:net:channel:) forCommands:[NSArray arrayWithObjects:@"part", @"p", nil] usingClass:self];
 }
 
 - (void)handleME:(NSString *)me net:(RCNetwork *)net channel:(RCChannel *)chan {
@@ -39,13 +40,35 @@
 	 
 	 */
 	
-	
 	if (!aJ) return;
 	NSArray *channels = [aJ componentsSeparatedByString:@" "];
 	for (NSString *chan in channels) {
 		NSString *geh = [[chan stringByReplacingOccurrencesOfString:@"," withString:@""] stringByReplacingOccurrencesOfString:@" " withString:@" "];
 		if (geh != nil && [geh length] > 1) {
 			[net sendMessage:[NSString stringWithFormat:@"JOIN %@", geh]];
+		}
+	}
+}
+
+- (void)handlePART:(NSString *)part net:(RCNetwork *)net channel:(RCChannel *)aChan {
+	if (!part) {
+		[aChan setJoined:NO withArgument:@"Relay 1.0"];
+	}
+	else {
+		NSScanner *scanr = [[NSScanner alloc] initWithString:part];
+		NSString *chan = nil;
+		NSString *reason = nil;
+		[scanr scanUpToString:@" " intoString:&chan];
+		if (![chan hasPrefix:@"#"]) {
+			[aChan setJoined:NO withArgument:part];
+			[scanr release];
+			return;
+		}
+		if (![chan isEqualToString:part]) {
+			[scanr scanUpToString:@"" intoString:&reason];
+			[aChan setJoined:NO withArgument:reason];
+			[scanr release];
+			return;
 		}
 	}
 }

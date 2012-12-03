@@ -150,6 +150,13 @@ static RCNetwork *currentNetwork = nil;
 }
 
 - (void)pushUserListWithDuration:(NSTimeInterval)dr {
+	RCChannel *channel = [currentPanel channel];
+	if ([channel isKindOfClass:[RCConsoleChannel class]]) {
+		[((RCChatNavigationBar *)[topView navigationBar]) setSubtitle:nil];
+	}
+	else {
+		[((RCChatNavigationBar *)[topView navigationBar]) setSubtitle:[NSString stringWithFormat:@"%d users in %@", [[channel fullUserList] count], [channel channelName]]];
+	}
 	canDragMainView = NO;
 	[self closeWithDuration:0.00];
 	[currentPanel resignFirstResponder];
@@ -373,6 +380,10 @@ static RCNetwork *currentNetwork = nil;
 	// hi.
 }
 
+- (BOOL)isShowingChatListView {
+	return (navigationController.view.frame.origin.x > 0);
+}
+
 - (void)reloadUserCount {
 	RCChannel *chan = [currentPanel channel];
 	[((RCChatNavigationBar *)[topView navigationBar]) setSubtitle:[NSString stringWithFormat:@"%d users in %@", [[chan fullUserList] count], [chan channelName]]];
@@ -384,13 +395,7 @@ static RCNetwork *currentNetwork = nil;
 			[subv removeFromSuperview];
 	}
 	RCChannel *chan = [net channelWithChannelName:channel];
-	[chan setHasNewMessages:NO];
-	if ([chan isKindOfClass:[RCConsoleChannel class]]) {
-		[((RCChatNavigationBar *)[topView navigationBar]) setSubtitle:nil];
-	}
-	else {
-		[((RCChatNavigationBar *)[topView navigationBar]) setSubtitle:[NSString stringWithFormat:@"%d users in %@", [[chan fullUserList] count], channel]];
-	}
+	[chan setNewMessageCount:0];
 	[((RCChatNavigationBar *)[topView navigationBar]) setNeedsDisplay];
 	if (!chan) {
 		NSLog(@"AN ERROR OCCURED. THIS CHANNEL DOES NOT EXIST BUT IS IN THE TABLE VIEW ANYWAYS.");

@@ -24,6 +24,7 @@
 + (id)sharedController;
 - (CGRect)frameForChatPanel;
 - (BOOL)isLandscape;
+- (BOOL)isShowingChatListView;
 - (void)selectChannel:(NSString *)channel fromNetwork:(RCNetwork *)net;
 - (void)rotateToInterfaceOrientation:(UIInterfaceOrientation)oi;
 - (void)showMenuOptions:(id)unused;

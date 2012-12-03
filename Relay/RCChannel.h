@@ -28,7 +28,7 @@
 	BOOL joinOnConnect;
     BOOL shouldJoin;
 	BOOL temporaryJoinOnConnect;
-	BOOL hasNewMessages;
+	unsigned newMessageCount;
 	RCNetwork *delegate;
     NSMutableArray *fullUserList;
     NSMutableDictionary *userRanksAdv;
@@ -41,7 +41,7 @@
 @property (nonatomic, retain) NSString *password;
 @property (nonatomic, assign) RCUserListPanel *usersPanel;
 @property (nonatomic, readonly) NSMutableArray *fullUserList;
-@property (nonatomic, assign) BOOL hasNewMessages;
+@property (nonatomic, assign) unsigned newMessageCount;
 - (void)disconnected:(NSString *)msg;
 - (void)changeNick:(NSString *)old toNick:(NSString *)new_;
 - (id)initWithChannelName:(NSString *)_name;

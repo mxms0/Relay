@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #import "TestFlight.h"
+#import "RCAddNetworkController.h"
 
 @implementation RCAppDelegate
 
@@ -61,7 +62,9 @@ static BOOL isSetup = NO;
 	[rcv release];
 	self.window.rootViewController = self.navigationController;
     [self.window makeKeyAndVisible];
+	
 	[self performSelectorInBackground:@selector(_setup) withObject:nil];
+	[self configureUI];
 	return YES;
 }
 

@@ -404,6 +404,12 @@ out_:
     if ([spass length] > 0) {
         [self sendMessage:[@"PASS " stringByAppendingString:spass] canWait:NO];
     }
+	if (SASL) {
+		[self sendMessage:@"CAP REQ :mutle-prefix sasl server-time"];
+	}
+	else {
+		[self sendMessage:@"CAP REQ :server-time"];
+	}
     [self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
     [self sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
 	
@@ -526,7 +532,14 @@ char *RCIPForURL(NSString *URL) {
         }
 		return;
 	}
+	else if ([msg hasPrefix:@"@"]) {
+		NSLog(@"IRV3 I C. %@", msg);
+		return;
+	}
 	if (![msg hasPrefix:@":"]) {
+		if ([msg hasPrefix:@"AUTHENTICATE"]) {
+			[self sendB64SASLAuth];
+		}
 		return;
 	}
 	NSScanner *scanner = [[NSScanner alloc] initWithString:msg];
@@ -607,6 +620,11 @@ char *RCIPForURL(NSString *URL) {
 
 - (BOOL)isConnected {
 	return (status == RCSocketStatusConnected);
+}
+
+- (void)sendB64SASLAuth {
+	NSString *b64 = [[NSString stringWithFormat:@"%@\0%@0%@", useNick, useNick, npass] base64];
+	[self sendMessage:[NSString stringWithFormat:@"AUTHENTICATE %@", b64]];
 }
 
 - (void)handle001:(NSString *)welcome {
@@ -800,8 +818,55 @@ char *RCIPForURL(NSString *URL) {
 	// Relay[3067:f803] MSG: :fr.ac3xx.com 251 _m :There are 1 users and 4 invisible on 1 servers
 }
 
-- (void)handle475:(NSString *)args
-{
+- (void)handle404:(NSString *)args {
+    if ([args hasPrefix:@":"]) {
+        args = [args substringFromIndex:[args rangeOfString:@" "].location+1];
+    }
+    NSScanner *scanner = [NSScanner scannerWithString:args];
+    NSString* raw = @"";
+    NSString* mnick = @"";
+    NSString* chan = @"";
+    NSString* mesg = @"";
+    [scanner scanUpToString:@" " intoString:&raw];
+    if (![raw isEqualToString:@"404"]) {
+        return;
+    }
+    [scanner scanUpToString:@" " intoString:&mnick];
+    [scanner scanUpToString:@" " intoString:&chan];
+    [scanner scanUpToString:@"" intoString:&mesg];
+    if ([mesg hasPrefix:@":"]) {
+        mesg = [mesg substringFromIndex:1];
+    }
+    RCChannel *kchan = [self channelWithChannelName:chan];
+	if (kchan) [kchan recievedMessage:mesg from:@"" type:RCMessageTypeError];
+}
+
+- (void)handle437:(NSString *)args {
+    if ([args hasPrefix:@":"]) {
+        args = [args substringFromIndex:[args rangeOfString:@" "].location+1];
+    }
+    NSScanner *scanner = [NSScanner scannerWithString:args];
+    NSString* raw = @"";
+    NSString* mnick = @"";
+    NSString* chan = @"";
+    NSString* mesg = @"";
+    [scanner scanUpToString:@" " intoString:&raw];
+    if (![raw isEqualToString:@"437"]) {
+        return;
+    }
+    [scanner scanUpToString:@" " intoString:&mnick];
+    [scanner scanUpToString:@" " intoString:&chan];
+    [scanner scanUpToString:@"" intoString:&mesg];
+    if ([mesg hasPrefix:@":"]) {
+        mesg = [mesg substringFromIndex:1];
+    }
+    RCChannel *kchan = [self channelWithChannelName:chan];
+	if (kchan) [kchan recievedMessage:mesg from:@"" type:RCMessageTypeError];
+    [[self consoleChannel] recievedMessage:mesg from:chan type:RCMessageTypeNormal];
+    NSLog(@"kay %@ %@ %@", raw, chan, mesg);
+}
+
+- (void)handle475:(NSString *)args {
     if ([args hasPrefix:@":"]) {
         args = [args substringFromIndex:[args rangeOfString:@" "].location+1];
     }
@@ -848,7 +913,6 @@ char *RCIPForURL(NSString *URL) {
     RCChannel *kchan = [self channelWithChannelName:chan];
 	if (kchan) [kchan recievedMessage:mesg from:@"" type:RCMessageTypeError];
     else [[self consoleChannel] recievedMessage:[args substringFromIndex:[[args substringFromIndex:[args rangeOfString:@" "].location+1] rangeOfString:@" "].location+1] from:@"" type:RCMessageTypeNormal];
-    NSLog(@"kay %@ %@ %@", raw, chan, mesg);
 }
 
 - (void)handle473:(NSString *)args {
@@ -1119,6 +1183,10 @@ char *RCIPForURL(NSString *URL) {
 	[self sendMessage:@"CAP END"];
 }
 
+- (void)handle904:(NSString *)saslsucks {
+	[[self consoleChannel] recievedMessage:@"SASL Authentication failed." from:nil type:RCMessageTypeNormal];
+}
+
 - (void)handle998:(NSString *)fuckyouumich {
 	if (!fuckyouumich) return; //there's never a time where fuck umich is not true. FUCK YOU UMICH.
 	NSLog(@"FUCK. YOU. UMICH:%@",fuckyouumich);
@@ -1317,54 +1385,6 @@ char *RCIPForURL(NSString *URL) {
     for (RCChannel* chan in chanarr) {
         [chan changeNick:oldnick toNick:newnick];
     }
-}
-
-- (void)handle437:(NSString *)args {
-    if ([args hasPrefix:@":"]) {
-        args = [args substringFromIndex:[args rangeOfString:@" "].location+1];
-    }
-    NSScanner *scanner = [NSScanner scannerWithString:args];
-    NSString* raw = @"";
-    NSString* mnick = @"";
-    NSString* chan = @"";
-    NSString* mesg = @"";
-    [scanner scanUpToString:@" " intoString:&raw];
-    if (![raw isEqualToString:@"437"]) {
-        return;
-    }
-    [scanner scanUpToString:@" " intoString:&mnick];
-    [scanner scanUpToString:@" " intoString:&chan];
-    [scanner scanUpToString:@"" intoString:&mesg];
-    if ([mesg hasPrefix:@":"]) {
-        mesg = [mesg substringFromIndex:1];
-    }
-    RCChannel *kchan = [self channelWithChannelName:chan];
-	if (kchan) [kchan recievedMessage:mesg from:@"" type:RCMessageTypeError];
-    [[self consoleChannel] recievedMessage:mesg from:chan type:RCMessageTypeNormal];
-    NSLog(@"kay %@ %@ %@", raw, chan, mesg);
-}
-
-- (void)handle404:(NSString *)args {
-    if ([args hasPrefix:@":"]) {
-        args = [args substringFromIndex:[args rangeOfString:@" "].location+1];
-    }
-    NSScanner *scanner = [NSScanner scannerWithString:args];
-    NSString* raw = @"";
-    NSString* mnick = @"";
-    NSString* chan = @"";
-    NSString* mesg = @"";
-    [scanner scanUpToString:@" " intoString:&raw];
-    if (![raw isEqualToString:@"404"]) {
-        return;
-    }
-    [scanner scanUpToString:@" " intoString:&mnick];
-    [scanner scanUpToString:@" " intoString:&chan];
-    [scanner scanUpToString:@"" intoString:&mesg];
-    if ([mesg hasPrefix:@":"]) {
-        mesg = [mesg substringFromIndex:1];
-    }
-    RCChannel *kchan = [self channelWithChannelName:chan];
-	if (kchan) [kchan recievedMessage:mesg from:@"" type:RCMessageTypeError];
 }
 
 - (void)handleCTCPRequest:(NSString *)_request {
@@ -1575,23 +1595,7 @@ char *RCIPForURL(NSString *URL) {
 }
 
 - (void)handleCAP:(NSString *)cap {
-	NSString *meh = nil;
-	NSString *crap = nil;
-	NSScanner *scs = [[NSScanner alloc] initWithString:cap];
-	[scs scanUpToString:@" " intoString:&crap];
-	[scs scanUpToString:@" " intoString:&crap];
-	[scs scanUpToString:@" " intoString:&meh];
-	meh = [meh stringByReplacingOccurrencesOfString:@" " withString:@""];
-	if ([meh isEqualToString:@"*"]) {
-		[self sendMessage:@"CAP REQ :multi-prefix sasl"];
-	}
-	else {
-		[self sendMessage:@"AUTHENTICATE PLAIN"];
-		[self sendMessage:@"AUTHENTICATE +"];
-		NSString *b64 = [[NSString stringWithFormat:@"%@\0%@0%@", useNick, useNick, npass] base64];
-		[self sendMessage:[NSString stringWithFormat:@"AUTHENTICATE %@", b64]];
-	}
-	[scs release];
+	[self sendMessage:@"AUTHENTICATE PLAIN"];
 }
 
 void RCParseUserMask(NSString *mask, NSString **_nick, NSString **user, NSString **hostmask) {
