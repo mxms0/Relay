@@ -25,7 +25,7 @@ NSString *RCUserRank(NSString *user, RCNetwork *network) {
             return @"";
         }
         for (id karr in [[network prefix] allKeys]) {
-            NSArray* arr = [[network prefix] objectForKey:karr];
+            NSArray *arr = [[network prefix] objectForKey:karr];
             if ([arr count] == 2) {
                 if ([[arr objectAtIndex:1] characterAtIndex:0] == [user characterAtIndex:0]) {
                     return [arr objectAtIndex:1];
@@ -36,10 +36,8 @@ NSString *RCUserRank(NSString *user, RCNetwork *network) {
     }
 }
 
-NSInteger rankToNumber(unichar rank, RCNetwork* network);
-
 BOOL RCIsRankHigher(NSString *rank, NSString *rank2, RCNetwork* network) {
-    return (rankToNumber([rank characterAtIndex:0],network) < rankToNumber([rank2 characterAtIndex:0],network));
+    return (rankToNumber([rank characterAtIndex:0], network) < rankToNumber([rank2 characterAtIndex:0], network));
 }
 
 NSInteger rankToNumber(unichar rank, RCNetwork* network) {
@@ -53,7 +51,6 @@ NSInteger rankToNumber(unichar rank, RCNetwork* network) {
     return 999;
 }
 
-NSInteger sortRank(id u1, id u2, RCNetwork* network);
 NSInteger sortRank(id u1, id u2, RCNetwork* network) {
     u1 = [u1 lowercaseString];
     u2 = [u2 lowercaseString];
@@ -207,13 +204,12 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 	NSMutableArray *fullUserList = self->fullUserList;
 	for (NSString *uname in [fullUserList sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
 		if ([obj1 length] > [obj2 length]) return NSOrderedAscending;
-		else if ([obj1 length] < [obj2 length]) return NSOrderedAscending;
+		else if ([obj1 length] < [obj2 length]) return NSOrderedDescending;
 		return NSOrderedSame;
 	}]) {
 		NSString *cmp = *message;
 		if (!cmp) continue;
 		NSString *rank = RCUserRank(uname, [self delegate]);
-		if (!rank) continue;
 		NSString *nameOrRank = [uname substringFromIndex:[rank length]];
 		if (!nameOrRank) continue;
 		int hhash = ([nameOrRank isEqualToString:[[self delegate] useNick]]) ? 1 : user_hash(nameOrRank);
@@ -241,10 +237,9 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 	}
 }
 
-- (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type {
-    NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+- (void)recievedMessage:(NSString *)message from:(NSString *)from time:(NSString *)time type:(RCMessageType)type {
+	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSString *msg = @"";
-	NSString *time = @"";
     from = [from stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
     from = [from stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
     char uhash = (![from isEqualToString:[delegate useNick]]) ? user_hash(from) : 1;
@@ -253,13 +248,13 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
         message = [message stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
     }
     BOOL is_highlight = NO;
-	time = [[RCDateManager sharedInstance] currentDateAsString];
-	if ([time hasSuffix:@" "])
-		time = [time substringToIndex:time.length-1];
 	switch (type) {
 		case RCMessageTypeKick: {
-            NSString* mesg = [(NSArray *)message objectAtIndex:1];
-            NSString* whog = [(NSArray *)message objectAtIndex:0];
+			if (![message respondsToSelector:@selector(objectAtIndex:)]) {
+				NSLog(@"SENDING THE WRONG TYPE.");
+			}
+            NSString *mesg = [(NSArray *)message objectAtIndex:1];
+            NSString *whog = [(NSArray *)message objectAtIndex:0];
             if ([mesg isKindOfClass:[NSString class]]) {
                 mesg = [mesg stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
                 mesg = [mesg stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
@@ -269,12 +264,12 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
                 whog = [whog stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
             }
             [self setUserLeft:whog];
-            msg = [[NSString stringWithFormat:@"%c[%@] %@%c has kicked %c%@%c%@",RCIRCAttributeBold, time, from, RCIRCAttributeBold, RCIRCAttributeBold, whog, RCIRCAttributeBold, (!mesg) ? @"" : [@" (" stringByAppendingFormat:@"%@)", mesg]] retain];
+            msg = [[NSString stringWithFormat:@"%c[%@] %@%c has kicked %c%@%c%@", RCIRCAttributeBold, time, from, RCIRCAttributeBold, RCIRCAttributeBold, whog, RCIRCAttributeBold, (!mesg) ? @"" : [@" (" stringByAppendingFormat:@"%@)", mesg]] retain];
 		}
             break;
 		case RCMessageTypeBan:
             [self setUserLeft:message];
-			msg = [[NSString stringWithFormat:@"%c[%@] %@%c sets mode +b %@",RCIRCAttributeBold, time, from, RCIRCAttributeBold, message] retain];
+			msg = [[NSString stringWithFormat:@"%c[%@] %@%c sets mode +b %@", RCIRCAttributeBold, time, from, RCIRCAttributeBold, message] retain];
 			break;
 		case RCMessageTypePart:
             [self setUserLeft:from];
@@ -362,6 +357,18 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 		[self shouldPost:isHighlight withMessage:msg];
 	[msg release];
 	[p drain];
+}
+
+- (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type {
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	// i know one will be allocated when passing this on.
+	// but there are autoreleased variables here, i don't want to leak.
+	// better safe than sorry.
+	NSString *time = [[RCDateManager sharedInstance] currentDateAsString];
+	if ([time hasSuffix:@" "])
+		time = [time substringToIndex:time.length-1];
+	[self recievedMessage:message from:from time:time type:type];
+	[pool drain];
 }
 
 - (BOOL)isUserInChannel:(NSString *)user {

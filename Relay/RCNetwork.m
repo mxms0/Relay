@@ -405,10 +405,10 @@ out_:
         [self sendMessage:[@"PASS " stringByAppendingString:spass] canWait:NO];
     }
 	if (SASL) {
-		[self sendMessage:@"CAP REQ :mutle-prefix sasl server-time"];
+		[self sendMessage:@"CAP REQ :mutle-prefix sasl server-time" canWait:NO];
 	}
 	else {
-		[self sendMessage:@"CAP REQ :server-time"];
+		[self sendMessage:@"CAP REQ :server-time" canWait:NO];
 	}
     [self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
     [self sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
