@@ -533,6 +533,12 @@ char *RCIPForURL(NSString *URL) {
 		return;
 	}
 	else if ([msg hasPrefix:@"@"]) {
+		// sending these messages somewhere else.
+		// not handling them here.
+		msg = [msg substringFromIndex:1];
+		NSDateFormatter *df = [[NSDateFormatter alloc] init];
+		[df setDateFormat:@"YYYY-MM-DDThh:mm:ss.sssZ"];
+		NSDate *aDate = [df dateFromString:nil];
 		NSLog(@"IRV3 I C. %@", msg);
 		return;
 	}

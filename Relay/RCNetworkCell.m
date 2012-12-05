@@ -73,7 +73,7 @@
 		CGContextFillPath(context);
 		CGContextSetFillColorWithColor(context, UIColorFromRGB(0x191A26).CGColor);
 		CGContextSetShadowWithColor(context, CGSizeMake(0, 1), 0.5, [UIColor colorWithWhite:1 alpha:0.2].CGColor);
-		[rendr drawAtPoint:CGPointMake((longerThanNormal ? 97 : 101), 5) forWidth:50 withFont:[UIFont boldSystemFontOfSize:7.5] fontSize:7.5 lineBreakMode:UILineBreakModeClip baselineAdjustment:UIBaselineAdjustmentAlignCenters];
+		[rendr drawAtPoint:CGPointMake((longerThanNormal ? 97 : (newMessageCount <= 9 ? 103 : 101)), 5) forWidth:50 withFont:[UIFont boldSystemFontOfSize:7.5] fontSize:7.5 lineBreakMode:UILineBreakModeClip baselineAdjustment:UIBaselineAdjustmentAlignCenters];
 	}
 }
 
