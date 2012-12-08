@@ -151,12 +151,20 @@ static RCNetwork *currentNetwork = nil;
 
 - (void)pushUserListWithDuration:(NSTimeInterval)dr {
 	RCChannel *channel = [currentPanel channel];
-	if ([channel isKindOfClass:[RCConsoleChannel class]]) {
+	if ([channel isKindOfClass:[RCPMChannel class]]) {
+		[topView showUserInfoPanel];
 		[((RCChatNavigationBar *)[topView navigationBar]) setSubtitle:nil];
 	}
-	else {
-		[((RCChatNavigationBar *)[topView navigationBar]) setSubtitle:[NSString stringWithFormat:@"%d users in %@", [[channel fullUserList] count], [channel channelName]]];
+	else if ([channel isKindOfClass:[RCConsoleChannel class]]) {
+		[((RCChatNavigationBar *)[topView navigationBar]) setSubtitle:nil];
+		[topView showUserListPanel];
 	}
+	else if ([channel isKindOfClass:[RCChannel class]]) {
+		[((RCChatNavigationBar *)[topView navigationBar]) setSubtitle:[NSString stringWithFormat:@"%d users in %@", [[channel fullUserList] count], [channel channelName]]];
+		[topView showUserListPanel];
+	}
+	[((RCChatNavigationBar *)[topView navigationBar]) setNeedsDisplay];
+	[topView reloadData];
 	canDragMainView = NO;
 	[self closeWithDuration:0.00];
 	[currentPanel resignFirstResponder];

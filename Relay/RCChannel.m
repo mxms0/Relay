@@ -215,7 +215,10 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 		int hhash = ([nameOrRank isEqualToString:[[self delegate] useNick]]) ? 1 : user_hash(nameOrRank);
 		NSString *patternuno = [NSString stringWithFormat:@"(^|\\s)([^A-Za-z0-9#]*)(%@)([^A-Za-z0-9]*)($|\\s)", nameOrRank];
 		NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:patternuno options:NSRegularExpressionCaseInsensitive error:nil];
-		*message = [regex stringByReplacingMatchesInString:cmp options:0 range:NSMakeRange(0, [cmp length]) withTemplate:[NSString stringWithFormat:@"$1$2%c%02d$3%c$4$5", RCIRCAttributeInternalNickname, hhash, RCIRCAttributeInternalNicknameEnd]];
+		NSString *val = [regex stringByReplacingMatchesInString:cmp options:0 range:NSMakeRange(0, [cmp length]) withTemplate:[NSString stringWithFormat:@"$1$2%c%02d$3%c$4$5", RCIRCAttributeInternalNickname, hhash, RCIRCAttributeInternalNicknameEnd]];
+		// for some reason, this expression returns null under certain circumstances i haven't read up on enough
+		// to understand. wow, wish someone would have thought of this check. *glares at qwerty.* :p
+		if (val) *message = val;
 		NSString *patterndos = [NSString stringWithFormat:@"(^|\\s)([^A-Za-z0-9]*)(%@)([^A-Za-z0-9]*)($|\\s)", nameOrRank];
 		if ([[NSRegularExpression regularExpressionWithPattern:patterndos options:NSRegularExpressionCaseInsensitive error:nil] numberOfMatchesInString:cmp options:0 range:NSMakeRange(0, [cmp length])]) {
 			is_highlight = (hhash == 1) ? 1 : is_highlight;
@@ -238,6 +241,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 }
 
 - (void)recievedMessage:(NSString *)message from:(NSString *)from time:(NSString *)time type:(RCMessageType)type {
+	NSLog(@"RECIEVED [[%@]][%d]", message, type);
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSString *msg = @"";
     from = [from stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
@@ -316,7 +320,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 			msg = [[NSString stringWithFormat:@"%c[%@] %@%c sets mode %c%@%c",RCIRCAttributeBold, time, from, RCIRCAttributeBold, RCIRCAttributeBold, message,RCIRCAttributeBold] retain];
 			break;
 		case RCMessageTypeError:
-			msg = [[NSString stringWithFormat:@"%c[%@] Error%c: %@", RCIRCAttributeBold, time, RCIRCAttributeBold, message] retain];
+			msg = [[NSString stringWithFormat:@"%c[%@]%c: %@", RCIRCAttributeBold, time, RCIRCAttributeBold, message] retain];
 			break;
 		case RCMessageTypeAction:
 			is_highlight = RCHighlightCheck(self, &message);
@@ -350,6 +354,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
             msg = @"unk_event";
             break;
 	}
+	NSLog(@"POSTING [[%@]][%d]",msg,type);
 	BOOL isHighlight = NO;
 	if ((type == RCMessageTypeNormal || type == RCMessageTypeAction || type == RCMessageTypeNotice) && ![from isEqualToStringNoCase:[delegate useNick]]) isHighlight = is_highlight;
 	[panel postMessage:msg withType:type highlight:isHighlight isMine:([from isEqualToString:[delegate useNick]])];

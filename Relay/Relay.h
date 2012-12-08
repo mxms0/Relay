@@ -66,6 +66,7 @@ static inline void NOLog(NSString* a, ...) {
         RCMessageTypeEvent,
 		RCMessageTypeNormalE
 	} RCMessageType;
+
 	static inline void reloadNetworks(void);
 	static inline void reloadNetworks(void) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"us.mxms.relay.reload" object:nil];

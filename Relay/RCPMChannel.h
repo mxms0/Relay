@@ -7,6 +7,15 @@
 
 #import "RCChannel.h"
 
-@interface RCPMChannel : RCChannel
+@interface RCPMChannel : RCChannel {
+	NSString *ipInfo;
+	NSString *chanInfos;
+	BOOL partnerIsOnline;
+	NSString *connectAddr;
+}
+@property (nonatomic, retain) NSString *ipInfo;
+@property (nonatomic, retain) NSString *chanInfos;
+@property (nonatomic, retain) NSString *connectAddr;
 - (BOOL)isPrivate;
+- (void)_reallySetWhois:(NSString *)whois;
 @end

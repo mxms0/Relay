@@ -13,10 +13,14 @@
 @interface RCUserListViewController : RCBaseNavigationViewController <UITableViewDataSource, UITableViewDelegate> {
 	RCSuperSpecialTableView *tableView;
 	RCChannel *currentChan;
+	BOOL showingUserInfo;
 }
 @property (nonatomic, retain) RCChannel *currentChan;
 - (void)findShadowAndDoStuffToIt;
 - (void)setCenter:(CGPoint)cc;
 - (void)setFrame:(CGRect)frm;
 - (void)setChannel:(id)chan;
+- (void)reloadData;
+- (void)showUserInfoPanel;
+- (void)showUserListPanel;
 @end

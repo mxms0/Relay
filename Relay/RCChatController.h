@@ -27,6 +27,7 @@
 - (BOOL)isShowingChatListView;
 - (void)selectChannel:(NSString *)channel fromNetwork:(RCNetwork *)net;
 - (void)rotateToInterfaceOrientation:(UIInterfaceOrientation)oi;
+- (void)pushUserListWithDefaultDuration;
 - (void)showMenuOptions:(id)unused;
 - (void)reloadUserCount;
 @end

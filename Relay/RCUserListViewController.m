@@ -14,6 +14,7 @@
 
 - (id)initWithRootViewController:(UIViewController *)rootViewController {
 	if ((self = [super initWithRootViewController:rootViewController])) {
+		currentChan = nil;
 		CALayer *shdw = [[CALayer alloc] init];
 		[shdw setName:@"0_fuckingshadow"];
 		UIImage *mfs = [UIImage imageNamed:@"0_hzshdw"];
@@ -47,13 +48,45 @@
 	return self;
 }
 
+- (void)removeAllSubviews {
+	for (UIView *vv in [self.view subviews]) {
+		[vv removeFromSuperview];
+	}
+}
+
+- (void)showUserInfoPanel {
+	showingUserInfo = YES;
+	[tableView reloadData];
+}
+
+- (void)showUserListPanel {
+	showingUserInfo = NO;
+	[tableView reloadData];
+}
+
+- (void)reloadData {
+	[tableView reloadData];
+}
+
 - (void)setChannel:(RCChannel *)chan {
+	[currentChan setUsersPanel:nil];
 	[self setCurrentChan:chan];
+	NSString *set = @"Memberlist";
+	if ([chan isKindOfClass:[RCPMChannel class]]) {
+		set = [chan channelName];
+	}
+	[((RCChatNavigationBar *)[self navigationBar]) setTitle:set];
 	[tableView reloadData];
 	[chan setUsersPanel:(RCUserListPanel *)tableView];
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+	if (showingUserInfo) return 100;
+	return 44;
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+	if (showingUserInfo) return 1;
 	if (![currentChan isKindOfClass:[RCConsoleChannel class]])
 		return [[currentChan fullUserList] count];
 	return 1;
@@ -67,6 +100,14 @@
 	RCUserTableCell *c = (RCUserTableCell *)[_tableView dequeueReusableCellWithIdentifier:@"0_usc"];
 	if (!c) {
 		c = [[[RCUserTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"0_usc"] autorelease];
+	}
+	[c setIsWhois:NO];
+	if (showingUserInfo) {
+		if ([currentChan isKindOfClass:[RCPMChannel class]])
+			[c setIsWhois:YES];
+		[c setIsLast:YES];
+		[c setNeedsDisplay];
+		return c;
 	}
 	[c setIsLast:NO];
 	if ([currentChan isKindOfClass:[RCConsoleChannel class]]) {

@@ -41,7 +41,7 @@
 		[ppls release];
 		UIPanGestureRecognizer *swip = [[UIPanGestureRecognizer alloc] initWithTarget:[RCChatController sharedController] action:@selector(userSwiped:)];
 		[[[[self topViewController] navigationController] navigationBar] addGestureRecognizer:swip];
-		[[[[self topViewController] navigationController] navigationBar] setIsMain:YES];
+		[((RCChatNavigationBar *)[[[self topViewController] navigationController] navigationBar]) setIsMain:YES];
 		[swip release];
 	}
 	return self;

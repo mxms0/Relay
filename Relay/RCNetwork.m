@@ -405,10 +405,10 @@ out_:
         [self sendMessage:[@"PASS " stringByAppendingString:spass] canWait:NO];
     }
 	if (SASL) {
-		[self sendMessage:@"CAP REQ :mutle-prefix sasl server-time" canWait:NO];
+		//	[self sendMessage:@"CAP REQ :mutle-prefix sasl server-time" canWait:NO];
 	}
 	else {
-		[self sendMessage:@"CAP REQ :server-time" canWait:NO];
+		//	[self sendMessage:@"CAP REQ :server-time" canWait:NO];
 	}
     [self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
     [self sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
@@ -630,7 +630,7 @@ char *RCIPForURL(NSString *URL) {
 
 - (void)sendB64SASLAuth {
 	NSString *b64 = [[NSString stringWithFormat:@"%@\0%@0%@", useNick, useNick, npass] base64];
-	[self sendMessage:[NSString stringWithFormat:@"AUTHENTICATE %@", b64]];
+	[self sendMessage:[NSString stringWithFormat:@"AUTHENTICATE %@", b64] canWait:NO];
 }
 
 - (void)handle001:(NSString *)welcome {
@@ -705,13 +705,11 @@ char *RCIPForURL(NSString *URL) {
 }
 
 - (void)handle005:(NSString *)useInfo {
-    @synchronized(self)
-    {
+    @synchronized(self) {
         NSArray* args = [useInfo componentsSeparatedByString:@" "];
         args = [args subarrayWithRange:NSMakeRange(3, [args count]-3)];
         for (NSString* arg in args) {
-            if ([arg hasSuffixNoCase:@":are supported by this server"])
-            {
+            if ([arg hasSuffixNoCase:@":are supported by this server"]) {
                 break;
             }
             NSLog(@"> %@", arg);
@@ -1010,6 +1008,10 @@ char *RCIPForURL(NSString *URL) {
 	// Relay[2794:f803] MSG: :fr.ac3xx.com 266 _m :Current Global Users: 5  Max: 6
 }
 
+- (void)handle303:(NSString *)wee {
+	// not really sure what to do here. kind of stupid actually. hm :/
+}
+
 - (void)handle305:(NSString *)athreeo_five {
 	NSLog(@"Implying this is a znc.");
 	NSLog(@"YAY I'M NO LONGER AWAY.");
@@ -1028,13 +1030,82 @@ char *RCIPForURL(NSString *URL) {
 	[scanner scanUpToString:@" " intoString:&crap];
 	[scanner scanUpToString:@" " intoString:&cmd];
 	[scanner scanUpToString:@" " intoString:&me];
-    @synchronized(useNick)
-    {
-        self.useNick = me;
-    }
+	@synchronized(useNick) {
+		self.useNick = me;
+	}
 	[scanner release];
 	
 	// :fr.ac3xx.com 305 MaxZNC :You are no longer marked as being away
+}
+
+- (void)handle311:(NSString *)hiwhois {
+	NSScanner *scanr = [[NSScanner alloc] initWithString:hiwhois];
+	NSString *crap = nil;
+	NSString *nick_ = nil;
+	NSString *infos = nil;
+	[scanr scanUpToString:@" " intoString:&crap];
+	[scanr scanUpToString:@" " intoString:&crap];
+	[scanr scanUpToString:@" " intoString:&crap];
+	[scanr scanUpToString:@" " intoString:&nick_];
+	[scanr scanUpToString:@"" intoString:&infos];
+	RCPMChannel *chan = (RCPMChannel *)[self channelWithChannelName:[nick_ stringByReplacingOccurrencesOfString:@" " withString:@""]];
+	if ([chan isKindOfClass:[RCPMChannel class]]) {
+		[chan setIpInfo:infos];
+	}
+	[scanr release];
+}
+
+- (void)handle312:(NSString *)threetwelve {
+	NSScanner *scanr = [[NSScanner alloc] initWithString:threetwelve];
+	NSString *crap = nil;
+	NSString *nick_ = nil;
+	NSString *infos = nil;
+	[scanr scanUpToString:@" " intoString:&crap];
+	[scanr scanUpToString:@" " intoString:&crap];
+	[scanr scanUpToString:@" " intoString:&crap];
+	[scanr scanUpToString:@" " intoString:&nick_];
+	[scanr scanUpToString:@"" intoString:&infos];
+	RCPMChannel *chan = (RCPMChannel *)[self channelWithChannelName:[nick_ stringByReplacingOccurrencesOfString:@" " withString:@""]];
+	if ([chan isKindOfClass:[RCPMChannel class]]) {
+		[chan setConnectAddr:infos];
+	}
+	[scanr release];
+}
+
+- (void)handle318:(NSString *)threeeighteen {
+	NSScanner *scanr = [[NSScanner alloc] initWithString:threeeighteen];
+	NSString *crap = nil;
+	NSString *nick_ = nil;
+	NSString *infos = nil;
+	[scanr scanUpToString:@" " intoString:&crap];
+	[scanr scanUpToString:@" " intoString:&crap];
+	[scanr scanUpToString:@" " intoString:&crap];
+	[scanr scanUpToString:@" " intoString:&nick_];
+	[scanr scanUpToString:@"" intoString:&infos];
+	RCPMChannel *chan = (RCPMChannel *)[self channelWithChannelName:[nick_ stringByReplacingOccurrencesOfString:@" " withString:@""]];
+	if ([chan isKindOfClass:[RCPMChannel class]]) {
+		if ([[[[RCChatController sharedController] currentPanel] channel] isEqual:chan]) {
+			[[RCChatController sharedController] pushUserListWithDefaultDuration];
+		}
+	}
+	[scanr release];
+}
+
+- (void)handle319:(NSString *)threenineteen {
+	NSScanner *scanr = [[NSScanner alloc] initWithString:threenineteen];
+	NSString *crap = nil;
+	NSString *nick_ = nil;
+	NSString *infos = nil;
+	[scanr scanUpToString:@" " intoString:&crap];
+	[scanr scanUpToString:@" " intoString:&crap];
+	[scanr scanUpToString:@" " intoString:&crap];
+	[scanr scanUpToString:@" " intoString:&nick_];
+	[scanr scanUpToString:@"" intoString:&infos];
+	RCPMChannel *chan = (RCPMChannel *)[self channelWithChannelName:[nick_ stringByReplacingOccurrencesOfString:@" " withString:@""]];
+	if ([chan isKindOfClass:[RCPMChannel class]]) {
+		[chan setChanInfos:infos];
+	}
+	[scanr release];
 }
 
 - (void)handle322:(NSString *)threetwotwo {
@@ -1601,7 +1672,7 @@ char *RCIPForURL(NSString *URL) {
 }
 
 - (void)handleCAP:(NSString *)cap {
-	[self sendMessage:@"AUTHENTICATE PLAIN"];
+	[self sendMessage:@"AUTHENTICATE PLAIN" canWait:NO];
 }
 
 void RCParseUserMask(NSString *mask, NSString **_nick, NSString **user, NSString **hostmask) {

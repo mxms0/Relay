@@ -77,13 +77,10 @@ static BOOL isSetup = NO;
 			[[NSUserDefaults standardUserDefaults] setObject:path forKey:PREFS_PLIST];
 			[[NSUserDefaults standardUserDefaults] synchronize];
 			if (![manager fileExistsAtPath:PREFS_ABSOLUT]) {
-				NSDictionary *tmp = [[NSDictionary alloc] initWithContentsOfURL:[NSURL URLWithString:@"http://mxms.us/Networks.plist"]];
-				//		if (![manager createFileAtPath:PREFS_ABSOLUT contents:(NSData *)[NSDictionary dictionary] attributes:NULL]) {
-				if (![manager createFileAtPath:PREFS_ABSOLUT contents:(NSData *)tmp attributes:NULL]) {
+				if (![manager createFileAtPath:PREFS_ABSOLUT contents:(NSData *)[NSDictionary dictionary] attributes:NULL]) {
 					NSLog(@"fucked.");
 					// fucked.
 				}
-				[tmp release];
 			}
 			[[RCNetworkManager sharedNetworkManager] setIsBG:NO];
 			[[RCNetworkManager sharedNetworkManager] unpack];
@@ -132,6 +129,15 @@ static BOOL isSetup = NO;
 }
 
 - (void)showExpirationWarning {
+	BOOL _connected = NO;
+	for (RCNetwork *net in [[RCNetworkManager sharedNetworkManager] networks]) {
+		if ([net isConnected]) {
+			_connected = YES;
+			break;
+		}
+		
+	}
+	if (!_connected) return;
 	UILocalNotification *nb = [[UILocalNotification alloc] init];
 	[nb setAlertAction:@"Open"];
 	[nb setAlertBody:@"You will be disconnected in less than a minute due to inactivity."];

@@ -10,6 +10,8 @@
 
 @interface RCUserTableCell : RCBasicTableViewCell {
 	BOOL isLast;
+	BOOL isWhois;
 }
 @property (nonatomic, assign) BOOL isLast;
+@property (nonatomic, assign) BOOL isWhois;
 @end

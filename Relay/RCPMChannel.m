@@ -10,9 +10,14 @@
 #import "NSString+IRCStringSupport.h"
 
 @implementation RCPMChannel
+@synthesize ipInfo, chanInfos, connectAddr;
 
 - (id)initWithChannelName:(NSString *)_name {
 	if ((self = [super initWithChannelName:_name])) {
+		partnerIsOnline = NO;
+		ipInfo = nil;
+		chanInfos = nil;
+		connectAddr = nil;
 	}
 	return self;
 }
@@ -47,12 +52,24 @@
 	}
 }
 
-- (void)setJoined:(BOOL)joind withArgument:(NSString *)arg1 {
-    return;
+- (void)_reallySetWhois:(NSString *)whois {
+
 }
 
-- (void)setSuccessfullyJoined:(BOOL)success {
+- (void)setPartnerIsOnline:(BOOL)partnerIsOnline {
+	
+}
+
+- (void)setJoined:(BOOL)joind withArgument:(NSString *)arg1 {
+	if (joind) {
+		partnerIsOnline = YES;
+	}
     return;
+} 
+
+- (void)setSuccessfullyJoined:(BOOL)success {
+
+	return;
 }
 
 - (void)setJoined:(BOOL)joind {
@@ -64,7 +81,7 @@
 }
 
 - (BOOL)isUserInChannel:(NSString *)user {
-    return [user isEqualToString:channelName]||[user isEqualToString:[[self delegate] useNick]];
+    return [user isEqualToString:channelName] || [user isEqualToString:[[self delegate] useNick]];
 }
 
 - (BOOL)isPrivate {
