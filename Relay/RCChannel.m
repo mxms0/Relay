@@ -241,7 +241,6 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 }
 
 - (void)recievedMessage:(NSString *)message from:(NSString *)from time:(NSString *)time type:(RCMessageType)type {
-	NSLog(@"RECIEVED [[%@]][%d]", message, type);
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSString *msg = @"";
     from = [from stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
@@ -354,7 +353,6 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
             msg = @"unk_event";
             break;
 	}
-	NSLog(@"POSTING [[%@]][%d]",msg,type);
 	BOOL isHighlight = NO;
 	if ((type == RCMessageTypeNormal || type == RCMessageTypeAction || type == RCMessageTypeNotice) && ![from isEqualToStringNoCase:[delegate useNick]]) isHighlight = is_highlight;
 	[panel postMessage:msg withType:type highlight:isHighlight isMine:([from isEqualToString:[delegate useNick]])];

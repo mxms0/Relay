@@ -166,7 +166,6 @@
 }
 
 - (void)postMessage:(NSString *)_message withType:(RCMessageType)type highlight:(BOOL)high isMine:(BOOL)mine {
-	NSLog(@"POSTING {%@}[%d]", _message, type);
     [_message retain];
 	RCMessageFormatter *message = [[RCMessageFormatter alloc] initWithMessage:_message isOld:NO isMine:mine isHighlight:high type:type];
     dispatch_async(dispatch_get_main_queue(), ^(void) {
