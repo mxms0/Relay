@@ -3,18 +3,12 @@ Welcome to the wonderful world of relay. :)
 
 There's a lot that needs to be done before the initial release. 
 I would like basic-tablike-completion like in all IRC clients.
-Implement a message count/highlight count in the RCPopoverWindow's table view.
 Updating of channels modes needs to be fixed, + need to refresh user list modes after mode changes.
-Fix /command system.
-Fix rotation of RCPopoverWindow.
-Select previously selected channel when a different network is selected via RCPopoverWindow
-Implement pulsuing title bar to specify that there are new messages/highlights/etc.
 Built in server selection list. 
 Create the on-connect commands controller.
-Finish the RCChannelManager.
-Maybe setup some kind of singleton for commands.
+Finish the RCChannelManager. // just fixes left.
 Handle INVITEs properly. 
 Show topic when rejoining a channel
-Channel/user list scrolling breaks after rotating
 Add option to disable chat autocapitalization
-Scroll to channel/user window when you /join or /privmsg
+Select chan when you /privmsg /query, /join, etc.
+stuffs.

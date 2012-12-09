@@ -1085,7 +1085,7 @@ char *RCIPForURL(NSString *URL) {
 	RCPMChannel *chan = (RCPMChannel *)[self channelWithChannelName:[nick_ stringByReplacingOccurrencesOfString:@" " withString:@""]];
 	if ([chan isKindOfClass:[RCPMChannel class]]) {
 		if ([[[[RCChatController sharedController] currentPanel] channel] isEqual:chan]) {
-			[[RCChatController sharedController] pushUserListWithDefaultDuration];
+			[[RCChatController sharedController] performSelectorOnMainThread:@selector(pushUserListWithDefaultDuration) withObject:nil waitUntilDone:NO];
 		}
 	}
 	[scanr release];
@@ -1103,8 +1103,11 @@ char *RCIPForURL(NSString *URL) {
 	[scanr scanUpToString:@"" intoString:&infos];
 	RCPMChannel *chan = (RCPMChannel *)[self channelWithChannelName:[nick_ stringByReplacingOccurrencesOfString:@" " withString:@""]];
 	if ([chan isKindOfClass:[RCPMChannel class]]) {
+		if ([infos hasPrefix:@":"])
+			infos = [infos substringFromIndex:1];
 		[chan setChanInfos:infos];
 	}
+	NSLog(@"CHAN INFOS %@", infos);
 	[scanr release];
 }
 

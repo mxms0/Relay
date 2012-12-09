@@ -39,16 +39,14 @@
 		RCPMChannel *chan = (RCPMChannel *)[[[RCChatController sharedController] currentPanel] channel];
 		MARK;
 		if (![chan isKindOfClass:[RCPMChannel class]]) return;
-		NSMutableString *whois = [[NSString stringWithFormat:@"... put all nicks and shits here \r \n blah blah k"] mutableCopy];
-		MARK;
+		NSMutableString *whois = [[chan chanInfos] mutableCopy];
 		if (!whois) return;
-		MARK;
 		if (!NSClassFromString(@"NSRegularExpression")) return;
-		MARK;
 		NSString *pattern1 = @"(^|\\s)(#[^\\s]+)";
 		NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern1 options:0 error:nil];
 		NSMutableAttributedString *attr = [[NSMutableAttributedString alloc] init];
 		while ([whois rangeOfString:@"#"].location != NSNotFound) {
+			NSLog(@"HI WAT AM I DOIN' ");
 			NSRange rf = [regex rangeOfFirstMatchInString:whois options:0 range:NSMakeRange(0, [whois length])];
 			NSString *beforeChan = [whois substringWithRange:NSMakeRange(0, rf.location+rf.length)];
 			NSMutableAttributedString *tmp = [[NSMutableAttributedString alloc] initWithString:beforeChan];
