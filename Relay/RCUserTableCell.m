@@ -37,17 +37,18 @@
 		[UIColorFromRGB(0xEEF2F4) set];
 		UIRectFill(rect);
 		RCPMChannel *chan = (RCPMChannel *)[[[RCChatController sharedController] currentPanel] channel];
-		MARK;
 		if (![chan isKindOfClass:[RCPMChannel class]]) return;
-		NSMutableString *whois = [[chan chanInfos] mutableCopy];
+		NSMutableString *whois = [[NSString stringWithFormat:@"%@ is in %@", [chan channelName], [chan chanInfos]] mutableCopy];
+	
 		if (!whois) return;
 		if (!NSClassFromString(@"NSRegularExpression")) return;
-		NSString *pattern1 = @"(^|\\s)(#[^\\s]+)";
-		NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern1 options:0 error:nil];
+		NSString *pattern1 = @"\\B[#&](\\w+)\\b";
+		NSError *error;
+		NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern1 options:0 error:&error];
 		NSMutableAttributedString *attr = [[NSMutableAttributedString alloc] init];
 		while ([whois rangeOfString:@"#"].location != NSNotFound) {
-			NSLog(@"HI WAT AM I DOIN' ");
 			NSRange rf = [regex rangeOfFirstMatchInString:whois options:0 range:NSMakeRange(0, [whois length])];
+			if (rf.location == NSNotFound) break;
 			NSString *beforeChan = [whois substringWithRange:NSMakeRange(0, rf.location+rf.length)];
 			NSMutableAttributedString *tmp = [[NSMutableAttributedString alloc] initWithString:beforeChan];
 			[tmp addAttribute:(NSString *)NSForegroundColorAttributeName value:[UIColor blueColor] range:rf];
@@ -55,8 +56,7 @@
 			[tmp release];
 			[whois deleteCharactersInRange:NSMakeRange(0, [beforeChan length])];
 		}
-		NSLog(@"HELLO %@", attr);
-		[attr drawInRect:CGRectMake(10, 10, 100, 200)];
+		[attr drawInRect:CGRectMake(10, 5, 200, 200)];
 	}
 
 	else {

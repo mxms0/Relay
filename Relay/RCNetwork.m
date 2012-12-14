@@ -73,7 +73,7 @@
 	if ([[info objectForKey:N_PASS_KEY] boolValue]) {
 		//[network setNpass:([wrapper objectForKey:N_PASS_KEY] ?: @"")];
 		RCKeychainItem *item = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@npass", [network _description]]];
-        [network setNpass:([item objectForKey:(id)kSecValueData] ?: @"")];
+		[network setNpass:([item objectForKey:(id)kSecValueData] ?: @"")];
 		if ([network npass] == nil || [[network npass] length] == 0) {
 			[network setShouldRequestNPass:YES];
 		}
@@ -90,7 +90,8 @@
 - (id)infoDictionary {
 	NSMutableArray *chanArray = [[NSMutableArray alloc] init];
 	for (RCChannel *chan in _channels) {
-		if ([chan isKindOfClass:[RCChannel class]] || [chan isKindOfClass:[RCConsoleChannel class]]) {
+		if (![chan isKindOfClass:[RCPMChannel class]]) {
+			// this should probably be a setting. saving PM's.
 			// RCConsoleChannel check isn't really necesasry as it will be added as a new channel-
 			// if it does not exist on launch. I guess if i add it, it skips one step later on.
 			NSDictionary *dict = [[NSDictionary alloc] initWithObjectsAndKeys:
@@ -404,15 +405,16 @@ out_:
     if ([spass length] > 0) {
         [self sendMessage:[@"PASS " stringByAppendingString:spass] canWait:NO];
     }
+	[self sendMessage:@"CAP LS" canWait:NO];
 	if (SASL) {
-		//	[self sendMessage:@"CAP REQ :mutle-prefix sasl server-time" canWait:NO];
+		[self sendMessage:@"CAP REQ :mutli-prefix sasl server-time" canWait:NO];
 	}
 	else {
-		//	[self sendMessage:@"CAP REQ :server-time" canWait:NO];
+		[self sendMessage:@"CAP REQ :server-time" canWait:NO];
 	}
     [self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
     [self sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
-	
+	[self sendMessage:@"CAP END" canWait:NO];
 	NSMutableString *cache = [@"" mutableCopy];
 	char buf[512];
 	while ((fd = read(sockfd, buf, 512)) > 0) {
@@ -421,6 +423,7 @@ out_:
 			[cache appendString:appenddee];
 			[appenddee release];
 			while (([cache rangeOfString:@"\r\n"].location != NSNotFound)) {
+				// should probably use NSCharacterSet, etc etc.
 				int loc = [cache rangeOfString:@"\r\n"].location+2;
 				NSString *cbuf = [cache substringToIndex:loc];
 				[self recievedMessage:cbuf];

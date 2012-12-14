@@ -609,7 +609,8 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
 - (NSString *)stringByLinkifyingURLs {
 	if (!NSClassFromString(@"NSRegularExpression")) return self;
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	NSString *pattern1 = @"(^|\\s)(#[^\\s]+)";
+	NSString *pattern1 = @"\\B[#&](\\w+)\\b";
+	// don't forget about (?:\B|(?!=[^\s,]#))[#&]([^\s,]+)
 	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern1 options:0 error:nil];
 	NSString *modifiedString = [[regex stringByReplacingMatchesInString:self options:0 range:NSMakeRange(0, [self length]) withTemplate:@"$1\x04\x30\x30<a href=\"channel:$2\" class=\"channel\">$2</a>\x05"] retain];
 	[pool drain];
