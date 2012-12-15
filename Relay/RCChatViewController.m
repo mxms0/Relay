@@ -69,6 +69,16 @@
 	}
 }
 
+- (void)findShadowAndDoStuffToIt {
+	for (CALayer *sub in [self.view.layer sublayers]) {
+		if ([[sub name] isEqualToString:@"0_fuckingshadow"]) {
+			[sub setFrame:CGRectMake(sub.frame.origin.x, sub.frame.origin.y, sub.frame.size.width, self.view.frame.size.height)];
+			[sub setHidden:(self.view.frame.origin.x == 0)];
+			break;
+		}
+	}
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 	CALayer *bg = [[CALayer alloc] init];

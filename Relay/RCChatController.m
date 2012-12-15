@@ -113,7 +113,6 @@ static id _inst = nil;
 	else {
 		[self closeWithDuration:sped];
 	}
-	
 }
 static RCNetwork *currentNetwork = nil;
 - (void)showNetworkOptions:(id)arg1 {
@@ -157,18 +156,21 @@ static RCNetwork *currentNetwork = nil;
 
 
 - (void)closeWithDuration:(NSTimeInterval)dr {
-	[UIView beginAnimations:nil context:nil];
-	[UIView setAnimationDuration:dr];
-	[navigationController.view setFrame:CGRectMake(0, 0, navigationController.view.frame.size.width, navigationController.view.frame.size.height)];
-	[UIView commitAnimations];
-	[currentPanel setEntryFieldEnabled:YES];
+	[UIView animateWithDuration:dr animations:^{
+		[navigationController.view setFrame:CGRectMake(0, 0, navigationController.view.frame.size.width, navigationController.view.frame.size.height)];
+	} completion:^(BOOL fin) {
+		[currentPanel setEntryFieldEnabled:YES];
+		[navigationController findShadowAndDoStuffToIt];
+	}];
 }
 
 - (void)openWithDuration:(NSTimeInterval)dr {
 	[UIView beginAnimations:nil context:nil];
 	[UIView setAnimationDuration:dr];
 	[navigationController.view setFrame:CGRectMake(267, 0, navigationController.view.frame.size.width, navigationController.view.frame.size.height)];
+	[navigationController findShadowAndDoStuffToIt];
 	[UIView commitAnimations];
+	
 	[currentPanel resignFirstResponder];
 	[currentPanel setEntryFieldEnabled:NO];
 	[self dismissMenuOptions];

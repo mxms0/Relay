@@ -18,4 +18,5 @@
 }
 - (void)setFrame:(CGRect)frame;
 - (void)setCenter:(CGPoint)centr;
+- (void)findShadowAndDoStuffToIt;
 @end
