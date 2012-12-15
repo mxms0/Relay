@@ -32,44 +32,68 @@ static id _inst = nil;
 				return self;
 			}
 		}
+		navigationController = nil;
+		leftView = nil;
+		topView = nil;
 		_inst = self;
-		currentPanel = nil;
-		rootView = rc;
-		canDragMainView = YES;
-		CGSize frame = [[UIScreen mainScreen] applicationFrame].size;
-		UIViewController *base = [[UIViewController alloc] init];
-		UIViewController *baseTwo = [[UIViewController alloc] init];
-		UIViewController *baseThree = [[UIViewController alloc] init];
-		navigationController = [[RCChatViewController alloc] initWithRootViewController:baseTwo];
-		[navigationController.view setFrame:CGRectMake(0, 0, frame.width, frame.height)];
-		[baseTwo.view setFrame:navigationController.view.frame];
-		[((RCChatNavigationBar *)[navigationController navigationBar]) setTitle:@"Relay"];
-		[((RCChatNavigationBar *)[navigationController navigationBar]) setSubtitle:@"Welcome to Relay"];
-		[[navigationController navigationBar] setNeedsDisplay];
-		[rc.view addSubview:navigationController.view];
-		[navigationController setNavigationBarHidden:YES];
-		[navigationController setNavigationBarHidden:NO]; // strange hack to make toolbar at top of screen.. :s
-		[[navigationController navigationBar] setBackgroundImage:[UIImage imageNamed:@"0_headr"] forBarMetrics:UIBarMetricsDefault];
-		leftView = [[RCChatsListViewController alloc] initWithRootViewController:base];
-		[((RCChatNavigationBar *)[leftView navigationBar]) setTitle:@"Chats"];
-		[((RCChatNavigationBar *)[leftView navigationBar]) setSuperSpecialLikeAc3xx2:YES];
-		[rc.view insertSubview:leftView.view atIndex:0];
-		[leftView.view setFrame:CGRectMake(0, 0, frame.width, frame.height)];
-		[leftView setNavigationBarHidden:YES];
-		[leftView setNavigationBarHidden:NO]; // again. ffs
-		topView = [[RCUserListViewController alloc] initWithRootViewController:baseThree];
-		[topView.view setFrame:CGRectMake(frame.width, 0, frame.width, frame.height)];
-		[((RCChatNavigationBar *)[topView navigationBar]) setTitle:@"Memberlist"];
-		[((RCChatNavigationBar *)[topView navigationBar]) setSuperSpecialLikeAc3xx2:YES];
-		[rc.view insertSubview:topView.view atIndex:[[rc.view subviews] count]];
-		[baseThree.view setFrame:topView.view.frame];
-		[topView setNavigationBarHidden:YES];
-		[topView setNavigationBarHidden:NO];
-		[base release];
-		[baseTwo release];
-		[baseThree release];
+		[self layoutWithRootViewController:rc];
 	}
 	return _inst;
+}
+
+- (void)layoutWithRootViewController:(RCViewController *)rc {
+	currentPanel = nil;
+	rootView = rc;
+	canDragMainView = YES;
+	CGSize frame = [[UIScreen mainScreen] applicationFrame].size;
+	UIViewController *base = [[UIViewController alloc] init];
+	UIViewController *baseTwo = [[UIViewController alloc] init];
+	UIViewController *baseThree = [[UIViewController alloc] init];
+	navigationController = [[RCChatViewController alloc] initWithRootViewController:baseTwo];
+	[navigationController.view setFrame:CGRectMake(0, 0, frame.width, frame.height)];
+	[baseTwo.view setFrame:navigationController.view.frame];
+	[((RCChatNavigationBar *)[navigationController navigationBar]) setTitle:@"Relay"];
+	[((RCChatNavigationBar *)[navigationController navigationBar]) setSubtitle:@"Welcome to Relay"];
+	[[navigationController navigationBar] setNeedsDisplay];
+	[rc.view addSubview:navigationController.view];
+	[navigationController setNavigationBarHidden:YES];
+	[navigationController setNavigationBarHidden:NO]; // strange hack to make toolbar at top of screen.. :s
+	[[navigationController navigationBar] setBackgroundImage:[UIImage imageNamed:@"0_headr"] forBarMetrics:UIBarMetricsDefault];
+	leftView = [[RCChatsListViewController alloc] initWithRootViewController:base];
+	[((RCChatNavigationBar *)[leftView navigationBar]) setTitle:@"Chats"];
+	[((RCChatNavigationBar *)[leftView navigationBar]) setSuperSpecialLikeAc3xx2:YES];
+	[rc.view insertSubview:leftView.view atIndex:0];
+	[leftView.view setFrame:CGRectMake(0, 0, frame.width, frame.height)];
+	[leftView setNavigationBarHidden:YES];
+	[leftView setNavigationBarHidden:NO]; // again. ffs
+	topView = [[RCUserListViewController alloc] initWithRootViewController:baseThree];
+	[topView.view setFrame:CGRectMake(frame.width, 0, frame.width, frame.height)];
+	[((RCChatNavigationBar *)[topView navigationBar]) setTitle:@"Memberlist"];
+	[((RCChatNavigationBar *)[topView navigationBar]) setSuperSpecialLikeAc3xx2:YES];
+	[rc.view insertSubview:topView.view atIndex:[[rc.view subviews] count]];
+	[baseThree.view setFrame:topView.view.frame];
+	[topView setNavigationBarHidden:YES];
+	[topView setNavigationBarHidden:NO];
+	[base release];
+	[baseTwo release];
+	[baseThree release];
+}
+
+- (void)correctSubviewFrames {
+	CGSize fsize = [[UIScreen mainScreen] applicationFrame].size;
+	NSLog(@"MEH %@", NSStringFromCGSize(fsize));
+	[leftView setFrame:CGRectMake(0, 0, fsize.width, fsize.height)];
+	[navigationController setFrame:CGRectMake(0, 0, fsize.width, fsize.height)];
+	canDragMainView = YES;
+	[currentPanel setEntryFieldEnabled:YES];
+	[currentPanel setFrame:CGRectMake(currentPanel.frame.origin.x, currentPanel.frame.origin.y, fsize.width, fsize.height)];
+	[[[[navigationController topViewController] navigationItem] leftBarButtonItem] setEnabled:YES];
+	[UIView animateWithDuration:0.25 animations:^ {
+		[topView setFrame:CGRectMake(topView.view.frame.size.width, 0, topView.view.frame.size.width, topView.view.frame.size.height)];
+	} completion:^(BOOL fin) {
+		[topView findShadowAndDoStuffToIt];
+	}];
+	
 }
 
 - (BOOL)isLandscape {
@@ -89,6 +113,7 @@ static id _inst = nil;
 	else {
 		[self closeWithDuration:sped];
 	}
+	
 }
 static RCNetwork *currentNetwork = nil;
 - (void)showNetworkOptions:(id)arg1 {

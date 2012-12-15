@@ -38,8 +38,13 @@
 		UIRectFill(rect);
 		RCPMChannel *chan = (RCPMChannel *)[[[RCChatController sharedController] currentPanel] channel];
 		if (![chan isKindOfClass:[RCPMChannel class]]) return;
-		NSMutableString *whois = [[NSString stringWithFormat:@"%@ is in %@", [chan channelName], [chan chanInfos]] mutableCopy];
-	
+		NSMutableString *whois = nil;
+		if ([chan chanInfos] != nil) {
+			whois = [[NSString stringWithFormat:@"%@ is in %@\r\nHELLO", [chan channelName], [chan chanInfos]] mutableCopy];
+		}
+		else {
+			whois = [@"Loading .. .\r\nHELLOWAT\r\r\r\n\n\nWAT" mutableCopy];
+		}
 		if (!whois) return;
 		if (!NSClassFromString(@"NSRegularExpression")) return;
 		NSString *pattern1 = @"\\B[#&](\\w+)\\b";
@@ -55,6 +60,9 @@
 			[attr appendAttributedString:tmp];
 			[tmp release];
 			[whois deleteCharactersInRange:NSMakeRange(0, [beforeChan length])];
+		}
+		if ([attr length] == 0) {
+			[attr appendAttributedString:[[[NSAttributedString alloc] initWithString:whois] autorelease]];
 		}
 		[attr drawInRect:CGRectMake(10, 5, 200, 200)];
 	}

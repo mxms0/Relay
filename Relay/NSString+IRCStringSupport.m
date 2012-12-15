@@ -21,7 +21,7 @@ static HTMLEscapeMap gAsciiHTMLEscapeMap[] = {
 	{ @"&apos;", 39 },
 	{ @"&lt;", 60 },
 	{ @"&gt;", 62 },
-	
+
 	{ @"&nbsp;", 160 }, 
 	{ @"&iexcl;", 161 }, 
 	{ @"&cent;", 162 }, 
@@ -399,137 +399,6 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
 									escapingUnicode:YES];
 } // gtm_stringByEscapingAsciiHTML
 
-- (NSString *)gtm_stringByUnescapingFromHTML {
-	NSRange range = NSMakeRange(0, [self length]);
-	NSRange subrange = [self rangeOfString:@"&" options:NSBackwardsSearch range:range];
-	
-	// if no ampersands, we've got a quick way out
-	if (subrange.length == 0) return self;
-	NSMutableString *finalString = [NSMutableString stringWithString:self];
-	do {
-		NSRange semiColonRange = NSMakeRange(subrange.location, NSMaxRange(range) - subrange.location);
-		semiColonRange = [self rangeOfString:@";" options:0 range:semiColonRange];
-		range = NSMakeRange(0, subrange.location);
-		// if we don't find a semicolon in the range, we don't have a sequence
-		if (semiColonRange.location == NSNotFound) {
-			continue;
-		}
-		NSRange escapeRange = NSMakeRange(subrange.location, semiColonRange.location - subrange.location + 1);
-		NSString *escapeString = [self substringWithRange:escapeRange];
-		NSUInteger length = [escapeString length];
-		// a squence must be longer than 3 (&lt;) and less than 11 (&thetasym;)
-		if (length > 3 && length < 11) {
-			if ([escapeString characterAtIndex:1] == '#') {
-				unichar char2 = [escapeString characterAtIndex:2];
-				if (char2 == 'x' || char2 == 'X') {
-					// Hex escape squences &#xa3;
-					NSString *hexSequence = [escapeString substringWithRange:NSMakeRange(3, length - 4)];
-					NSScanner *scanner = [NSScanner scannerWithString:hexSequence];
-					unsigned value;
-					if ([scanner scanHexInt:&value] && 
-						value < USHRT_MAX &&
-						value > 0 
-						&& [scanner scanLocation] == length - 4) {
-						unichar uchar = value;
-						NSString *charString = [NSString stringWithCharacters:&uchar length:1];
-						[finalString replaceCharactersInRange:escapeRange withString:charString];
-					}
-					
-				} else {
-					// Decimal Sequences &#123;
-					NSString *numberSequence = [escapeString substringWithRange:NSMakeRange(2, length - 3)];
-					NSScanner *scanner = [NSScanner scannerWithString:numberSequence];
-					int value;
-					if ([scanner scanInt:&value] && 
-						value < USHRT_MAX &&
-						value > 0 
-						&& [scanner scanLocation] == length - 3) {
-						unichar uchar = value;
-						NSString *charString = [NSString stringWithCharacters:&uchar length:1];
-						[finalString replaceCharactersInRange:escapeRange withString:charString];
-					}
-				}
-			} else {
-				// "standard" sequences
-				for (unsigned i = 0; i < sizeof(gAsciiHTMLEscapeMap) / sizeof(HTMLEscapeMap); ++i) {
-					if ([escapeString isEqualToString:gAsciiHTMLEscapeMap[i].escapeSequence]) {
-						[finalString replaceCharactersInRange:escapeRange withString:[NSString stringWithCharacters:&gAsciiHTMLEscapeMap[i].uchar length:1]];
-						break;
-					}
-				}
-			}
-		}
-	} while ((subrange = [self rangeOfString:@"&" options:NSBackwardsSearch range:range]).length != 0);
-	return finalString;
-}
-
-#pragma mark - Instance Methods
-
-- (NSString *)stringByConvertingHTMLToPlainText {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	NSCharacterSet *stopCharacters = [NSCharacterSet characterSetWithCharactersInString:[NSString stringWithFormat:@"< \t\n\r%C%C%C%C", (unsigned short)0x0085, (unsigned short)0x000C, (unsigned short)0x2028, (unsigned short)0x2029]];
-	NSCharacterSet *newLineAndWhitespaceCharacters = [NSCharacterSet characterSetWithCharactersInString:[NSString stringWithFormat:@" \t\n\r%C%C%C%C", (unsigned short)0x0085, (unsigned short)0x000C, (unsigned short)0x2028, (unsigned short)0x2029]];
-	NSCharacterSet *tagNameCharacters = [NSCharacterSet characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"];
-	
-	NSMutableString *result = [[NSMutableString alloc] initWithCapacity:self.length];
-	NSScanner *scanner = [[NSScanner alloc] initWithString:self];
-	[scanner setCharactersToBeSkipped:nil];
-	[scanner setCaseSensitive:YES];
-	NSString *str = nil, *tagName = nil;
-	BOOL dontReplaceTagWithSpace = NO;
-	do {
-		if ([scanner scanUpToCharactersFromSet:stopCharacters intoString:&str]) {
-			[result appendString:str];
-			str = nil; // reset
-		}
-		
-		if ([scanner scanString:@"<" intoString:NULL]) {
-			if ([scanner scanString:@"!--" intoString:NULL]) {
-				[scanner scanUpToString:@"-->" intoString:NULL]; 
-				[scanner scanString:@"-->" intoString:NULL];
-			}
-			else {
-				if ([scanner scanString:@"/" intoString:NULL]) {
-					tagName = nil; dontReplaceTagWithSpace = NO;
-					if ([scanner scanCharactersFromSet:tagNameCharacters intoString:&tagName]) {
-						tagName = [tagName lowercaseString];
-						dontReplaceTagWithSpace = ([tagName isEqualToString:@"a"] ||
-												   [tagName isEqualToString:@"b"] ||
-												   [tagName isEqualToString:@"i"] ||
-												   [tagName isEqualToString:@"q"] ||
-												   [tagName isEqualToString:@"span"] ||
-												   [tagName isEqualToString:@"em"] ||
-												   [tagName isEqualToString:@"strong"] ||
-												   [tagName isEqualToString:@"cite"] ||
-												   [tagName isEqualToString:@"abbr"] ||
-												   [tagName isEqualToString:@"acronym"] ||
-												   [tagName isEqualToString:@"label"]);
-					}
-					if (!dontReplaceTagWithSpace && result.length > 0 && ![scanner isAtEnd]) [result appendString:@" "];
-				}
-				[scanner scanUpToString:@">" intoString:NULL];
-				[scanner scanString:@">" intoString:NULL];
-			}
-		}
-		else {
-			if ([scanner scanCharactersFromSet:newLineAndWhitespaceCharacters intoString:NULL]) {
-				if (result.length > 0 && ![scanner isAtEnd]) [result appendString:@" "]; // Dont append space to beginning or end of result
-			}
-		}
-	} while (![scanner isAtEnd]);
-	
-	[scanner release];
-	NSString *retString = [[result stringByDecodingHTMLEntities] retain];
-	[result release];
-	[pool drain];
-	return [retString autorelease];
-}
-
-- (NSString *)stringByDecodingHTMLEntities {
-    return [NSString stringWithString:[self gtm_stringByUnescapingFromHTML]];
-}
-
 - (NSString *)stringByEncodingHTMLEntities {
     return [NSString stringWithString:[self gtm_stringByEscapingForAsciiHTML]];
 }
@@ -574,38 +443,6 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
 	return [retString autorelease];
 }
 
-- (NSString *)stringByRemovingNewLinesAndWhitespace {
-	
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-
-	NSScanner *scanner = [[NSScanner alloc] initWithString:self];
-	[scanner setCharactersToBeSkipped:nil];
-	NSMutableString *result = [[NSMutableString alloc] init];
-	NSString *temp;
-	NSCharacterSet *newLineAndWhitespaceCharacters = [NSCharacterSet characterSetWithCharactersInString:
-													  [NSString stringWithFormat:@" \t\n\r%C%C%C%C", (unsigned short)0x0085, (unsigned short)0x000C, (unsigned short)0x2028, (unsigned short)0x2029]];
-	// Scan
-	while (![scanner isAtEnd]) {
-		
-		temp = nil;
-		[scanner scanUpToCharactersFromSet:newLineAndWhitespaceCharacters intoString:&temp];
-		if (temp) [result appendString:temp];
-		
-		// Replace with a space
-		if ([scanner scanCharactersFromSet:newLineAndWhitespaceCharacters intoString:NULL]) {
-			if (result.length > 0 && ![scanner isAtEnd]) // Dont append space to beginning or end of result
-				[result appendString:@" "];
-		}
-	}
-	
-	[scanner release];
-	NSString *retString = [[NSString stringWithString:result] retain];
-	[result release];
-	
-	[pool drain];
-	return [retString autorelease];
-}
-
 - (NSString *)stringByLinkifyingURLs {
 	if (!NSClassFromString(@"NSRegularExpression")) return self;
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -617,63 +454,8 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
 	return [modifiedString autorelease];
 }
 
-- (NSString *)stringByStrippingTags {
-	
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	NSUInteger ampIndex = [self rangeOfString:@"<" options:NSLiteralSearch].location;
-	if (ampIndex == NSNotFound) {
-		return [NSString stringWithString:self]; // return copy of string as no tags found
-	}
-	
-	NSScanner *scanner = [NSScanner scannerWithString:self];
-	[scanner setCharactersToBeSkipped:nil];
-	NSMutableSet *tags = [[NSMutableSet alloc] init];
-	NSString *tag;
-	do {
-		tag = nil;
-		[scanner scanUpToString:@"<" intoString:NULL];
-		[scanner scanUpToString:@">" intoString:&tag];
-		
-		// Add to set
-		if (tag) {
-			NSString *t = [[NSString alloc] initWithFormat:@"%@>", tag];
-			[tags addObject:t];
-			[t release];
-		}
-		
-	} while (![scanner isAtEnd]);
-	
-	// Strings
-	NSMutableString *result = [[NSMutableString alloc] initWithString:self];
-	NSString *finalString;
-	
-	// Replace tags
-	NSString *replacement;
-	for (NSString *t in tags) {
-		replacement = @" ";
-		if ([t isEqualToString:@"<a>"] ||
-			[t isEqualToString:@"</a>"] ||
-			[t isEqualToString:@"<span>"] ||
-			[t isEqualToString:@"</span>"] ||
-			[t isEqualToString:@"<strong>"] ||
-			[t isEqualToString:@"</strong>"] ||
-			[t isEqualToString:@"<em>"] ||
-			[t isEqualToString:@"</em>"]) {
-			replacement = @"";
-		}
-		[result replaceOccurrencesOfString:t withString:replacement options:NSLiteralSearch range:NSMakeRange(0, result.length)];
-	}
-	
-	finalString = [[result stringByRemovingNewLinesAndWhitespace] retain];
-	[result release];
-	[tags release];
-	[pool drain];
-    return [finalString autorelease];
-	
-}
 #define RENDER_WITH_OPTS [ret appendString:[istring substringWithRange:NSMakeRange(lpos, cpos-lpos)]];
-- (NSString*)stringByStrippingIRCMetadata {
+- (NSString *)stringByStrippingIRCMetadata {
     unsigned int cpos = 0;
     unsigned int lpos = 0;
     BOOL isNick = NO;

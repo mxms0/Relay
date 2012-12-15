@@ -17,7 +17,7 @@
 
 @implementation RCAppDelegate
 
-@synthesize window = _window, navigationController = _navigationController, isDoubleHeight;
+@synthesize window = _window, navigationController = _navigationController;
 static BOOL isSetup = NO;
 
 - (void)dealloc {
@@ -135,7 +135,6 @@ static BOOL isSetup = NO;
 			_connected = YES;
 			break;
 		}
-		
 	}
 	if (!_connected) return;
 	UILocalNotification *nb = [[UILocalNotification alloc] init];
@@ -155,13 +154,7 @@ static BOOL isSetup = NO;
 }
 
 - (void)application:(UIApplication *)application willChangeStatusBarFrame:(CGRect)newStatusBarFrame {
-	isDoubleHeight = (newStatusBarFrame.size.height == 40);
-	if (isDoubleHeight) {
-		
-	}
-	else {
-		
-	}
+	[[RCChatController sharedController] correctSubviewFrames];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {

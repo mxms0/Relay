@@ -22,21 +22,21 @@
 	return self;
 }
 
-- (void)changeNick:(NSString*)old toNick:(NSString*)new_ {
-    dispatch_async(dispatch_get_main_queue(), ^(void){
-        @synchronized(self) {
-            if ([old isEqualToString:[self channelName]]) {
-                if ([[self delegate] channelWithChannelName: new_]) {
-                    id nself = [[self delegate] channelWithChannelName: new_];
-                    [self recievedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" type:RCMessageTypeNormalE];
-                    [nself recievedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" type:RCMessageTypeNormalE];
-                    return;
-                }
-                [self setChannelName:new_];
-            }
-            [self recievedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" type:RCMessageTypeNormalE];
-        }
-    });
+- (void)changeNick:(NSString *)old toNick:(NSString *)new_ {
+	dispatch_async(dispatch_get_main_queue(), ^(void){
+		@synchronized(self) {
+			if ([old isEqualToString:[self channelName]]) {
+				if ([[self delegate] channelWithChannelName: new_]) {
+					id nself = [[self delegate] channelWithChannelName: new_];
+					[self recievedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" type:RCMessageTypeNormalE];
+					[nself recievedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" type:RCMessageTypeNormalE];
+					return;
+				}
+				[self setChannelName:new_];
+			}
+			[self recievedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" type:RCMessageTypeNormalE];
+		}
+	});
 }
 
 - (void)shouldPost:(BOOL)isHighlight withMessage:(NSString *)msg {

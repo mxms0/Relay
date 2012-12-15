@@ -18,5 +18,4 @@
 	RCSpecialTableView *datas;
 	BOOL _reloading;
 }
-
 @end

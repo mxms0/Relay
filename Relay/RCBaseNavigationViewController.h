@@ -10,5 +10,5 @@
 #import "RCChatNavigationBar.h"
 
 @interface RCBaseNavigationViewController : UINavigationController
-
+- (void)setFrame:(CGRect)frame;
 @end

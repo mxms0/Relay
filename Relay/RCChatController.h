@@ -30,4 +30,5 @@
 - (void)pushUserListWithDefaultDuration;
 - (void)showMenuOptions:(id)unused;
 - (void)reloadUserCount;
+- (void)layoutWithRootViewController:(RCViewController *)rc;
 @end

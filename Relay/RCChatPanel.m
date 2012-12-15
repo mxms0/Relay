@@ -63,6 +63,9 @@
 }
 
 - (void)setFrame:(CGRect)frame {
+	CGRect sc = [[UIScreen mainScreen] applicationFrame];
+	chatViewHeights[0] = sc.size.height-83;
+	chatViewHeights[1] = sc.size.height-299;
 	[_bar setFrame:CGRectMake(0, frame.size.height, frame.size.width, 40)];
 	[self repositionKeyboardForUse:[field isFirstResponder] animated:NO];
 	[super setFrame:CGRectMake(0, frame.origin.y, frame.size.width, frame.size.height+40)];
@@ -124,10 +127,7 @@
 		[UIView setAnimationDuration:0.25];
 	}
 	CGRect main = CGRectMake(0, 0, 320, chatViewHeights[(int)key]);
-	if (key)
-		[mainView setFrame:main];
-	else
-		[mainView setFrame:main];
+	[mainView setFrame:main];
 	[_bar setFrame:CGRectMake(0, mainView.frame.origin.x+mainView.frame.size.height, mainView.frame.size.width, 40)];
 	field.frame = CGRectMake(15, 5, _bar.frame.size.width-21, 31);
 	if (anim) [UIView commitAnimations];

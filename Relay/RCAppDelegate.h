@@ -13,6 +13,5 @@
 
 @property (strong, nonatomic) UIWindow *window;
 @property (strong, nonatomic) UIViewController *navigationController;
-@property (nonatomic, readonly) BOOL isDoubleHeight;
 
 @end

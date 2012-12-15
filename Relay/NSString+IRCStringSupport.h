@@ -10,14 +10,8 @@
 
 - (NSString *)gtm_stringByEscapingForHTML;
 - (NSString *)gtm_stringByEscapingForAsciiHTML;
-- (NSString *)gtm_stringByUnescapingFromHTML;
-- (NSString *)stringByConvertingHTMLToPlainText;
-- (NSString *)stringByDecodingHTMLEntities;
-- (NSString *)stringByEncodingHTMLEntities;
-- (NSString *)stringByEncodingHTMLEntities:(BOOL)isUnicode;
 - (NSString *)stringWithNewLinesAsBRs;
-- (NSString *)stringByRemovingNewLinesAndWhitespace;
 - (NSString *)stringByLinkifyingURLs;
-- (NSString *)stringByStrippingTags; 
+- (NSString *)stringByEncodingHTMLEntities:(BOOL)k;
 - (NSString *)stringByStrippingIRCMetadata;
 @end

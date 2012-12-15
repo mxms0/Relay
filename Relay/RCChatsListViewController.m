@@ -51,6 +51,11 @@
 
 }
 
+- (void)setFrame:(CGRect)frame {
+	[super setFrame:frame];
+	[datas setFrame:CGRectMake(0, 44, frame.size.width, frame.size.height-44)];
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 	if (_reloading) return 0;
 	RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:section];
