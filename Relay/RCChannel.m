@@ -17,7 +17,7 @@
 #define M_COLOR 32
 @implementation RCChannel
 
-@synthesize channelName, joinOnConnect, panel, topic, usersPanel, password, temporaryJoinOnConnect, fullUserList, newMessageCount;
+@synthesize channelName, joinOnConnect, panel, topic, usersPanel, password, temporaryJoinOnConnect, fullUserList, newMessageCount, cellRepresentation;
 
 NSString *RCUserRank(NSString *user, RCNetwork *network) {
     @synchronized(network) {
@@ -108,6 +108,7 @@ UIImage *RCImageForRank(NSString *rank, RCNetwork* network) {
 - (void)initialize_me:(NSString *)chan {
     channelName = [chan retain];
     joinOnConnect = YES;
+	cellRepresentation = nil;
     joined = NO;
 	newMessageCount = 0;
     userRanksAdv = [NSMutableDictionary new];
@@ -208,11 +209,11 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 		return NSOrderedSame;
 	}]) {
 		NSString *cmp = *message;
-		if (!cmp) continue;
 		NSString *rank = RCUserRank(uname, [self delegate]);
 		NSString *nameOrRank = [uname substringFromIndex:[rank length]];
-		if (!nameOrRank) continue;
 		int hhash = ([nameOrRank isEqualToString:[[self delegate] useNick]]) ? 1 : user_hash(nameOrRank);
+		// my bet says this regex is wrong.
+		// in some channels, letters like ABDEJKMNRTWX get highlighted, incorrectly.
 		NSString *patternuno = [NSString stringWithFormat:@"(^|\\s)([^A-Za-z0-9#]*)(%@)([^A-Za-z0-9]*)($|\\s)", nameOrRank];
 		NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:patternuno options:NSRegularExpressionCaseInsensitive error:nil];
 		NSString *val = [regex stringByReplacingMatchesInString:cmp options:0 range:NSMakeRange(0, [cmp length]) withTemplate:[NSString stringWithFormat:@"$1$2%c%02d$3%c$4$5", RCIRCAttributeInternalNickname, hhash, RCIRCAttributeInternalNicknameEnd]];
@@ -402,7 +403,8 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 	if (![[[[RCChatController sharedController] currentPanel] channel] isEqual:self]) {
 		newMessageCount++;
 		if ([[RCChatController sharedController] isShowingChatListView]) {
-			reloadNetworks();
+			[cellRepresentation setNewMessageCount:newMessageCount];
+			[cellRepresentation setNeedsDisplay];
 		}
 	}
 }
@@ -504,7 +506,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 
 #define NICK_NO_RANK(nick,network) [nick substringFromIndex:[RCUserRank(nick,network) length]]
 #define REFRESH_TABLE   \
-NSString* cur_rank = @"";\
+NSString *cur_rank = @"";\
 int max = 999;\
 for (NSString* rank in current) {\
 int nm = rankToNumber([rank characterAtIndex:0], [self delegate]);\
@@ -532,8 +534,8 @@ if (adding) {\
 }\
 else if (subtracting) {\
     NSString* rankf = [[[delegate prefix] objectForKey:[partialLen substringWithRange:NSMakeRange(a, 1)]] objectAtIndex:1]; if(rankf){\
-		NSString* full_user = [self nickAndRankForNick:[users objectAtIndex:modecnt]];NSString* or = RCUserRank(full_user,[self delegate]);\
-		NSString* nnr = NICK_NO_RANK(full_user, [self delegate]);\
+		NSString *full_user = [self nickAndRankForNick:[users objectAtIndex:modecnt]];NSString *or = RCUserRank(full_user,[self delegate]);\
+		NSString *nnr = NICK_NO_RANK(full_user, [self delegate]);\
 		NSMutableArray * current = [[[userRanksAdv objectForKey:nnr] mutableCopy] autorelease];   \
 		[current removeObject:rankf];\
 		if (current)     [userRanksAdv setObject:[[current copy] autorelease] forKey:nnr];\
@@ -618,6 +620,19 @@ modecnt++;\
 	}
 }
 
+- (BOOL)isEqual:(id)obj {
+	if (![NSStringFromClass([self class]) isEqualToString:NSStringFromClass([obj class])]) {
+		return NO;
+	}
+	if (![[delegate _description] isEqualToString:[[obj delegate] _description]]) {
+		return NO;
+	}
+	if ([channelName isEqualToString:[obj channelName]]) {
+		return YES;
+	}
+	return NO;
+}
+
 - (BOOL)joined {
 	return joined;
 }
@@ -671,64 +686,6 @@ modecnt++;\
 
 - (BOOL)isPrivate {
     return NO;
-}
-
-- (void)handleSlashPRIVMSG:(NSString *)privmsg {
-	NSScanner *scan = [[NSScanner alloc] initWithString:privmsg];
-	NSString *room = @"";
-	NSString *msg = @"";
-	[scan scanUpToString:@" " intoString:&room];
-	[scan scanUpToString:@"" intoString:&msg];
-	BOOL new = ([(RCNetwork *)delegate channelWithChannelName:room] == nil);
-	if (new) [delegate addChannel:room join:YES];
-	if (![msg isEqualToString:@""] && ![msg isEqualToString:@" "] && (msg != nil)) {
-		if (![delegate sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", room, msg]]) {
-			[scan release];
-			return;
-		}
-		else {
-			RCChannel *chan = [delegate channelWithChannelName:room];
-			[chan recievedMessage:msg from:[delegate useNick] type:RCMessageTypeNormal];
-		}
-	}
-	[scan release];
-}
-
-- (NSString *)nowPlayingInfo {
-    MPMusicPlayerController *musicPlayer = [MPMusicPlayerController iPodMusicPlayer];
-    if (!musicPlayer) return nil;
-    MPMediaItem *currentItem = [musicPlayer nowPlayingItem];
-    if (!currentItem) {
-        return nil;
-	}
-    NSString *finalStr = [NSString stringWithFormat:@"is listening to %@ by %@, from %@", [currentItem valueForProperty:MPMediaItemPropertyTitle], [currentItem valueForProperty:MPMediaItemPropertyArtist], [currentItem valueForProperty:MPMediaItemPropertyAlbumTitle]];
-	return finalStr;
-}
-
-- (void)handleSlashIPOD:(NSString *)cmd {
-	NSString *finalStr = @"is not currently listening to music.";
-	if (![NSThread isMainThread]) {
-		NSInvocation *vc = [[NSInvocation alloc] init];
-		[vc setTarget:self];
-		[vc setSelector:@selector(nowPlayingInfo)];
-		NSString *rt;
-		[vc getReturnValue:&rt];
-		[vc performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
-		if (rt) finalStr = rt;
-		[vc release];
-	}
-	else {
-		NSString *meh = [self nowPlayingInfo];
-		if (meh) finalStr = meh;
-	}    
-    [self handleSlashME:finalStr];
-}
-
-- (void)handleSlashME:(NSString *)cmd {
-	if ([cmd hasPrefix:@" "]) cmd = [cmd substringFromIndex:1];
-	NSString *msg = [NSString stringWithFormat:@"PRIVMSG %@ :%c%@ %@%c", channelName, 0x01, @"ACTION", cmd, 0x01];
-	[delegate sendMessage:msg];
-	[self recievedMessage:cmd from:[delegate useNick] type:RCMessageTypeAction];
 }
 
 @end

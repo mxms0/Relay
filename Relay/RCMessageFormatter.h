@@ -14,7 +14,7 @@
     BOOL highlight;
     BOOL shouldColor;
 }
-@property(retain) NSString* string;
+@property(retain) NSString *string;
 @property(assign) BOOL highlight;
 @property(assign) BOOL shouldColor;
 - (id)initWithMessage:(NSString *)msg isOld:(BOOL)old isMine:(BOOL)m isHighlight:(BOOL)hh type:(RCMessageType)flavor;

@@ -482,7 +482,7 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
             case RCIRCAttributeColor:;;
                 RENDER_WITH_OPTS;
                 BOOL itc = YES;
-                int a=0,b=0;
+                int a = 0, b = 0;
                 if (readNumber(&a, &itc, &cpos, istring) && itc) {
                     NSLog(@"comma!");
                     itc = NO;
@@ -494,7 +494,7 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
                 break;
             case RCIRCAttributeInternalNickname:;;
                 RENDER_WITH_OPTS;
-				cpos+=2;
+				cpos += 2;
                 lpos = cpos;
                 break;
             case RCIRCAttributeInternalNicknameEnd:;;

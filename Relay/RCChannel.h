@@ -15,8 +15,7 @@
 #import "RCDateManager.h"
 #import "RCCommandEngine.h"
 
-@class RCNetwork;
-@class RCNavigator;
+@class RCNetwork, RCNetworkCell;
 @interface RCChannel : NSObject <UITableViewDelegate, UITableViewDataSource> {
 @public
 	NSString *channelName;
@@ -30,6 +29,7 @@
 	BOOL temporaryJoinOnConnect;
 	unsigned newMessageCount;
 	RCNetwork *delegate;
+	RCNetworkCell *cellRepresentation;
     NSMutableArray *fullUserList;
     NSMutableDictionary *userRanksAdv;
 }
@@ -41,6 +41,7 @@
 @property (nonatomic, retain) NSString *password;
 @property (nonatomic, assign) RCUserListPanel *usersPanel;
 @property (nonatomic, readonly) NSMutableArray *fullUserList;
+@property (nonatomic, retain) RCNetworkCell *cellRepresentation;
 @property (nonatomic, assign) unsigned newMessageCount;
 - (void)disconnected:(NSString *)msg;
 - (void)changeNick:(NSString *)old toNick:(NSString *)new_;

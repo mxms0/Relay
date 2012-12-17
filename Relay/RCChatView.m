@@ -146,7 +146,7 @@ _out_:
 			[ms setString:[[ms string] substringWithRange:NSMakeRange(0, [[ms string] length]-1)]];
 		}
 		[self stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"setFlags('%@','%@');", name, [[ms string] substringToIndex:[[ms string] rangeOfString:@"-"].location]]];
-		NSString* istring = [[[[[[ms string] substringFromIndex:[[ms string] rangeOfString:@"-"].location+1] stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"] stringByEncodingHTMLEntities:YES] stringWithNewLinesAsBRs] stringByLinkifyingURLs];
+		NSString* istring = [[[[[ms string] substringFromIndex:[[ms string] rangeOfString:@"-"].location+1] stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"] stringByEncodingHTMLEntities:YES] stringWithNewLinesAsBRs];
 		unsigned int cpos = 0;
 		int nDepth = 0;
 		BOOL isBold = NO;

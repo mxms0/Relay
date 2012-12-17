@@ -75,6 +75,7 @@
 	}
 	RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.section];
 	RCChannel *indexChannel = [[net _channels] objectAtIndex:indexPath.row];
+	[indexChannel setCellRepresentation:cell];
 	[cell setChannel:[indexChannel channelName]];
 	[cell setWhite:NO];
 	[cell setNewMessageCount:[indexChannel newMessageCount]];

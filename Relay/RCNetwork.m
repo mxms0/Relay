@@ -805,148 +805,6 @@ char *RCIPForURL(NSString *URL) {
 	// Relay[2794:f803] MSG: :fr.ac3xx.com 005 _m WALLCHOPS WATCH=128 WATCHOPTS=A SILENCE=15 MODES=12 CHANTYPES=# PREFIX=(qaohv)~&@%+ CHANMODES=beI,kfL,lj,psmntirRcOAQKVCuzNSMTGZ NETWORK=ROXnet CASEMAPPING=ascii EXTBAN=~,qjncrR ELIST=MNUCT STATUSMSG=~&@%+ :are supported by this server
 }
 
-- (void)handle251:(NSString *)infos {
-	NSScanner *scanner = [[NSScanner alloc] initWithString:infos];
-	NSString *crap;
-	@try {
-		[scanner scanUpToString:@" " intoString:&crap];
-		[scanner scanUpToString:@" " intoString:&crap];
-		[scanner scanUpToString:@" " intoString:&crap];
-		[scanner setScanLocation:[scanner scanLocation]+1];
-		[scanner scanUpToString:@"\r\n" intoString:&crap];
-	}
-	@catch (NSException *exception) {
-		NSLog(@"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF %s", (char *)_cmd);
-	}
-	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
-	RCChannel *chan = [self consoleChannel];
-	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
-	[scanner release];
-	// Relay[3067:f803] MSG: :fr.ac3xx.com 251 _m :There are 1 users and 4 invisible on 1 servers
-}
-
-- (void)handle404:(NSString *)args {
-    if ([args hasPrefix:@":"]) {
-        args = [args substringFromIndex:[args rangeOfString:@" "].location+1];
-    }
-    NSScanner *scanner = [NSScanner scannerWithString:args];
-    NSString* raw = @"";
-    NSString* mnick = @"";
-    NSString* chan = @"";
-    NSString* mesg = @"";
-    [scanner scanUpToString:@" " intoString:&raw];
-    if (![raw isEqualToString:@"404"]) {
-        return;
-    }
-    [scanner scanUpToString:@" " intoString:&mnick];
-    [scanner scanUpToString:@" " intoString:&chan];
-    [scanner scanUpToString:@"" intoString:&mesg];
-    if ([mesg hasPrefix:@":"]) {
-        mesg = [mesg substringFromIndex:1];
-    }
-    RCChannel *kchan = [self channelWithChannelName:chan];
-	if (kchan) [kchan recievedMessage:mesg from:@"" type:RCMessageTypeError];
-}
-
-- (void)handle437:(NSString *)args {
-    if ([args hasPrefix:@":"]) {
-        args = [args substringFromIndex:[args rangeOfString:@" "].location+1];
-    }
-    NSScanner *scanner = [NSScanner scannerWithString:args];
-    NSString* raw = @"";
-    NSString* mnick = @"";
-    NSString* chan = @"";
-    NSString* mesg = @"";
-    [scanner scanUpToString:@" " intoString:&raw];
-    if (![raw isEqualToString:@"437"]) {
-        return;
-    }
-    [scanner scanUpToString:@" " intoString:&mnick];
-    [scanner scanUpToString:@" " intoString:&chan];
-    [scanner scanUpToString:@"" intoString:&mesg];
-    if ([mesg hasPrefix:@":"]) {
-        mesg = [mesg substringFromIndex:1];
-    }
-    RCChannel *kchan = [self channelWithChannelName:chan];
-	if (kchan) [kchan recievedMessage:mesg from:@"" type:RCMessageTypeError];
-    [[self consoleChannel] recievedMessage:mesg from:chan type:RCMessageTypeNormal];
-    NSLog(@"kay %@ %@ %@", raw, chan, mesg);
-}
-
-- (void)handle475:(NSString *)args {
-    if ([args hasPrefix:@":"]) {
-        args = [args substringFromIndex:[args rangeOfString:@" "].location+1];
-    }
-    NSScanner *scanner = [NSScanner scannerWithString:args];
-    NSString* raw = @"";
-    NSString* mnick = @"";
-    NSString* chan = @"";
-    NSString* mesg = @"";
-    [scanner scanUpToString:@" " intoString:&raw];
-    if (![raw isEqualToString:@"475"]) {
-        return;
-    }
-    [scanner scanUpToString:@" " intoString:&mnick];
-    [scanner scanUpToString:@" " intoString:&chan];
-    [scanner scanUpToString:@"" intoString:&mesg];
-    if ([mesg hasPrefix:@":"]) {
-        mesg = [mesg substringFromIndex:1];
-    }
-    RCChannel *kchan = [self channelWithChannelName:chan];
-	if (kchan) [kchan recievedMessage:mesg from:@"" type:RCMessageTypeError];
-    else [[self consoleChannel] recievedMessage:[args substringFromIndex:[[args substringFromIndex:[args rangeOfString:@" "].location+1] rangeOfString:@" "].location+1] from:@"" type:RCMessageTypeNormal];
-    NSLog(@"kay %@ %@ %@", raw, chan, mesg);
-}
-
-- (void)handle474:(NSString *)args {
-    if ([args hasPrefix:@":"]) {
-        args = [args substringFromIndex:[args rangeOfString:@" "].location+1];
-    }
-    NSScanner *scanner = [NSScanner scannerWithString:args];
-    NSString* raw = @"";
-    NSString* mnick = @"";
-    NSString* chan = @"";
-    NSString* mesg = @"";
-    [scanner scanUpToString:@" " intoString:&raw];
-    if (![raw isEqualToString:@"474"]) {
-        return;
-    }
-    [scanner scanUpToString:@" " intoString:&mnick];
-    [scanner scanUpToString:@" " intoString:&chan];
-    [scanner scanUpToString:@"" intoString:&mesg];
-    if ([mesg hasPrefix:@":"]) {
-        mesg = [mesg substringFromIndex:1];
-    }
-    RCChannel *kchan = [self channelWithChannelName:chan];
-	if (kchan) [kchan recievedMessage:mesg from:@"" type:RCMessageTypeError];
-    else [[self consoleChannel] recievedMessage:[args substringFromIndex:[[args substringFromIndex:[args rangeOfString:@" "].location+1] rangeOfString:@" "].location+1] from:@"" type:RCMessageTypeNormal];
-}
-
-- (void)handle473:(NSString *)args {
-	if ([args hasPrefix:@":"]) {
-		args = [args substringFromIndex:[args rangeOfString:@" "].location+1];
-	}
-	NSScanner *scanner = [NSScanner scannerWithString:args];
-	NSString* raw = @"";
-	NSString* mnick = @"";
-	NSString* chan = @"";
-	NSString* mesg = @"";
-	[scanner scanUpToString:@" " intoString:&raw];
-	if (![raw isEqualToString:@"473"]) {
-		return;
-	} // really not necessary.
-	[scanner scanUpToString:@" " intoString:&mnick];
-	[scanner scanUpToString:@" " intoString:&chan];
-	[scanner scanUpToString:@"" intoString:&mesg];
-	if ([mesg hasPrefix:@":"]) {
-		mesg = [mesg substringFromIndex:1];
-	}
-	RCChannel *kchan = [self channelWithChannelName:chan];
-	if (kchan) [kchan recievedMessage:mesg from:@"" type:RCMessageTypeError];
-	else [[self consoleChannel] recievedMessage:[args substringFromIndex:[[args substringFromIndex:[args rangeOfString:@" "].location+1] rangeOfString:@" "].location+1] from:@"" type:RCMessageTypeNormal];
-    NSLog(@"kay %@ %@ %@", raw, chan, mesg);
-}
-
 - (void)handle252:(NSString *)opsOnline {
 	NSScanner *scanner = [[NSScanner alloc] initWithString:opsOnline];
 	NSString *crap;
@@ -967,28 +825,28 @@ char *RCIPForURL(NSString *URL) {
 	// :irc.saurik.com 252 _m 2 :operator(s) online
 }
 
-- (void)handle332:(NSString *)topic {
-	NSScanner *_scanner = [[NSScanner alloc] initWithString:topic];
-	NSString *crap = @"_";
-	NSString *to = crap;
-	NSString *room = to;
-	NSString *_topic = room;
-	[_scanner scanUpToString:@" " intoString:&crap];
-	[_scanner scanUpToString:@" " intoString:&crap];
-	[_scanner scanUpToString:@" " intoString:&to];
-	[_scanner scanUpToString:@" " intoString:&room];
-	[_scanner scanUpToString:@"\r\n" intoString:&_topic];
-    if ([_topic hasPrefix:@":"]) {
-        _topic = [_topic substringFromIndex:1];
-    }
-    NSLog(@"Setting topic [%@]", _topic);
-	[[self channelWithChannelName:room ifNilCreate:YES] recievedMessage:_topic from:nil type:RCMessageTypeTopic];
-	// :irc.saurik.com 332 _m #bacon :Bacon | where2start? kitchen | Canadian Bacon? get out. | WE SPEAK: BACON, ENGLISH, PORTUGUESE, DEUTSCH. | http://blog.craftzine.com/bacon-starry-night.jpg THIS IS YOU ¬†
-	[_scanner release];
-}
-
 - (void)handle250:(NSString *)countr {
 	// :hubbard.freenode.net 250 Guest01 :Highest connection count: 3549 (3548 clients) (177981 connections received)	
+}
+
+- (void)handle251:(NSString *)infos {
+	NSScanner *scanner = [[NSScanner alloc] initWithString:infos];
+	NSString *crap;
+	@try {
+		[scanner scanUpToString:@" " intoString:&crap];
+		[scanner scanUpToString:@" " intoString:&crap];
+		[scanner scanUpToString:@" " intoString:&crap];
+		[scanner setScanLocation:[scanner scanLocation]+1];
+		[scanner scanUpToString:@"\r\n" intoString:&crap];
+	}
+	@catch (NSException *exception) {
+		NSLog(@"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF %s", (char *)_cmd);
+	}
+	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
+	RCChannel *chan = [self consoleChannel];
+	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
+	[scanner release];
+	// Relay[3067:f803] MSG: :fr.ac3xx.com 251 _m :There are 1 users and 4 invisible on 1 servers
 }
 
 - (void)handle253:(NSString *)unknown {
@@ -1147,7 +1005,47 @@ char *RCIPForURL(NSString *URL) {
 	// Relay[18195:707] MSG: :irc.saurik.com 331 _m #kk :No topic is set.
 }
 
+- (void)handle332:(NSString *)topic {
+	NSScanner *_scanner = [[NSScanner alloc] initWithString:topic];
+	NSString *crap = @"_";
+	NSString *to = crap;
+	NSString *room = to;
+	NSString *_topic = room;
+	[_scanner scanUpToString:@" " intoString:&crap];
+	[_scanner scanUpToString:@" " intoString:&crap];
+	[_scanner scanUpToString:@" " intoString:&to];
+	[_scanner scanUpToString:@" " intoString:&room];
+	[_scanner scanUpToString:@"\r\n" intoString:&_topic];
+    if ([_topic hasPrefix:@":"]) {
+        _topic = [_topic substringFromIndex:1];
+    }
+    NSLog(@"Setting topic [%@]", _topic);
+	[[self channelWithChannelName:room ifNilCreate:YES] recievedMessage:_topic from:nil type:RCMessageTypeTopic];
+	// :irc.saurik.com 332 _m #bacon :Bacon | where2start? kitchen | Canadian Bacon? get out. | WE SPEAK: BACON, ENGLISH, PORTUGUESE, DEUTSCH. | http://blog.craftzine.com/bacon-starry-night.jpg THIS IS YOU ¬†
+	[_scanner release];
+}
+
 - (void)handle333:(NSString *)numbers {
+	NSString *crap;
+	NSString *chan_ = nil;
+	NSString *from = nil;
+	NSString *time = nil;
+	NSScanner *scanr = [[NSScanner alloc] initWithString:numbers];
+	[scanr scanUpToString:@" " intoString:&crap];
+	[scanr scanUpToString:@" " intoString:&crap];
+	[scanr scanUpToString:@" " intoString:&crap];
+	[scanr scanUpToString:@" " intoString:&chan_];
+	[scanr scanUpToString:@" " intoString:&from];
+	[scanr scanUpToString:@" " intoString:&time];
+	time_t unixTime = [time intValue]; // seems to work just fine.
+	char buffer[128];
+	struct tm *info;
+	info = localtime(&unixTime);
+	strftime(buffer, 128, "%+", info);
+	NSString *normalTime = [NSString stringWithCString:buffer encoding:NSUTF8StringEncoding];
+	RCParseUserMask(from, &from, nil, nil);
+	RCChannel *chan = [self channelWithChannelName:chan_];
+	[chan recievedMessage:[NSString stringWithFormat:@"Set by %@ on %@", from, normalTime] from:nil type:RCMessageTypeNormalE];
 	// :irc.saurik.com 333 _m #bacon Bacon!~S_S@adsl-184-33-54-96.mia.bellsouth.net 1329680840
 }
 
@@ -1233,6 +1131,29 @@ char *RCIPForURL(NSString *URL) {
 	// no such channel
 }
 
+- (void)handle404:(NSString *)args {
+    if ([args hasPrefix:@":"]) {
+        args = [args substringFromIndex:[args rangeOfString:@" "].location+1];
+    }
+    NSScanner *scanner = [NSScanner scannerWithString:args];
+    NSString* raw = @"";
+    NSString* mnick = @"";
+    NSString* chan = @"";
+    NSString* mesg = @"";
+    [scanner scanUpToString:@" " intoString:&raw];
+    if (![raw isEqualToString:@"404"]) {
+        return;
+    }
+    [scanner scanUpToString:@" " intoString:&mnick];
+    [scanner scanUpToString:@" " intoString:&chan];
+    [scanner scanUpToString:@"" intoString:&mesg];
+    if ([mesg hasPrefix:@":"]) {
+        mesg = [mesg substringFromIndex:1];
+    }
+    RCChannel *kchan = [self channelWithChannelName:chan];
+	if (kchan) [kchan recievedMessage:mesg from:@"" type:RCMessageTypeError];
+}
+
 - (void)handle420:(NSString *)blunt {
 	NSLog(@"DAFUQ %@", blunt);
 }
@@ -1260,6 +1181,105 @@ char *RCIPForURL(NSString *URL) {
 	// nick is in use.
     self.useNick = [useNick stringByAppendingString:@"_"];
 	[self sendMessage:[@"NICK " stringByAppendingString:useNick] canWait:NO];
+}
+
+- (void)handle437:(NSString *)args {
+    if ([args hasPrefix:@":"]) {
+        args = [args substringFromIndex:[args rangeOfString:@" "].location+1];
+    }
+    NSScanner *scanner = [NSScanner scannerWithString:args];
+    NSString* raw = @"";
+    NSString* mnick = @"";
+    NSString* chan = @"";
+    NSString* mesg = @"";
+    [scanner scanUpToString:@" " intoString:&raw];
+    if (![raw isEqualToString:@"437"]) {
+        return;
+    }
+    [scanner scanUpToString:@" " intoString:&mnick];
+    [scanner scanUpToString:@" " intoString:&chan];
+    [scanner scanUpToString:@"" intoString:&mesg];
+    if ([mesg hasPrefix:@":"]) {
+        mesg = [mesg substringFromIndex:1];
+    }
+    RCChannel *kchan = [self channelWithChannelName:chan];
+	if (kchan) [kchan recievedMessage:mesg from:@"" type:RCMessageTypeError];
+    [[self consoleChannel] recievedMessage:mesg from:chan type:RCMessageTypeNormal];
+    NSLog(@"kay %@ %@ %@", raw, chan, mesg);
+}
+
+- (void)handle473:(NSString *)args {
+	if ([args hasPrefix:@":"]) {
+		args = [args substringFromIndex:[args rangeOfString:@" "].location+1];
+	}
+	NSScanner *scanner = [NSScanner scannerWithString:args];
+	NSString* raw = @"";
+	NSString* mnick = @"";
+	NSString* chan = @"";
+	NSString* mesg = @"";
+	[scanner scanUpToString:@" " intoString:&raw];
+	if (![raw isEqualToString:@"473"]) {
+		return;
+	} // really not necessary.
+	[scanner scanUpToString:@" " intoString:&mnick];
+	[scanner scanUpToString:@" " intoString:&chan];
+	[scanner scanUpToString:@"" intoString:&mesg];
+	if ([mesg hasPrefix:@":"]) {
+		mesg = [mesg substringFromIndex:1];
+	}
+	RCChannel *kchan = [self channelWithChannelName:chan];
+	if (kchan) [kchan recievedMessage:mesg from:@"" type:RCMessageTypeError];
+	else [[self consoleChannel] recievedMessage:[args substringFromIndex:[[args substringFromIndex:[args rangeOfString:@" "].location+1] rangeOfString:@" "].location+1] from:@"" type:RCMessageTypeNormal];
+    NSLog(@"kay %@ %@ %@", raw, chan, mesg);
+}
+
+- (void)handle474:(NSString *)args {
+    if ([args hasPrefix:@":"]) {
+        args = [args substringFromIndex:[args rangeOfString:@" "].location+1];
+    }
+    NSScanner *scanner = [NSScanner scannerWithString:args];
+    NSString* raw = @"";
+    NSString* mnick = @"";
+    NSString* chan = @"";
+    NSString* mesg = @"";
+    [scanner scanUpToString:@" " intoString:&raw];
+    if (![raw isEqualToString:@"474"]) {
+        return;
+    }
+    [scanner scanUpToString:@" " intoString:&mnick];
+    [scanner scanUpToString:@" " intoString:&chan];
+    [scanner scanUpToString:@"" intoString:&mesg];
+    if ([mesg hasPrefix:@":"]) {
+        mesg = [mesg substringFromIndex:1];
+    }
+    RCChannel *kchan = [self channelWithChannelName:chan];
+	if (kchan) [kchan recievedMessage:mesg from:@"" type:RCMessageTypeError];
+    else [[self consoleChannel] recievedMessage:[args substringFromIndex:[[args substringFromIndex:[args rangeOfString:@" "].location+1] rangeOfString:@" "].location+1] from:@"" type:RCMessageTypeNormal];
+}
+
+- (void)handle475:(NSString *)args {
+    if ([args hasPrefix:@":"]) {
+        args = [args substringFromIndex:[args rangeOfString:@" "].location+1];
+    }
+    NSScanner *scanner = [NSScanner scannerWithString:args];
+    NSString* raw = @"";
+    NSString* mnick = @"";
+    NSString* chan = @"";
+    NSString* mesg = @"";
+    [scanner scanUpToString:@" " intoString:&raw];
+    if (![raw isEqualToString:@"475"]) {
+        return;
+    }
+    [scanner scanUpToString:@" " intoString:&mnick];
+    [scanner scanUpToString:@" " intoString:&chan];
+    [scanner scanUpToString:@"" intoString:&mesg];
+    if ([mesg hasPrefix:@":"]) {
+        mesg = [mesg substringFromIndex:1];
+    }
+    RCChannel *kchan = [self channelWithChannelName:chan];
+	if (kchan) [kchan recievedMessage:mesg from:@"" type:RCMessageTypeError];
+    else [[self consoleChannel] recievedMessage:[args substringFromIndex:[[args substringFromIndex:[args rangeOfString:@" "].location+1] rangeOfString:@" "].location+1] from:@"" type:RCMessageTypeNormal];
+    NSLog(@"kay %@ %@ %@", raw, chan, mesg);
 }
 
 - (void)handle903:(NSString *)saslsuc {
@@ -1563,7 +1583,7 @@ char *RCIPForURL(NSString *URL) {
 	room = [room stringByReplacingOccurrencesOfString:@"\r\n" withString:@""];
 	RCParseUserMask(user, &_nick, nil, nil);
 	if ([_nick isEqualToString:useNick]) {
-		[self sendMessage:[NSString stringWithFormat:@"NAMES %@\r\nTOPIC %@", room, room]];
+		[self sendMessage:[NSString stringWithFormat:@"NAMES %@\r\n", room]];
 		[[self addChannel:room join:NO] setSuccessfullyJoined:YES];
 	}
 	else {

@@ -8,6 +8,7 @@
 #import <Foundation/Foundation.h>
 #import "RCCommandEngine.h"
 #import "RCChannel.h"
+#import "RCChatController.h"
 #import "RCNetwork.h"
 
 @interface RCBasicCommands : NSObject
