@@ -81,7 +81,6 @@ static id _inst = nil;
 
 - (void)correctSubviewFrames {
 	CGSize fsize = [[UIScreen mainScreen] applicationFrame].size;
-	NSLog(@"MEH %@", NSStringFromCGSize(fsize));
 	[leftView setFrame:CGRectMake(0, 0, fsize.width, fsize.height)];
 	[navigationController setFrame:CGRectMake(0, 0, fsize.width, fsize.height)];
 	canDragMainView = YES;
@@ -93,10 +92,10 @@ static id _inst = nil;
 	} completion:^(BOOL fin) {
 		[topView findShadowAndDoStuffToIt];
 	}];
-	
 }
 
 - (BOOL)isLandscape {
+	// hopefully reliable..
 	return UIInterfaceOrientationIsLandscape(navigationController.interfaceOrientation);
 }
 
@@ -118,7 +117,7 @@ static RCNetwork *currentNetwork = nil;
 - (void)showNetworkOptions:(id)arg1 {
 	currentNetwork = [(RCNetworkHeaderButton *)[arg1 superview] net];
 	RCPrettyActionSheet *sheet = [[RCPrettyActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"What do you want to do for %@?", [currentNetwork _description]] delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Delete" otherButtonTitles:@"Edit", ([currentNetwork isTryingToConnectOrConnected] ? @"Disconnect" : @"Connect"), nil];
-	[sheet showInView:[UIApp keyWindow]];
+	[sheet showInView:[[[UIApp delegate] navigationController] view]];
 	[sheet release];
 }
 
@@ -249,13 +248,32 @@ static RCNetwork *currentNetwork = nil;
 	}
 }
 
+- (void)userSwiped_specialLikeFr0st:(UIPanGestureRecognizer *)pan {
+	if (![self isLandscape]) {
+		[self userSwiped:pan];
+		return;
+	}
+	if (pan.state == UIGestureRecognizerStateBegan) {
+		
+		
+	}
+	else if (pan.state == UIGestureRecognizerStateEnded) {
+		
+	}
+}
+
 - (void)userSwiped:(UIPanGestureRecognizer *)pan {
+	if ([self isLandscape]) {
+		[self userSwiped_specialLikeFr0st:pan];
+		return;
+	}
 	if (pan.state == UIGestureRecognizerStateChanged) {
 		CGPoint tr = [pan translationInView:[navigationController.view superview]];
 		CGPoint centr = CGPointMake([navigationController.view center].x +tr.x, [navigationController.view center].y);
 		if (draggingUserList && [topView.view frame].origin.x > [topView.view frame].size.width) {
 			draggingUserList = NO;
 		}
+		NSLog(@"HI I AM @ %f", centr.x);
 		if (centr.x < 157 || draggingUserList) {
 			draggingUserList = YES;
 			[topView setCenter:CGPointMake([topView.view center].x+tr.x, [topView.view center].y)];
@@ -264,8 +282,10 @@ static RCNetwork *currentNetwork = nil;
 		}
 		if (!draggingUserList) {
 			if (canDragMainView) {
-				[navigationController setCenter:centr];
-				[pan setTranslation:CGPointZero inView:[navigationController.view superview]];
+				//	if (centr.x <= 595 && centr.x > 285) {
+					[navigationController setCenter:centr];
+					[pan setTranslation:CGPointZero inView:[navigationController.view superview]];
+				//}
 			}
 		}
 	}
@@ -412,6 +432,14 @@ static RCNetwork *currentNetwork = nil;
 }
 
 - (void)rotateToInterfaceOrientation:(UIInterfaceOrientation)oi {
+	[UIViewController attemptRotationToDeviceOrientation];
+	CGFloat screenWidth = [[UIScreen mainScreen] applicationFrame].size.width;
+	if (UIInterfaceOrientationIsLandscape(oi)) {
+		
+	}
+	else {
+		
+	}
 	// hi.
 }
 
