@@ -7,10 +7,6 @@
 
 #import "RCiPadViewController.h"
 
-@interface RCiPadViewController ()
-
-@end
-
 @implementation RCiPadViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {

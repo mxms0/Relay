@@ -15,7 +15,7 @@
 		_rEditing = NO;
 		self.tableView.allowsSelectionDuringEditing = YES;
 		[self reloadData];
-		if ([[net _channels]count] == 0)
+		if ([[net _channels] count] == 0)
 			[self edit];
 		else [self setupEditButton];
     }
@@ -43,7 +43,7 @@
     for (RCChannel* chn in [network _channels]) {
         [channels addObject:[chn channelName]];
     }
-	[channels removeObject:@"IRC"];
+	[channels removeObject:@"\x01IRC"];
 	[self.tableView reloadData];
 }
 
@@ -70,6 +70,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+	return;
 	if ([network isConnected]) {
 		[network sendMessage:@"LIST"];
 		[self addStupidWarningView];

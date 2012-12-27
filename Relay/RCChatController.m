@@ -129,6 +129,12 @@ static RCNetwork *currentNetwork = nil;
 	[ctrl release];
 }
 
+- (void)showNetworkAddViewController {
+	RCAddNetworkController *newc = [[RCAddNetworkController alloc] initWithNetwork:nil];
+	[self presentViewControllerInMainViewController:newc];
+	[newc release];
+}
+
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
 	if (buttonIndex == 0) {
 		// delete.
@@ -273,7 +279,9 @@ static RCNetwork *currentNetwork = nil;
 		if (draggingUserList && [topView.view frame].origin.x > [topView.view frame].size.width) {
 			draggingUserList = NO;
 		}
+#if LOGALL
 		NSLog(@"HI I AM @ %f", centr.x);
+#endif
 		if (centr.x < 157 || draggingUserList) {
 			draggingUserList = YES;
 			[topView setCenter:CGPointMake([topView.view center].x+tr.x, [topView.view center].y)];
@@ -440,6 +448,7 @@ static RCNetwork *currentNetwork = nil;
 	else {
 		
 	}
+	[self correctSubviewFrames];
 	// hi.
 }
 

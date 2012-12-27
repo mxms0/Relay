@@ -62,13 +62,25 @@
         msg = [[NSString stringWithFormat:@"%c[%@] -%@-%c %@", RCIRCAttributeBold, time, from, RCIRCAttributeBold, message] retain];
 	}
 	else if (type == RCMessageTypeJoin) {
-		msg = [@"iPhone joined the channel." retain];
+		//	msg = [@"iPhone joined the channel." retain];
+		// wat
+		msg = [@"Wat." retain];
 	}
 	else {
 		[super recievedMessage:message from:from type:type];
 		return;
 	}
 	[panel postMessage:[msg autorelease] withType:type highlight:NO];
+/*	if ([delegate isRegistered] && type == RCMessageTypeNormalE) {
+		newMessageCount++;
+		[cellRepresentation setNewMessageCount:newMessageCount];
+		[cellRepresentation performSelectorOnMainThread:@selector(setNeedsDisplay) withObject:nil waitUntilDone:NO];
+	}*/
+	// don't really know how to handle this. it's kind of an awkward situation per-se.
+	// don't want the users having a number notifying them of ircd spam always.
+	// but don't know how to detect wether or not it's ircd spam or some kind of notification.
+	// if the error messages go to the console channel, i mean, this should be easy, but i send them as normal messages
+	// since well, this is the console channel.
 }
 
 @end

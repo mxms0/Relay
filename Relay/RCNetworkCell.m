@@ -31,7 +31,7 @@
 	UIImage *ul = [UIImage imageNamed:@"0_underline"];
 	[ul drawAsPatternInRect:CGRectMake(0, rect.size.height-2, rect.size.width, 2)];
 	if (!self.channel) return;
-	BOOL isPM = (![self.channel hasPrefix:@"#"] && ![self.channel isEqualToString:@"IRC"]);
+	BOOL isPM = (![self.channel hasPrefix:@"#"] && ![self.channel hasPrefix:@"\x01"]);
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	CGContextSetShadowWithColor(ctx, CGSizeMake(0, 1), 0, [UIColor blackColor].CGColor);
 	UIColor *def = [UIColor colorWithRed:0.529 green:0.549 blue:0.580 alpha:1.000];
@@ -53,7 +53,6 @@
 			rendr = [NSString stringWithFormat:@"%d", newMessageCount];
 		}
 		len = [rendr sizeWithFont:[UIFont boldSystemFontOfSize:7.5]].width;
-		NSLog(@"meh %@: %d", rendr,len);
 		// sorry. :s
 		// it's not my fault! i promise. surenix did it!
 		BOOL longerThanNormal = ([rendr isEqualToString:@"99+"]);

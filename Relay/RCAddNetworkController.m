@@ -23,6 +23,7 @@
 		if (!net) {
 			network = [[RCNetwork alloc] init];
 			isNew = YES;
+			datas = [[NSMutableDictionary alloc] init];
 		}
 		else {
 			network = [net retain];
@@ -43,15 +44,11 @@
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-	[self.view findAndResignFirstResponder];
+
 }
 
 - (void)loadView {
 	[super loadView];
-}
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
 	float y = 44;
 	float width = 320;
 	if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
@@ -74,13 +71,21 @@
 	[done release];
 }
 
+- (void)viewDidLoad {
+    [super viewDidLoad];
+	MARK;
+
+}
+
 - (void)doneWithJoin {
-	[[RCChatController sharedController] rotateToInterfaceOrientation:self.interfaceOrientation];
+	//	[[RCChatController sharedController] rotateToInterfaceOrientation:self.interfaceOrientation];
 	[self dismissModalViewControllerAnimated:YES];
 }
 #define IS_STRING_OR(a,b) (((!a) || [a isEqualToString:@""]) ? b : a)
 
 - (void)textFieldDidEndEditing:(RCTextField *)textField {
+	if ([textField text] == nil)
+		[textField setText:@""];
 	if ([textField tag] == 3) {
 		[datas setObject:[NSNumber numberWithInt:[[textField text] intValue]] forKey:PORT_KEY];
 		return;
@@ -169,7 +174,7 @@
     [network setUsername:([network username] ?: name)];
 	if (![network port]) [network setPort:6667];
 	if (![network sDescription]) [network setSDescription:[network server]];
-	if (([network spass] == nil) || [[network spass] isEqualToString:@""]) {
+	if ([network spass] == nil) {
 		[network setSpass:@""];
 	}
 	else {
@@ -177,7 +182,7 @@
         [keychain setObject:[network spass] forKey:(id)kSecValueData];
 		[keychain release];
 	}
-	if (([network npass] == nil) || [[network npass] isEqualToString:@""]) {
+	if ([network npass] == nil) {
 		[network setNpass:@""];
 	}
 	else {
@@ -186,12 +191,11 @@
 		[keychain release];
 	}
 	if (isNew) {
-		[network setupRooms:[NSArray arrayWithObject:@"IRC"]];
+		[network setupRooms:[NSArray arrayWithObject:@"\x01IRC"]];
 		[[RCNetworkManager sharedNetworkManager] addNetwork:network];
 	}
-	
 	[[RCNetworkManager sharedNetworkManager] saveNetworks];
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"us.mxms.relay.reload" object:nil];
+	reloadNetworks();
 _end:
 	[self doneWithJoin];
 }
@@ -461,6 +465,14 @@ _end:
 	[network setCOL:s.on];
 }
 
+- (BOOL)shouldAutorotate {
+	return NO;
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+	return NO;
+}
+
 - (void)dealloc {
 	[name release];
 	[network release];
@@ -480,7 +492,6 @@ _end:
                 RCAlternateNicknamesManager *nickManager = [[RCAlternateNicknamesManager alloc] initWithStyle:UITableViewStyleGrouped andNetwork:network];
 				[self.navigationController pushViewController:nickManager animated:YES];
 				[nickManager release];
-
             }
 			break;
 		default:

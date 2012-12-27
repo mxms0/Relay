@@ -40,8 +40,8 @@ BOOL RCIsRankHigher(NSString *rank, NSString *rank2, RCNetwork* network) {
     return (rankToNumber([rank characterAtIndex:0], network) < rankToNumber([rank2 characterAtIndex:0], network));
 }
 
-NSInteger rankToNumber(unichar rank, RCNetwork* network) {
-    for (NSArray* arr in [[network prefix] allValues]) {
+NSInteger rankToNumber(unichar rank, RCNetwork *network) {
+    for (NSArray *arr in [[network prefix] allValues]) {
         if ([arr count] == 2) {
             if ([[arr objectAtIndex:1] characterAtIndex:0] == rank) {
                 return [[arr objectAtIndex:0] intValue];
@@ -54,8 +54,8 @@ NSInteger rankToNumber(unichar rank, RCNetwork* network) {
 NSInteger sortRank(id u1, id u2, RCNetwork* network) {
     u1 = [u1 lowercaseString];
     u2 = [u2 lowercaseString];
-    NSString* ra = RCUserRank(u1,network);
-    NSString* rb = RCUserRank(u2,network);
+    NSString *ra = RCUserRank(u1, network);
+    NSString *rb = RCUserRank(u2, network);
     unichar r1 = [ra characterAtIndex:0];
     unichar r2 = [rb characterAtIndex:0];
     NSInteger r1n = rankToNumber(r1, network);
@@ -70,7 +70,7 @@ NSInteger sortRank(id u1, id u2, RCNetwork* network) {
 }
 
 UIImage *RCImageForRank(NSString *rank, RCNetwork* network) {
-    NSString* realRank = RCUserRank(rank, network);
+    NSString *realRank = RCUserRank(rank, network);
     NSInteger rankPosi = rankToNumber([realRank characterAtIndex:0], network);
     switch (rankPosi) {
         case 0:
@@ -256,6 +256,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 		case RCMessageTypeKick: {
 			if (![message respondsToSelector:@selector(objectAtIndex:)]) {
 				NSLog(@"SENDING THE WRONG TYPE.");
+				return;
 			}
             NSString *mesg = [(NSArray *)message objectAtIndex:1];
             NSString *whog = [(NSArray *)message objectAtIndex:0];
@@ -289,7 +290,6 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 			msg = [[NSString stringWithFormat:@"%c[%@] %@ %c joined the channel.", RCIRCAttributeBold, time, from, RCIRCAttributeBold] retain];
 			break;
 		case RCMessageTypeEvent:
-            self.topic = @"";
 			msg = [[NSString stringWithFormat:@"%c[%@]%c %@", RCIRCAttributeBold, time, RCIRCAttributeBold, message] retain];
 			break;
 		case RCMessageTypeTopic:
@@ -357,7 +357,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 	BOOL isHighlight = NO;
 	if ((type == RCMessageTypeNormal || type == RCMessageTypeAction || type == RCMessageTypeNotice) && ![from isEqualToStringNoCase:[delegate useNick]]) isHighlight = is_highlight;
 	[panel postMessage:msg withType:type highlight:isHighlight isMine:([from isEqualToString:[delegate useNick]])];
-	if (type != RCMessageTypeTopic && type != RCMessageTypePart && type != RCMessageTypeMode && type != RCMessageTypeJoin)
+	if (type != RCMessageTypeTopic && type != RCMessageTypePart && type != RCMessageTypeMode && type != RCMessageTypeJoin && type != RCMessageTypeEvent)
 		[self shouldPost:isHighlight withMessage:msg];
 	[msg release];
 	[p drain];
@@ -376,6 +376,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 }
 
 - (BOOL)isUserInChannel:(NSString *)user {
+	if (!user || [user isEqualToString:@""]) return NO;
     NSString *rnka = RCUserRank(user, [self delegate]);
     user = [user substringFromIndex:[rnka length]];
     for (NSString *nickn in fullUserList) {
@@ -403,8 +404,10 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 	if (![[[[RCChatController sharedController] currentPanel] channel] isEqual:self]) {
 		newMessageCount++;
 		if ([[RCChatController sharedController] isShowingChatListView]) {
+			if (newMessageCount > 101) return;
+			// if it's at 100, it will stop drawing anything new anyways. since the 99+ thing. so k
 			[cellRepresentation setNewMessageCount:newMessageCount];
-			[cellRepresentation setNeedsDisplay];
+			[cellRepresentation performSelectorOnMainThread:@selector(setNeedsDisplay) withObject:nil waitUntilDone:NO];
 		}
 	}
 }

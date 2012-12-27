@@ -24,7 +24,7 @@ static NSMutableArray *networks = nil;
 			return;
 		}
 	}
-	if (![_net consoleChannel]) [_net addChannel:@"IRC" join:NO];
+	if (![_net consoleChannel]) [_net addChannel:@"\x01IRC" join:NO];
 	[networks addObject:_net];
 	if ([_net COL]) [_net connect];
 	if (!isSetup) [self saveNetworks];
@@ -65,7 +65,7 @@ static NSMutableArray *networks = nil;
 
 - (void)jumpToFirstNetworkAndConsole {
 	if ([networks count] < 1) return;
-	[[RCChatController sharedController] selectChannel:@"IRC" fromNetwork:[networks objectAtIndex:0]];
+	[[RCChatController sharedController] selectChannel:@"\x01IRC" fromNetwork:[networks objectAtIndex:0]];
 }
 
 - (void)setupWelcomeView {
@@ -92,9 +92,8 @@ static NSMutableArray *networks = nil;
 		}
 	}
 	reloadNetworks();
-	NSLog(@"hi %p", networks);
 	[self jumpToFirstNetworkAndConsole];
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"us.mxms.relay.reload" object:nil];
+	reloadNetworks();
 	isSetup = NO;
 }
 

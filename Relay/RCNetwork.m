@@ -23,7 +23,7 @@
 - (RCChannel *)consoleChannel {
     @synchronized(_channels) {
 		for (RCChannel *chan in _channels) {
-			if ([[chan channelName] isEqualToString:@"IRC"]) {
+			if ([[chan channelName] isEqualToString:@"\x01IRC"] && [chan isKindOfClass:[RCConsoleChannel class]]) {
 				return chan;
 			}
 		}
@@ -81,7 +81,7 @@
 	}
 	NSMutableArray *rooms = [[[info objectForKey:CHANNELS_KEY] mutableCopy] autorelease];
 	if (!rooms) {
-		[network addChannel:@"IRC" join:NO];
+		[network addChannel:@"\x01IRC" join:NO];
 	}
 	[network _setupRooms:rooms];
 	return [network autorelease];
@@ -206,13 +206,22 @@
         }
         if (![self channelWithChannelName:_chan ifNilCreate:NO]) {
             RCChannel *chan = nil;
-            if ([_chan isEqualToString:@"IRC"]) chan = [[RCConsoleChannel alloc] initWithChannelName:_chan];
+            if ([_chan isEqualToString:@"\x01IRC"]) chan = [[RCConsoleChannel alloc] initWithChannelName:_chan];
             else if ([_chan hasPrefix:@"#"]) chan = [[RCChannel alloc] initWithChannelName:_chan];
             else {
                 chan = [[RCPMChannel alloc] initWithChannelName:_chan];
             }
             [chan setDelegate:self];
-            [[self _channels] addObject:chan];
+			if ([chan isKindOfClass:[RCConsoleChannel class]]) {
+				[[self _channels] insertObject:chan atIndex:0];
+			}
+			else if ([chan isKindOfClass:[RCChannel class]] && ![chan isKindOfClass:[RCPMChannel class]]) {
+				if ([self consoleChannel]) [[self _channels] insertObject:chan atIndex:1];
+				else [[self _channels] insertObject:chan atIndex:0];
+			}
+			else {
+				[[self _channels] insertObject:chan atIndex:[[self _channels] count]];
+			}
             [chan release];
             if (join) [chan setJoined:YES withArgument:nil];
             if (isRegistered) {
@@ -323,6 +332,10 @@
 	if ([spass length] > 0) {
 		[self sendMessage:[@"PASS " stringByAppendingString:spass] canWait:NO];
 	}
+	if (!nick || [nick isEqualToString:@""]) {
+		nick = @"__GUEST";
+		useNick = @"__GUEST";
+	}
 	[self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
 	[self sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
 	NSMutableString *cache = [@"" mutableCopy];
@@ -407,10 +420,15 @@ out_:
     }
 	[self sendMessage:@"CAP LS" canWait:NO];
 	if (SASL) {
-		[self sendMessage:@"CAP REQ :mutli-prefix sasl server-time" canWait:NO];
+		//	[self sendMessage:@"CAP REQ :mutli-prefix sasl server-time" canWait:NO];
+		[self sendMessage:@"CAP REQ :sasl" canWait:NO];
 	}
 	else {
-		[self sendMessage:@"CAP REQ :server-time" canWait:NO];
+		//	[self sendMessage:@"CAP REQ :server-time" canWait:NO];
+	}
+	if (!nick || [nick isEqualToString:@""]) {
+		nick = @"__GUEST";
+		useNick = @"__GUEST";
 	}
     [self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
     [self sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
@@ -596,6 +614,7 @@ char *RCIPForURL(NSString *URL) {
 		isRegistered = NO;
 		for (RCChannel *_chan in _channels) {
 			[_chan disconnected:msg];
+			NSLog(@"hi");
 		}
 	}
 	_isDiconnecting = NO;
@@ -613,18 +632,20 @@ char *RCIPForURL(NSString *URL) {
 	if (chan) [chan recievedMessage:@"Connected to host." from:@"" type:RCMessageTypeNormal];
 	if ([npass length] > 0)	[self sendMessage:[@"PRIVMSG NickServ :IDENTIFY " stringByAppendingString:npass]];
 	NSMutableString *joinList = [[NSMutableString alloc] initWithString:@"JOIN "];
-	for (RCChannel *chan in _channels) {
-		if (![chan isKindOfClass:[RCConsoleChannel class]] && ![chan isKindOfClass:[RCPMChannel class]]) {
-			if ([chan joinOnConnect]) {
-				[joinList appendFormat:@"%@,", [chan channelName]];
+	if ([_channels count] > 1) {
+		for (RCChannel *chan in _channels) {
+			if (![chan isKindOfClass:[RCConsoleChannel class]] && ![chan isKindOfClass:[RCPMChannel class]]) {
+				if ([chan joinOnConnect]) {
+					[joinList appendFormat:@"%@,", [chan channelName]];
+				}
 			}
 		}
+		if ([joinList hasSuffix:@","]) {
+			[joinList deleteCharactersInRange:NSMakeRange([joinList length]-1, 1)];
+		}
+		[self sendMessage:joinList];
+		[joinList release];
 	}
-	if ([joinList hasSuffix:@","]) {
-		[joinList deleteCharactersInRange:NSMakeRange([joinList length]-1, 1)];
-	}
-	[self sendMessage:joinList];
-	[joinList release];
 }
 
 - (BOOL)isConnected {
@@ -652,8 +673,9 @@ char *RCIPForURL(NSString *URL) {
 	@catch (NSException *exception) {
 		NSLog(@"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF %s", (char *)_cmd);
 	}
-	meee = [meee stringByReplacingOccurrencesOfString:@" " withString:@" "];
 	useNick = [meee retain];
+	//:Welcome to the IRCNode Internet Relay Chat Network Maximus|ZNC
+	NSLog(@"WAT IS HAPPENING %@ %@", useNick, welcome);
 	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
 	RCChannel *chan = [self consoleChannel];
 	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
@@ -1045,7 +1067,7 @@ char *RCIPForURL(NSString *URL) {
 	NSString *normalTime = [NSString stringWithCString:buffer encoding:NSUTF8StringEncoding];
 	RCParseUserMask(from, &from, nil, nil);
 	RCChannel *chan = [self channelWithChannelName:chan_];
-	[chan recievedMessage:[NSString stringWithFormat:@"Set by %@ on %@", from, normalTime] from:nil type:RCMessageTypeNormalE];
+	[chan recievedMessage:[NSString stringWithFormat:@"Set by %@ on %@", from, normalTime] from:nil type:RCMessageTypeEvent];
 	// :irc.saurik.com 333 _m #bacon Bacon!~S_S@adsl-184-33-54-96.mia.bellsouth.net 1329680840
 }
 
@@ -1167,9 +1189,14 @@ char *RCIPForURL(NSString *URL) {
 	[scan scanUpToString:@" " intoString:&crap];
 	[scan scanUpToString:@" " intoString:&crap];
 	[scan scanUpToString:@":" intoString:&msg];
-	RCChannel *chan = [self consoleChannel];
-	[chan recievedMessage:[NSString stringWithFormat:@"Error(421): %@ Unknown Command", [msg uppercaseString]] from:nil type:RCMessageTypeError];
-	NSLog(@"Unknown : %@ BYTES: %@", unknown, [unknown dataUsingEncoding:NSUTF8StringEncoding]);
+	// considering this logical only in the case that there is an issue with network connectivity and the user
+	// is able to switch channels before getting a response from the network.
+	RCChannel *currentChannel_ = [[[RCChatController sharedController] currentPanel] channel];
+	RCChannel *target = [self consoleChannel];
+	if ([[currentChannel_ delegate] isEqual:self]) {
+		target = currentChannel_;
+	}
+	[currentChannel_ recievedMessage:[NSString stringWithFormat:@"Error(421): %@ Unknown Command", [msg uppercaseString]] from:nil type:RCMessageTypeError];
 	[scan release];
 }
 
@@ -1349,11 +1376,14 @@ char *RCIPForURL(NSString *URL) {
 }
 
 - (void)handlePRIVMSG:(NSString *)privmsg {
+	NSLog(@"LOL WAT IS HAPPEPNIGN %@", privmsg);
 	NSScanner *_scanner = [[NSScanner alloc] initWithString:privmsg];
 	NSString *from = @"";
 	NSString *cmd = from; // will be unused.
 	NSString *room = from;
 	NSString *msg = from;
+	//:Maximus!SecureROM@dqzl-05-4-61-13.mia.bellsouth.net PRIVMSG Maximus|ZNC :hi
+	//:Maximus!~S_S@65.8.64.28 PRIVMSG #bacon :tmp
 	[_scanner scanUpToString:@" " intoString:&from];
 	[_scanner scanUpToString:@" " intoString:&cmd];
 	[_scanner scanUpToString:@" " intoString:&room];
@@ -1383,6 +1413,7 @@ char *RCIPForURL(NSString *URL) {
 		}
 	}
 	else {
+		NSLog(@"HI THIS COULD BE AN ISSUE. %@", useNick);
 		if ([room isEqualToString:useNick]) {
 			// privmsg or some other mechanical contraptiona.. :(
 			room = from;
@@ -1451,43 +1482,47 @@ char *RCIPForURL(NSString *URL) {
 }
 
 - (void)handleNICK:(NSString *)nickChange {
-    NSScanner *scanner = [[NSScanner alloc] initWithString:nickChange];
-    NSString* usermask = @"";
-    NSString* oldnick = @"";
-    NSString* command = @"";
-    NSString* newnick = @"";
-    if ([nickChange hasPrefix:@":"]) {
-        [scanner scanUpToString:@" " intoString:&usermask];
-        RCParseUserMask(usermask, &oldnick, nil, nil);
-    } else {
-        oldnick = useNick;
-    }
-    [scanner scanUpToString:@" " intoString:&command];
-    [scanner scanUpToString:@"" intoString:&newnick];
-    [scanner release];
-    if ([newnick hasPrefix:@":"]) {
-        NSLog(@"a hi i am 12 and wat is thi- [%@]", [newnick substringFromIndex:1]);
-        newnick = [newnick substringFromIndex:1];
-    }
-    if ([oldnick hasPrefix:@":"]) {
-        NSLog(@"a hi i am 12 and wat is thi- [%@]", [oldnick substringFromIndex:1]);
-        oldnick = [oldnick substringFromIndex:1];
-    }
-    if ([oldnick isEqualToString:useNick]) {
-        self.useNick = newnick;
-    }
-    NSMutableArray* chanarr = [[NSMutableArray new] autorelease];
-    @synchronized(_channels)
-    {
-        for (NSString* channel in _channels) {
-            if ([[self channelWithChannelName:channel] isUserInChannel:oldnick]) {
-                [chanarr addObject:[self channelWithChannelName:channel]];
-            }
-        }
-    }
-    for (RCChannel* chan in chanarr) {
-        [chan changeNick:oldnick toNick:newnick];
-    }
+	NSScanner *scanner = [[NSScanner alloc] initWithString:nickChange];
+	NSString *usermask = @"";
+	NSString *oldnick = @"";
+	NSString *command = @"";
+	NSString *newnick = @"";
+	if ([nickChange hasPrefix:@":"]) {
+		[scanner scanUpToString:@" " intoString:&usermask];
+		RCParseUserMask(usermask, &oldnick, nil, nil);
+	}
+	else {
+		oldnick = useNick;
+	}
+	[scanner scanUpToString:@" " intoString:&command];
+	[scanner scanUpToString:@"" intoString:&newnick];
+	[scanner release];
+	if ([newnick hasPrefix:@":"]) {
+#if LOGALL
+		NSLog(@"a hi i am 12 and wat is thi- [%@]", [newnick substringFromIndex:1]);
+#endif
+		newnick = [newnick substringFromIndex:1];
+	}
+	if ([oldnick hasPrefix:@":"]) {
+#if LOGALL
+		NSLog(@"a hi i am 12 and wat is thi- [%@]", [oldnick substringFromIndex:1]);
+#endif
+		oldnick = [oldnick substringFromIndex:1];
+	}
+	if ([oldnick isEqualToString:useNick]) {
+		self.useNick = newnick;
+	}
+	NSMutableArray *chanarr = [[NSMutableArray new] autorelease];
+	@synchronized(_channels) {
+		for (NSString *channel in _channels) {
+			if ([[self channelWithChannelName:channel] isUserInChannel:oldnick]) {
+				[chanarr addObject:[self channelWithChannelName:channel]];
+			}
+		}
+	}
+	for (RCChannel *chan in chanarr) {
+		[chan changeNick:(([oldnick isEqualToString:@""] || oldnick == nil) ? @"(self)" : oldnick) toNick:newnick];
+	}
 }
 
 - (void)handleCTCPRequest:(NSString *)_request {

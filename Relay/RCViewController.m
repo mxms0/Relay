@@ -46,15 +46,15 @@
 }
 
 - (BOOL)shouldAutorotate {
-	return YES;
+	return NO;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-	return YES;
+	return NO;
 }
 
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-	[[RCChatController sharedController] rotateToInterfaceOrientation:toInterfaceOrientation];
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+	[[RCChatController sharedController] rotateToInterfaceOrientation:self.interfaceOrientation];
 }
 
 @end
