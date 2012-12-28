@@ -8,7 +8,5 @@
 #import <UIKit/UIKit.h>
 #import "RCTableView.h"
 
-@interface RCUserListPanel : RCTableView {
-	
-}
+@interface RCUserListPanel : RCTableView 
 @end

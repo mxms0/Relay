@@ -122,5 +122,4 @@
 	r_shadow.frame = CGRectMake(0, y, width, 10);
 }
 
-
 @end

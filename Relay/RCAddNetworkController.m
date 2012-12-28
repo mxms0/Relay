@@ -74,7 +74,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	MARK;
-
 }
 
 - (void)doneWithJoin {
