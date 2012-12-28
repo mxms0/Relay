@@ -13,8 +13,9 @@
 - (id)initWithRootViewController:(UIViewController *)rootViewController {
 	if ((self = [super initWithRootViewController:rootViewController])) {
 		[self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"0_bg"]]];
-		UIButton *fuckFudge = [[UIButton alloc] initWithFrame:CGRectMake(80, 420, 50, 50)];
-		[fuckFudge setImage:[UIImage imageNamed:@"0_tplusbtn"] forState:UIControlStateNormal];
+		UIButton *fuckFudge = [[UIButton alloc] initWithFrame:CGRectMake(-20, 0, 75, 75)];
+		[fuckFudge setImage:[UIImage imageNamed:@"0_adn"] forState:UIControlStateNormal];
+		[fuckFudge setImage:[UIImage imageNamed:@"0_adn_pres"] forState:UIControlStateHighlighted];
 		[fuckFudge addTarget:[RCChatController sharedController] action:@selector(showNetworkAddViewController) forControlEvents:UIControlEventTouchUpInside];
 		_reloading = NO;
 		datas = [[RCSpecialTableView alloc] initWithFrame:CGRectMake(0, 44, 320, rootViewController.view.frame.size.height-44) style:UITableViewStylePlain];
@@ -22,13 +23,13 @@
 		[datas setDataSource:self];
 		[datas setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 		[datas setBackgroundColor:[UIColor clearColor]];
+		[datas setTableFooterView:fuckFudge];
+		[fuckFudge release];
 		[self.view addSubview:datas];
 		[datas release];
 		[self.view setOpaque:YES];
 		self.title = @"";
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadData) name:@"us.mxms.relay.reload" object:nil];
-		[self.view insertSubview:fuckFudge atIndex:[[self.view subviews] count]];
-		[fuckFudge release];
 	}
 	return self;
 }

@@ -15,6 +15,7 @@
 	}
 	return self;
 }
+
 - (void)layoutSubviews {
 	[super layoutSubviews];
 	
@@ -34,7 +35,6 @@
 		else if ([cell.layer.sublayers indexOfObjectIdenticalTo:bottomShadow] != 0) {
 			[cell insertSubview:bottomShadow atIndex:0];
 		}
-		
 		CGRect shadowFrame = bottomShadow.frame;
 		shadowFrame.size.width = cell.frame.size.width;
 		shadowFrame.origin.y = cell.frame.size.height;
