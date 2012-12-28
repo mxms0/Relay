@@ -136,7 +136,7 @@ _out_:
 			return;
 		}
 	}
-	dispatch_async(dispatch_get_main_queue(), ^(void){
+	dispatch_async(dispatch_get_main_queue(), ^(void) {
 		NSString *isReady = [self stringByEvaluatingJavaScriptFromString:@"isReady();"];
         if (![isReady isEqualToString:@"YES"]) {
             

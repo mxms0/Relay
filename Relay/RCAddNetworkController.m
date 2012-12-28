@@ -78,6 +78,7 @@
 }
 
 - (void)doneWithJoin {
+	reloadNetworks();
 	//	[[RCChatController sharedController] rotateToInterfaceOrientation:self.interfaceOrientation];
 	[self dismissModalViewControllerAnimated:YES];
 }

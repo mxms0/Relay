@@ -6,6 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <objc/runtime.h>
 
 @interface NSString (RCUtils)
 - (BOOL)isEqualToStringNoCase:(NSString *)string;
@@ -13,4 +14,8 @@
 - (BOOL)hasSuffixNoCase:(NSString *)string;
 - (NSString *)recursivelyRemovePrefix:(NSString *)prefix;
 - (NSString *)base64;
+@end
+
+@interface NSObject (DecentDescription)
+- (NSString *)description;
 @end
