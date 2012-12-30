@@ -16,7 +16,21 @@
 	[e registerSelector:@selector(handlePART:net:channel:) forCommands:[NSArray arrayWithObjects:@"part", @"p", nil] usingClass:self];
 	[e registerSelector:@selector(handleNP:net:channel:) forCommands:[NSArray arrayWithObjects:@"np", @"ipod", nil] usingClass:self];
 	// yes, i realize np and ipod should be two different commands. but for now, it will do.
-	[e registerSelector:@selector(handlePRIVMSG:net:channel:) forCommands:[NSArray arrayWithObjects:@"pm", @"privmsg", @"query", nil] usingClass:self];
+	[e registerSelector:@selector(handlePRIVMSG:net:channel:) forCommands:[NSArray arrayWithObjects:@"pm", @"privmsg", @"query", @"msg", nil] usingClass:self];
+	[e registerSelector:@selector(handleRAW:net:channel:) forCommands:[NSArray arrayWithObjects:@"raw", @"quote", nil] usingClass:self];
+	[e registerSelector:@selector(handleNAMES:net:channel:) forCommands:[NSArray arrayWithObjects:@"names", @"users", nil] usingClass:self];
+}
+
+- (void)handleNAMES:(NSString *)names net:(RCNetwork *)net channel:(RCChannel *)chan {
+	NSString *req = [NSString stringWithFormat:@"NAMES %@", [chan channelName]];
+	[net sendMessage:req];
+	[[RCChatController sharedController] closeWithDuration:0.00]; // just in case. :s
+	[[RCChatController sharedController] pushUserListWithDefaultDuration];
+}
+
+- (void)handleRAW:(NSString *)raw net:(RCNetwork *)net channel:(RCChannel *)chan {
+	[net sendMessage:raw];
+	// okay then.
 }
 
 - (void)handlePRIVMSG:(NSString *)msg net:(RCNetwork *)net channel:(RCChannel *)chan {
@@ -75,30 +89,26 @@
 }
 
 - (void)handleJOIN:(NSString *)aJ net:(RCNetwork *)net channel:(RCChannel *)aChan {
-	/*
-	 
-	 for (NSString *piece in [join componentsSeparatedByString:@","]) {
-	 if ([piece isEqualToString:@" "]||[piece isEqualToString:@""] || !piece) {
-	 continue;
-	 }
-	 if (!([piece hasPrefix:@"#"]) || ([piece hasPrefix:@"&"])) {
-	 piece = [@"#" stringByAppendingString:piece];
-	 }
-	 id ch = [delegate addChannel:piece join:YES];
-	 [[RCNavigator sharedNavigator] channelSelected:[ch bubble]];
-	 [[RCNavigator sharedNavigator] scrollToBubble:[ch bubble]];
-	 }
-	 
-	 */
-	
 	if (!aJ) return;
 	NSArray *channels = [aJ componentsSeparatedByString:@" "];
+	if ([channels count] <= 1)
+		channels = [aJ componentsSeparatedByString:@","];
+	NSString *base = @"JOIN ";
+	NSString *first = nil;
 	for (NSString *chan in channels) {
-		NSString *geh = [[chan stringByReplacingOccurrencesOfString:@"," withString:@""] stringByReplacingOccurrencesOfString:@" " withString:@" "];
+		NSString *geh = [[chan stringByReplacingOccurrencesOfString:@"," withString:@""] stringByReplacingOccurrencesOfString:@" " withString:@""];
 		if (geh != nil && [geh length] > 1) {
-			[net sendMessage:[NSString stringWithFormat:@"JOIN %@", geh]];
+			if (!first) first = geh;
+			[net addChannel:geh join:NO];
+			base = [base stringByAppendingFormat:@"%@,", geh];
 		}
 	}
+	if (first) {
+		[[RCChatController sharedController] selectChannel:first fromNetwork:net];
+	}
+	if ([base hasSuffix:@","])
+		base = [base substringToIndex:[base length]-1];
+	[net sendMessage:base];
 }
 
 - (void)handlePART:(NSString *)part net:(RCNetwork *)net channel:(RCChannel *)aChan {

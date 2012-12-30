@@ -15,7 +15,3 @@
 - (NSString *)recursivelyRemovePrefix:(NSString *)prefix;
 - (NSString *)base64;
 @end
-
-@interface NSObject (DecentDescription)
-- (NSString *)description;
-@end

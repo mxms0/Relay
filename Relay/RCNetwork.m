@@ -104,22 +104,27 @@
 	}
 	[chanArray autorelease];
 	return [NSDictionary dictionaryWithObjectsAndKeys:
-			username, USER_KEY,//
-			nick, NICK_KEY,//
-			realname, NAME_KEY, //
-			([spass length] > 0 ? (id)kCFBooleanTrue : (id)kCFBooleanFalse), S_PASS_KEY,//			([npass length] > 0 ? (id)kCFBooleanTrue : (id)kCFBooleanFalse), N_PASS_KEY, //
-			sDescription, DESCRIPTION_KEY, //
-			server, SERVR_ADDR_KEY, //
+			(username ?: @""), USER_KEY,
+			(nick ?: @""), NICK_KEY,
+			(realname ?: @""), NAME_KEY,
+			([spass length] > 0 ? (id)kCFBooleanTrue : (id)kCFBooleanFalse), S_PASS_KEY,
+			([npass length] > 0 ? (id)kCFBooleanTrue : (id)kCFBooleanFalse), N_PASS_KEY,
+			(sDescription ?: @""), DESCRIPTION_KEY,
+			(server ?: @""), SERVR_ADDR_KEY,
 			(SASL ? (id)kCFBooleanTrue : (id)kCFBooleanFalse), SASL_KEY,
 			[NSNumber numberWithInt:port], PORT_KEY,
 			[NSNumber numberWithBool:useSSL], SSL_KEY,
-			chanArray, CHANNELS_KEY,
 			[NSNumber numberWithBool:COL], COL_KEY,
+			chanArray, CHANNELS_KEY,
 			nil];
+	// why don't i just use +[NSNumber numberWithBool:(BOOL)([pass length] > 0)] ..
+	// whatever.
 }
 
 - (void)dealloc {
-	NSLog(@"cya.");
+#if LOGALL
+	NSLog(@"RELEASING NETWORK %@", self);
+#endif
 	[_channels release];
 	[server release];
 	[nick release];

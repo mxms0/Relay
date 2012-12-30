@@ -31,5 +31,6 @@
 - (void)showMenuOptions:(id)unused;
 - (void)reloadUserCount;
 - (void)correctSubviewFrames;
+- (void)closeWithDuration:(NSTimeInterval)dur;
 - (void)layoutWithRootViewController:(RCViewController *)rc;
 @end

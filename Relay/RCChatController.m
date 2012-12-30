@@ -199,14 +199,14 @@ static RCNetwork *currentNetwork = nil;
 	[topView reloadData];
 	canDragMainView = NO;
 	[self closeWithDuration:0.00];
-	[currentPanel resignFirstResponder];
-	[currentPanel setEntryFieldEnabled:NO];
 	[[[[navigationController topViewController] navigationItem] leftBarButtonItem] setEnabled:NO];
 	[UIView beginAnimations:nil context:nil];
 	[UIView setAnimationDuration:dr];
 	[topView setFrame:CGRectMake(52, 0, topView.view.frame.size.width, topView.view.frame.size.height)];
 	[topView findShadowAndDoStuffToIt];
 	[UIView commitAnimations];
+	[currentPanel resignFirstResponder];
+	[currentPanel setEntryFieldEnabled:NO];
 }
 
 - (void)popUserListWithDuration:(NSTimeInterval)dr {
@@ -395,7 +395,7 @@ static RCNetwork *currentNetwork = nil;
 }
 
 - (void)deleteCurrentChannel {
-	RCPrettyAlertView *confirm = [[RCPrettyAlertView alloc] initWithTitle:@"Are you sure?" message:[NSString stringWithFormat:@"Are you sure you want to remove %@", [[currentPanel channel] channelName]] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Remove", nil];
+	RCPrettyAlertView *confirm = [[RCPrettyAlertView alloc] initWithTitle:@"Are you sure?" message:[NSString stringWithFormat:@"Are you sure you want to remove %@?", [[currentPanel channel] channelName]] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Remove", nil];
 	[confirm show];
 	[confirm release];
 	[self dismissMenuOptions];
