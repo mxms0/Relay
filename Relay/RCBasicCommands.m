@@ -22,10 +22,33 @@
 }
 
 - (void)handleNAMES:(NSString *)names net:(RCNetwork *)net channel:(RCChannel *)chan {
-	NSString *req = [NSString stringWithFormat:@"NAMES %@", [chan channelName]];
-	[net sendMessage:req];
-	[[RCChatController sharedController] closeWithDuration:0.00]; // just in case. :s
-	[[RCChatController sharedController] pushUserListWithDefaultDuration];
+	if (!names) {
+		NSString *req = [NSString stringWithFormat:@"NAMES %@", [chan channelName]];
+		[net sendMessage:req];
+		[[RCChatController sharedController] closeWithDuration:0.00]; // just in case. :s
+		[[RCChatController sharedController] pushUserListWithDefaultDuration];
+		return;
+	}
+	NSArray *channels = [names componentsSeparatedByString:@" "];
+	if ([channels count] <= 1)
+		channels = [names componentsSeparatedByString:@","];
+	NSString *base = @"NAMES ";
+	NSString *first = nil;
+	for (NSString *chan in channels) {
+		NSString *geh = [[chan stringByReplacingOccurrencesOfString:@"," withString:@""] stringByReplacingOccurrencesOfString:@" " withString:@""];
+		if (geh != nil && [geh length] > 1) {
+			if (!first) first = geh;
+			base = [base stringByAppendingFormat:@"%@,", geh];
+		}
+	}
+	if (first) {
+		[[RCChatController sharedController] selectChannel:first fromNetwork:net];
+		[[RCChatController sharedController] closeWithDuration:0.0];
+		[[RCChatController sharedController] pushUserListWithDefaultDuration];
+	}
+	if ([base hasSuffix:@","])
+		base = [base substringToIndex:[base length]-1];
+	[net sendMessage:base];
 }
 
 - (void)handleRAW:(NSString *)raw net:(RCNetwork *)net channel:(RCChannel *)chan {

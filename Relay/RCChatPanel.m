@@ -8,6 +8,7 @@
 #import "RCChatPanel.h"
 #import "RCChannel.h"
 #import "RCChatController.h"
+#import <CoreText/CoreText.h>
 
 @implementation RCChatPanel
 @synthesize messages, channel, mainView;

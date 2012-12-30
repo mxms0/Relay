@@ -126,7 +126,7 @@
             These variables are not required by Relay. They are however used by this theme.
              */
             var cnt = 0;
-            var nowrem = 0;
+            var nowrem = 1;
             var maxscrollback = 300;
             var flags = {};
             var types = {};
@@ -148,7 +148,7 @@
                     delete flags[nowrem];
                     delete types[nowrem];
                     var elem = document.getElementById('msg' + nowrem);
-                    document.body.removeChild(elem);
+					document.getElementById('chat').removeChild(elem);
                 }
                 cnt++;
                 var newdiv = document.createElement('p');
