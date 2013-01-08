@@ -33,6 +33,7 @@
 		50151F69164DD7AA00248AB7 /* RCXLChatController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50151F68164DD7AA00248AB7 /* RCXLChatController.m */; };
 		50151F79164DFA3E00248AB7 /* 0_arrowr.png in Resources */ = {isa = PBXBuildFile; fileRef = 50151F77164DFA3E00248AB7 /* 0_arrowr.png */; };
 		50151F7A164DFA3E00248AB7 /* 0_arrowr@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50151F78164DFA3E00248AB7 /* 0_arrowr@2x.png */; };
+		501524EA169A02B000F4B4EF /* RCNickSuggestionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 501524E9169A02B000F4B4EF /* RCNickSuggestionView.m */; };
 		501F2B3115098C6C0099C9C3 /* 0_shadow_t.png in Resources */ = {isa = PBXBuildFile; fileRef = 501F2B2F15098C6C0099C9C3 /* 0_shadow_t.png */; };
 		501F2B3215098C6C0099C9C3 /* 0_shadow_t@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 501F2B3015098C6C0099C9C3 /* 0_shadow_t@2x.png */; };
 		501F2B3D150995DE0099C9C3 /* RCTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 501F2B3C150995DE0099C9C3 /* RCTableView.m */; };
@@ -252,6 +253,8 @@
 		50151F68164DD7AA00248AB7 /* RCXLChatController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCXLChatController.m; sourceTree = "<group>"; };
 		50151F77164DFA3E00248AB7 /* 0_arrowr.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_arrowr.png; sourceTree = "<group>"; };
 		50151F78164DFA3E00248AB7 /* 0_arrowr@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_arrowr@2x.png"; sourceTree = "<group>"; };
+		501524E8169A02B000F4B4EF /* RCNickSuggestionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCNickSuggestionView.h; sourceTree = "<group>"; };
+		501524E9169A02B000F4B4EF /* RCNickSuggestionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCNickSuggestionView.m; sourceTree = "<group>"; };
 		501F2B2F15098C6C0099C9C3 /* 0_shadow_t.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_shadow_t.png; sourceTree = "<group>"; };
 		501F2B3015098C6C0099C9C3 /* 0_shadow_t@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_shadow_t@2x.png"; sourceTree = "<group>"; };
 		501F2B3B150995DE0099C9C3 /* RCTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTableView.h; sourceTree = "<group>"; };
@@ -557,6 +560,8 @@
 				500873BA16339DC0002ABAB6 /* RCPrettyActionSheet.m */,
 				501F2B3B150995DE0099C9C3 /* RCTableView.h */,
 				501F2B3C150995DE0099C9C3 /* RCTableView.m */,
+				501524E8169A02B000F4B4EF /* RCNickSuggestionView.h */,
+				501524E9169A02B000F4B4EF /* RCNickSuggestionView.m */,
 				503742271511478300F4DA1A /* RCUserListPanel.h */,
 				503742281511478300F4DA1A /* RCUserListPanel.m */,
 				50376D2C15B3D1D700E13006 /* RCTextFieldBackgroundView.h */,
@@ -1143,6 +1148,7 @@
 				50151F69164DD7AA00248AB7 /* RCXLChatController.m in Sources */,
 				50F07CAB165F465000AE938D /* RCUserListViewController.m in Sources */,
 				50A3222B16607C3F00F86E03 /* RCSuperSpecialTableView.m in Sources */,
+				501524EA169A02B000F4B4EF /* RCNickSuggestionView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1210,8 +1216,8 @@
 				);
 				OTHER_LDFLAGS = "-Wl,-no_implicit_dylibs";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "38AB4E8A-6FC6-4980-A51D-D1049391F49F";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "38AB4E8A-6FC6-4980-A51D-D1049391F49F";
+				PROVISIONING_PROFILE = "3569E1DD-338F-4291-8D32-4047112CDA4C";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "3569E1DD-338F-4291-8D32-4047112CDA4C";
 				STRIP_INSTALLED_PRODUCT = YES;
 				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = app;
@@ -1293,8 +1299,8 @@
 				);
 				OTHER_LDFLAGS = "-Wl,-no_implicit_dylibs";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "38AB4E8A-6FC6-4980-A51D-D1049391F49F";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "38AB4E8A-6FC6-4980-A51D-D1049391F49F";
+				PROVISIONING_PROFILE = "3569E1DD-338F-4291-8D32-4047112CDA4C";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "3569E1DD-338F-4291-8D32-4047112CDA4C";
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = app;
@@ -1326,8 +1332,8 @@
 				);
 				OTHER_LDFLAGS = "-Wl,-no_implicit_dylibs";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "38AB4E8A-6FC6-4980-A51D-D1049391F49F";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "38AB4E8A-6FC6-4980-A51D-D1049391F49F";
+				PROVISIONING_PROFILE = "3569E1DD-338F-4291-8D32-4047112CDA4C";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "3569E1DD-338F-4291-8D32-4047112CDA4C";
 				STRIP_INSTALLED_PRODUCT = YES;
 				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = app;

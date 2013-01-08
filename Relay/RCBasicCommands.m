@@ -19,6 +19,24 @@
 	[e registerSelector:@selector(handlePRIVMSG:net:channel:) forCommands:[NSArray arrayWithObjects:@"pm", @"privmsg", @"query", @"msg", nil] usingClass:self];
 	[e registerSelector:@selector(handleRAW:net:channel:) forCommands:[NSArray arrayWithObjects:@"raw", @"quote", nil] usingClass:self];
 	[e registerSelector:@selector(handleNAMES:net:channel:) forCommands:[NSArray arrayWithObjects:@"names", @"users", nil] usingClass:self];
+	[e registerSelector:@selector(_wut:net:channel:) forCommands:@"o_o" usingClass:self];
+	[e registerSelector:@selector(handleREVS:net:channel:) forCommands:@"reverse" usingClass:self];
+}
+
+- (void)_wut:(NSString *)wut net:(RCNetwork *)net channel:(RCChannel *)chan {
+	NSString *str = [NSString stringWithFormat:@"PRIVMSG %@ :\u0CA0_\u0CA0", [chan channelName]];
+	[net sendMessage:str];
+	[chan recievedMessage:str from:[net useNick] type:RCMessageTypeNormal];
+}
+
+- (void)handleREVS:(NSString *)rev net:(RCNetwork *)net channel:(RCChannel *)chan {
+	NSMutableString *revd = [[NSMutableString alloc] init];
+	for (int i = 0; i < [rev length]; i++) {
+		[revd appendString:[NSString stringWithFormat:@"%C", [rev characterAtIndex:[rev length]-(i+1)]]];
+	}
+	[net sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", [chan channelName], revd]];
+	[chan recievedMessage:revd from:[net useNick] type:RCMessageTypeNormal];
+	[revd release];
 }
 
 - (void)handleNAMES:(NSString *)names net:(RCNetwork *)net channel:(RCChannel *)chan {

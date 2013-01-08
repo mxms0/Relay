@@ -453,15 +453,15 @@ _end:
 }
 
 - (void)sslSwitched:(UISwitch *)s {
-	[network setUseSSL:s.on];
+	[datas setObject:(s.on ? (id)kCFBooleanTrue : (id)kCFBooleanFalse) forKey:SSL_KEY];
 }
 
 - (void)saslSwitched:(UISwitch *)s {
-	[network setSASL:s.on];
+	[datas setObject:(s.on ? (id)kCFBooleanTrue : (id)kCFBooleanFalse) forKey:SASL_KEY];
 }
 
 - (void)launchSwitched:(UISwitch *)s {
-	[network setCOL:s.on];
+	[datas setObject:(s.on ? (id)kCFBooleanTrue : (id)kCFBooleanFalse) forKey:COL_KEY];
 }
 
 - (BOOL)shouldAutorotate {

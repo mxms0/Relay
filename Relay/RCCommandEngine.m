@@ -52,11 +52,14 @@ static id _eInstance = nil;
 			}
 			id obj = [[target alloc] init];
 			[scan scanUpToString:@"" intoString:&_crap];
+#if LOGALL
+			NSLog(@"Command recieved: SEL:[%@] target:[%@] args:[%@]", NSStringFromSelector(call), obj, _crap);
+#endif
 			@try {
 				objc_msgSend(obj, call, _crap, net, chan);
 			}
 			@catch (NSException *e) {
-				NSLog(@"RELAY:: BAD SELECTOR [%@] CLASS: [%@]", NSStringFromSelector(call), NSStringFromClass(target));;
+				NSLog(@"RELAY::ERROR SELECTOR [%@] CLASS: [%@] EXC: [%@]", NSStringFromSelector(call), NSStringFromClass(target), e);
 			}
 		}
 		else {

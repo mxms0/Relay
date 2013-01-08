@@ -1410,7 +1410,7 @@ char *RCIPForURL(NSString *URL) {
 		}
 		else if ([msg hasPrefix:@"ACTION"]) {
 			if ([msg length] > 7) {
-				msg = [msg substringWithRange:NSMakeRange(7, msg.length-8)];
+				msg = [msg substringWithRange:NSMakeRange(7, msg.length-7)];
 				[((RCChannel *)[self channelWithChannelName:room]) recievedMessage:msg from:from type:RCMessageTypeAction];
 			}
 			[_scanner release];
@@ -1418,7 +1418,6 @@ char *RCIPForURL(NSString *URL) {
 		}
 	}
 	else {
-		NSLog(@"HI THIS COULD BE AN ISSUE. %@", useNick);
 		if ([room isEqualToString:useNick]) {
 			// privmsg or some other mechanical contraptiona.. :(
 			room = from;
@@ -1623,7 +1622,6 @@ char *RCIPForURL(NSString *URL) {
 	room = [room stringByReplacingOccurrencesOfString:@"\r\n" withString:@""];
 	RCParseUserMask(user, &_nick, nil, nil);
 	if ([_nick isEqualToString:useNick]) {
-		[self sendMessage:[NSString stringWithFormat:@"NAMES %@\r\n", room]];
 		[[self addChannel:room join:NO] setSuccessfullyJoined:YES];
 	}
 	else {

@@ -18,7 +18,13 @@
 		if ([[net _channels] count] == 0)
 			[self edit];
 		else [self setupEditButton];
-    }
+		UIView *base = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320,44)];
+		UIButton *td = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+		[td setFrame:CGRectMake(10, 0, 300, 44)];
+		[base addSubview:td];
+		[self.tableView setTableFooterView:base];
+		[base release];
+	}
     return self;
 }
 /*

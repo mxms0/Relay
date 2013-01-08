@@ -11,6 +11,7 @@
 #import "RCMessageFormatter.h"
 #import "RCTextFieldBackgroundView.h"
 #import "RCChatView.h"
+#import "RCNickSuggestionView.h"
 
 @class RCChannel;
 @interface RCChatPanel : UIView <UITextFieldDelegate> {

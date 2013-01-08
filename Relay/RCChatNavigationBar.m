@@ -72,13 +72,13 @@
 	CGContextSetFillColorWithColor(ctx, UIColorFromRGB(0x282C40).CGColor);
 	CGFloat size = 0.0;
 	float maxWidth = (rect.size.width-100);
-	[title sizeWithFont:[UIFont boldSystemFontOfSize:22] minFontSize:18 actualFontSize:&size forWidth:maxWidth lineBreakMode:UILineBreakModeClip];
-	[title drawInRect:CGRectMake((!superSpecialLikeAc3xx2 ? 50 : 30), (!!subtitle ? 1.5 : (((rect.size.height-4)/2)-(size/2))), maxWidth, 30) withFont:[UIFont boldSystemFontOfSize:size] lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentCenter];
+	[title sizeWithFont:[UIFont boldSystemFontOfSize:22] minFontSize:16 actualFontSize:&size forWidth:maxWidth lineBreakMode:UILineBreakModeClip];
+	[title drawInRect:CGRectMake((!superSpecialLikeAc3xx2 ? 50 : 30), (!!subtitle ? 1.5 : (((rect.size.height-4)/2)-(size/2)))+(size < 18 ? 2 : 0), maxWidth, 30) withFont:[UIFont boldSystemFontOfSize:size] lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentCenter];
 	if (subtitle) {
 		CGFloat subsze = 0.0;
 		[subtitle sizeWithFont:[UIFont systemFontOfSize:12] minFontSize:11 actualFontSize:&subsze forWidth:maxWidth lineBreakMode:UILineBreakModeClip];
 		CGContextSetFillColorWithColor(ctx, UIColorFromRGB(0x626464).CGColor);
-		[subtitle drawInRect:CGRectMake(50, 3+size, (!superSpecialLikeAc3xx2 ? maxWidth : 175), 14) withFont:[UIFont systemFontOfSize:subsze] lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentCenter];
+		[subtitle drawInRect:CGRectMake(50, 25, (!superSpecialLikeAc3xx2 ? maxWidth : 175), 14) withFont:[UIFont systemFontOfSize:subsze] lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentCenter];
 	}
 }
 

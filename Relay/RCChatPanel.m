@@ -42,7 +42,7 @@
 		[field setMinimumFontSize:17];
 		[field setAdjustsFontSizeToFitWidth:YES];
 		[field setDelegate:self];
-		//	[field setAutocapitalizationType:UITextAutocapitalizationTypeNone];
+		[field setAutocapitalizationType:UITextAutocapitalizationTypeNone];
 		[field setClearButtonMode:UITextFieldViewModeWhileEditing];
 		[_bar addSubview:field];
 		[field release];
@@ -105,6 +105,7 @@
 	if ([textField.text isEqualToString:@""] || textField.text == nil) return NO;
 	[self performSelectorInBackground:@selector(__reallySend:) withObject:textField.text];
 	[textField setText:@""];
+	[[RCNickSuggestionView sharedInstance] dismiss];
 	return NO;
 }
 
@@ -134,6 +135,7 @@
 	if (anim) [UIView commitAnimations];
 	[mainView setNeedsDisplay];
 	[_bar performSelectorOnMainThread:@selector(setNeedsDisplay) withObject:nil waitUntilDone:NO];
+	if (!key) [[RCNickSuggestionView sharedInstance] dismiss];
 }
 
 - (CGRect)frameForInputField:(BOOL)activ {
@@ -156,7 +158,21 @@
 			}
 		}
 		NSString *personMayb = [lolhaiqwerty substringWithRange:rr];
-		NSLog(@"hai look wat i found :%@", [channel usersMatchingWord:personMayb]);
+		NSArray *found = [channel usersMatchingWord:personMayb];
+		NSLog(@"found %@", found);
+		dispatch_sync(dispatch_get_main_queue(), ^{
+			if ([found count] > 0) {
+				[[RCNickSuggestionView sharedInstance] setBackgroundColor:[UIColor blackColor]];
+				[[RCNickSuggestionView sharedInstance] setHidden:NO];
+				[[RCNickSuggestionView sharedInstance] setFrame:CGRectMake(10, 0, 300, 20)];
+				[self insertSubview:[RCNickSuggestionView sharedInstance] atIndex:[[self subviews] count]];
+				[[RCNickSuggestionView sharedInstance] showAtPoint:CGPointMake(10, 240) withNames:found];
+			}
+			else {
+				[[RCNickSuggestionView sharedInstance] dismiss];
+			}
+		});
+		
 		[text release];
 	});
 	return YES;

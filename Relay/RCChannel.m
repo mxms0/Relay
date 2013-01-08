@@ -214,7 +214,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 		int hhash = ([nameOrRank isEqualToString:[[self delegate] useNick]]) ? 1 : user_hash(nameOrRank);
 		// my bet says this regex is wrong.
 		// in some channels, letters like ABDEJKMNRTWX get highlighted, incorrectly.
-		NSString *patternuno = [NSString stringWithFormat:@"(^|\\s)([^A-Za-z0-9#]*)(%@)([^A-Za-z0-9]*)($|\\s)", nameOrRank];
+		NSString *patternuno = [NSString stringWithFormat:@"(^|\\s)([^A-Za-z0-9#]*)(\\Q%@\\E)([^A-Za-z0-9]*)($|\\s)", nameOrRank];
 		NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:patternuno options:NSRegularExpressionCaseInsensitive error:nil];
 		NSString *val = [regex stringByReplacingMatchesInString:cmp options:0 range:NSMakeRange(0, [cmp length]) withTemplate:[NSString stringWithFormat:@"$1$2%c%02d$3%c$4$5", RCIRCAttributeInternalNickname, hhash, RCIRCAttributeInternalNicknameEnd]];
 		// for some reason, this expression returns null under certain circumstances i haven't read up on enough
@@ -293,10 +293,6 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 			msg = [[NSString stringWithFormat:@"%c[%@]%c %@", RCIRCAttributeBold, time, RCIRCAttributeBold, message] retain];
 			break;
 		case RCMessageTypeTopic:
-            if ([topic isEqualToString:message]) {
-				[p drain];
-				return;
-			}
             self.topic = message;
 			if (from) msg = [[NSString stringWithFormat:@"%c%@%c changed the topic to: %@", RCIRCAttributeBold, from, RCIRCAttributeBold, message] retain];
 			else msg = [message retain];
@@ -357,7 +353,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 	BOOL isHighlight = NO;
 	if ((type == RCMessageTypeNormal || type == RCMessageTypeAction || type == RCMessageTypeNotice) && ![from isEqualToStringNoCase:[delegate useNick]]) isHighlight = is_highlight;
 	[panel postMessage:msg withType:type highlight:isHighlight isMine:([from isEqualToString:[delegate useNick]])];
-	if (type != RCMessageTypeTopic && type != RCMessageTypePart && type != RCMessageTypeMode && type != RCMessageTypeJoin && type != RCMessageTypeEvent)
+	if (type == RCMessageTypeNormal || type == RCMessageTypeNormalE || type == RCMessageTypeAction)
 		[self shouldPost:isHighlight withMessage:msg];
 	[msg release];
 	[p drain];
@@ -416,8 +412,9 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 	NSMutableArray *usrs = [[NSMutableArray alloc] init];
 	[fullUserList enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		NSInteger ln = [RCUserRank(obj, [self delegate]) length];
-		if ([[obj substringFromIndex:ln] hasPrefixNoCase:word])
-			[usrs addObject:obj];
+		NSString *obj_ = [obj substringFromIndex:ln];
+		if ([obj_ hasPrefixNoCase:word])
+			[usrs addObject:obj_];
 	}];
 	return [usrs autorelease];
 }
