@@ -144,11 +144,12 @@
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
 	if ([channel isPrivate]) return YES;
-	NSString *text = [[textField text] retain];
+	NSString *text = [[textField text] retain]; // has to be obtained from a main thread.
+	UITextField *tf = [textField retain];
 	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH,0);
 	dispatch_async(queue, ^ {
 		NSString *lolhaiqwerty = text;
-		NSRange rr = NSMakeRange(0, range.location+string.length);
+		NSRange rr = NSMakeRange(0, range.location + string.length);
 		lolhaiqwerty = [lolhaiqwerty stringByReplacingCharactersInRange:range withString:string];
 		for (int i = (range.location + string.length-1); i >= 0; i--) {
 			if ([lolhaiqwerty characterAtIndex:i] == ' ') {
@@ -158,22 +159,40 @@
 			}
 		}
 		NSString *personMayb = [lolhaiqwerty substringWithRange:rr];
-		NSArray *found = [channel usersMatchingWord:personMayb];
-		NSLog(@"found %@", found);
-		dispatch_sync(dispatch_get_main_queue(), ^{
-			if ([found count] > 0) {
-				[[RCNickSuggestionView sharedInstance] setBackgroundColor:[UIColor blackColor]];
-				[[RCNickSuggestionView sharedInstance] setHidden:NO];
-				[[RCNickSuggestionView sharedInstance] setFrame:CGRectMake(10, 0, 300, 20)];
-				[self insertSubview:[RCNickSuggestionView sharedInstance] atIndex:[[self subviews] count]];
-				[[RCNickSuggestionView sharedInstance] showAtPoint:CGPointMake(10, 240) withNames:found];
-			}
-			else {
+		NSLog(@"hello [%@]", personMayb);
+		if (!personMayb) {
+			dispatch_sync(dispatch_get_main_queue(), ^{
 				[[RCNickSuggestionView sharedInstance] dismiss];
-			}
-		});
-		
-		[text release];
+				[tf release];
+				return;
+			});
+		}
+		else if ([personMayb length] == 0) {
+			dispatch_sync(dispatch_get_main_queue(), ^{
+				[[RCNickSuggestionView sharedInstance] dismiss];
+				[tf release];
+			});
+		}
+		else if ([personMayb length] > 2) {
+			NSArray *found = [channel usersMatchingWord:personMayb];
+			dispatch_sync(dispatch_get_main_queue(), ^{
+				if ([found count] > 0) {
+					[[RCNickSuggestionView sharedInstance] setRange:rr inputField:tf];
+					[self insertSubview:[RCNickSuggestionView sharedInstance] atIndex:[[self subviews] count]];
+					[[RCNickSuggestionView sharedInstance] showAtPoint:CGPointMake(10, 230) withNames:found];
+				}
+				else {
+					[[RCNickSuggestionView sharedInstance] dismiss];
+				}
+				[tf release];
+			});
+		}
+		else {
+			dispatch_sync(dispatch_get_main_queue(), ^{
+				[[RCNickSuggestionView sharedInstance] dismiss];
+				[tf release];
+			});
+		}
 	});
 	return YES;
 }

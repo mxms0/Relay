@@ -112,6 +112,9 @@
 		5088C0E014C4F89C001ADD06 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5088C0DF14C4F89C001ADD06 /* CFNetwork.framework */; };
 		50929EB6151E65F1007E23D3 /* RCPMChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 50929EB5151E65F1007E23D3 /* RCPMChannel.m */; };
 		50929EBA151E86FA007E23D3 /* RCiPadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50929EB9151E86FA007E23D3 /* RCiPadViewController.m */; };
+		509A8362169F960C0032BC2D /* 0_sugbg.png in Resources */ = {isa = PBXBuildFile; fileRef = 509A8360169F960C0032BC2D /* 0_sugbg.png */; };
+		509A8363169F960C0032BC2D /* 0_sugbg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 509A8361169F960C0032BC2D /* 0_sugbg@2x.png */; };
+		509A8367169FA1D00032BC2D /* RCNickButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 509A8366169FA1D00032BC2D /* RCNickButton.m */; };
 		50A322001660208200F86E03 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A321FE1660208200F86E03 /* Icon.png */; };
 		50A322011660208200F86E03 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A321FF1660208200F86E03 /* Icon@2x.png */; };
 		50A3220616602A5B00F86E03 /* 0_bmv_pres.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A3220216602A5B00F86E03 /* 0_bmv_pres.png */; };
@@ -348,6 +351,10 @@
 		50929EB5151E65F1007E23D3 /* RCPMChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCPMChannel.m; sourceTree = "<group>"; };
 		50929EB8151E86FA007E23D3 /* RCiPadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCiPadViewController.h; sourceTree = "<group>"; };
 		50929EB9151E86FA007E23D3 /* RCiPadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCiPadViewController.m; sourceTree = "<group>"; };
+		509A8360169F960C0032BC2D /* 0_sugbg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_sugbg.png; sourceTree = "<group>"; };
+		509A8361169F960C0032BC2D /* 0_sugbg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_sugbg@2x.png"; sourceTree = "<group>"; };
+		509A8365169FA1D00032BC2D /* RCNickButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCNickButton.h; sourceTree = "<group>"; };
+		509A8366169FA1D00032BC2D /* RCNickButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCNickButton.m; sourceTree = "<group>"; };
 		50A321FE1660208200F86E03 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		50A321FF1660208200F86E03 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
 		50A3220216602A5B00F86E03 /* 0_bmv_pres.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_bmv_pres.png; sourceTree = "<group>"; };
@@ -600,6 +607,8 @@
 		503F1D2615BA35F90003F808 /* View Objects */ = {
 			isa = PBXGroup;
 			children = (
+				509A8365169FA1D00032BC2D /* RCNickButton.h */,
+				509A8366169FA1D00032BC2D /* RCNickButton.m */,
 				50AAE7E5151AD6A500E631FD /* RCTextField.h */,
 				50AAE7E6151AD6A500E631FD /* RCTextField.m */,
 			);
@@ -658,6 +667,8 @@
 		50A7FB8714C0F0A800ABADEA /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				509A8360169F960C0032BC2D /* 0_sugbg.png */,
+				509A8361169F960C0032BC2D /* 0_sugbg@2x.png */,
 				50D71776168E52A900999FAC /* 0_adn_pres.png */,
 				50D71777168E52A900999FAC /* 0_adn_pres@2x.png */,
 				50D71778168E52A900999FAC /* 0_adn.png */,
@@ -1073,6 +1084,8 @@
 				50D7177B168E52A900999FAC /* 0_adn_pres@2x.png in Resources */,
 				50D7177C168E52A900999FAC /* 0_adn.png in Resources */,
 				50D7177D168E52A900999FAC /* 0_adn@2x.png in Resources */,
+				509A8362169F960C0032BC2D /* 0_sugbg.png in Resources */,
+				509A8363169F960C0032BC2D /* 0_sugbg@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1149,6 +1162,7 @@
 				50F07CAB165F465000AE938D /* RCUserListViewController.m in Sources */,
 				50A3222B16607C3F00F86E03 /* RCSuperSpecialTableView.m in Sources */,
 				501524EA169A02B000F4B4EF /* RCNickSuggestionView.m in Sources */,
+				509A8367169FA1D00032BC2D /* RCNickButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
