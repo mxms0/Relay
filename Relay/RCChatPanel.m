@@ -164,6 +164,7 @@
 			dispatch_sync(dispatch_get_main_queue(), ^{
 				[[RCNickSuggestionView sharedInstance] dismiss];
 				[tf release];
+				[text release];
 				return;
 			});
 		}
@@ -193,6 +194,7 @@
 				[tf release];
 			});
 		}
+		[text release];
 	});
 	return YES;
 }
