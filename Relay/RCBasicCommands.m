@@ -109,7 +109,7 @@
 		NSInvocation *vc = [[NSInvocation alloc] init];
 		[vc setTarget:self];
 		[vc setSelector:@selector(nowPlayingInfo)];
-		NSString *rt;
+		NSString *rt = nil;
 		[vc getReturnValue:&rt];
 		[vc performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
 		if (rt) finalStr = rt;

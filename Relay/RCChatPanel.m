@@ -159,12 +159,14 @@
 			}
 		}
 		NSString *personMayb = [lolhaiqwerty substringWithRange:rr];
-		NSLog(@"hello [%@]", personMayb);
+#if LOGALL
+		NSLog(@"Word of SAY is [%@]", personMayb);
+#endif
 		if (!personMayb) {
 			dispatch_sync(dispatch_get_main_queue(), ^{
 				[[RCNickSuggestionView sharedInstance] dismiss];
 				[tf release];
-				[text release];
+				[text release]; // may cause crash.
 				return;
 			});
 		}
@@ -194,7 +196,7 @@
 				[tf release];
 			});
 		}
-		[text release];
+		[text release]; // may cause crash.
 	});
 	return YES;
 }
