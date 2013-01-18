@@ -18,12 +18,6 @@
 		if ([[net _channels] count] == 0)
 			[self edit];
 		else [self setupEditButton];
-		UIView *base = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320,44)];
-		UIButton *td = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-		[td setFrame:CGRectMake(10, 0, 300, 44)];
-		[base addSubview:td];
-		[self.tableView setTableFooterView:base];
-		[base release];
 	}
     return self;
 }
@@ -76,11 +70,47 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-	return;
+	/*
 	if ([network isConnected]) {
 		[network sendMessage:@"LIST"];
 		[self addStupidWarningView];
+	}*/
+	UIView *base = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320,44)];
+	RCPrettyButton *td = [[RCPrettyButton alloc] initWithFrame:CGRectMake(10, 0, 300, 44)];
+	[td setFrame:CGRectMake(10, 0, 300, 44)];
+	[base addSubview:td];
+	[self.tableView setTableFooterView:base];
+	[base release];
+	BOOL allCOL = YES;
+	for (RCChannel *chan in [network _channels]) {
+		if (![chan joinOnConnect]) {
+			allCOL = NO;
+			break;
+		}
 	}
+	if (allCOL) {
+		[td setTitle:@"Do not join all channels on connect" forState:UIControlStateNormal];
+	}
+	else {
+		[td setTitle:@"Join all channels on connect" forState:UIControlStateNormal];
+	}
+	[td setTag:(int)allCOL];
+	[td addTarget:self action:@selector(toggleJoinOnConnectForAllChannels:) forControlEvents:UIControlEventTouchUpInside];
+}
+
+- (void)toggleJoinOnConnectForAllChannels:(RCPrettyButton *)bt {
+	BOOL allCOL = !(BOOL)[bt tag];
+	if (allCOL) {
+		[bt setTitle:@"Do not join all channels on connect" forState:UIControlStateNormal];
+	}
+	else {
+		[bt setTitle:@"Join all channels on connect" forState:UIControlStateNormal];
+	}
+	for (RCChannel *chan in [network _channels]) {
+		[chan setJoinOnConnect:allCOL];
+	}
+	[bt setTag:(allCOL)];
+	
 }
 
 - (void)addStupidWarningView {

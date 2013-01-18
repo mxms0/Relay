@@ -79,6 +79,10 @@
 	if (!cell) {
 		cell = [[RCNetworkCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:ident];
 	}
+	if ([[[RCNetworkManager sharedNetworkManager] networks] count] == 0) {
+		[self reloadData];
+		return cell;
+	}
 	RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.section];
 	RCChannel *indexChannel = [[net _channels] objectAtIndex:indexPath.row];
 	[indexChannel setCellRepresentation:cell];

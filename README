@@ -3,15 +3,12 @@
 [15:48] <@huru>	 Codenamed 'bitchesbecray'
 
 There's a lot that needs to be done before the initial release. 
-I would like basic-tablike-completion like in all IRC clients.
 Updating of channels modes needs to be fixed, + need to refresh user list modes after mode changes.
 Built in server selection list. 
 Create the on-connect commands controller.
 Finish the RCChannelManager. // just fixes left.
 Handle INVITEs properly. 
-Show topic when rejoining a channel
 Add option to disable chat autocapitalization
-Select chan when you /privmsg /query, /join, etc.
 stuffs.
 // this is old, so k
 are you sure you want to delete network alert?

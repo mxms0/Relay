@@ -34,9 +34,9 @@ static id _nInstance = nil;
 	for (UIView *v in [self subviews])
 		[v removeFromSuperview];
 	int maxWidth = 300;
-	int cx = 5;
+	int cx = 4;
 	for (NSString *n in names) {
-		int len = (int)[n sizeWithFont:[UIFont boldSystemFontOfSize:10]].width;
+		int len = (int)[n sizeWithFont:[UIFont boldSystemFontOfSize:11]].width;
 		if (5 + (cx + len) > maxWidth) break;
 		RCNickButton *b = [[RCNickButton alloc] initWithFrame:CGRectMake(cx, 0, (float)len+14, self.frame.size.height)];
 		[b addTarget:self action:@selector(nickSelected:) forControlEvents:UIControlEventTouchUpInside];

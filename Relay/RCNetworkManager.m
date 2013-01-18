@@ -70,6 +70,7 @@ static NSMutableArray *networks = nil;
 
 - (void)setupWelcomeView {
 	NSLog(@"SHOULD BRING UP ADD NETWORK CONTROLLERR !!11");
+	[[RCChatController sharedController] setDefaultTitleAndSubtitle];
 }
 
 - (void)unpack {

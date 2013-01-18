@@ -32,5 +32,6 @@
 - (void)reloadUserCount;
 - (void)correctSubviewFrames;
 - (void)closeWithDuration:(NSTimeInterval)dur;
+- (void)setDefaultTitleAndSubtitle;
 - (void)layoutWithRootViewController:(RCViewController *)rc;
 @end

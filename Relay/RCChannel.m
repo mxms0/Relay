@@ -375,13 +375,15 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 	if (!user || [user isEqualToString:@""]) return NO;
     NSString *rnka = RCUserRank(user, [self delegate]);
     user = [user substringFromIndex:[rnka length]];
-    for (NSString *nickn in fullUserList) {
-        NSString *rnk = RCUserRank(nickn, [self delegate]);
-        NSString *rln = [nickn substringFromIndex:[rnk length]];
-        if ([rln isEqualToString:user]) {
-            return YES;
-        }
-    }
+	@synchronized(fullUserList) {
+		for (NSString *nickn in fullUserList) {
+			NSString *rnk = RCUserRank(nickn, [self delegate]);
+			NSString *rln = [nickn substringFromIndex:[rnk length]];
+			if ([rln isEqualToString:user]) {
+				return YES;
+			}
+		}
+	}
     return NO;
 }
 

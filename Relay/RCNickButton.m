@@ -14,7 +14,7 @@
 		[self setTitleColor:UIColorFromRGB(0x498ADB) forState:UIControlStateNormal];
 		[self setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
 		[[self titleLabel] setShadowOffset:CGSizeMake(0, 1)];
-		[[self titleLabel] setFont:[UIFont boldSystemFontOfSize:10]];
+		[[self titleLabel] setFont:[UIFont boldSystemFontOfSize:11]];
 	}
 	return self;
 }

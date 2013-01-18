@@ -1381,14 +1381,11 @@ char *RCIPForURL(NSString *URL) {
 }
 
 - (void)handlePRIVMSG:(NSString *)privmsg {
-	NSLog(@"LOL WAT IS HAPPEPNIGN %@", privmsg);
 	NSScanner *_scanner = [[NSScanner alloc] initWithString:privmsg];
 	NSString *from = @"";
 	NSString *cmd = from; // will be unused.
 	NSString *room = from;
 	NSString *msg = from;
-	//:Maximus!SecureROM@dqzl-05-4-61-13.mia.bellsouth.net PRIVMSG Maximus|ZNC :hi
-	//:Maximus!~S_S@65.8.64.28 PRIVMSG #bacon :tmp
 	[_scanner scanUpToString:@" " intoString:&from];
 	[_scanner scanUpToString:@" " intoString:&cmd];
 	[_scanner scanUpToString:@" " intoString:&room];

@@ -10,6 +10,7 @@
 #import "RCChannel.h"
 #import "RCChatController.h"
 #import "RCNetwork.h"
+#import <Twitter/Twitter.h>
 
 @interface RCBasicCommands : NSObject
 

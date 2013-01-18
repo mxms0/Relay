@@ -41,6 +41,12 @@ static id _inst = nil;
 	return _inst;
 }
 
+- (void)setDefaultTitleAndSubtitle {
+	[((RCChatNavigationBar *)[navigationController navigationBar]) setTitle:@"Relay"];
+	[((RCChatNavigationBar *)[navigationController navigationBar]) setSubtitle:@"Welcome to Relay"];
+	[[navigationController navigationBar] setNeedsDisplay];
+}
+
 - (void)layoutWithRootViewController:(RCViewController *)rc {
 	currentPanel = nil;
 	rootView = rc;
@@ -52,9 +58,7 @@ static id _inst = nil;
 	navigationController = [[RCChatViewController alloc] initWithRootViewController:baseTwo];
 	[navigationController.view setFrame:CGRectMake(0, 0, frame.width, frame.height)];
 	[baseTwo.view setFrame:navigationController.view.frame];
-	[((RCChatNavigationBar *)[navigationController navigationBar]) setTitle:@"Relay"];
-	[((RCChatNavigationBar *)[navigationController navigationBar]) setSubtitle:@"Welcome to Relay"];
-	[[navigationController navigationBar] setNeedsDisplay];
+	[self setDefaultTitleAndSubtitle];
 	[rc.view addSubview:navigationController.view];
 	[navigationController setNavigationBarHidden:YES];
 	[navigationController setNavigationBarHidden:NO]; // strange hack to make toolbar at top of screen.. :s

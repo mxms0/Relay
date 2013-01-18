@@ -21,6 +21,23 @@
 	[e registerSelector:@selector(handleNAMES:net:channel:) forCommands:[NSArray arrayWithObjects:@"names", @"users", nil] usingClass:self];
 	[e registerSelector:@selector(_wut:net:channel:) forCommands:@"o_o" usingClass:self];
 	[e registerSelector:@selector(handleREVS:net:channel:) forCommands:@"reverse" usingClass:self];
+	[e registerSelector:@selector(handleTWEET:net:channel:) forCommands:@"tweet" usingClass:self];
+}
+
+- (void)handleTWEET:(NSString *)tw net:(RCNetwork *)net channel:(RCChannel *)chan {
+	if (NSClassFromString(@"TWTweetComposeViewController")) {
+		if ([TWTweetComposeViewController canSendTweet]) {
+			TWTweetComposeViewController *tw = [[TWTweetComposeViewController alloc] init];
+			UIViewController *rc = [((RCAppDelegate *)[[UIApplication sharedApplication] delegate]) navigationController];
+			[rc presentModalViewController:tw animated:YES];
+			[tw release];
+		}
+		else {
+			UIAlertView *al = [[UIAlertView alloc] initWithTitle:@"Cannot Send Tweet" message:@"To allow you to tweet via relay, you must allow it in Settings -> Privacy -> Twitter" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+			[al show];
+			[al release];
+		}
+	}
 }
 
 - (void)_wut:(NSString *)wut net:(RCNetwork *)net channel:(RCChannel *)chan {

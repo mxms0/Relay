@@ -10,6 +10,7 @@
 #import "RCBasicViewController.h"
 #import "RCChannelInfo.h"
 #import "RCChannelManagementViewController.h"
+#import "RCPrettyButton.h"
 
 @interface RCChannelManager : RCBasicViewController <UIAlertViewDelegate> {
     RCNetwork *network;
