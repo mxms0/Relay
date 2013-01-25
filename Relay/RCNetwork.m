@@ -556,6 +556,7 @@ char *RCIPForURL(NSString *URL) {
             RCChannel *chan = [self consoleChannel];
             [chan recievedMessage:error from:@"" type:RCMessageTypeNormal];
         }
+		[self disconnectWithMessage:error];
 		return;
 	}
 	else if ([msg hasPrefix:@"@"]) {

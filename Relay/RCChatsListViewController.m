@@ -30,8 +30,19 @@
 		[self.view setOpaque:YES];
 		self.title = @"";
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadData) name:@"us.mxms.relay.reload" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeFirstNetworkAndReload) name:@"us.mxms.relay.del" object:nil];
 	}
 	return self;
+}
+
+- (void)removeFirstNetworkAndReload {
+	// only temporary to test.
+	RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:0];
+	[[RCNetworkManager sharedNetworkManager] removeNet:net];
+	_reloading = YES;
+	[datas reloadData];
+	_reloading = NO;
+	[datas reloadData];	
 }
 
 - (void)reloadData {
@@ -80,7 +91,7 @@
 		cell = [[RCNetworkCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:ident];
 	}
 	if ([[[RCNetworkManager sharedNetworkManager] networks] count] == 0) {
-		[self reloadData];
+		[tableView reloadData];
 		return cell;
 	}
 	RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.section];
@@ -104,7 +115,10 @@
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-	if ([[[RCNetworkManager sharedNetworkManager] networks] count] < 1) return nil;
+	if ([[[RCNetworkManager sharedNetworkManager] networks] count] < 1) {
+		[tableView reloadData];
+		return nil;
+	}
 	RCNetworkHeaderButton *bts = [[RCNetworkHeaderButton alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
 	RCNetwork *use = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:section];
 	[bts setSection:section];

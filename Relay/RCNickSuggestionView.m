@@ -26,14 +26,15 @@ static id _nInstance = nil;
 }
 
 - (void)drawRect:(CGRect)rect {
+	[super drawRect:rect];
 	UIImage *img = [[UIImage imageNamed:@"0_sugbg"] stretchableImageWithLeftCapWidth:8 topCapHeight:6];
-	[img drawInRect:CGRectMake(0, 0, 280, 30)];
+	[img drawInRect:CGRectMake(0, 0, self.frame.size.width, 30)];
 }
 
 - (void)showAtPoint:(CGPoint)p withNames:(NSArray *)names {
 	for (UIView *v in [self subviews])
 		[v removeFromSuperview];
-	int maxWidth = 300;
+	int maxWidth = 250;
 	int cx = 4;
 	for (NSString *n in names) {
 		int len = (int)[n sizeWithFont:[UIFont boldSystemFontOfSize:11]].width;
@@ -45,7 +46,18 @@ static id _nInstance = nil;
 		[b release];
 		cx += b.frame.size.width;
 	}
-	[self setFrame:CGRectMake(p.x, p.y, self.frame.size.width, self.frame.size.height)];
+	UIButton *ex = [[UIButton alloc] init];
+	int yx = 0;
+	if ([[self subviews] count] > 0) {
+		UIView *vv = (UIView *)[[self subviews] objectAtIndex:([[self subviews] count]-1)];
+		yx = (vv.frame.size.width + vv.frame.origin.x);
+	}
+	[ex setFrame:CGRectMake(yx, 0, 48, 30)];
+	[ex setImage:[UIImage imageNamed:@"0_exx"] forState:UIControlStateNormal];
+	[ex addTarget:self action:@selector(dismiss) forControlEvents:UIControlEventTouchUpInside];
+	[self addSubview:ex];
+	[ex release];
+	[self setFrame:CGRectMake(p.x, p.y, (ex.frame.size.width + ex.frame.origin.x + 2), self.frame.size.height)];
 	self.alpha = 1;
 }
 

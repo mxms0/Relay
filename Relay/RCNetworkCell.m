@@ -17,7 +17,7 @@
 		self.backgroundColor = [UIColor clearColor];
 		self.white = NO;
 		fakeWhite = NO;
-		newMessageCount = 0;
+		self.newMessageCount = 0;
     }
     return self;
 }

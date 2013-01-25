@@ -90,6 +90,9 @@ NSString *colorForIRCColor(char irccolor) {
 		NSLog(@"should join: %@", [requestString substringFromIndex:[@"channel:" length]]);
 		NSString *escaped = [[requestString substringFromIndex:[@"channel:" length]] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 		RCChannel *ch = [[(RCChannel *)[[self chatpanel] channel] delegate] addChannel:escaped join:YES];
+		if (ch) {
+			[[RCChatController sharedController] selectChannel:[ch channelName] fromNetwork:nil];
+		}
 		reloadNetworks();
 		// select network here.
 		return NO;
@@ -146,13 +149,15 @@ _out_:
 			[ms setString:[[ms string] substringWithRange:NSMakeRange(0, [[ms string] length]-1)]];
 		}
 		[self stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"setFlags('%@','%@');", name, [[ms string] substringToIndex:[[ms string] rangeOfString:@"-"].location]]];
-		NSString* istring = [[[[[[ms string] substringFromIndex:[[ms string] rangeOfString:@"-"].location+1] stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"] stringByLinkifyingURLs] stringByEncodingHTMLEntities:YES] stringWithNewLinesAsBRs];
-		NSLog(@"MEH [%@] [%@]", istring, [istring dataUsingEncoding:NSUTF8StringEncoding]);
-		istring = [istring stringByReplacingOccurrencesOfString:@"\x3" withString:@"<a "];
+		NSString* istring = [[[[[ms string] substringFromIndex:[[ms string] rangeOfString:@"-"].location+1] stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"] stringByEncodingHTMLEntities:YES] stringWithNewLinesAsBRs];
+#if LOGALL
+		NSLog(@"LITERALLY POSTING. [%@] [%@]", istring, [istring dataUsingEncoding:NSUTF8StringEncoding]);
+#endif
+	/*	istring = [istring stringByReplacingOccurrencesOfString:@"\x3" withString:@"<a "];
 		istring = [istring stringByReplacingOccurrencesOfString:@"\x4" withString:@">"];
 		istring = [istring stringByReplacingOccurrencesOfString:@"\x5" withString:@"</a>"];
 		istring = [istring stringByReplacingOccurrencesOfString:@"\x6" withString:@"\""];
-				NSLog(@"MEH [%@] [%@]", istring, [istring dataUsingEncoding:NSUTF8StringEncoding]);
+				NSLog(@"MEH [%@] [%@]", istring, [istring dataUsingEncoding:NSUTF8StringEncoding]); */
 		unsigned int cpos = 0;
 		int nDepth = 0;
 		BOOL isBold = NO;

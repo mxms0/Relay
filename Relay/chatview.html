@@ -127,10 +127,18 @@
              */
             var cnt = 0;
             var nowrem = 1;
-            var maxscrollback = 200;
+            var maxscrollback = 125;
             var flags = {};
             var types = {};
             var isBottom = true;
+			
+			function clearMessages() {
+				var dx = document.getElementById('chat');
+				while (dx.firstChild) {
+					dx.removeChild(dx.firstChild);
+				}
+				
+			}
             
             /*
              createMessage() - REQUIRED BY RELAY
@@ -140,8 +148,8 @@
                 None.
              Return Value:
                 Returns a "message name", which should be an unique identifier for the message. 
-             */ 
-            
+             */
+			
             function createMessage() {
                 if (cnt >= maxscrollback) {
                     nowrem++;

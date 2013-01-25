@@ -212,8 +212,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 		NSString *rank = RCUserRank(uname, [self delegate]);
 		NSString *nameOrRank = [uname substringFromIndex:[rank length]];
 		int hhash = ([nameOrRank isEqualToString:[[self delegate] useNick]]) ? 1 : user_hash(nameOrRank);
-		// my bet says this regex is wrong.
-		// in some channels, letters like ABDEJKMNRTWX get highlighted, incorrectly.
+		
 		NSString *patternuno = [NSString stringWithFormat:@"(^|\\s)([^A-Za-z0-9#]*)(\\Q%@\\E)([^A-Za-z0-9]*)($|\\s)", nameOrRank];
 		NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:patternuno options:NSRegularExpressionCaseInsensitive error:nil];
 		NSString *val = [regex stringByReplacingMatchesInString:cmp options:0 range:NSMakeRange(0, [cmp length]) withTemplate:[NSString stringWithFormat:@"$1$2%c%02d$3%c$4$5", RCIRCAttributeInternalNickname, hhash, RCIRCAttributeInternalNicknameEnd]];

@@ -81,6 +81,10 @@ static id _inst = nil;
 	[base release];
 	[baseTwo release];
 	[baseThree release];
+	UIPanGestureRecognizer *spr = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(bottomLayerSwiped:)];
+	[spr setDelegate:self];
+	[rc.view addGestureRecognizer:spr];
+	[spr release];
 }
 
 - (void)correctSubviewFrames {
@@ -117,7 +121,10 @@ static id _inst = nil;
 		[self closeWithDuration:sped];
 	}
 }
+
 static RCNetwork *currentNetwork = nil;
+// should probably just make UIAlertView subclass.. derp
+
 - (void)showNetworkOptions:(id)arg1 {
 	currentNetwork = [(RCNetworkHeaderButton *)[arg1 superview] net];
 	RCPrettyActionSheet *sheet = [[RCPrettyActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"What do you want to do for %@?", [currentNetwork _description]] delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Delete" otherButtonTitles:@"Edit", ([currentNetwork isTryingToConnectOrConnected] ? @"Disconnect" : @"Connect"), nil];
@@ -141,28 +148,53 @@ static RCNetwork *currentNetwork = nil;
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
 	if (buttonIndex == 0) {
-		// delete.
-		[[RCNetworkManager sharedNetworkManager] removeNet:currentNetwork];
-		reloadNetworks();
+		[actionSheet dismissWithClickedButtonIndex:buttonIndex animated:YES];
+		[self showDeleteConfirmationForNetwork];
+		/*
+		 [[RCNetworkManager sharedNetworkManager] removeNet:currentNetwork];
+		 reloadNetworks();
+		 */
 		//	currentIndex--;
 	}
 	else if (buttonIndex == 1) {
 		RCAddNetworkController *addNet = [[RCAddNetworkController alloc] initWithNetwork:currentNetwork];
 		[self presentViewControllerInMainViewController:addNet];
 		[addNet release];
+		currentNetwork = nil;
 		// edit.
 	}
 	else if (buttonIndex == 2) {
 		[currentNetwork connectOrDisconnectDependingOnCurrentStatus];
+		currentNetwork = nil;
 		//connect
 	}
 	else if (buttonIndex == 4) {
 		// cancel.
 		// kbye
 	}
-	currentNetwork = nil;
 }
 
+- (void)showDeleteConfirmationForNetwork {
+	RCPrettyAlertView *qq = [[RCPrettyAlertView alloc] initWithTitle:@"Are you sure?" message:[NSString stringWithFormat:@"Are you sure you want to delete %@? This action cannot be undone.", [currentNetwork _description]] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Delete", nil];
+	[qq setTag:DEL_CONFIRM_KEY];
+	[qq show];
+	[qq release];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+	switch ([alertView tag]) {
+		case DEL_CONFIRM_KEY:
+			if (buttonIndex == 1) {
+				[[NSNotificationCenter defaultCenter] postNotificationName:@"us.mxms.relay.del" object:nil];
+				//				[[RCNetworkManager sharedNetworkManager] removeNet:currentNetwork];
+				currentNetwork = nil;
+			}
+			break;
+		default:
+			break;
+	}
+	
+}
 
 - (void)closeWithDuration:(NSTimeInterval)dr {
 	[UIView animateWithDuration:dr animations:^{
@@ -211,6 +243,7 @@ static RCNetwork *currentNetwork = nil;
 	[UIView commitAnimations];
 	[currentPanel resignFirstResponder];
 	[currentPanel setEntryFieldEnabled:NO];
+	[self dismissMenuOptions];
 }
 
 - (void)popUserListWithDuration:(NSTimeInterval)dr {
@@ -257,6 +290,26 @@ static RCNetwork *currentNetwork = nil;
 		}
 	}
 }
+
+- (void)bottomLayerSwiped:(UIPanGestureRecognizer *)pan {
+	if (pan.state == UIGestureRecognizerStateChanged) {
+		CGPoint tr = [pan translationInView:[navigationController.view superview]];
+		CGPoint cr = CGPointMake([navigationController.view center].x + tr.x, navigationController.view.center.y);
+		if (cr.x >= 180) {
+			[navigationController setCenter:cr];
+			[pan setTranslation:CGPointZero inView:[navigationController.view superview]];
+		}
+	}
+	else if (pan.state == UIGestureRecognizerStateEnded) {
+		if ([pan velocityInView:[navigationController.view superview]].x > 0) {
+			[self openWithDuration:0.30];
+		}
+		else {
+			[self closeWithDuration:0.30];
+		}
+	}
+}
+
 
 - (void)userSwiped_specialLikeFr0st:(UIPanGestureRecognizer *)pan {
 	if (![self isLandscape]) {
@@ -405,19 +458,6 @@ static RCNetwork *currentNetwork = nil;
 	[self dismissMenuOptions];
 }
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-	switch (buttonIndex) {
-		case 0:
-			// cancel
-			break;
-		case 1:
-			NSLog(@"SHOULD REMOVE CHANNEL %@", [currentPanel channel]);
-			break;
-		default:
-			break;
-	}
-}
-
 - (void)leaveCurrentChannel {
 	if ([[[currentPanel channel] delegate] isConnected])
 		[[currentPanel channel] setJoined:NO withArgument:@"Relay."];
@@ -445,13 +485,6 @@ static RCNetwork *currentNetwork = nil;
 
 - (void)rotateToInterfaceOrientation:(UIInterfaceOrientation)oi {
 	[UIViewController attemptRotationToDeviceOrientation];
-	CGFloat screenWidth = [[UIScreen mainScreen] applicationFrame].size.width;
-	if (UIInterfaceOrientationIsLandscape(oi)) {
-		
-	}
-	else {
-		
-	}
 	[self correctSubviewFrames];
 	// hi.
 }
@@ -465,11 +498,13 @@ static RCNetwork *currentNetwork = nil;
 	[((RCChatNavigationBar *)[topView navigationBar]) setSubtitle:[NSString stringWithFormat:@"%d users in %@", [[chan fullUserList] count], [chan channelName]]];
 }
 
-- (void)selectChannel:(NSString *)channel fromNetwork:(RCNetwork *)net {
+- (void)selectChannel:(NSString *)channel fromNetwork:(RCNetwork *)_net {
 	for (UIView *subv in [navigationController.view subviews]) {
 		if ([subv isKindOfClass:[RCChatPanel class]])
 			[subv removeFromSuperview];
 	}
+	RCNetwork *net = _net;
+	if (!_net) net = [[currentPanel channel] delegate];
 	RCChannel *chan = [net channelWithChannelName:channel];
 	[chan setNewMessageCount:0];
 	[((RCChatNavigationBar *)[topView navigationBar]) setNeedsDisplay];

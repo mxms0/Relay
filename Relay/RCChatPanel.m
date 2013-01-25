@@ -53,7 +53,7 @@
 		chatViewHeights[1] = sc.size.height-299;
 		UIPanGestureRecognizer *panr = [[UIPanGestureRecognizer alloc] initWithTarget:[RCChatController sharedController] action:@selector(userSwiped:)];
 		[panr setDelegate:[RCChatController sharedController]];
-		[[[self mainView] scrollView] addGestureRecognizer:panr];
+		[[mainView scrollView] addGestureRecognizer:panr];
 		[panr release];
 	}
 	return self;
@@ -103,7 +103,15 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
 	if ([textField.text isEqualToString:@""] || textField.text == nil) return NO;
-	[self performSelectorInBackground:@selector(__reallySend:) withObject:textField.text];
+	NSString *appstore_txt = [textField.text retain];
+	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
+	dispatch_async(queue, ^ {
+		dispatch_sync(dispatch_get_main_queue(), ^ {
+			[channel userWouldLikeToPartakeInThisConversation:appstore_txt];
+			[appstore_txt release];			
+		});
+	});
+	//	[self performSelectorInBackground:@selector(__reallySend:) withObject:textField.text];
 	[textField setText:@""];
 	[[RCNickSuggestionView sharedInstance] dismiss];
 	return NO;
@@ -146,7 +154,7 @@
 	if ([channel isPrivate]) return YES;
 	NSString *text = [[textField text] retain]; // has to be obtained from a main thread.
 	UITextField *tf = [textField retain];
-	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH,0);
+	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
 	dispatch_async(queue, ^ {
 		NSString *lolhaiqwerty = text;
 		NSRange rr = NSMakeRange(0, range.location + string.length);
@@ -176,7 +184,7 @@
 				[tf release];
 			});
 		}
-		else if ([personMayb length] > 2) {
+		else if ([personMayb length] > 1) {
 			NSArray *found = [channel usersMatchingWord:personMayb];
 			dispatch_sync(dispatch_get_main_queue(), ^{
 				if ([found count] > 0) {
@@ -206,6 +214,7 @@
 }
 
 - (void)postMessage:(NSString *)_message withType:(RCMessageType)type highlight:(BOOL)high isMine:(BOOL)mine {
+
     [_message retain];
 	RCMessageFormatter *message = [[RCMessageFormatter alloc] initWithMessage:_message isOld:NO isMine:mine isHighlight:high type:type];
     dispatch_async(dispatch_get_main_queue(), ^(void) {

@@ -450,7 +450,8 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
 	// don't forget about (?:\B|(?!=[^\s,]#))[#&]([^\s,]+)
 	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern1 options:0 error:nil];
 	// old : $1\x04\x30\x30<a href=\"channel:$2\" class=\"channel\">$2</a>\x05
-	NSString *template = [NSString stringWithFormat:@"$1\x04\x30\x30\x3 href=%Cchannel:$2\x6 class=%Cchannel\x6%C$2\x5\x05", (unsigned short)0x6, (unsigned short)0x6, (unsigned short)0x4];
+	//	NSString *template = [NSString stringWithFormat:@"$1\x04\x30\x30\x3 href=%Cchannel:$2\x6 class=%Cchannel\x6%C$2\x5\x05", (unsigned short)0x6, (unsigned short)0x6, (unsigned short)0x4];
+	NSString *template = @"$1\x04\x30\x30<a href=\"channel:$2\" class=\"channel\">$2</a>\x05";
 	// ffs
 	NSString *modifiedString = [[regex stringByReplacingMatchesInString:self options:0 range:NSMakeRange(0, [self length]) withTemplate:template] retain];
 	[pool drain];

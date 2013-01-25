@@ -7,6 +7,7 @@
 
 #import "RCPMChannel.h"
 #import "RCNetworkManager.h"
+#import "RCChatController.h"
 #import "NSString+IRCStringSupport.h"
 
 @implementation RCPMChannel
@@ -42,13 +43,25 @@
 - (void)shouldPost:(BOOL)isHighlight withMessage:(NSString *)msg {
 	[self setUserJoined:[self channelName]];
 	[self setUserJoined:[delegate useNick]];
-	if ([[RCNetworkManager sharedNetworkManager] isBG]) {
-		UILocalNotification *nc = [[UILocalNotification alloc] init];
-		[nc setFireDate:[NSDate date]];
-		[nc setAlertBody:[msg stringByStrippingIRCMetadata]];
-		[nc setSoundName:UILocalNotificationDefaultSoundName];
-		[[UIApplication sharedApplication] scheduleLocalNotification:nc];
-		[nc release];
+	if (isHighlight) {
+		if ([[RCNetworkManager sharedNetworkManager] isBG]) {
+			UILocalNotification *nc = [[UILocalNotification alloc] init];
+			[nc setFireDate:[NSDate date]];
+			[nc setAlertBody:[msg stringByStrippingIRCMetadata]];
+            [nc setSoundName:UILocalNotificationDefaultSoundName];
+			[nc setUserInfo:[NSDictionary dictionaryWithObjectsAndKeys:[delegate _description], RCCurrentNetKey, [self channelName], RCCurrentChanKey, nil]];
+			[[UIApplication sharedApplication] scheduleLocalNotification:nc];
+			[nc release];
+		}
+	}
+	if (![[[[RCChatController sharedController] currentPanel] channel] isEqual:self]) {
+		newMessageCount++;
+		if ([[RCChatController sharedController] isShowingChatListView]) {
+			if (newMessageCount > 101) return;
+			// if it's at 100, it will stop drawing anything new anyways. since the 99+ thing. so k
+			[cellRepresentation setNewMessageCount:newMessageCount];
+			[cellRepresentation performSelectorOnMainThread:@selector(setNeedsDisplay) withObject:nil waitUntilDone:NO];
+		}
 	}
 }
 

@@ -46,20 +46,18 @@ static NSMutableArray *networks = nil;
 
 - (void)removeNet:(RCNetwork *)net {
 	@synchronized(self) {
-		dispatch_async(dispatch_get_main_queue(), ^{
-			if ([net isConnected]) {
-				[net disconnect];
-			}
-			[networks removeObject:net];
-			if ([networks count] == 0) {
-				[self setupWelcomeView];
-			}
-			else {
-				reloadNetworks();
-				[self jumpToFirstNetworkAndConsole];
-			}
-			[self saveNetworks];
-		});
+		if ([net isConnected]) {
+			[net disconnect];
+		}
+		[networks removeObject:net];
+		if ([networks count] == 0) {
+			[self setupWelcomeView];
+		}
+		else {
+			reloadNetworks();
+			[self jumpToFirstNetworkAndConsole];
+		}
+		[self saveNetworks];
 	}
 }
 
