@@ -217,12 +217,11 @@
 
     [_message retain];
 	RCMessageFormatter *message = [[RCMessageFormatter alloc] initWithMessage:_message isOld:NO isMine:mine isHighlight:high type:type];
-    dispatch_async(dispatch_get_main_queue(), ^(void) {
-        [mainView layoutMessage:message];
-        [mainView setNeedsDisplay];
-        [message release];
-        [_message release];
-    });
+	[message format];
+	[mainView layoutMessage:message];
+	[mainView setNeedsDisplay];
+	[message release];
+	[_message release];
 }
 
 - (void)dealloc {

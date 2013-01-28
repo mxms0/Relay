@@ -139,120 +139,21 @@ _out_:
 			return;
 		}
 	}
+	[ms retain];
 	dispatch_async(dispatch_get_main_queue(), ^(void) {
 		NSString *isReady = [self stringByEvaluatingJavaScriptFromString:@"isReady();"];
         if (![isReady isEqualToString:@"YES"]) {
             
         }
-        NSString *name = [self stringByEvaluatingJavaScriptFromString:@"createMessage();"];
-		if ([[ms string] hasSuffix:@"\n"]) {
-			[ms setString:[[ms string] substringWithRange:NSMakeRange(0, [[ms string] length]-1)]];
+		NSString *name = nil;
+		if (ms.needsCenter) {
+			name = [self stringByEvaluatingJavaScriptFromString:@"createMessage(true);"];
 		}
-		[self stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"setFlags('%@','%@');", name, [[ms string] substringToIndex:[[ms string] rangeOfString:@"-"].location]]];
-		NSString* istring = [[[[[ms string] substringFromIndex:[[ms string] rangeOfString:@"-"].location+1] stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"] stringByEncodingHTMLEntities:YES] stringWithNewLinesAsBRs];
-#if LOGALL
-		NSLog(@"LITERALLY POSTING. [%@] [%@]", istring, [istring dataUsingEncoding:NSUTF8StringEncoding]);
-#endif
-	/*	istring = [istring stringByReplacingOccurrencesOfString:@"\x3" withString:@"<a "];
-		istring = [istring stringByReplacingOccurrencesOfString:@"\x4" withString:@">"];
-		istring = [istring stringByReplacingOccurrencesOfString:@"\x5" withString:@"</a>"];
-		istring = [istring stringByReplacingOccurrencesOfString:@"\x6" withString:@"\""];
-				NSLog(@"MEH [%@] [%@]", istring, [istring dataUsingEncoding:NSUTF8StringEncoding]); */
-		unsigned int cpos = 0;
-		int nDepth = 0;
-		BOOL isBold = NO;
-		BOOL isItalic = NO;
-		BOOL isUnderline = NO;
-		NSString *fgcolor = colorForIRCColor(-1);
-		NSString *bgcolor = colorForIRCColor(-2);
-		unsigned int lpos = 0;
-		NSString *cstr;
-        int nickcolor = 0;
-		while (cpos < [istring length]) {
-			switch ([istring characterAtIndex:cpos]) {
-				case RCIRCAttributeBold:
-					RENDER_WITH_OPTS;
-					cpos++;
-					isBold = !isBold;
-					lpos = cpos;
-					break;
-				case RCIRCAttributeItalic: {
-					RENDER_WITH_OPTS;
-					cpos++;
-					isItalic = !isItalic;
-					lpos = cpos;
-					break;
-				}
-				case RCIRCAttributeUnderline: {
-					RENDER_WITH_OPTS;
-					cpos++;
-					isUnderline = !isUnderline;
-					lpos = cpos;
-					break;
-				}
-				case RCIRCAttributeReset: {
-					RENDER_WITH_OPTS;
-					cpos++;
-					fgcolor = colorForIRCColor(-1);
-					bgcolor = colorForIRCColor(-2);
-					isBold = NO;
-					isItalic = NO;
-					isUnderline = NO;
-					lpos = cpos;
-					break;
-				}
-				case RCIRCAttributeColor: {
-					RENDER_WITH_OPTS;
-					cpos++;
-					int number1 = -1;
-					int number2 = -2;
-					BOOL itc = YES;
-					if (readNumber(&number1, &itc, &cpos, istring) && itc) {
-						itc = NO;
-						readNumber(&number2, &itc, &cpos, istring);
-					}
-#if LOGALL
-					NSLog(@"Using %d and %d (%d,%d) [%@]", number1, number2, cpos, lpos, [istring substringFromIndex:cpos]);
-#endif
-                    // BOOL readNumber(int* num, BOOL* isThereComma, int* size_of_num, char* data, int size);
-					fgcolor = colorForIRCColor(number1);
-					bgcolor = colorForIRCColor(number2);
-					lpos = cpos;
-					break;
-				}
-                case RCIRCAttributeInternalNickname: {
-					RENDER_WITH_OPTS;
-					cpos++;
-					nDepth++;
-                    if (nDepth) {
-                        // begin tag
-						if ([istring length] >= cpos+2 && nDepth == 1) {
-							nickcolor = [[istring substringWithRange:NSMakeRange(cpos, 2)] intValue];
-						}
-						cpos+=2;
-						lpos = cpos;
-                    }
-                    break;
-				}
-                case RCIRCAttributeInternalNicknameEnd: {
-					RENDER_WITH_OPTS;
-					cpos++;
-					if (nDepth) {
-						nDepth--;
-					}
-                    lpos = cpos;
-                    break;
-				}
-				default:
-					cpos++;
-					continue;
-					break;
-			}
-			continue;
+		else {
+			name = [self stringByEvaluatingJavaScriptFromString:@"createMessage(false);"];			
 		}
-	skcolor:
-		RENDER_WITH_OPTS;
-        //NSString* cstr = [NSString stringWithFormat:@"addToMessage('%@','NO','NO','NO','white','black','%@', 'YES');", name, ];
+		NSString *res = [self stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"postMessage('%@', '%@', %@)", name, ms.string, (self.scrollView.tracking ? @"false" : @"true")]];
+		[ms release];
 	});
 }
 

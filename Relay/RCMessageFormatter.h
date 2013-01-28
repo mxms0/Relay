@@ -13,10 +13,11 @@
 	NSString *string;
     BOOL highlight;
     BOOL shouldColor;
+	BOOL needsCenter;
 }
-@property(retain) NSString *string;
-@property(assign) BOOL highlight;
-@property(assign) BOOL shouldColor;
+@property(nonatomic, retain) NSString *string;
+@property (assign) BOOL highlight;
+@property (assign) BOOL shouldColor;
+@property (assign) BOOL needsCenter;
 - (id)initWithMessage:(NSString *)msg isOld:(BOOL)old isMine:(BOOL)m isHighlight:(BOOL)hh type:(RCMessageType)flavor;
-- (NSString *)string;
 @end

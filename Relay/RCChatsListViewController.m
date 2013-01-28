@@ -32,6 +32,8 @@
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadData) name:@"us.mxms.relay.reload" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeFirstNetworkAndReload) name:@"us.mxms.relay.del" object:nil];
 	}
+	// move to loadView.
+	// don't touch self.view in init. ever.
 	return self;
 }
 

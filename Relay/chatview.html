@@ -68,7 +68,7 @@
             * { padding: 0px; margin: 0px; }
             p {
 				overflow:hidden;
-				color:#c9c9ce;
+				color:#3E3F3F;
 				border-top-color:#c9c9ce;
 				border-top-style:solid;
 				border-top-width:1px;
@@ -150,7 +150,7 @@
                 Returns a "message name", which should be an unique identifier for the message. 
              */
 			
-            function createMessage() {
+            function createMessage(needsCenter) {
                 if (cnt >= maxscrollback) {
                     nowrem++;
                     delete flags[nowrem];
@@ -164,6 +164,9 @@
                 newdiv.setAttribute('id',divIdName);
                 newdiv.style.height = "auto";
                 newdiv.innerHTML = '';
+				if (needsCenter) {
+					newdiv.style.textAlign = "center";
+				}
                 if ((document.documentElement.clientHeight) >= window.pageYOffset) {
 					isBottom = true;
 				} else {
@@ -222,6 +225,16 @@
                 types[name] = type;
                 flags[name] = lflags;
             }
+			
+			function postMessage(name, msg, tracking) {
+				var olddiv = document.getElementById('msg' + name);
+				olddiv.innerHTML = msg;
+				if (tracking) {
+					scrollToBottom();
+				}
+				return "SUCCESS";
+			}
+			
             /*
              addToMessage(name, isBold, isUnderlined, isItalic, bgcolor, fgcolor, text, isFirstChunk) - REQUIRED BY RELAY
                 Abstract:
@@ -239,7 +252,7 @@
                     nickColor: a number that can go from 0 to 254 that represents an unique color. in the current implementation, only 32 colors are used. Color ID 1 is reserved for the current nickname (should have a particular color). Color ID 0 means there should be no color at all, but this is currently not used in Relay.
                 Return Value:
                     Must be "SUCCESS". Everything else makes Relay think the message has not been rendered properly.
-                
+             
             */
             function addToMessage(name, isBold, isUnderlined, isItalic, bgcolor, fgcolor, text, isNick, nickColor) {
                 if (types[name] == "EVENT") {

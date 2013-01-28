@@ -41,6 +41,7 @@ static id _eInstance = nil;
 		NSString *_crap;
 		NSScanner *scan = [[NSScanner alloc] initWithString:command];
 		[scan scanUpToString:@" " intoString:&_cmd];
+		_cmd = [_cmd lowercaseString];
 		NSArray *info = [cmds objectForKey:_cmd];
 		if (info && ([info count] == 2)) {
 			SEL call = NSSelectorFromString([info objectAtIndex:0]);

@@ -7,82 +7,129 @@
 
 #import "RCMessageFormatter.h"
 #import "NSString+IRCStringSupport.h"
+
 @implementation RCMessageFormatter
-@synthesize string, highlight, shouldColor;
+@synthesize string, highlight, shouldColor, needsCenter;
+
 - (id)initWithMessage:(NSString *)_message isOld:(BOOL)old isMine:(BOOL)m isHighlight:(BOOL)hh type:(RCMessageType)_flavor {
     if ((self = [super init])) {
-        shouldColor = NO;
-        if (![_message hasSuffix:@"\n"])
-            _message = [_message stringByAppendingString:@"\n"];
-        switch (_flavor) {
-            case RCMessageTypeAction:
-                self.string = [@"ACTION-" stringByAppendingString:_message];
-                shouldColor = YES;
-                goto isMnt;
-                break;
-            case RCMessageTypeNormal:
-                self.string = [@"NORMAL-" stringByAppendingString:_message];
-                shouldColor = YES;
-                goto isMnt;
-                break;
-            case RCMessageTypeNotice:
-                self.string = [@"NOTICE-" stringByAppendingString:_message];
-                shouldColor = YES;
-                goto isMnt;
-                break;
-            case RCMessageTypeTopic:
-                self.string = [@"TOPIC-" stringByAppendingString:_message];
-                break;
-            case RCMessageTypeJoin:
-                self.string = [@"JOIN-" stringByAppendingString:_message];
-                break;
-            case RCMessageTypePart:
-                self.string = [@"PART-" stringByAppendingString:_message];
-                break;
-            case RCMessageTypeQuit:
-                self.string = [@"QUIT-" stringByAppendingString:_message];
-                break;
-            case RCMessageTypeBan:
-                self.string = [@"BAN-" stringByAppendingString:_message];
-                break;
-            case RCMessageTypeKick:
-                self.string = [@"KICK-" stringByAppendingString:_message];
-                break;
-            case RCMessageTypeMode:
-                self.string = [@"MODE-" stringByAppendingString:_message];
-                break;
-            case RCMessageTypeError:
-                self.string = [@"ERROR-" stringByAppendingString:_message];
-                break;
-            case RCMessageTypeNormalE:
-                self.string = [@"EXCEPTION-" stringByAppendingString:_message];
-                break;
-            case RCMessageTypeEvent:
-                self.string = [@"EVENT-" stringByAppendingString:_message];
-                break;
-            default:
-                break;
-        }
-        self.shouldColor = NO;
-        self.highlight = NO;
-        goto out_;
-    isMnt:
-        [self setString:[@":" stringByAppendingString:[self string]]];
-        if (m) {
-            [self setString:[@"M" stringByAppendingString:[self string]]];
-        } else if (hh) {
-            self.highlight = YES;
-            [self setString:[@"H" stringByAppendingString:[self string]]];
-        }
-        goto out_;
-    }
-out_:
-    return self;
+		self.string = _message;
+        self.highlight = hh;
+		self.shouldColor = m;
+		self.needsCenter = (_flavor == RCMessageTypeTopic);
+	}
+	return self;
+}
 
+- (void)format {
+	[self setString:[[[[string stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"] stringByReplacingOccurrencesOfString:@"\n" withString:@""] stringByEncodingHTMLEntities:YES] stringWithNewLinesAsBRs]];
+	int cpos = 0;
+	BOOL isBold = NO;
+	BOOL isItalic = NO;
+	BOOL isUnderline = NO;
+	BOOL didColor = NO;
+	NSString *fgcolor = colorForIRCColor(-1);
+	NSString *bgcolor = colorForIRCColor(-2);
+	int nickcolor = 0;
+	int nDepth = 0;
+	int len = [string length];
+	NSMutableString *final = [[NSMutableString alloc] init];
+	if (self.highlight)
+		[final appendString:@"<font color=\"#5b2e2e\">"];
+	while (cpos < len) {
+		switch ([string characterAtIndex:cpos]) {
+			case RCIRCAttributeBold:
+				cpos++;
+				isBold = !isBold;
+				if (isBold) {
+					[final appendString:@"<b>"];
+				}
+				else {
+					[final appendString:@"</b>"];
+				}
+				break;
+			case RCIRCAttributeItalic:
+				cpos++;
+				isItalic = !isItalic;
+				if (isItalic) {
+					[final appendString:@"<i>"];
+				}
+				else {
+					[final appendString:@"</i>"];
+				}
+				break;
+			case RCIRCAttributeUnderline:
+				cpos++;
+				isUnderline = !isUnderline;
+				if (isUnderline) {
+					[final appendFormat:@"<u>"];
+				}
+				else {
+					[final appendFormat:@"</u>"];
+				}
+				break;
+			case RCIRCAttributeReset:
+				MARK;
+				cpos++;
+				break;
+			case RCIRCAttributeColor: {
+				int num1 = -1;
+				int num2 = -2;
+				BOOL itc = YES;
+				cpos++;
+				if (readNumber(&num1, &itc, (unsigned int *)&cpos, string) && itc) {
+					itc = NO;
+					readNumber(&num2, &itc, (unsigned int *)&cpos, string);
+				}
+				fgcolor = colorForIRCColor(num1);
+				bgcolor = colorForIRCColor(num2);
+				if (didColor) {
+					[final appendString:@"</font>"];
+					didColor = NO;
+				}
+				if (num1 == -1 && num2 == -2) {
+					continue;
+				}
+				[final appendFormat:@"<font color=\"%@\" style=\"background:%@\">", fgcolor, bgcolor];
+				didColor = YES;
+				MARK;
+				
+				break;
+			}
+			case RCIRCAttributeInternalNickname:
+
+				cpos++;
+				nDepth++;
+				if (nDepth) {
+					if ([string length] >= (cpos + 2) && nDepth == 1) {
+						nickcolor = [[string substringWithRange:NSMakeRange(cpos, 2)] intValue];
+					}
+				}
+				[final appendFormat:@"<span class=\"color%d\">", nickcolor];
+				cpos += 2;
+				break;
+			case RCIRCAttributeInternalNicknameEnd:
+				MARK;
+				cpos++;
+				[final appendString:@"</span>"];
+				if (nDepth)
+					nDepth--;
+				break;
+			default:
+				//		NSLog(@"HI POSTING [%C][%@]", [string characterAtIndex:cpos], [[NSString stringWithFormat:@"%C", [string characterAtIndex:cpos]] dataUsingEncoding:NSUTF8StringEncoding]);
+				[final appendFormat:@"%C", [string characterAtIndex:cpos]];
+				cpos++;
+				continue;
+				break;
+		}
+	}
+	if (self.highlight)
+		[final appendString:@"</font>"];
+	[self setString:(NSString *)final];
 }
 
 - (void)dealloc {
-    [self setString:nil];
+	// [self setString:nil];
 	[super dealloc];
 }
 @end

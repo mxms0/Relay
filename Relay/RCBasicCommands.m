@@ -22,6 +22,11 @@
 	[e registerSelector:@selector(_wut:net:channel:) forCommands:@"o_o" usingClass:self];
 	[e registerSelector:@selector(handleREVS:net:channel:) forCommands:@"reverse" usingClass:self];
 	[e registerSelector:@selector(handleTWEET:net:channel:) forCommands:@"tweet" usingClass:self];
+	[e registerSelector:@selector(handleDATE:net:channel:) forCommands:@"date" usingClass:self];
+}
+
+- (void)handleDATE:(NSString *)dt net:(RCNetwork *)net channel:(RCChannel *)chan {
+	
 }
 
 - (void)handleTWEET:(NSString *)tw net:(RCNetwork *)net channel:(RCChannel *)chan {

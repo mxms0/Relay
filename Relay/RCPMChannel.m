@@ -23,6 +23,18 @@
 	return self;
 }
 
+- (void)initialize_me:(NSString *)chan {
+    channelName = [chan retain];
+    joinOnConnect = YES;
+	cellRepresentation = nil;
+    joined = NO;
+	newMessageCount = 0;
+    userRanksAdv = [NSMutableDictionary new];
+    fullUserList = [[NSMutableArray alloc] init];
+    panel = [[RCChatPanel alloc] initWithStyle:UITableViewStylePlain andChannel:self];
+	[fullUserList addObject:chan];
+}
+
 - (void)changeNick:(NSString *)old toNick:(NSString *)new_ {
 	dispatch_async(dispatch_get_main_queue(), ^(void){
 		@synchronized(self) {

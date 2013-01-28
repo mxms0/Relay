@@ -71,11 +71,10 @@
 		return;
 	}
 	[panel postMessage:[msg autorelease] withType:type highlight:NO];
-/*	if ([delegate isRegistered] && type == RCMessageTypeNormalE) {
-		newMessageCount++;
-		[cellRepresentation setNewMessageCount:newMessageCount];
+	/* if ([delegate isRegistered] && type == RCMessageTypeNormalE) {
+		[cellRepresentation setNewMessageCount:(newMessageCount++)];
 		[cellRepresentation performSelectorOnMainThread:@selector(setNeedsDisplay) withObject:nil waitUntilDone:NO];
-	}*/
+	} */
 	// don't really know how to handle this. it's kind of an awkward situation per-se.
 	// don't want the users having a number notifying them of ircd spam always.
 	// but don't know how to detect wether or not it's ircd spam or some kind of notification.
