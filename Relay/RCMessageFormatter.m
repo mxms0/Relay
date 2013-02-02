@@ -69,7 +69,6 @@
 				}
 				break;
 			case RCIRCAttributeReset:
-				MARK;
 				cpos++;
 				break;
 			case RCIRCAttributeColor: {
@@ -92,8 +91,6 @@
 				}
 				[final appendFormat:@"<font color=\"%@\" style=\"background:%@\">", fgcolor, bgcolor];
 				didColor = YES;
-				MARK;
-				
 				break;
 			}
 			case RCIRCAttributeInternalNickname:
@@ -105,18 +102,17 @@
 						nickcolor = [[string substringWithRange:NSMakeRange(cpos, 2)] intValue];
 					}
 				}
-				[final appendFormat:@"<span class=\"color%d\">", nickcolor];
+				[final appendFormat:@"%@<span class=\"color%d\">", (!isBold ? @"<b>" : @""), nickcolor];
 				cpos += 2;
 				break;
 			case RCIRCAttributeInternalNicknameEnd:
-				MARK;
 				cpos++;
+				[final appendFormat:@"</span>%@", (!isBold ? @"</b>" : @"")];
 				[final appendString:@"</span>"];
 				if (nDepth)
 					nDepth--;
 				break;
 			default:
-				//		NSLog(@"HI POSTING [%C][%@]", [string characterAtIndex:cpos], [[NSString stringWithFormat:@"%C", [string characterAtIndex:cpos]] dataUsingEncoding:NSUTF8StringEncoding]);
 				[final appendFormat:@"%C", [string characterAtIndex:cpos]];
 				cpos++;
 				continue;

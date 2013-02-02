@@ -9,7 +9,7 @@
 #import "RCViewController.h"
 
 @class RCChatViewController, RCChatsListViewController, RCUserListViewController;
-@interface RCChatController : NSObject <UIAlertViewDelegate, UIActionSheetDelegate> {
+@interface RCChatController : NSObject <UIAlertViewDelegate, UIActionSheetDelegate, UIGestureRecognizerDelegate> {
 	RCViewController *rootView;
 	RCChatViewController *navigationController;
 	RCChatsListViewController *leftView;

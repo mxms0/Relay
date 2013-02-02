@@ -20,4 +20,5 @@
 @property (assign) BOOL shouldColor;
 @property (assign) BOOL needsCenter;
 - (id)initWithMessage:(NSString *)msg isOld:(BOOL)old isMine:(BOOL)m isHighlight:(BOOL)hh type:(RCMessageType)flavor;
+- (void)format;
 @end

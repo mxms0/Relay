@@ -107,17 +107,7 @@ NSString *colorForIRCColor(char irccolor) {
 - (void)dealloc {
     NSLog(@"kthxbai :[");
     [super dealloc];
-}
-#define RENDER_WITH_OPTS \
-	if (!([ms string] && ms)) {\
-		return;\
-	}\
-	cstr = [NSString stringWithFormat:@"addToMessage('%@','%@','%@','%@','%@','%@','%@', '%@', '%d');", name, isBold ? @"YES" : @"NO", isUnderline ? @"YES" : @"NO", isItalic ? @"YES" : @"NO", bgcolor, fgcolor, [istring substringWithRange:NSMakeRange(lpos, cpos-lpos)], nDepth ? @"YES" : @"NO", nickcolor]; \
-	NSString *rep = [self stringByEvaluatingJavaScriptFromString:cstr];\
-	if (![rep isEqualToString:@"SUCCESS"]) {\
-		NSLog(@"Could not exec: %@:%@", cstr, rep); \
-	}\
-	lpos = cpos;    
+}  
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     @synchronized(self) {
@@ -131,7 +121,6 @@ NSString *colorForIRCColor(char irccolor) {
 }
 
 - (void)layoutMessage:(RCMessageFormatter *)ms {
-_out_:
 	@synchronized(self) {
 		if (preloadPool) {
 			NSLog(@"GOING SWIMMMING");

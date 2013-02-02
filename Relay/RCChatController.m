@@ -476,6 +476,7 @@ static RCNetwork *currentNetwork = nil;
 
 - (void)showMemberList {
 	[self dismissMenuOptions];
+	[self pushUserListWithDefaultDuration];
 }
 
 - (BOOL)gestureRecognizerShouldBegin:(UIPanGestureRecognizer *)pan {

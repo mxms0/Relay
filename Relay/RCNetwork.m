@@ -562,10 +562,10 @@ char *RCIPForURL(NSString *URL) {
 	else if ([msg hasPrefix:@"@"]) {
 		// sending these messages somewhere else.
 		// not handling them here.
-		msg = [msg substringFromIndex:1];
-		NSDateFormatter *df = [[NSDateFormatter alloc] init];
-		[df setDateFormat:@"YYYY-MM-DDThh:mm:ss.sssZ"];
-		NSDate *aDate = [df dateFromString:nil];
+		//msg = [msg substringFromIndex:1];
+		//	NSDateFormatter *df = [[NSDateFormatter alloc] init];
+		//[df setDateFormat:@"YYYY-MM-DDThh:mm:ss.sssZ"];
+		///	NSDate *aDate = [df dateFromString:nil];
 		NSLog(@"IRV3 I C. %@", msg);
 		return;
 	}
@@ -1764,6 +1764,7 @@ void RCParseUserMask(NSString *mask, NSString **_nick, NSString **user, NSString
 			case 1: {
 				RCChannel *chan = [self addChannel:alertView.title join:YES];
 				reloadNetworks();
+				[[RCChatController sharedController] selectChannel:[chan channelName] fromNetwork:self];
 				// select network here
 				break;
 			}
