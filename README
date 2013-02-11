@@ -17,3 +17,4 @@ settings
 –––––
 be able to hide network host in network list view etc
 font size !111
+if auto completing nick, and it's first word of sentence, append comma/space/colon

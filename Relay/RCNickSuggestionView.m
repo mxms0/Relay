@@ -19,7 +19,7 @@ static id _nInstance = nil;
 
 - (id)init {
 	if ((self = [super init])) {
-		[self setFrame:CGRectMake(10, 0, 280, 30)];
+		[self setFrame:CGRectMake(10, 0, 280, 46)];
 		[self setBackgroundColor:[UIColor clearColor]];
 	}
 	return self;
@@ -28,7 +28,7 @@ static id _nInstance = nil;
 - (void)drawRect:(CGRect)rect {
 	[super drawRect:rect];
 	UIImage *img = [[UIImage imageNamed:@"0_sugbg"] stretchableImageWithLeftCapWidth:8 topCapHeight:6];
-	[img drawInRect:CGRectMake(0, 0, self.frame.size.width, 30)];
+	[img drawInRect:CGRectMake(0, 0, self.frame.size.width, 46)];
 }
 
 - (void)showAtPoint:(CGPoint)p withNames:(NSArray *)names {

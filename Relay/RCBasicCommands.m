@@ -23,10 +23,16 @@
 	[e registerSelector:@selector(handleREVS:net:channel:) forCommands:@"reverse" usingClass:self];
 	[e registerSelector:@selector(handleTWEET:net:channel:) forCommands:@"tweet" usingClass:self];
 	[e registerSelector:@selector(handleDATE:net:channel:) forCommands:@"date" usingClass:self];
+	[e registerSelector:@selector(handleSLAP:net:channel:) forCommands:@"slap" usingClass:self];
+}
+
+- (void)handleSLAP:(NSString *)slap net:(RCNetwork *)net channel:(RCChannel *)chan {
+	if (!slap) slap = @"self";
+	[self handleME:[NSString stringWithFormat:@"slaps %@ around a bit with a large trout", slap] net:net channel:chan];
 }
 
 - (void)handleDATE:(NSString *)dt net:(RCNetwork *)net channel:(RCChannel *)chan {
-	
+	// The date & time is currently: Sunday, February 10, 2013 6:32:47 PM
 }
 
 - (void)handleTWEET:(NSString *)tw net:(RCNetwork *)net channel:(RCChannel *)chan {

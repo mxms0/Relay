@@ -122,111 +122,27 @@
             }
 		</style>
 		<script>
-            /* 
-            These variables are not required by Relay. They are however used by this theme.
-             */
+
             var cnt = 0;
-            var nowrem = 1;
-            var maxscrollback = 125;
-            var flags = {};
-            var types = {};
-            var isBottom = true;
-			
-			function clearMessages() {
-				var dx = document.getElementById('chat');
-				while (dx.firstChild) {
-					dx.removeChild(dx.firstChild);
-				}
-				
-			}
-            
-            /*
-             createMessage() - REQUIRED BY RELAY
-             Abstract:
-                Creates a new message.
-             Arguments:
-                None.
-             Return Value:
-                Returns a "message name", which should be an unique identifier for the message. 
-             */
-			
+            var nowrem = 0;
+            var maxscrollback = 5;
+					
             function createMessage(needsCenter) {
                 if (cnt >= maxscrollback) {
                     nowrem++;
-                    delete flags[nowrem];
-                    delete types[nowrem];
-                    var elem = document.getElementById('msg' + nowrem);
-					document.getElementById('chat').removeChild(elem);
+					document.getElementById('chat').removeChild(document.getElementById('msg' + nowrem));
                 }
                 cnt++;
                 var newdiv = document.createElement('p');
                 var divIdName = 'msg' + cnt;
                 newdiv.setAttribute('id',divIdName);
-		/*		newdiv.style.height = "auto";
-				newdiv.innerHTML = '';
-		 */
 				if (needsCenter) {
 					newdiv.style.textAlign = "center";
 				}
-                if ((document.documentElement.clientHeight) >= window.pageYOffset) {
-					isBottom = true;
-				} else {
-                    isBottom = false;
-                }
-				var adiv = document.getElementById('chat');
-				adiv.appendChild(newdiv);
+				document.getElementById('chat').appendChild(newdiv);
                 return cnt;
             }
             
-            /*
-             setFlags(name, type) - REQUIRED BY RELAY
-                Abstract:
-                    Sets message's flags.
-                Arguments:
-                    name: The message name (the return value of createMessage())
-                    type: A string formatted this way: "FLAGS:TYPE". If there are no flags, the string is simply "TYPE".
-                Additional Infos:
-                    Currently used flags:
-                        H: If the H flag is present, the message is an highlight. You should make it more recognizable or something like that.
-                Return Value:
-                    None.
-             */ 
-            
-            function setFlags(name, type) {
-                var olddiv = document.getElementById('msg' + name);
-                var pos = type.indexOf(":");
-                var lflags = "";
-                if (pos != -1) {
-                    lflags = type.substr(0,pos);
-                    type = type.substr(pos+1);
-                    /*
-                     Flags are per-message metadata. (not per-chunk)
-                     */
-                    if (lflags.indexOf("M") != -1) {
-                        //olddiv.style.background = "-webkit-gradient(linear, left top, left bottom, color-stop(0%,#edf6f9), color-stop(100%,#e7f1f6))";
-						//olddiv.style.color = "#2d475c";
-						//olddiv.style.borderTop = "solid #cedce4 1px";
-						//olddiv.class = "mmf";
-                    }
-					else if (lflags.indexOf("H") != -1) {
-						//     olddiv.style.background = "-webkit-gradient(linear, left top, left bottom, color-stop(0%,#f5f1f4), color-stop(100%,#f1ebef))";
-						//	olddiv.style.borderTop = "solid #e2ced1 1px";
-						olddiv.style.color = "#5b2e2e";
-						olddiv.class = "hhf";
-                    }
-                }
-				else {
-					if (type == "TOPIC") {
-						olddiv.style.textAlign="center";
-					}
-					else {
-						olddiv.class="normal";
-					}
-				}
-                types[name] = type;
-                flags[name] = lflags;
-            }
-			
 			function postMessage(name, msg, tracking) {
 				var olddiv = document.getElementById('msg' + name);
 				olddiv.innerHTML = msg;
@@ -236,72 +152,13 @@
 				return "SUCCESS";
 			}
 			
-            /*
-             addToMessage(name, isBold, isUnderlined, isItalic, bgcolor, fgcolor, text, isFirstChunk) - REQUIRED BY RELAY
-                Abstract:
-                    Adds a chunk to a message.
-                Arguments:
-                    name: The message's name (the return value of createMessage())
-                    isBold: a string. If it's "YES", the chunk has the bold flag enabled
-                    isUnderlined: a string. If it's "YES", the chunk has the underlined flag enabled
-                    isItalic: a string. If it's "YES", the chunk has the italic flag enabled
-                    bgcolor: The background color of the chunk. Unless changed using mIRC-like colors, it should be "default-foreground".
-                    fgcolor: The background color of the chunk, as a string.
-                    text: A string containing the text of the chunk.
-                    isFirstChunk: Currently unused.
-                    isNick: if the current chunk is a nickname. if so, it should be colored with a color identified by nickColor.
-                    nickColor: a number that can go from 0 to 254 that represents an unique color. in the current implementation, only 32 colors are used. Color ID 1 is reserved for the current nickname (should have a particular color). Color ID 0 means there should be no color at all, but this is currently not used in Relay.
-                Return Value:
-                    Must be "SUCCESS". Everything else makes Relay think the message has not been rendered properly.
-             
-            */
-            function addToMessage(name, isBold, isUnderlined, isItalic, bgcolor, fgcolor, text, isNick, nickColor) {
-                if (types[name] == "EVENT") {
-                    isBold = "YES";
-                } else
-                if (types[name] == "ERROR") {
-                    isBold = "YES";
-                }
-                if (isNick == "YES") {
-                    isBold = "YES";
-                }
-                var olddiv = document.getElementById('msg' + name);
-				if (fgcolor == "default-foreground") {
-					if (olddiv.class == "mmf") {
-						fgcolor = "#2d475c";
-					}
-					else if (olddiv.class == "hhf") {
-						fgcolor = "#5b2e2e";
-					}
-					else fgcolor = "#3e3f3f";
-                }
-                var pre = "";
-                var post = "";
-                var type = olddiv.type;
-                if (isBold == "YES") {
-                    pre += "<b>";
-					post = "</b>" + post;
-                }
-                if (isUnderlined == "YES") {
-                    pre += "<u>";
-					post = "</u>" + post;
-                }
-                if (isItalic == "YES") {
-                    pre += "<i>";
-					post = "</i>" + post;
-                } 
-                if (isNick == "YES") {
-                    pre += "<font color=\"" + fgcolor + "\" class=\"color" + nickColor + "\" style=\"background: " + bgcolor + ";\">"
-                    post = "</font>" + post;
-                } else {
-                    pre += "<font color=\"" + fgcolor + "\" class=\"color0\" style=\"background: " + bgcolor + ";\">"
-                    post = "</font>" + post;
-                }
-                olddiv.innerHTML += pre + text + post;
-				scrollToBottom();
-                return "SUCCESS";
-            }
-
+			function clearMessages() {
+				var dx = document.getElementById('chat');
+				while (dx.firstChild) {
+					dx.removeChild(dx.firstChild);
+				}
+			}
+			
             /*
              scrollToBottom() - REQUIRED BY RELAY
                 Abstract:
@@ -314,7 +171,6 @@
 			
             function scrollToBottom() {
                 window.scrollTo(0, document.body.scrollHeight);
-                isBottom = true;
             }
             </script>
     </head>
