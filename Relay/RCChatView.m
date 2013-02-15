@@ -54,6 +54,7 @@ NSString *colorForIRCColor(char irccolor) {
         if (!template) {
             template = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"chatview" ofType:@"html"] encoding:NSUTF8StringEncoding error:nil];
 			template = [[NSString stringWithFormat:template, [[NSBundle mainBundle] pathForResource:@"0_jaggs@2x" ofType:@"png"]] retain];
+			// consider just using javascript to post this URL. 
         }
         self.opaque = NO;
         self.dataDetectorTypes = (UIDataDetectorTypeLink | UIDataDetectorTypePhoneNumber);
@@ -130,10 +131,6 @@ NSString *colorForIRCColor(char irccolor) {
 	}
 	[ms retain];
 	dispatch_async(dispatch_get_main_queue(), ^(void) {
-		NSString *isReady = [self stringByEvaluatingJavaScriptFromString:@"isReady();"];
-        if (![isReady isEqualToString:@"YES"]) {
-            
-        }
 		NSString *name = nil;
 		if (ms.needsCenter) {
 			name = [self stringByEvaluatingJavaScriptFromString:@"createMessage(true);"];

@@ -124,7 +124,7 @@
     MPMusicPlayerController *musicPlayer = [MPMusicPlayerController iPodMusicPlayer];
     if (!musicPlayer) return nil;
     MPMediaItem *currentItem = [musicPlayer nowPlayingItem];
-    if (!currentItem) {
+    if (!currentItem || [musicPlayer playbackState] == MPMusicPlaybackStatePaused) {
         return nil;
 	}
     NSString *finalStr = [NSString stringWithFormat:@"is listening to %@ by %@, from %@", [currentItem valueForProperty:MPMediaItemPropertyTitle], [currentItem valueForProperty:MPMediaItemPropertyArtist], [currentItem valueForProperty:MPMediaItemPropertyAlbumTitle]];

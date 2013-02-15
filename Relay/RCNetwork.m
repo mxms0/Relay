@@ -736,16 +736,18 @@ char *RCIPForURL(NSString *URL) {
 }
 
 - (void)handle005:(NSString *)useInfo {
-    @synchronized(self) {
-        NSArray* args = [useInfo componentsSeparatedByString:@" "];
-        args = [args subarrayWithRange:NSMakeRange(3, [args count]-3)];
-        for (NSString* arg in args) {
-            if ([arg hasSuffixNoCase:@":are supported by this server"]) {
-                break;
-            }
-            NSLog(@"> %@", arg);
-            NSArray* values = [arg componentsSeparatedByString:@"="];
-            @try {
+	@synchronized(self) {
+		NSArray *args = [useInfo componentsSeparatedByString:@" "];
+		args = [args subarrayWithRange:NSMakeRange(3, [args count]-3)];
+		for (NSString* arg in args) {
+			if ([arg hasSuffixNoCase:@":are supported by this server"]) {
+				break;
+			}
+#if LOGALL
+			NSLog(@"> %@", arg);
+#endif
+			NSArray *values = [arg componentsSeparatedByString:@"="];
+			@try {
                 if ([values count]) {
                     if ([[values objectAtIndex:0] isEqualToString:@"PREFIX"]) {
                         if ([values count] - 1) {
@@ -757,29 +759,27 @@ char *RCIPForURL(NSString *URL) {
                                 NSString* values = [lprefix substringFromIndex:prefixes+1];
                                 NSString* modes  = [lprefix substringToIndex:prefixes];
                                 NSMutableDictionary* lprefix = [NSMutableDictionary new];
-                                for (int i = 0; i < [values length]; i++)
-                                {
-                                    unichar chr = [values characterAtIndex:i];
-                                    NSString *string = [[[NSString alloc] initWithCharacters:&chr length:1] autorelease];
-                                    unichar chra = [modes characterAtIndex:i];
-                                    NSString *stringa = [[[NSString alloc] initWithCharacters:&chra length:1] autorelease];
-                                    [lprefix setObject:[NSArray arrayWithObjects:[NSNumber numberWithInt:i], string, nil] forKey:stringa];
+								for (int i = 0; i < [values length]; i++) {
+									unichar chr = [values characterAtIndex:i];
+									NSString *string = [[[NSString alloc] initWithCharacters:&chr length:1] autorelease];
+									unichar chra = [modes characterAtIndex:i];
+									NSString *stringa = [[[NSString alloc] initWithCharacters:&chra length:1] autorelease];
+									[lprefix setObject:[NSArray arrayWithObjects:[NSNumber numberWithInt:i], string, nil] forKey:stringa];
                                     // Do stuff...
                                 }
-                                self.prefix = [[lprefix copy] autorelease];
-                                [lprefix release];
-                                NSLog(@"prefix: %@", prefix);
-                                
-                            }
-                        }
-                    }
-                }
-            }
-            @catch (NSException *exception) {
-                NSLog(@"exc %@", exception);
-            }
-        }
-    }
+								self.prefix = [[lprefix copy] autorelease];
+								[lprefix release];
+								NSLog(@"prefix: %@", prefix);
+							}
+						}
+					}
+				}
+			}
+			@catch (NSException *exception) {
+				NSLog(@"exc %@", exception);
+			}
+		}
+	}
     /*
 	NSScanner *scanr = [[NSScanner alloc] initWithString:useInfo];
 	NSString *crap;
@@ -937,7 +937,25 @@ char *RCIPForURL(NSString *URL) {
 	[scanr scanUpToString:@" " intoString:&crap];
 	[scanr scanUpToString:@" " intoString:&nick_];
 	[scanr scanUpToString:@"" intoString:&infos];
+	[scanr release];
+	NSString *username_ = nil;
+	scanr = [[NSScanner alloc] initWithString:infos];
+	[scanr scanUpToString:@":" intoString:&username_];
+	[scanr scanUpToString:@"" intoString:&crap]; // crap = realname
+	username_ = [username_ stringByReplacingOccurrencesOfString:@"*" withString:@""];
+	username_ = [username_ recursivelyRemoveSuffix:@" "];
+	username_ = [username_ stringByReplacingOccurrencesOfString:@" " withString:@"@"];
+	if ([crap hasPrefix:@":"])
+		crap = [crap substringFromIndex:1];
 	RCPMChannel *chan = (RCPMChannel *)[self channelWithChannelName:[nick_ stringByReplacingOccurrencesOfString:@" " withString:@""]];
+	if (!chan) {
+		RCChannel *_chan = [[[RCChatController sharedController] currentPanel] channel];
+		if (![[_chan delegate] isEqual:self])
+			_chan = [self consoleChannel];
+		[_chan recievedMessage:[NSString stringWithFormat:@"has user host %@ and real name \"%@\"", username_, crap] from:nick_ type:RCMessageTypeEvent];
+		[scanr release];
+		return;
+	}
 	if ([chan isKindOfClass:[RCPMChannel class]]) {
 		[chan setIpInfo:infos];
 	}
@@ -954,11 +972,26 @@ char *RCIPForURL(NSString *URL) {
 	[scanr scanUpToString:@" " intoString:&crap];
 	[scanr scanUpToString:@" " intoString:&nick_];
 	[scanr scanUpToString:@"" intoString:&infos];
+	///infos = [infos substringWithRange:NSMakeRange(0, ([infos rangeOfString:@":"].location))];
+	infos = [infos stringByReplacingOccurrencesOfString:@":" withString:@"("];
+	infos = [infos stringByAppendingString:@")"];
 	RCPMChannel *chan = (RCPMChannel *)[self channelWithChannelName:[nick_ stringByReplacingOccurrencesOfString:@" " withString:@""]];
+	if (!chan) {
+		RCChannel *_chan = [[[RCChatController sharedController] currentPanel] channel];
+		if (![[_chan delegate] isEqual:self])
+			_chan = [self consoleChannel];
+		[_chan recievedMessage:[NSString stringWithFormat:@"is connected to %@", infos] from:nick_ type:RCMessageTypeEvent];
+		[scanr release];
+		return;
+	}
 	if ([chan isKindOfClass:[RCPMChannel class]]) {
 		[chan setConnectAddr:infos];
 	}
 	[scanr release];
+}
+
+- (void)handle313:(NSString *)badassIRCOP {
+
 }
 
 - (void)handle318:(NSString *)threeeighteen {
@@ -981,6 +1014,7 @@ char *RCIPForURL(NSString *URL) {
 }
 
 - (void)handle319:(NSString *)threenineteen {
+	// :irc.saurik.com 319 Snowman theiostream :#substrate #iOSOpenDev # @#spotlightplus #TweakIdeas #teambacon @#op #geordi #relay @#math @#ll #oligos
 	NSScanner *scanr = [[NSScanner alloc] initWithString:threenineteen];
 	NSString *crap = nil;
 	NSString *nick_ = nil;
@@ -990,13 +1024,22 @@ char *RCIPForURL(NSString *URL) {
 	[scanr scanUpToString:@" " intoString:&crap];
 	[scanr scanUpToString:@" " intoString:&nick_];
 	[scanr scanUpToString:@"" intoString:&infos];
+	if ([infos hasPrefix:@":"])
+		infos = [infos substringFromIndex:1];
 	RCPMChannel *chan = (RCPMChannel *)[self channelWithChannelName:[nick_ stringByReplacingOccurrencesOfString:@" " withString:@""]];
+	if (!chan) {
+		RCChannel *_chan = [[[RCChatController sharedController] currentPanel] channel];
+		if (![[_chan delegate] isEqual:self])
+			_chan = [self consoleChannel];
+		[_chan recievedMessage:[NSString stringWithFormat:@"is in %@", infos] from:nick_ type:RCMessageTypeEvent];
+		[scanr release];
+		return;
+	}
 	if ([chan isKindOfClass:[RCPMChannel class]]) {
 		if ([infos hasPrefix:@":"])
 			infos = [infos substringFromIndex:1];
 		[chan setChanInfos:infos];
 	}
-	NSLog(@"CHAN INFOS %@", infos);
 	[scanr release];
 }
 
@@ -1073,7 +1116,7 @@ char *RCIPForURL(NSString *URL) {
 	NSString *normalTime = [NSString stringWithCString:buffer encoding:NSUTF8StringEncoding];
 	RCParseUserMask(from, &from, nil, nil);
 	RCChannel *chan = [self channelWithChannelName:chan_];
-	[chan recievedMessage:[NSString stringWithFormat:@"Set by %@ on %@", from, normalTime] from:nil type:RCMessageTypeEvent];
+	[chan recievedMessage:[NSString stringWithFormat:@"Set by %@ on %@", from, normalTime] from:nil type:RCMessageTypeNormalE];
 	// :irc.saurik.com 333 _m #bacon Bacon!~S_S@adsl-184-33-54-96.mia.bellsouth.net 1329680840
 }
 

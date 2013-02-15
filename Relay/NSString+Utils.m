@@ -22,13 +22,21 @@
 }
 
 - (NSString *)recursivelyRemovePrefix:(NSString *)prefix {
-	if (!prefix || !self) return nil;
-	
+	if (!prefix) return nil;
 	if ([self hasPrefix:prefix])
 		self = [self substringFromIndex:[prefix length]];
 	else return self;
 	return [self recursivelyRemovePrefix:prefix];
 }
+
+- (NSString *)recursivelyRemoveSuffix:(NSString *)sfx {
+	if (!sfx) return nil;
+	if ([self hasSuffix:sfx])
+		self = [self substringToIndex:(([self length]-1) - [sfx length])];
+	else return self;
+	return [self recursivelyRemovePrefix:sfx];
+}
+
 
 - (NSString *)base64 {
 	NSData *dd = [self dataUsingEncoding: NSASCIIStringEncoding];

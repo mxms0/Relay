@@ -219,7 +219,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 		// for some reason, this expression returns null under certain circumstances i haven't read up on enough
 		// to understand. wow, wish someone would have thought of this check. *glares at qwerty.* :p
 		if (val) *message = val;
-		NSString *patterndos = [NSString stringWithFormat:@"(^|\\s)([^A-Za-z0-9]*)(%@)([^A-Za-z0-9]*)($|\\s)", nameOrRank];
+		NSString *patterndos = [NSString stringWithFormat:@"(^|\\s)([^A-Za-z0-9]*)(\\Q%@\\E)([^A-Za-z0-9]*)($|\\s)", nameOrRank];
 		if ([[NSRegularExpression regularExpressionWithPattern:patterndos options:NSRegularExpressionCaseInsensitive error:nil] numberOfMatchesInString:cmp options:0 range:NSMakeRange(0, [cmp length])]) {
 			is_highlight = (hhash == 1) ? 1 : is_highlight;
 		}
@@ -250,7 +250,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
         message = [message stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
         message = [message stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
     }
-    BOOL is_highlight = NO;
+    BOOL isHighlight = NO;
 	switch (type) {
 		case RCMessageTypeKick: {
 			if (![message respondsToSelector:@selector(objectAtIndex:)]) {
@@ -289,7 +289,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 			msg = [[NSString stringWithFormat:@"%c[%@] %@ %c joined the channel.", RCIRCAttributeBold, time, from, RCIRCAttributeBold] retain];
 			break;
 		case RCMessageTypeEvent:
-			msg = [[NSString stringWithFormat:@"%c[%@]%c %@", RCIRCAttributeBold, time, RCIRCAttributeBold, message] retain];
+			msg = [[NSString stringWithFormat:@"%c[%@]%c %c%@%c %@", RCIRCAttributeBold, time, RCIRCAttributeBold, RCIRCAttributeBold, from, RCIRCAttributeBold, message] retain];
 			break;
 		case RCMessageTypeTopic:
             self.topic = message;
@@ -318,12 +318,12 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 			msg = [[NSString stringWithFormat:@"%c[%@]%c: %@", RCIRCAttributeBold, time, RCIRCAttributeBold, message] retain];
 			break;
 		case RCMessageTypeAction:
-			is_highlight = RCHighlightCheck(self, &message);
+			isHighlight = RCHighlightCheck(self, &message);
 			msg = [[NSString stringWithFormat:@"%c[%@] %c%02d\u2022 %@%c%c %@", RCIRCAttributeBold, time, RCIRCAttributeInternalNickname, uhash, from, RCIRCAttributeInternalNicknameEnd, RCIRCAttributeBold, message] retain];
 			break;
 		case RCMessageTypeNormal:
 			if (![from isEqualToString:@""]) {
-				is_highlight = RCHighlightCheck(self, &message);
+				isHighlight = RCHighlightCheck(self, &message);
 				msg = [[NSString stringWithFormat:@"%c[%@] %c%02d%@:%c%c %@", RCIRCAttributeBold, time, RCIRCAttributeInternalNickname, uhash, from, RCIRCAttributeInternalNicknameEnd, RCIRCAttributeBold, message] retain];
 			}
 			else {
@@ -333,7 +333,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 			break;
 		case RCMessageTypeNotice:
             if ([self isUserInChannel:from]) {
-				is_highlight = RCHighlightCheck(self, &message);
+				isHighlight = RCHighlightCheck(self, &message);
                 msg = [[NSString stringWithFormat:@"%c[%@] -%c%02d%@%c-%c %@", RCIRCAttributeBold, time, RCIRCAttributeInternalNickname, uhash, from, RCIRCAttributeInternalNicknameEnd, RCIRCAttributeBold, message] retain];
             } else {
                 [[[self delegate] consoleChannel] recievedMessage:[message retain] from:from type:RCMessageTypeNotice];
@@ -349,8 +349,6 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
             msg = @"unk_event";
             break;
 	}
-	BOOL isHighlight = NO;
-	if ((type == RCMessageTypeNormal || type == RCMessageTypeAction || type == RCMessageTypeNotice) && ![from isEqualToStringNoCase:[delegate useNick]]) isHighlight = is_highlight;
 	[panel postMessage:msg withType:type highlight:isHighlight isMine:([from isEqualToString:[delegate useNick]])];
 	if (type == RCMessageTypeNormal || type == RCMessageTypeNormalE || type == RCMessageTypeAction)
 		[self shouldPost:isHighlight withMessage:msg];

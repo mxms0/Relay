@@ -125,7 +125,7 @@
 
             var cnt = 0;
             var nowrem = 0;
-            var maxscrollback = 5;
+            var maxscrollback = 150;
 					
             function createMessage(needsCenter) {
                 if (cnt >= maxscrollback) {
@@ -158,16 +158,6 @@
 					dx.removeChild(dx.firstChild);
 				}
 			}
-			
-            /*
-             scrollToBottom() - REQUIRED BY RELAY
-                Abstract:
-                    Scrolls to the bottom of the page.
-                Arguments:
-                    None.
-                Return Value:
-                    None.
-             */
 			
             function scrollToBottom() {
                 window.scrollTo(0, document.body.scrollHeight);
