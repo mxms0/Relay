@@ -23,6 +23,7 @@
 - (id)initWithRootViewController:(RCViewController *)rc;
 + (id)sharedController;
 - (CGRect)frameForChatPanel;
+- (CGFloat)suggestionLocation;
 - (BOOL)isLandscape;
 - (BOOL)isShowingChatListView;
 - (void)selectChannel:(NSString *)channel fromNetwork:(RCNetwork *)net;

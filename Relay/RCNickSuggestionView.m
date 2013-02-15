@@ -19,7 +19,7 @@ static id _nInstance = nil;
 
 - (id)init {
 	if ((self = [super init])) {
-		[self setFrame:CGRectMake(10, 0, 280, 46)];
+		[self setFrame:CGRectMake(10, 0, 280, 34)];
 		[self setBackgroundColor:[UIColor clearColor]];
 	}
 	return self;
@@ -28,7 +28,7 @@ static id _nInstance = nil;
 - (void)drawRect:(CGRect)rect {
 	[super drawRect:rect];
 	UIImage *img = [[UIImage imageNamed:@"0_sugbg"] stretchableImageWithLeftCapWidth:8 topCapHeight:6];
-	[img drawInRect:CGRectMake(0, 0, self.frame.size.width, 46)];
+	[img drawInRect:CGRectMake(0, 0, self.frame.size.width, 34)];
 }
 
 - (void)showAtPoint:(CGPoint)p withNames:(NSArray *)names {
@@ -52,7 +52,7 @@ static id _nInstance = nil;
 		UIView *vv = (UIView *)[[self subviews] objectAtIndex:([[self subviews] count]-1)];
 		yx = (vv.frame.size.width + vv.frame.origin.x);
 	}
-	[ex setFrame:CGRectMake(yx, 0, 48, 30)];
+	[ex setFrame:CGRectMake(yx, 0, 48, 34)];
 	[ex setImage:[UIImage imageNamed:@"0_exx"] forState:UIControlStateNormal];
 	[ex addTarget:self action:@selector(dismiss) forControlEvents:UIControlEventTouchUpInside];
 	[self addSubview:ex];

@@ -910,6 +910,10 @@ char *RCIPForURL(NSString *URL) {
     
 }
 
+- (void)handle301:(NSString *)nickIsAway {
+	NSLog(@"HI %@", nickIsAway);
+}
+
 - (void)handle306:(NSString *)znc {
 	NSLog(@"Implying this is a znc.");
 	NSScanner *scanner = [[NSScanner alloc] initWithString:znc];
@@ -991,7 +995,7 @@ char *RCIPForURL(NSString *URL) {
 }
 
 - (void)handle313:(NSString *)badassIRCOP {
-
+	MARK;
 }
 
 - (void)handle318:(NSString *)threeeighteen {

@@ -23,6 +23,7 @@
 	UITextField *field;
 	RCTextFieldBackgroundView *_bar;
 	CGFloat chatViewHeights[2];
+	CGFloat suggestionLocation;
 }
 @property (nonatomic, assign) RCChannel *channel;
 @property (nonatomic, readonly) NSMutableArray *messages;

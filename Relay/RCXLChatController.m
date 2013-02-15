@@ -17,4 +17,8 @@
 		return CGRectMake(0, 43, 320, 465);
 }
 
+- (CGFloat)suggestionLocation {
+	return 228;
+}
+
 @end

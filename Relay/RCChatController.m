@@ -529,4 +529,8 @@ static RCNetwork *currentNetwork = nil;
 	}
 }
 
+- (CGFloat)suggestionLocation {
+	return 140;
+}
+
 @end

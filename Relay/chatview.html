@@ -28,27 +28,6 @@
  invalid
  Should never be used, but in case things go wrong with the IRC engine, this color is used. It should be mapped as default-foreground (if used as fgcolor) or default-background (if used as bgcolor).
  
- Flags (used in setFlags):
- H: Present if the message is highlighted.
- M: Present if the message has been sent by the local user.
- 
- Types (used in setFlags):
- ACTION - a /me message
- NORMAL - a normal message
- NOTICE - a notice
- TOPIC  - topic
- JOIN   - a join event
- PART   - a part event
- QUIT   - a quit event
- BAN    - a ban event
- KICK   - a kick event
- MODE   - a mode event
- ERROR  - an error event
- EXCEPTION - an exception event
- EVENT  - a generic event (e.g. disconnected, you parted from this channel, etc..)
- For links to be open, you should prefix each link with a "link:" prefix. E.g. http://google.com becomes link:http://google.com
- They will be open with an external application. 
- 
  For further questions, contact the Relay team.
  -->
 <html>
@@ -122,15 +101,13 @@
             }
 		</style>
 		<script>
-
             var cnt = 0;
-            var nowrem = 0;
             var maxscrollback = 150;
 					
             function createMessage(needsCenter) {
                 if (cnt >= maxscrollback) {
-                    nowrem++;
-					document.getElementById('chat').removeChild(document.getElementById('msg' + nowrem));
+					var dx = document.body.firstElementChild;
+					dx.removeChild(dx.firstElementChild);
                 }
                 cnt++;
                 var newdiv = document.createElement('p');
@@ -153,9 +130,9 @@
 			}
 			
 			function clearMessages() {
-				var dx = document.getElementById('chat');
-				while (dx.firstChild) {
-					dx.removeChild(dx.firstChild);
+				var dx = document.body.firstElementChild;
+				while (dx.firstElementChild) {
+					dx.removeChild(dx.firstElementChild);
 				}
 			}
 			

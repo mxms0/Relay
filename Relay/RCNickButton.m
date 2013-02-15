@@ -21,7 +21,7 @@
 
 - (void)drawRect:(CGRect)rect {
 	[UIColorFromRGB(0x91979b) set];
-	UIRectFill(CGRectMake(self.frame.size.width-1, 1, 1, 25));
+	UIRectFill(CGRectMake(self.frame.size.width-1, 1, 1, 29));
 }
 
 @end

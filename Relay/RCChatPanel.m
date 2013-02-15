@@ -55,6 +55,7 @@
 		[panr setDelegate:[RCChatController sharedController]];
 		[[mainView scrollView] addGestureRecognizer:panr];
 		[panr release];
+		suggestionLocation = [[RCChatController sharedController] suggestionLocation];
 	}
 	return self;
 }
@@ -189,8 +190,8 @@
 			dispatch_sync(dispatch_get_main_queue(), ^{
 				if ([found count] > 0) {
 					[[RCNickSuggestionView sharedInstance] setRange:rr inputField:tf];
-					[self insertSubview:[RCNickSuggestionView sharedInstance] atIndex:[[self subviews] count]];
-					[[RCNickSuggestionView sharedInstance] showAtPoint:CGPointMake(10, 230) withNames:found];
+					[self insertSubview:[RCNickSuggestionView sharedInstance] atIndex:[[self subviews] count]];						
+					[[RCNickSuggestionView sharedInstance] showAtPoint:CGPointMake(10, suggestionLocation) withNames:found];
 				}
 				else {
 					[[RCNickSuggestionView sharedInstance] dismiss];
