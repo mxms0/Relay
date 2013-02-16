@@ -122,6 +122,7 @@
 	if (self.highlight)
 		[final appendString:@"</font>"];
 	[self setString:(NSString *)final];
+	[final release];
 }
 
 - (void)dealloc {

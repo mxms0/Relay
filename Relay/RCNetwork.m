@@ -588,7 +588,7 @@ char *RCIPForURL(NSString *URL) {
 	else {
 		RCChannel *chan = [self consoleChannel];
 		[chan recievedMessage:rest from:@"" type:RCMessageTypeNormal];
-		NSLog(@"PLZ IMPLEMENT %s %@", (char *)pSEL, msg);
+		NSLog(@"PLZ IMPLEMENT %s %@", sel_getName(pSEL), msg);
 		NSLog(@"Meh. %@\r\n%@", cmd, rest);	
 	}
 	[scanner release];
@@ -607,7 +607,7 @@ char *RCIPForURL(NSString *URL) {
 	_isDiconnecting = YES;
 	if (status == RCSocketStatusClosed) return NO;
 	if ((status == RCSocketStatusConnected) || (status == RCSocketStatusConnecting)) {
-		[self sendMessage:[@"QUIT :" stringByAppendingString:([msg isEqualToString:@"Disconnected."] ? [self defaultQuitMessage] : msg)]];
+		[self sendMessage:[@"QUIT :" stringByAppendingString:([msg isEqualToString:@"Disconnected."] ? [self defaultQuitMessage] : msg)] canWait:NO];
 		status = RCSocketStatusClosed;
 		if (sendQueue) [sendQueue release];
 		sendQueue = nil;
@@ -620,7 +620,6 @@ char *RCIPForURL(NSString *URL) {
 		isRegistered = NO;
 		for (RCChannel *_chan in _channels) {
 			[_chan disconnected:msg];
-			NSLog(@"hi");
 		}
 	}
 	_isDiconnecting = NO;
@@ -674,10 +673,10 @@ char *RCIPForURL(NSString *URL) {
 		[scanner scanUpToString:@" " intoString:&crap];
 		[scanner scanUpToString:@" " intoString:&meee];
 		[scanner setScanLocation:[scanner scanLocation]+1];
-		[scanner scanUpToString:@"\r\n" intoString:&crap];
+		[scanner scanUpToString:@"" intoString:&crap];
 	}
 	@catch (NSException *exception) {
-		NSLog(@"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF %s", (char *)_cmd);
+		MARK;
 	}
 	useNick = [meee retain];
 	//:Welcome to the IRCNode Internet Relay Chat Network Maximus|ZNC
@@ -841,10 +840,10 @@ char *RCIPForURL(NSString *URL) {
 		[scanner scanUpToString:@" " intoString:&crap];
 		[scanner scanUpToString:@" " intoString:&crap];
 		[scanner setScanLocation:[scanner scanLocation]+1];
-		[scanner scanUpToString:@"\r\n" intoString:&crap];
+		[scanner scanUpToString:@"" intoString:&crap];
 	}
 	@catch (NSException *exception) {
-		NSLog(@"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF %s", (char *)_cmd);
+		MARK;
 	}
 	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
 	RCChannel *chan = [self consoleChannel];
@@ -865,10 +864,10 @@ char *RCIPForURL(NSString *URL) {
 		[scanner scanUpToString:@" " intoString:&crap];
 		[scanner scanUpToString:@" " intoString:&crap];
 		[scanner setScanLocation:[scanner scanLocation]+1];
-		[scanner scanUpToString:@"\r\n" intoString:&crap];
+		[scanner scanUpToString:@"" intoString:&crap];
 	}
 	@catch (NSException *exception) {
-		NSLog(@"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF %s", (char *)_cmd);
+		MARK;
 	}
 	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
 	RCChannel *chan = [self consoleChannel];
@@ -907,7 +906,6 @@ char *RCIPForURL(NSString *URL) {
 	//	if ([[[[[RCNavigator sharedNavigator] currentPanel] channel] delegate] isEqual:self]) {
 	//	[[[RCNavigator sharedNavigator] currentPanel] postMessage:@"You are no longer being marked as away" withType:RCMessageTypeEvent	highlight:NO];
 	//}
-    
 }
 
 - (void)handle301:(NSString *)nickIsAway {
@@ -927,7 +925,6 @@ char *RCIPForURL(NSString *URL) {
 		self.useNick = me;
 	}
 	[scanner release];
-	
 	// :fr.ac3xx.com 305 MaxZNC :You are no longer marked as being away
 }
 
@@ -1090,7 +1087,7 @@ char *RCIPForURL(NSString *URL) {
 	[_scanner scanUpToString:@" " intoString:&crap];
 	[_scanner scanUpToString:@" " intoString:&to];
 	[_scanner scanUpToString:@" " intoString:&room];
-	[_scanner scanUpToString:@"\r\n" intoString:&_topic];
+	[_scanner scanUpToString:@"" intoString:&_topic];
     if ([_topic hasPrefix:@":"]) {
         _topic = [_topic substringFromIndex:1];
     }
@@ -1135,7 +1132,7 @@ char *RCIPForURL(NSString *URL) {
 	[scanner scanUpToString:@" " intoString:&me];
 	[scanner scanUpToString:@" " intoString:&crap];
 	[scanner scanUpToString:@" " intoString:&room];
-	[scanner scanUpToString:@"\r\n" intoString:&users];
+	[scanner scanUpToString:@"" intoString:&users];
 	if ([users length] > 1) {
 		users = [users substringFromIndex:1];
 		NSArray *_someUsers = [users componentsSeparatedByString:@" "];
@@ -1161,13 +1158,13 @@ char *RCIPForURL(NSString *URL) {
 		[scanner scanUpToString:@" " intoString:&crap];
 		[scanner scanUpToString:@" " intoString:&crap];
 		[scanner scanUpToString:@" " intoString:&crap];
-		[scanner scanUpToString:@"\r\n" intoString:&crap];
+		[scanner scanUpToString:@"" intoString:&crap];
         if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
         RCChannel *chan = [self consoleChannel];
         if (chan) [chan recievedMessage:crap from:@" MOTD" type:RCMessageTypeNormal];
 	}
 	@catch (NSException *exception) {
-		NSLog(@"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF %s", (char *)_cmd);
+		MARK;
 	}
 	[scanner release];
 	// :irc.saurik.com 375 _m :irc.saurik.com message of the day
@@ -1182,10 +1179,10 @@ char *RCIPForURL(NSString *URL) {
 		[scanner scanUpToString:@" " intoString:&crap];
 		[scanner scanUpToString:@" " intoString:&crap];
 		[scanner setScanLocation:[scanner scanLocation]+1];
-		[scanner scanUpToString:@"\r\n" intoString:&crap];
+		[scanner scanUpToString:@"" intoString:&crap];
 	}
 	@catch (NSException *exception) {
-		NSLog(@"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF %s", (char *)_cmd);
+		MARK;
 	}
 	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
 	RCChannel *chan = [self consoleChannel];
@@ -1404,7 +1401,7 @@ char *RCIPForURL(NSString *URL) {
 		return;
 	}
 	RCParseUserMask(from, &from, nil, nil);
-	[_scans scanUpToString:@"\r\n" intoString:&msg];
+	[_scans scanUpToString:@"" intoString:&msg];
 	if ([nick isEqualToString:useNick]) {
 		msg = [msg substringFromIndex:1];
 	}
@@ -1437,7 +1434,7 @@ char *RCIPForURL(NSString *URL) {
 	[_scanner scanUpToString:@" " intoString:&from];
 	[_scanner scanUpToString:@" " intoString:&cmd];
 	[_scanner scanUpToString:@" " intoString:&room];
-	[_scanner scanUpToString:@"\r\n" intoString:&msg];
+	[_scanner scanUpToString:@"" intoString:&msg];
 	msg = [msg substringFromIndex:1];
 	from = [from substringFromIndex:1];
 	RCParseUserMask(from, &from, nil, nil);
@@ -1513,7 +1510,7 @@ char *RCIPForURL(NSString *URL) {
 	[_scanner scanUpToString:@" " intoString:&cmd];
 	[_scanner scanUpToString:@" " intoString:&room];
 	[_scanner scanUpToString:@" " intoString:&usr];
-	[_scanner scanUpToString:@"\r\n" intoString:&msg];
+	[_scanner scanUpToString:@"" intoString:&msg];
 	user = [user substringFromIndex:1];
 	if ([msg hasPrefix:@":"]) {
 		msg = [msg substringFromIndex:1];
@@ -1627,7 +1624,7 @@ char *RCIPForURL(NSString *URL) {
 	[_scanner scanUpToString:@" " intoString:&user];
 	[_scanner scanUpToString:@" " intoString:&cmd];
 	[_scanner scanUpToString:@" " intoString:&room];
-	[_scanner scanUpToString:@"\r\n" intoString:&msg];
+	[_scanner scanUpToString:@"" intoString:&msg];
 	user = [user substringFromIndex:1];
 	if ([msg hasPrefix:@":"]) {
 		msg = [msg substringFromIndex:1];
@@ -1636,7 +1633,6 @@ char *RCIPForURL(NSString *URL) {
 		msg = @"";
 	}
 	msg = [msg stringByReplacingOccurrencesOfString:@"\r\n" withString:@""];
-	NSLog(@"fuck fuck //%@ //%@ //%@\\//%@\\//%@ ", parted, user, cmd, room, msg);
 	RCParseUserMask(user, &_nick, nil, nil);
 	if ([_nick isEqualToString:useNick]) {
 		NSLog(@"I went byebye. Notify the police");
@@ -1729,8 +1725,6 @@ char *RCIPForURL(NSString *URL) {
 }
 
 - (void)handlePING:(NSString *)pong {
-	NSLog(@"Ping");
-	NSLog(@"Pong");
 	if ([pong hasPrefix:@"PING "]) {
 		[self sendMessage:[@"PONG " stringByAppendingString:[pong substringFromIndex:5]] canWait:NO];
 	}
@@ -1775,7 +1769,6 @@ char *RCIPForURL(NSString *URL) {
 	newTopic = [newTopic substringFromIndex:1];
 	from = [from substringFromIndex:1];
 	RCParseUserMask(from, &from, nil, nil);
-		NSLog(@"hi %@ %@ %@ %@", from, cmd,room, newTopic);
 	[[self channelWithChannelName:room] recievedMessage:newTopic from:from type:RCMessageTypeTopic];
 	[_scan release];
 }

@@ -33,6 +33,13 @@
 
 - (void)handleDATE:(NSString *)dt net:(RCNetwork *)net channel:(RCChannel *)chan {
 	// The date & time is currently: Sunday, February 10, 2013 6:32:47 PM
+	NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
+	[fmt setDateStyle:NSDateFormatterFullStyle];
+	[fmt setTimeStyle:NSDateFormatterFullStyle];
+	NSString *date = [@"The date & time is currently: " stringByAppendingString:[fmt stringFromDate:[NSDate date]]];
+	[net sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", [chan channelName], date]];
+	[chan recievedMessage:date from:[net useNick] type:RCMessageTypeNormal];
+	[fmt release];
 }
 
 - (void)handleTWEET:(NSString *)tw net:(RCNetwork *)net channel:(RCChannel *)chan {
@@ -48,6 +55,9 @@
 			[al show];
 			[al release];
 		}
+	}
+	else {
+		[chan recievedMessage:@"This feature requires iOS6+" from:@"" type:RCMessageTypeError];
 	}
 }
 
