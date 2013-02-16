@@ -37,12 +37,12 @@ static id _eInstance = nil;
 
 - (void)handleCommand:(NSString *)command fromNetwork:(RCNetwork *)net forChannel:(RCChannel *)chan {
 	@synchronized(self) {
-		NSString *_cmd;
+		NSString *cmd_;
 		NSString *_crap;
 		NSScanner *scan = [[NSScanner alloc] initWithString:command];
-		[scan scanUpToString:@" " intoString:&_cmd];
-		_cmd = [_cmd lowercaseString];
-		NSArray *info = [cmds objectForKey:_cmd];
+		[scan scanUpToString:@" " intoString:&cmd_];
+		cmd_ = [cmd_ lowercaseString];
+		NSArray *info = [cmds objectForKey:cmd_];
 		if (info && ([info count] == 2)) {
 			SEL call = NSSelectorFromString([info objectAtIndex:0]);
 			Class target = NSClassFromString([info objectAtIndex:1]);
