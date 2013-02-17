@@ -14,6 +14,8 @@
 #include <stdlib.h>
 #import "TestFlight.h"
 #import "RCAddNetworkController.h"
+#include <pwd.h>
+
 
 @implementation RCAppDelegate
 
@@ -64,7 +66,6 @@ static BOOL isSetup = NO;
     [self.window makeKeyAndVisible];
 	
 	[self performSelectorInBackground:@selector(_setup) withObject:nil];
-	[self configureUI];
 	return YES;
 }
 
@@ -72,21 +73,23 @@ static BOOL isSetup = NO;
 	dispatch_async(dispatch_get_main_queue(), ^{
 		[self configureUI];
 		if (!isSetup) {
+			char *hdir = getenv("HOME");
+			if (!hdir) {
+				NSLog(@"CAN'T FIND HOME DIRECTORY TO LOAD NETWORKS");
+				exit(1);
+			}
+			NSString *absol = [NSString stringWithFormat:@"%s/Documents/Networks.plist", hdir];
 			NSFileManager *manager = [NSFileManager defaultManager];
-			NSString *path = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingString:PREFS_PLIST];
-			[[NSUserDefaults standardUserDefaults] setObject:path forKey:PREFS_PLIST];
-			[[NSUserDefaults standardUserDefaults] synchronize];
-			if (![manager fileExistsAtPath:PREFS_ABSOLUT]) {
-				if (![manager createFileAtPath:PREFS_ABSOLUT contents:(NSData *)[NSDictionary dictionary] attributes:NULL]) {
-					NSLog(@"fucked.");
-					// fucked.
+			if (![manager fileExistsAtPath:absol]) {
+				if (![manager createFileAtPath:absol contents:(NSData *)[NSDictionary dictionary] attributes:NULL]) {
+					NSLog(@"Could not create temporary networks property list.");
 				}
 			}
 			[[RCNetworkManager sharedNetworkManager] setIsBG:NO];
 			[[RCNetworkManager sharedNetworkManager] unpack];
 			isSetup = YES;
-			[TestFlight takeOff:@"35b8aa0d259ae0c61c57bc770aeafe63_Mzk5NDYyMDExLTExLTA5IDE4OjQ0OjEwLjc4MTM3MQ"];
-			[TestFlight setDeviceIdentifier:[[UIDevice currentDevice] uniqueIdentifier]];
+	//		[TestFlight takeOff:@"35b8aa0d259ae0c61c57bc770aeafe63_Mzk5NDYyMDExLTExLTA5IDE4OjQ0OjEwLjc4MTM3MQ"];
+	//		[TestFlight setDeviceIdentifier:[[UIDevice currentDevice] uniqueIdentifier]];
 		}
 	});	
 }

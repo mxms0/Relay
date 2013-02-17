@@ -55,7 +55,6 @@ static NSMutableArray *networks = nil;
 		}
 		else {
 			reloadNetworks();
-			[self jumpToFirstNetworkAndConsole];
 		}
 		[self saveNetworks];
 	}
@@ -75,7 +74,7 @@ static NSMutableArray *networks = nil;
 	isSetup = YES;
 	_printMotd = YES;
 	@autoreleasepool {
-		NSMutableDictionary *dict = [[[NSMutableDictionary alloc] initWithContentsOfFile:PREFS_ABSOLUT] autorelease];
+		NSMutableDictionary *dict = [[[NSMutableDictionary alloc] initWithContentsOfFile:[self networkPreferencesPath]] autorelease];
 		if (!dict) {
 			isSetup = NO;
 			return;
@@ -90,7 +89,6 @@ static NSMutableArray *networks = nil;
 			[self ircNetworkWithInfo:_info isNew:NO];
 		}
 	}
-	reloadNetworks();
 	[self jumpToFirstNetworkAndConsole];
 	reloadNetworks();
 	isSetup = NO;
@@ -103,6 +101,16 @@ static NSMutableArray *networks = nil;
 	return nil;
 }
 
+- (NSString *)networkPreferencesPath {
+	char *hdir = getenv("HOME");
+	if (!hdir) {
+		NSLog(@"CAN'T FIND HOME DIRECTORY TO LOAD NETWORKS");
+		exit(1);
+	}
+	NSString *absol = [[NSString stringWithFormat:@"%s/Documents/Networks.plist", hdir] retain];
+	return [absol autorelease];
+}
+
 - (void)saveNetworks {
 	if (isSetup) return;
 	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
@@ -112,7 +120,7 @@ static NSMutableArray *networks = nil;
 	}
 	NSString *error;
 	NSData *saveData = [NSPropertyListSerialization dataFromPropertyList:dict format:NSPropertyListBinaryFormat_v1_0 errorDescription:&error];
-	if (![saveData writeToFile:PREFS_ABSOLUT atomically:NO]) {
+	if (![saveData writeToFile:[self networkPreferencesPath] atomically:NO]) {
 		NSLog(@"Couldn't save.. :(%@)", error);
 	}
 }

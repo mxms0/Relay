@@ -185,8 +185,7 @@ static RCNetwork *currentNetwork = nil;
 	switch ([alertView tag]) {
 		case DEL_CONFIRM_KEY:
 			if (buttonIndex == 1) {
-				[[NSNotificationCenter defaultCenter] postNotificationName:@"us.mxms.relay.del" object:nil];
-				//				[[RCNetworkManager sharedNetworkManager] removeNet:currentNetwork];
+				[[NSNotificationCenter defaultCenter] postNotificationName:@"us.mxms.relay.del" object:[currentNetwork _description]];
 				currentNetwork = nil;
 			}
 			break;

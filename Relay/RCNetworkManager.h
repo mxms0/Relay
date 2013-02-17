@@ -25,6 +25,7 @@
 - (BOOL)replaceNetwork:(RCNetwork *)net withNetwork:(RCNetwork *)net;
 - (void)jumpToFirstNetworkAndConsole;
 - (void)addNetwork:(RCNetwork *)net;
+- (NSString *)networkPreferencesPath;
 - (NSMutableArray *)networks;
 - (void)removeNet:(RCNetwork *)net;
 - (void)saveNetworks;
