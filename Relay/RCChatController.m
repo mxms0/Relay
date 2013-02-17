@@ -150,11 +150,6 @@ static RCNetwork *currentNetwork = nil;
 	if (buttonIndex == 0) {
 		[actionSheet dismissWithClickedButtonIndex:buttonIndex animated:YES];
 		[self showDeleteConfirmationForNetwork];
-		/*
-		 [[RCNetworkManager sharedNetworkManager] removeNet:currentNetwork];
-		 reloadNetworks();
-		 */
-		//	currentIndex--;
 	}
 	else if (buttonIndex == 1) {
 		RCAddNetworkController *addNet = [[RCAddNetworkController alloc] initWithNetwork:currentNetwork];
@@ -192,7 +187,6 @@ static RCNetwork *currentNetwork = nil;
 		default:
 			break;
 	}
-	
 }
 
 - (void)closeWithDuration:(NSTimeInterval)dr {

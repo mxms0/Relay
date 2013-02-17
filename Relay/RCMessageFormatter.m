@@ -126,7 +126,7 @@
 }
 
 - (void)dealloc {
-	// [self setString:nil];
+	[self setString:nil];
 	[super dealloc];
 }
 @end

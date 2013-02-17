@@ -463,8 +463,8 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
     unsigned int cpos = 0;
     unsigned int lpos = 0;
     BOOL isNick = NO;
-    NSString* istring = self;
-    NSMutableString* ret = [NSMutableString stringWithCapacity:[self length]];
+    NSString *istring = self;
+    NSMutableString *ret = [NSMutableString stringWithCapacity:[self length]];
     while (cpos - [istring length]) {
         switch ([istring characterAtIndex:cpos++]) {
             case RCIRCAttributeBold:
