@@ -52,6 +52,8 @@ static id _inst = nil;
 	rootView = rc;
 	canDragMainView = YES;
 	CGSize frame = [[UIScreen mainScreen] applicationFrame].size;
+	chatViewHeights[0] = frame.height-83;
+	chatViewHeights[1] = frame.height-299;
 	UIViewController *base = [[UIViewController alloc] init];
 	UIViewController *baseTwo = [[UIViewController alloc] init];
 	UIViewController *baseThree = [[UIViewController alloc] init];
@@ -85,6 +87,27 @@ static id _inst = nil;
 	[spr setDelegate:self];
 	[rc.view addGestureRecognizer:spr];
 	[spr release];
+	_bar = [[RCTextFieldBackgroundView alloc] initWithFrame:CGRectMake(0, 300, 320, 40)];
+	[_bar setOpaque:YES];
+	field = [[RCTextField alloc] initWithFrame:CGRectMake(15, 5, 299, 31)];
+	[field setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
+	[field setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+	[field setReturnKeyType:UIReturnKeySend];
+	[field setTextColor:UIColorFromRGB(0x3E3F3F)];
+	[field setFont:[UIFont fontWithName:@"Helvetica" size:12]];
+	[field setMinimumFontSize:17];
+	[field setAdjustsFontSizeToFitWidth:YES];
+	[field setDelegate:self];
+	[field setAutocapitalizationType:UITextAutocapitalizationTypeNone];
+	[field setClearButtonMode:UITextFieldViewModeWhileEditing];
+	[_bar addSubview:field];
+	[field release];
+	[navigationController.view insertSubview:_bar atIndex:3];
+	UIPanGestureRecognizer *panr = [[UIPanGestureRecognizer alloc] initWithTarget:[RCChatController sharedController] action:@selector(userSwiped:)];
+	[panr setDelegate:[RCChatController sharedController]];
+	[navigationController.view addGestureRecognizer:panr];
+	[panr release];
+	suggestLocation = [self suggestionLocation];
 }
 
 - (void)correctSubviewFrames {
@@ -92,7 +115,7 @@ static id _inst = nil;
 	[leftView setFrame:CGRectMake(0, 0, fsize.width, fsize.height)];
 	[navigationController setFrame:CGRectMake(0, 0, fsize.width, fsize.height)];
 	canDragMainView = YES;
-	[currentPanel setEntryFieldEnabled:YES];
+	[self setEntryFieldEnabled:YES];
 	[currentPanel setFrame:CGRectMake(currentPanel.frame.origin.x, currentPanel.frame.origin.y, fsize.width, fsize.height)];
 	[[[[navigationController topViewController] navigationItem] leftBarButtonItem] setEnabled:YES];
 	[UIView animateWithDuration:0.25 animations:^ {
@@ -100,6 +123,111 @@ static id _inst = nil;
 	} completion:^(BOOL fin) {
 		[topView findShadowAndDoStuffToIt];
 	}];
+}
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+	[self repositionKeyboardForUse:YES animated:YES];
+	[currentPanel scrollToBottom];
+	return YES;
+}
+
+- (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
+	[self repositionKeyboardForUse:NO animated:YES];
+	return YES;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+	if ([textField.text isEqualToString:@""] || textField.text == nil) return NO;
+	NSString *appstore_txt = [textField.text retain];
+	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
+	dispatch_async(queue, ^ {
+		dispatch_sync(dispatch_get_main_queue(), ^ {
+			[[currentPanel channel] userWouldLikeToPartakeInThisConversation:appstore_txt];
+			[appstore_txt release];
+		});
+	});
+	//	[self performSelectorInBackground:@selector(__reallySend:) withObject:textField.text];
+	[textField setText:@""];
+	[[RCNickSuggestionView sharedInstance] dismiss];
+	return NO;
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+	if ([[currentPanel channel] isPrivate]) return YES;
+	NSString *text = [[textField text] retain]; // has to be obtained from a main thread.
+	UITextField *tf = [textField retain];
+	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
+	dispatch_async(queue, ^ {
+		NSString *lolhaiqwerty = text;
+		NSRange rr = NSMakeRange(0, range.location + string.length);
+		lolhaiqwerty = [lolhaiqwerty stringByReplacingCharactersInRange:range withString:string];
+		for (int i = (range.location + string.length-1); i >= 0; i--) {
+			if ([lolhaiqwerty characterAtIndex:i] == ' ') {
+				rr.location = i + 1;
+				rr.length = ((range.location + string.length) - rr.location);
+				break;
+			}
+		}
+		NSString *personMayb = [lolhaiqwerty substringWithRange:rr];
+#if LOGALL
+		NSLog(@"Word of SAY is [%@]", personMayb);
+#endif
+		if (!personMayb) {
+			dispatch_sync(dispatch_get_main_queue(), ^{
+				[[RCNickSuggestionView sharedInstance] dismiss];
+				[tf release];
+				[text release]; // may cause crash.
+				return;
+			});
+		}
+		else if ([personMayb length] == 0) {
+			dispatch_sync(dispatch_get_main_queue(), ^{
+				[[RCNickSuggestionView sharedInstance] dismiss];
+				[tf release];
+			});
+		}
+		else if ([personMayb length] > 1) {
+			NSArray *found = [[currentPanel channel] usersMatchingWord:personMayb];
+			dispatch_sync(dispatch_get_main_queue(), ^{
+				if ([found count] > 0) {
+					[[RCNickSuggestionView sharedInstance] setRange:rr inputField:tf];
+					[navigationController.view insertSubview:[RCNickSuggestionView sharedInstance] atIndex:5];
+					[[RCNickSuggestionView sharedInstance] showAtPoint:CGPointMake(10, suggestLocation) withNames:found];
+				}
+				else {
+					[[RCNickSuggestionView sharedInstance] dismiss];
+				}
+				[tf release];
+			});
+		}
+		else {
+			dispatch_sync(dispatch_get_main_queue(), ^{
+				[[RCNickSuggestionView sharedInstance] dismiss];
+				[tf release];
+			});
+		}
+		[text release]; // may cause crash.
+	});
+	return YES;
+}
+
+- (void)repositionKeyboardForUse:(BOOL)us animated:(BOOL)anim {
+	if (anim) {
+		[UIView beginAnimations:nil context:nil];
+		[UIView setAnimationDuration:0.25];
+	}
+	CGRect main = CGRectMake(0, 43, 320, chatViewHeights[(int)us]);
+	[currentPanel setFrame:main];
+	[_bar setFrame:CGRectMake(0, currentPanel.frame.origin.y + currentPanel.frame.size.height, 320, 40)];
+	
+	if (anim) [UIView commitAnimations];
+	if (!us) {
+		[[RCNickSuggestionView sharedInstance] dismiss];
+	}
+}
+
+- (void)setEntryFieldEnabled:(BOOL)en {
+	[field setEnabled:en];
 }
 
 - (BOOL)isLandscape {
@@ -193,7 +321,7 @@ static RCNetwork *currentNetwork = nil;
 	[UIView animateWithDuration:dr animations:^{
 		[navigationController.view setFrame:CGRectMake(0, 0, navigationController.view.frame.size.width, navigationController.view.frame.size.height)];
 	} completion:^(BOOL fin) {
-		[currentPanel setEntryFieldEnabled:YES];
+		[self setEntryFieldEnabled:YES];
 		[navigationController findShadowAndDoStuffToIt];
 	}];
 }
@@ -205,8 +333,8 @@ static RCNetwork *currentNetwork = nil;
 	[navigationController findShadowAndDoStuffToIt];
 	[UIView commitAnimations];
 	
-	[currentPanel resignFirstResponder];
-	[currentPanel setEntryFieldEnabled:NO];
+	//	[currentPanel resignFirstResponder];
+	[self setEntryFieldEnabled:NO];
 	[self dismissMenuOptions];
 }
 
@@ -235,13 +363,13 @@ static RCNetwork *currentNetwork = nil;
 	[topView findShadowAndDoStuffToIt];
 	[UIView commitAnimations];
 	[currentPanel resignFirstResponder];
-	[currentPanel setEntryFieldEnabled:NO];
+	[self setEntryFieldEnabled:NO];
 	[self dismissMenuOptions];
 }
 
 - (void)popUserListWithDuration:(NSTimeInterval)dr {
 	canDragMainView = YES;
-	[currentPanel setEntryFieldEnabled:YES];
+	[self setEntryFieldEnabled:YES];
 	[[[[navigationController topViewController] navigationItem] leftBarButtonItem] setEnabled:YES];
 	[UIView animateWithDuration:dr animations:^ {
 		[topView setFrame:CGRectMake(topView.view.frame.size.width, 0, topView.view.frame.size.width, topView.view.frame.size.height)];
@@ -507,23 +635,23 @@ static RCNetwork *currentNetwork = nil;
 		return;
 	}
 	RCChatPanel *panel = [chan panel];
-	[panel setFrame:[self frameForChatPanel]];
+	[panel setFrame:CGRectMake(0, 43, 320, chatViewHeights[0])];
+	[_bar setFrame:CGRectMake(0, panel.frame.origin.y+panel.frame.size.height, _bar.frame.size.width, _bar.frame.size.height)];
 	currentPanel = panel;
 	[topView setChannel:chan];
-	[navigationController.view insertSubview:panel atIndex:3];
+	[navigationController.view insertSubview:panel atIndex:4];
 	[((RCChatNavigationBar *)[navigationController navigationBar]) setTitle:[chan channelName]];
 	NSString *sub = [net _description];
 	if (![[net server] isEqualToString:[net _description]])
 		sub = [NSString stringWithFormat:@"%@ – %@", [net _description], [net server]];
 	[((RCChatNavigationBar *)[navigationController navigationBar]) setSubtitle:sub];
 	[((RCChatNavigationBar *)[navigationController navigationBar]) setNeedsDisplay];
-	if (navigationController.view.frame.origin.x > 0) {
-		[self menuButtonPressed:nil];	
-	}
+	if (navigationController.view.frame.origin.x > 0)
+		[self menuButtonPressed:nil];
 }
 
 - (CGFloat)suggestionLocation {
-	return 140;
+	return 184;
 }
 
 @end

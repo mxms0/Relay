@@ -31,7 +31,7 @@
 	newMessageCount = 0;
     userRanksAdv = [NSMutableDictionary new];
     fullUserList = [[NSMutableArray alloc] init];
-    panel = [[RCChatPanel alloc] initWithStyle:UITableViewStylePlain andChannel:self];
+    panel = [[RCChatPanel alloc] initWithChannel:self];
 	[fullUserList addObject:chan];
 }
 

@@ -10,31 +10,22 @@
 #import "RCTextField.h"
 #import "RCMessageFormatter.h"
 #import "RCTextFieldBackgroundView.h"
-#import "RCChatView.h"
 #import "RCNickSuggestionView.h"
 
 @class RCChannel;
-@interface RCChatPanel : UIView <UITextFieldDelegate> {
-	@public
-	RCChatView *mainView;
+@interface RCChatPanel : UIWebView <UITextFieldDelegate> {
 	RCChannel *channel;
-	NSMutableString *currentWord;
-	NSString *prev;
 	UITextField *field;
+	NSMutableArray *preloadPool;
 	RCTextFieldBackgroundView *_bar;
 	CGFloat chatViewHeights[2];
 	CGFloat suggestionLocation;
 }
 @property (nonatomic, assign) RCChannel *channel;
 @property (nonatomic, readonly) NSMutableArray *messages;
-@property (nonatomic, readonly) RCChatView *mainView;
 
-- (id)initWithStyle:(UITableViewStyle)style andChannel:(RCChannel *)chan;
+- (id)initWithChannel:(RCChannel *)chan;
 - (void)postMessage:(NSString *)_message withType:(RCMessageType)tr highlight:(BOOL)high;
 - (void)postMessage:(NSString *)_message withType:(RCMessageType)rr highlight:(BOOL)high isMine:(BOOL)mine;
-- (void)repositionKeyboardForUse:(BOOL)key animated:(BOOL)an;
-- (void)setHidesEntryField:(BOOL)entry;
-- (void)becomeFirstResponderNoAnimate;
-- (void)setEntryFieldEnabled:(BOOL)en;
-- (void)didPresentView;
+- (void)scrollToBottom;
 @end

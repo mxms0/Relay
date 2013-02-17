@@ -38,7 +38,6 @@
 		501F2B3215098C6C0099C9C3 /* 0_shadow_t@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 501F2B3015098C6C0099C9C3 /* 0_shadow_t@2x.png */; };
 		501F2B3D150995DE0099C9C3 /* RCTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 501F2B3C150995DE0099C9C3 /* RCTableView.m */; };
 		50221BA414EF6CB800C7AF58 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50221BA314EF6CB800C7AF58 /* CoreText.framework */; };
-		5027643015DA0F07005F026E /* RCChatView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5027642F15DA0F07005F026E /* RCChatView.m */; };
 		502A66D215BCC3C30009C890 /* 0_alertview.png in Resources */ = {isa = PBXBuildFile; fileRef = 502A66CE15BCC3C30009C890 /* 0_alertview.png */; };
 		502A66D315BCC3C30009C890 /* 0_alertview@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 502A66CF15BCC3C30009C890 /* 0_alertview@2x.png */; };
 		502A66D615BCC79F0009C890 /* 0_alertview_mask.png in Resources */ = {isa = PBXBuildFile; fileRef = 502A66D415BCC79F0009C890 /* 0_alertview_mask.png */; };
@@ -253,7 +252,6 @@
 		500F48D0163B853E00387192 /* RCChatsListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCChatsListViewController.h; sourceTree = "<group>"; };
 		500F48D1163B853E00387192 /* RCChatsListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCChatsListViewController.m; sourceTree = "<group>"; };
 		5010ABBA166A6C16001AEDF5 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
-		50136C0415C3668E0044666F /* RCChatView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCChatView.h; sourceTree = "<group>"; };
 		50150FB3163DBB3400B78D62 /* RCBaseNavigationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCBaseNavigationViewController.h; sourceTree = "<group>"; };
 		50150FB4163DBB3400B78D62 /* RCBaseNavigationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCBaseNavigationViewController.m; sourceTree = "<group>"; };
 		50150FB6163DC62600B78D62 /* RCChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCChatViewController.h; sourceTree = "<group>"; };
@@ -269,7 +267,6 @@
 		501F2B3B150995DE0099C9C3 /* RCTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTableView.h; sourceTree = "<group>"; };
 		501F2B3C150995DE0099C9C3 /* RCTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTableView.m; sourceTree = "<group>"; };
 		50221BA314EF6CB800C7AF58 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
-		5027642F15DA0F07005F026E /* RCChatView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCChatView.m; sourceTree = "<group>"; };
 		502A66CE15BCC3C30009C890 /* 0_alertview.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_alertview.png; sourceTree = "<group>"; };
 		502A66CF15BCC3C30009C890 /* 0_alertview@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_alertview@2x.png"; sourceTree = "<group>"; };
 		502A66D415BCC79F0009C890 /* 0_alertview_mask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_alertview_mask.png; sourceTree = "<group>"; };
@@ -575,8 +572,6 @@
 				503742281511478300F4DA1A /* RCUserListPanel.m */,
 				50E77A661505A18700E75C64 /* RCChatPanel.h */,
 				50E77A671505A18700E75C64 /* RCChatPanel.m */,
-				50136C0415C3668E0044666F /* RCChatView.h */,
-				5027642F15DA0F07005F026E /* RCChatView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1170,7 +1165,6 @@
 				50F1A65815D215E50013CD13 /* RCBasicTextInputCell.m in Sources */,
 				50F1A65C15D216CA0013CD13 /* RCBasicTableViewCell.m in Sources */,
 				EAF79C3B15D77E9C0075AF47 /* NSString+IRCStringSupport.m in Sources */,
-				5027643015DA0F07005F026E /* RCChatView.m in Sources */,
 				50F0BFCE15DF73DC001B3F50 /* RCChannelInfo.m in Sources */,
 				50CBC371162B83D300E9EB43 /* RCInviteRequestAlert.m in Sources */,
 				50EF9310162CD54C00DE3443 /* RCBasicCommands.m in Sources */,

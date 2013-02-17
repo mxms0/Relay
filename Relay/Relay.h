@@ -51,7 +51,96 @@ static inline void NOLog(NSString* a, ...) {
 	#define READ_BUF_LEN 4096
 	#define CMLog(format, ...) NSLog(@"(%s) in [%s:%d] ::: %@", __PRETTY_FUNCTION__, __FILE__, __LINE__, [NSString stringWithFormat:format, ## __VA_ARGS__])
 	#define MARK CMLog(@"%s", __PRETTY_FUNCTION__);
-	//typedef NSMutableAttributedString RCAttributedString;
+
+	static inline BOOL readNumber(int* num, BOOL* isThereComma, unsigned int* size_of_num, NSString* istring);
+	static inline BOOL readNumber(int* num, BOOL* isThereComma, unsigned int* size_of_num, NSString* istring) {
+		if ([istring length] - *size_of_num) {
+			unichar n1 = [istring characterAtIndex:*size_of_num];
+			NSLog(@"%c!", n1);
+			if ('0' <= n1 && n1 <= '9' && (n1 & 0xFF00) == 0) {
+				NSLog(@"-> %c!", n1);
+				*size_of_num = (*size_of_num) + 1;
+				*num = n1 - '0';
+				if ([istring length] - *size_of_num) {
+					unichar n2 = [istring characterAtIndex:*size_of_num];
+					if ('0' <= n2 && n2 <= '9' && (n2 & 0xFF00) == 0) {
+						*size_of_num = (*size_of_num) + 1;
+						*num =  (n1 - '0') * 10 +  (n2 - '0');
+						if ([istring length] - *size_of_num) {
+							unichar n3 = [istring characterAtIndex:*size_of_num];
+							if (n3 == ','  && (n3 & 0xFF00) == 0 && *isThereComma == YES) {
+								*size_of_num = (*size_of_num) + 1;
+								*isThereComma = YES; // nullop basically.
+								return YES;
+							}
+							else {
+								*isThereComma = NO;
+								return YES;
+							}
+						}
+					}
+					else if ( n2 == ',' && *isThereComma == YES) {
+						*size_of_num = (*size_of_num) + 1;
+						*isThereComma = YES; // nullop basically.
+						return YES;
+					}
+					else {
+						*isThereComma = NO;
+						return YES;
+					}
+				}
+			}
+			else {
+#if LOGALL
+				MARK;
+#endif
+				*isThereComma = NO;
+				return NO;
+			}
+		}
+		else {
+#if LOGALL
+			MARK;
+#endif
+			*isThereComma = NO;
+			return NO;
+		}
+		return NO;
+	}
+
+	static NSString *str2col[] = {
+		@"white", // white
+		@"black", // black
+		@"navy", // blue
+		@"green", // green
+		@"red", // red
+		@"maroon", // brown
+		@"purple", // purple
+		@"orange", // orange
+		@"yellow", // yellow
+		@"lime", // lime
+		@"teal", // teal
+		@"lightcyan", // light cyan
+		@"royalblue", // light blue
+		@"fuchsia", // pink
+		@"grey", // grey
+		@"silver", // light grey
+		nil
+	};
+	inline NSString *colorForIRCColor(char irccolor);
+	inline NSString *colorForIRCColor(char irccolor) {
+		if (irccolor == -1) {
+			return @"default-foreground";
+		}
+		if (irccolor == -2) {
+			return @"default-background";
+		}
+		if (irccolor >= 16) {
+			return @"invalid";
+		}
+		return str2col[irccolor];
+	}
+
 	typedef enum RCMessageType {
 		RCMessageTypeAction = 0,
 		RCMessageTypeNormal,
@@ -67,6 +156,16 @@ static inline void NOLog(NSString* a, ...) {
         RCMessageTypeEvent,
 		RCMessageTypeNormalE
 	} RCMessageType;
+
+	enum RCIRCAttribute {
+		RCIRCAttributeColor = 0x03,
+		RCIRCAttributeBold = 0x02,
+		RCIRCAttributeReset = 0x0F,
+		RCIRCAttributeItalic = 0x16,
+		RCIRCAttributeUnderline = 0x1F,
+		RCIRCAttributeInternalNickname = 0x04,
+		RCIRCAttributeInternalNicknameEnd = 0x05
+	};
 
 	static inline void reloadNetworks(void);
 	static inline void reloadNetworks(void) {

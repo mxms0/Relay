@@ -11,95 +11,30 @@
 #import <CoreText/CoreText.h>
 
 @implementation RCChatPanel
-@synthesize messages, channel, mainView;
+@synthesize messages, channel;
 
-- (id)initWithStyle:(UITableViewStyle)style andChannel:(RCChannel *)chan {
+static NSString *template = nil;
+
+- (id)initWithChannel:(RCChannel *)chan {
 	if ((self = [super init])) {
-		[self setBackgroundColor:[UIColor clearColor]];
 		[self setChannel:chan];
-		mainView = [[RCChatView alloc] initWithFrame:CGRectMake(0, 0, 320, 344)];
-        [mainView setChatpanel:self];
-		[self addSubview:mainView];
-		UITapGestureRecognizer *tapper = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(resignFirstResponder)];
-		[tapper setNumberOfTapsRequired:2];
-		[tapper setNumberOfTouchesRequired:1];
-		[tapper setCancelsTouchesInView:NO];
-		[mainView addGestureRecognizer:tapper];
-		[tapper release];
-		[mainView release];
-		currentWord = [[NSMutableString alloc] init];
-		prev = @"";
-		_bar = [[RCTextFieldBackgroundView alloc] initWithFrame:CGRectMake(0, 343, 320, 40)];
-		[_bar setOpaque:NO];
-		field = [[RCTextField alloc] initWithFrame:CGRectMake(15, 5, 299, 31)];
-		[field setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
-		[field setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
-		[field setBorderStyle:UITextBorderStyleNone];
-		[field setKeyboardAppearance:UIKeyboardAppearanceDefault];
-		[field setReturnKeyType:UIReturnKeySend];
-		[field setTextColor:UIColorFromRGB(0x3e3f3f)];
-		[field setFont:[UIFont fontWithName:@"Helvetica" size:12]];
-		[field setMinimumFontSize:17];
-		[field setAdjustsFontSizeToFitWidth:YES];
-		[field setDelegate:self];
-		[field setAutocapitalizationType:UITextAutocapitalizationTypeNone];
-		[field setClearButtonMode:UITextFieldViewModeWhileEditing];
-		[_bar addSubview:field];
-		[field release];
-		[self addSubview:_bar];
-		[_bar release];
-		CGRect sc = [[UIScreen mainScreen] applicationFrame];
-		chatViewHeights[0] = sc.size.height-83;
-		chatViewHeights[1] = sc.size.height-299;
-		UIPanGestureRecognizer *panr = [[UIPanGestureRecognizer alloc] initWithTarget:[RCChatController sharedController] action:@selector(userSwiped:)];
-		[panr setDelegate:[RCChatController sharedController]];
-		[[mainView scrollView] addGestureRecognizer:panr];
-		[panr release];
-		suggestionLocation = [[RCChatController sharedController] suggestionLocation];
+		[self setBackgroundColor:[UIColor clearColor]];
+		self.opaque = NO;
+		if (!template) {
+			template = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"chatview" ofType:@"html"] encoding:NSUTF8StringEncoding error:nil];
+			template = [[NSString stringWithFormat:template, [[NSBundle mainBundle] pathForResource:@"0_jaggs@2x" ofType:@"png"]]retain];
+		}
+		preloadPool = [[NSMutableArray alloc] init];
+		self.dataDetectorTypes = (UIDataDetectorTypeLink | UIDataDetectorTypePhoneNumber);
+		self.delegate = (id<UIWebViewDelegate>)self;
+		[[self scrollView] setShowsHorizontalScrollIndicator:NO];
+		[[self scrollView] setShowsHorizontalScrollIndicator:NO];
+		[[self scrollView] setShowsVerticalScrollIndicator:NO];//just incase
+        [[self scrollView] setDecelerationRate:UIScrollViewDecelerationRateNormal];
+        [[self scrollView] setScrollsToTop:YES];
+		[self loadHTMLString:template baseURL:[NSURL URLWithString:@""]];	
 	}
 	return self;
-}
-
-- (void)didPresentView {
-    [mainView scrollToBottom];
-}
-
-- (void)setFrame:(CGRect)frame {
-	CGRect sc = [[UIScreen mainScreen] applicationFrame];
-	chatViewHeights[0] = sc.size.height-83;
-	chatViewHeights[1] = sc.size.height-299;
-	[_bar setFrame:CGRectMake(0, frame.size.height, frame.size.width, 40)];
-	[self repositionKeyboardForUse:[field isFirstResponder] animated:NO];
-	[super setFrame:CGRectMake(0, frame.origin.y, frame.size.width, frame.size.height+40)];
-}
-
-- (BOOL)isFirstResponder {
-	return [field isFirstResponder];
-}
-
-- (BOOL)becomeFirstResponder {
-	[self repositionKeyboardForUse:YES animated:YES];
-	[field becomeFirstResponder];
-	return YES;
-}
-
-- (void)becomeFirstResponderNoAnimate {
-	[self repositionKeyboardForUse:YES animated:NO];
-	[field becomeFirstResponder];
-}
-
-- (void)textFieldDidEndEditing:(UITextField *)textField {
-	[self repositionKeyboardForUse:NO animated:YES];
-}
-
-- (BOOL)resignFirstResponder {
-	[self repositionKeyboardForUse:NO animated:YES];
-	[field resignFirstResponder];
-	return YES;
-}
-
-- (void)setHidesEntryField:(BOOL)entry {
-	[_bar setHidden:entry];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
@@ -112,102 +47,82 @@
 			[appstore_txt release];			
 		});
 	});
-	//	[self performSelectorInBackground:@selector(__reallySend:) withObject:textField.text];
 	[textField setText:@""];
 	[[RCNickSuggestionView sharedInstance] dismiss];
 	return NO;
 }
 
-- (void)__reallySend:(NSString *)msg {
-	[channel performSelectorOnMainThread:@selector(userWouldLikeToPartakeInThisConversation:) withObject:msg waitUntilDone:NO];
-}
-
-- (void)textFieldDidBeginEditing:(UITextField *)textField {
-	[textField setEnablesReturnKeyAutomatically:!(textField.text != nil && ![textField.text isEqualToString:@""])];
-	[self repositionKeyboardForUse:YES animated:YES];
-    [mainView scrollToBottom];
-}
-
-- (void)setEntryFieldEnabled:(BOOL)en {
-	[field setEnabled:en];
-}
-
-- (void)repositionKeyboardForUse:(BOOL)key animated:(BOOL)anim {
-	if (anim) {
-		[UIView beginAnimations:nil context:NULL];
-		[UIView setAnimationDuration:0.25];
+- (BOOL)webView:(UIWebView *)webView2 shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
+	NSString *requestString = [[request URL] absoluteString];
+	if ([requestString isEqualToString:@"file:///"])
+		return YES;
+    if ([requestString hasPrefix:@"link:"]) {
+        NSLog(@"should open link: %@", [requestString substringFromIndex:[@"link:" length]]);
+        NSString *escaped = [[requestString substringFromIndex:[@"link:" length]] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:escaped]];
+        return NO;
+    }
+	else if ([requestString hasPrefix:@"channel:"]) {
+		NSLog(@"should join: %@", [requestString substringFromIndex:[@"channel:" length]]);
+		NSString *escaped = [[requestString substringFromIndex:[@"channel:" length]] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+		RCChannel *ch = [[(RCChannel *)[self channel] delegate] addChannel:escaped join:YES];
+		if (ch) {
+			[[RCChatController sharedController] selectChannel:[ch channelName] fromNetwork:nil];
+		}
+		reloadNetworks();
+		// select network here.
+		return NO;
+		
 	}
-	CGRect main = CGRectMake(0, 0, 320, chatViewHeights[(int)key]);
-	[mainView setFrame:main];
-	[_bar setFrame:CGRectMake(0, mainView.frame.origin.x+mainView.frame.size.height, mainView.frame.size.width, 40)];
-	field.frame = CGRectMake(15, 5, _bar.frame.size.width-21, 31);
-	if (anim) [UIView commitAnimations];
-	[mainView setNeedsDisplay];
-	[_bar performSelectorOnMainThread:@selector(setNeedsDisplay) withObject:nil waitUntilDone:NO];
-	if (!key) [[RCNickSuggestionView sharedInstance] dismiss];
+	else {
+		[[UIApplication sharedApplication] openURL:[request URL]];
+	}
+    return NO;
 }
 
-- (CGRect)frameForInputField:(BOOL)activ {
-	return [[RCChatController sharedController] frameForInputField:activ];
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView {
+    @synchronized(self) {
+		NSMutableArray *pre_pool = preloadPool;
+		preloadPool = nil;
+		for (RCMessageFormatter *ms in pre_pool) {
+			[self layoutMessage:ms];
+		}
+		[pre_pool release];
+	}
 }
 
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-	if ([channel isPrivate]) return YES;
-	NSString *text = [[textField text] retain]; // has to be obtained from a main thread.
-	UITextField *tf = [textField retain];
-	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
-	dispatch_async(queue, ^ {
-		NSString *lolhaiqwerty = text;
-		NSRange rr = NSMakeRange(0, range.location + string.length);
-		lolhaiqwerty = [lolhaiqwerty stringByReplacingCharactersInRange:range withString:string];
-		for (int i = (range.location + string.length-1); i >= 0; i--) {
-			if ([lolhaiqwerty characterAtIndex:i] == ' ') {
-				rr.location = i + 1;
-				rr.length = ((range.location + string.length) - rr.location);
-				break;
-			}
+- (void)layoutMessage:(RCMessageFormatter *)ms {
+	@synchronized(self) {
+		if (preloadPool) {
+			NSLog(@"GOING SWIMMMING");
+			[preloadPool addObject:ms];
+			return;
 		}
-		NSString *personMayb = [lolhaiqwerty substringWithRange:rr];
-#if LOGALL
-		NSLog(@"Word of SAY is [%@]", personMayb);
-#endif
-		if (!personMayb) {
-			dispatch_sync(dispatch_get_main_queue(), ^{
-				[[RCNickSuggestionView sharedInstance] dismiss];
-				[tf release];
-				[text release]; // may cause crash.
-				return;
-			});
-		}
-		else if ([personMayb length] == 0) {
-			dispatch_sync(dispatch_get_main_queue(), ^{
-				[[RCNickSuggestionView sharedInstance] dismiss];
-				[tf release];
-			});
-		}
-		else if ([personMayb length] > 1) {
-			NSArray *found = [channel usersMatchingWord:personMayb];
-			dispatch_sync(dispatch_get_main_queue(), ^{
-				if ([found count] > 0) {
-					[[RCNickSuggestionView sharedInstance] setRange:rr inputField:tf];
-					[self insertSubview:[RCNickSuggestionView sharedInstance] atIndex:[[self subviews] count]];						
-					[[RCNickSuggestionView sharedInstance] showAtPoint:CGPointMake(10, suggestionLocation) withNames:found];
-				}
-				else {
-					[[RCNickSuggestionView sharedInstance] dismiss];
-				}
-				[tf release];
-			});
+	}
+	[ms retain];
+	dispatch_async(dispatch_get_main_queue(), ^(void) {
+		NSString *name = nil;
+		if (ms.needsCenter) {
+			name = [self stringByEvaluatingJavaScriptFromString:@"createMessage(true);"];
 		}
 		else {
-			dispatch_sync(dispatch_get_main_queue(), ^{
-				[[RCNickSuggestionView sharedInstance] dismiss];
-				[tf release];
-			});
+			name = [self stringByEvaluatingJavaScriptFromString:@"createMessage(false);"];
 		}
-		[text release]; // may cause crash.
+		NSString *res = [self stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"postMessage('%@', '%@', %@)", name, ms.string, (self.scrollView.tracking ? @"false" : @"true")]];
+		[ms release];
 	});
-	return YES;
+}
+
+- (void)scrollToBottom {
+    [self stringByEvaluatingJavaScriptFromString:@"scrollToBottom();"];
+}
+
+- (void)layoutSubviews {
+	for (UIView *subv in [[[self subviews] objectAtIndex:0] subviews]) {
+		if ([subv isKindOfClass:[UIImageView class]])
+			[subv setHidden:YES];
+	}
 }
 
 - (void)postMessage:(NSString *)_message withType:(RCMessageType)type highlight:(BOOL)high {
@@ -219,15 +134,14 @@
 	RCMessageFormatter *message = [[RCMessageFormatter alloc] initWithMessage:_message isOld:NO isMine:mine isHighlight:high type:type];
 	dispatch_async(dispatch_get_main_queue(), ^ {
 		[message format];
-		[mainView layoutMessage:message];
-		[mainView setNeedsDisplay];
+		[self layoutMessage:message];
+		[self setNeedsDisplay];
 		[message release];
 		[_message release];
 	});
 }
 
 - (void)dealloc {
-	[currentWord release];
 	[super dealloc];
 }
 

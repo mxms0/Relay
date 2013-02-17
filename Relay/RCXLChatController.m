@@ -18,7 +18,7 @@
 }
 
 - (CGFloat)suggestionLocation {
-	return 228;
+	return 272;
 }
 
 @end

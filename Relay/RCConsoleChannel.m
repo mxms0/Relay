@@ -6,7 +6,6 @@
 //
 
 #import "RCConsoleChannel.h"
-#import "RCChatView.h"
 #import "RCNetwork.h"
 
 @implementation RCConsoleChannel

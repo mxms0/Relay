@@ -7,7 +7,6 @@
 
 #import "NSString+IRCStringSupport.h"
 #import <CoreText/CoreText.h>
-#import "RCChatView.h"
 typedef struct {
 	NSString *escapeSequence;
 	unichar uchar;

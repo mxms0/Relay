@@ -9,12 +9,16 @@
 #import "RCViewController.h"
 
 @class RCChatViewController, RCChatsListViewController, RCUserListViewController;
-@interface RCChatController : NSObject <UIAlertViewDelegate, UIActionSheetDelegate, UIGestureRecognizerDelegate> {
+@interface RCChatController : NSObject <UIAlertViewDelegate, UIActionSheetDelegate, UIGestureRecognizerDelegate, UITextFieldDelegate> {
 	RCViewController *rootView;
 	RCChatViewController *navigationController;
 	RCChatsListViewController *leftView;
 	RCChatPanel *currentPanel;
 	RCUserListViewController *topView;
+	RCTextFieldBackgroundView *_bar;
+	RCTextField *field;
+	CGFloat chatViewHeights[2];
+	CGFloat suggestLocation;
 	BOOL draggingUserList;
 	BOOL canDragMainView;
 }
@@ -22,10 +26,10 @@
 @property (nonatomic, assign) BOOL canDragMainView;
 - (id)initWithRootViewController:(RCViewController *)rc;
 + (id)sharedController;
-- (CGRect)frameForChatPanel;
 - (CGFloat)suggestionLocation;
 - (BOOL)isLandscape;
 - (BOOL)isShowingChatListView;
+- (void)setEntryFieldEnabled:(BOOL)en;
 - (void)selectChannel:(NSString *)channel fromNetwork:(RCNetwork *)net;
 - (void)rotateToInterfaceOrientation:(UIInterfaceOrientation)oi;
 - (void)pushUserListWithDefaultDuration;

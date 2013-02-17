@@ -9,7 +9,6 @@
 #import "RCNetwork.h"
 #import "RCNetworkManager.h"
 #import "TestFlight.h"
-#import "RCChatView.h"
 #import "NSString+IRCStringSupport.h"
 #import "RCChannelManager.h"
 #import "RCChatController.h"
@@ -113,7 +112,7 @@ UIImage *RCImageForRank(NSString *rank, RCNetwork* network) {
 	newMessageCount = 0;
     userRanksAdv = [NSMutableDictionary new];
     fullUserList = [[NSMutableArray alloc] init];
-    panel = [[RCChatPanel alloc] initWithStyle:UITableViewStylePlain andChannel:self];
+    panel = [[RCChatPanel alloc] initWithChannel:self];
 }
 
 - (id)initWithChannelName:(NSString *)_chan {
