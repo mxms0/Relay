@@ -9,6 +9,7 @@
 #import "NSString+Utils.h"
 
 @implementation NSString (RCUtils)
+
 - (BOOL)isEqualToStringNoCase:(NSString *)string {
 	return (CFStringCompare((CFStringRef)self, (CFStringRef)string, kCFCompareCaseInsensitive) == kCFCompareEqualTo);
 }
@@ -37,10 +38,9 @@
 	return [self recursivelyRemovePrefix:sfx];
 }
 
-
 - (NSString *)base64 {
-	NSData *dd = [self dataUsingEncoding: NSASCIIStringEncoding];
-	const uint8_t *input = (const uint8_t*)[dd bytes];
+	NSData *dd = [self dataUsingEncoding:NSASCIIStringEncoding];
+	const uint8_t *input = (const uint8_t *)[dd bytes];
 	NSInteger length = [dd length];
 	
 	static char table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";

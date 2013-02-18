@@ -20,6 +20,7 @@
 	CGFloat chatViewHeights[2];
 	CGFloat suggestLocation;
 	BOOL draggingUserList;
+	BOOL nickSuggestionDisabled;
 	BOOL canDragMainView;
 }
 @property (nonatomic, retain) RCChatPanel *currentPanel;

@@ -54,7 +54,7 @@ static id _nInstance = nil;
 	}
 	[ex setFrame:CGRectMake(yx, 0, 48, 34)];
 	[ex setImage:[UIImage imageNamed:@"0_exx"] forState:UIControlStateNormal];
-	[ex addTarget:self action:@selector(dismiss) forControlEvents:UIControlEventTouchUpInside];
+	[ex addTarget:[RCChatController sharedController] action:@selector(nickSuggestionCancelled) forControlEvents:UIControlEventTouchUpInside];
 	[self addSubview:ex];
 	[ex release];
 	[self setFrame:CGRectMake(p.x, p.y, (ex.frame.size.width + ex.frame.origin.x + 2), self.frame.size.height)];

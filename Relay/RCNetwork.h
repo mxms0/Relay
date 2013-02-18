@@ -89,7 +89,6 @@ typedef enum RCSocketStatus {
 @property (nonatomic, assign) BOOL shouldRequestSPass;
 @property (nonatomic, assign) BOOL shouldRequestNPass;
 @property (nonatomic, assign) RCChannelManager *namesCallback;
-@property (nonatomic, assign) RCChannel *currentChannel;
 @property (nonatomic, assign) BOOL _selected;
 @property (nonatomic, assign) BOOL expanded;
 + (RCNetwork *)networkWithInfoDictionary:(NSDictionary *)dict;
@@ -97,7 +96,7 @@ typedef enum RCSocketStatus {
 - (NSString *)_description;
 - (void)connect;
 - (BOOL)disconnect;
-- (RCChannel*)consoleChannel;
+- (RCChannel *)consoleChannel;
 - (BOOL)isConnected;
 - (void)connectOrDisconnectDependingOnCurrentStatus;
 - (BOOL)sendMessage:(NSString *)msg;

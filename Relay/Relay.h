@@ -108,39 +108,6 @@ static inline void NOLog(NSString* a, ...) {
 		return NO;
 	}
 
-	static NSString *str2col[] = {
-		@"white", // white
-		@"black", // black
-		@"navy", // blue
-		@"green", // green
-		@"red", // red
-		@"maroon", // brown
-		@"purple", // purple
-		@"orange", // orange
-		@"yellow", // yellow
-		@"lime", // lime
-		@"teal", // teal
-		@"lightcyan", // light cyan
-		@"royalblue", // light blue
-		@"fuchsia", // pink
-		@"grey", // grey
-		@"silver", // light grey
-		nil
-	};
-	inline NSString *colorForIRCColor(char irccolor);
-	inline NSString *colorForIRCColor(char irccolor) {
-		if (irccolor == -1) {
-			return @"default-foreground";
-		}
-		if (irccolor == -2) {
-			return @"default-background";
-		}
-		if (irccolor >= 16) {
-			return @"invalid";
-		}
-		return str2col[irccolor];
-	}
-
 	typedef enum RCMessageType {
 		RCMessageTypeAction = 0,
 		RCMessageTypeNormal,

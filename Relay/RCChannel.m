@@ -228,8 +228,8 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 
 - (void)changeNick:(NSString *)old toNick:(NSString *)new_ {
 	if (new_) {
-		NSString* full_old = [self nickAndRankForNick:old];
-		NSString* old_rank = RCUserRank(full_old, [self delegate]);
+		NSString *full_old = [self nickAndRankForNick:old];
+		NSString *old_rank = RCUserRank(full_old, [self delegate]);
 		if (old && full_old) {
 			if (!old_rank) old_rank = @"";
 			[self setUserLeft:old];

@@ -8,7 +8,6 @@
 #import "RCChatPanel.h"
 #import "RCChannel.h"
 #import "RCChatController.h"
-#import <CoreText/CoreText.h>
 
 @implementation RCChatPanel
 @synthesize messages, channel;
@@ -72,14 +71,12 @@ static NSString *template = nil;
 		reloadNetworks();
 		// select network here.
 		return NO;
-		
 	}
 	else {
 		[[UIApplication sharedApplication] openURL:[request URL]];
 	}
     return NO;
 }
-
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     @synchronized(self) {

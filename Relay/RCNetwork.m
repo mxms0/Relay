@@ -18,7 +18,7 @@
 
 @implementation RCNetwork
 
-@synthesize prefix, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _nicknames, shouldRequestSPass, shouldRequestNPass, namesCallback, currentChannel, expanded, _selected, SASL;
+@synthesize prefix, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _nicknames, shouldRequestSPass, shouldRequestNPass, namesCallback, expanded, _selected, SASL;
 
 - (RCChannel *)consoleChannel {
     @synchronized(_channels) {
@@ -250,8 +250,6 @@
 - (void)removeChannel:(RCChannel *)chan withMessage:(NSString *)quitter {
     @synchronized(self) {
         if (!chan) return;
-        if ([[self.currentChannel channelName] isEqual:[chan channelName]])
-            self.currentChannel = [self consoleChannel];
         [chan setJoined:NO withArgument:quitter];
 		reloadNetworks();
         [_channels removeObject:chan];
@@ -481,7 +479,7 @@ SSL_CTX *RCInitContext(void) {
 
 char *RCIPForURL(NSString *URL) {
 	char *hostname = (char *)[URL UTF8String];
-	struct addrinfo hints, *res; // leaks says this is leaking. :C
+	struct addrinfo hints, *res;
 	struct in_addr addr;
 	int err;
 	memset(&hints, 0, sizeof(hints));
@@ -515,7 +513,6 @@ char *RCIPForURL(NSString *URL) {
 			else {
 				if (send(sockfd, [msg UTF8String], strlen([msg UTF8String]), 0) < 0) {
 					NSLog(@"BLASPHEMYY");
-                //		[self errorOccured:[oStream streamError]];
 					return NO;
 				}
 				else {
@@ -525,7 +522,6 @@ char *RCIPForURL(NSString *URL) {
 			}
 		}
 	}
-	// this whole sendqueue shit needs to be cleaned up majorly.
 	NSLog(@"Adding to queue... %@:%d:%d",msg, (int)canWait, (int)isRegistered);
 	if (!sendQueue) sendQueue = [[NSMutableString alloc] init];
 	[sendQueue appendFormat:@"%@\r\n", msg];
@@ -565,7 +561,7 @@ char *RCIPForURL(NSString *URL) {
 		//msg = [msg substringFromIndex:1];
 		//	NSDateFormatter *df = [[NSDateFormatter alloc] init];
 		//[df setDateFormat:@"YYYY-MM-DDThh:mm:ss.sssZ"];
-		///	NSDate *aDate = [df dateFromString:nil];
+		//	NSDate *aDate = [df dateFromString:nil];
 		NSLog(@"IRV3 I C. %@", msg);
 		return;
 	}

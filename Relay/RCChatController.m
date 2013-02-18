@@ -99,6 +99,7 @@ static id _inst = nil;
 	[field setAdjustsFontSizeToFitWidth:YES];
 	[field setDelegate:self];
 	[field setAutocapitalizationType:UITextAutocapitalizationTypeNone];
+	[field setAutocorrectionType:UITextAutocorrectionTypeNo];
 	[field setClearButtonMode:UITextFieldViewModeWhileEditing];
 	[_bar addSubview:field];
 	[field release];
@@ -154,6 +155,8 @@ static id _inst = nil;
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
 	if ([[currentPanel channel] isPrivate]) return YES;
+	if ([string rangeOfString:@" "].location != NSNotFound) nickSuggestionDisabled = NO;
+	if (nickSuggestionDisabled) return YES;
 	NSString *text = [[textField text] retain]; // has to be obtained from a main thread.
 	UITextField *tf = [textField retain];
 	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
@@ -295,6 +298,11 @@ static RCNetwork *currentNetwork = nil;
 		// cancel.
 		// kbye
 	}
+}
+
+- (void)nickSuggestionCancelled {
+	nickSuggestionDisabled = YES;
+	[[RCNickSuggestionView sharedInstance] dismiss];
 }
 
 - (void)showDeleteConfirmationForNetwork {
@@ -625,6 +633,8 @@ static RCNetwork *currentNetwork = nil;
 		if ([subv isKindOfClass:[RCChatPanel class]])
 			[subv removeFromSuperview];
 	}
+	[field resignFirstResponder];
+	[self setEntryFieldEnabled:YES];
 	RCNetwork *net = _net;
 	if (!_net) net = [[currentPanel channel] delegate];
 	RCChannel *chan = [net channelWithChannelName:channel];

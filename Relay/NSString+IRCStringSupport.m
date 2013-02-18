@@ -491,7 +491,6 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
                     itc = NO;
                     readNumber(&b, &itc, &cpos, istring);
                 } 
-                NSLog(@"Using %d and %d (%d,%d) [%@]", a, b, cpos, lpos, [istring substringFromIndex:cpos]);
                 // BOOL readNumber(int* num, BOOL* isThereComma, int* size_of_num, char* data, int size);
                 lpos = cpos;
                 break;
