@@ -71,7 +71,7 @@
 - (void)setChannel:(RCChannel *)chan {
 	[currentChan setUsersPanel:nil];
 	[self setCurrentChan:chan];
-	NSString *set = @"Memberlist";
+	NSString *set = @"Member List";
 	if ([chan isKindOfClass:[RCPMChannel class]]) {
 		set = [chan channelName];
 	}

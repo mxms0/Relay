@@ -21,12 +21,36 @@
 		self.textLabel.shadowOffset = CGSizeMake(0, 1);
 		self.selectionStyle = UITableViewCellSelectionStyleNone;
 		isWhois = NO;
+		fakeSelected = NO;
     }
     return self;
 }
 
 - (void)layoutSubviews {
 	[super layoutSubviews];
+}
+
+- (void)setSelected:(BOOL)selected {
+	[super setSelected:selected];
+	[self setNeedsDisplay];
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+	fakeSelected = YES;
+	[self setNeedsDisplay];
+	[super touchesBegan:touches withEvent:event];
+}
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+	fakeSelected = NO;
+	[self setNeedsDisplay];
+	[super touchesMoved:touches withEvent:event];
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+	fakeSelected = NO;
+	[self setNeedsDisplay];
+	[super touchesEnded:touches withEvent:event];
 }
 
 - (void)drawRect:(CGRect)rect {
@@ -43,7 +67,7 @@
 			whois = [[NSString stringWithFormat:@"%@ is in %@\r\nHELLO", [chan channelName], [chan chanInfos]] mutableCopy];
 		}
 		else {
-			whois = [@"Loading .. .\r\nHELLOWAT\r\r\r\n\n\nWAT" mutableCopy];
+			whois = [@"Loading.. (not really)" mutableCopy];
 		}
 		if (!whois) return;
 		if (!NSClassFromString(@"NSRegularExpression")) return;
@@ -69,7 +93,7 @@
 
 	else {
 		UIImage *bg = [UIImage imageNamed:@"0_strangebg"];
-		[bg drawAsPatternInRect:CGRectMake(0, 0, rect.size.width, rect.size.height)];
+		[bg drawInRect:CGRectMake(0, 0, rect.size.width, rect.size.height+1) blendMode:(fakeSelected ? kCGBlendModeDarken : kCGBlendModeNormal) alpha:(fakeSelected ? 0.6 : 1.0)];
 	}
 	if (!isLast) {
 		UIImage *ul = [UIImage imageNamed:@"0_usl"];

@@ -15,6 +15,7 @@
 #import "RCChatController.h"
 #import "RCAlternateNicknamesManager.h"
 #import "RCPrettyAlertView.h"
+#import "RCACMViewController.h"
 
 @interface RCAddNetworkController : RCBasicViewController <UITextFieldDelegate, UIScrollViewDelegate> {
 	NSMutableDictionary *datas;

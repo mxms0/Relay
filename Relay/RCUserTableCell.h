@@ -11,6 +11,7 @@
 @interface RCUserTableCell : RCBasicTableViewCell {
 	BOOL isLast;
 	BOOL isWhois;
+	BOOL fakeSelected;
 }
 @property (nonatomic, assign) BOOL isLast;
 @property (nonatomic, assign) BOOL isWhois;

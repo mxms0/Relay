@@ -128,7 +128,6 @@ NSString *colorForIRCColor(char irccolor) {
 				break;
 			}
 			case RCIRCAttributeInternalNickname:
-
 				cpos++;
 				nDepth++;
 				if (nDepth) {

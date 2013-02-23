@@ -487,7 +487,12 @@ _end:
 				[self.navigationController pushViewController:roomsController animated:YES];
 				[roomsController release];
 			}
-            if (indexPath.row == 1) {
+			else if (indexPath.row == 2) {
+				RCACMViewController *acm = [[RCACMViewController alloc] initWithStyle:UITableViewStyleGrouped];
+				[self.navigationController pushViewController:acm animated:YES];
+				[acm release];
+			}
+            else if (indexPath.row == 1) {
                 RCAlternateNicknamesManager *nickManager = [[RCAlternateNicknamesManager alloc] initWithStyle:UITableViewStyleGrouped andNetwork:network];
 				[self.navigationController pushViewController:nickManager animated:YES];
 				[nickManager release];

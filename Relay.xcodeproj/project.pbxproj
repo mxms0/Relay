@@ -101,6 +101,7 @@
 		50728FE915E0BCB7008D2630 /* 0_navbtn_p@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50728FE515E0BCB7008D2630 /* 0_navbtn_p@2x.png */; };
 		50728FEA15E0BCB7008D2630 /* 0_navbtn.png in Resources */ = {isa = PBXBuildFile; fileRef = 50728FE615E0BCB7008D2630 /* 0_navbtn.png */; };
 		50728FEB15E0BCB7008D2630 /* 0_navbtn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50728FE715E0BCB7008D2630 /* 0_navbtn@2x.png */; };
+		5076D81E16D1D5E800CCFA31 /* RCACMViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5076D81D16D1D5E800CCFA31 /* RCACMViewController.m */; };
 		507742A91658707B00876EE1 /* 0_joinliv.png in Resources */ = {isa = PBXBuildFile; fileRef = 507742A71658707B00876EE1 /* 0_joinliv.png */; };
 		507742AA1658707B00876EE1 /* 0_joinliv@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 507742A81658707B00876EE1 /* 0_joinliv@2x.png */; };
 		507742AD165870B300876EE1 /* 0_joindis.png in Resources */ = {isa = PBXBuildFile; fileRef = 507742AB165870B300876EE1 /* 0_joindis.png */; };
@@ -341,6 +342,8 @@
 		50728FE515E0BCB7008D2630 /* 0_navbtn_p@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_navbtn_p@2x.png"; sourceTree = "<group>"; };
 		50728FE615E0BCB7008D2630 /* 0_navbtn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_navbtn.png; sourceTree = "<group>"; };
 		50728FE715E0BCB7008D2630 /* 0_navbtn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_navbtn@2x.png"; sourceTree = "<group>"; };
+		5076D81C16D1D5E800CCFA31 /* RCACMViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCACMViewController.h; sourceTree = "<group>"; };
+		5076D81D16D1D5E800CCFA31 /* RCACMViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCACMViewController.m; sourceTree = "<group>"; };
 		507742A71658707B00876EE1 /* 0_joinliv.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_joinliv.png; sourceTree = "<group>"; };
 		507742A81658707B00876EE1 /* 0_joinliv@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_joinliv@2x.png"; sourceTree = "<group>"; };
 		507742AB165870B300876EE1 /* 0_joindis.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_joindis.png; sourceTree = "<group>"; };
@@ -547,6 +550,8 @@
 				50E9BEC115A13C9900121507 /* RCBasicViewController.m */,
 				50E77A741505A1EC00E75C64 /* RCAddNetworkController.h */,
 				50E77A751505A1EC00E75C64 /* RCAddNetworkController.m */,
+				5076D81C16D1D5E800CCFA31 /* RCACMViewController.h */,
+				5076D81D16D1D5E800CCFA31 /* RCACMViewController.m */,
 				5038C8301583B8E4004BA602 /* RCChannelManager.h */,
 				5038C8311583B8E4004BA602 /* RCChannelManager.m */,
 				AA503EED15AD2C5A00EF223E /* RCAlternateNicknamesManager.h */,
@@ -1183,6 +1188,7 @@
 				501524EA169A02B000F4B4EF /* RCNickSuggestionView.m in Sources */,
 				509A8367169FA1D00032BC2D /* RCNickButton.m in Sources */,
 				50498FA716A626BC00864ED3 /* RCPrettyButton.m in Sources */,
+				5076D81E16D1D5E800CCFA31 /* RCACMViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

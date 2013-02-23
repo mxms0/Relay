@@ -87,7 +87,7 @@ static id _inst = nil;
 	[spr setDelegate:self];
 	[rc.view addGestureRecognizer:spr];
 	[spr release];
-	_bar = [[RCTextFieldBackgroundView alloc] initWithFrame:CGRectMake(0, 300, 320, 40)];
+	_bar = [[RCTextFieldBackgroundView alloc] initWithFrame:CGRectMake(0, 800, 320, 40)];
 	[_bar setOpaque:YES];
 	field = [[RCTextField alloc] initWithFrame:CGRectMake(15, 5, 299, 31)];
 	[field setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];

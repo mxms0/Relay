@@ -681,8 +681,8 @@ char *RCIPForURL(NSString *URL) {
 	RCChannel *chan = [self consoleChannel];
 	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
 	[scanner release];
+	reloadNetworks();
 }
-
 
 - (void)handle002:(NSString *)infos {
 	NSScanner *scanner = [[NSScanner alloc] initWithString:infos];
@@ -1087,7 +1087,6 @@ char *RCIPForURL(NSString *URL) {
     if ([_topic hasPrefix:@":"]) {
         _topic = [_topic substringFromIndex:1];
     }
-    NSLog(@"Setting topic [%@]", _topic);
 	[[self channelWithChannelName:room ifNilCreate:YES] recievedMessage:_topic from:nil type:RCMessageTypeTopic];
 	// :irc.saurik.com 332 _m #bacon :Bacon | where2start? kitchen | Canadian Bacon? get out. | WE SPEAK: BACON, ENGLISH, PORTUGUESE, DEUTSCH. | http://blog.craftzine.com/bacon-starry-night.jpg THIS IS YOU ¬†
 	[_scanner release];

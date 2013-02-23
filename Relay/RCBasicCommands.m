@@ -35,7 +35,8 @@
 	// The date & time is currently: Sunday, February 10, 2013 6:32:47 PM
 	NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
 	[fmt setDateStyle:NSDateFormatterFullStyle];
-	[fmt setTimeStyle:NSDateFormatterFullStyle];
+	[fmt setTimeStyle:NSDateFormatterLongStyle];
+	// fix time zone stufffs.
 	NSString *date = [@"The date & time is currently: " stringByAppendingString:[fmt stringFromDate:[NSDate date]]];
 	[net sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", [chan channelName], date]];
 	[chan recievedMessage:date from:[net useNick] type:RCMessageTypeNormal];
@@ -137,7 +138,7 @@
     if (!currentItem || [musicPlayer playbackState] == MPMusicPlaybackStatePaused) {
         return nil;
 	}
-    NSString *finalStr = [NSString stringWithFormat:@"is listening to %@ by %@, from %@", [currentItem valueForProperty:MPMediaItemPropertyTitle], [currentItem valueForProperty:MPMediaItemPropertyArtist], [currentItem valueForProperty:MPMediaItemPropertyAlbumTitle]];
+    NSString *finalStr = [NSString stringWithFormat:@"is listening to %@ by %@, from %@", ([currentItem valueForProperty:MPMediaItemPropertyTitle] ?: @"Unknown Title"), ([currentItem valueForProperty:MPMediaItemPropertyArtist] ?: @"Unknown Artist"), ([currentItem valueForProperty:MPMediaItemPropertyAlbumTitle] ?: @"Unknown Album")];
 	return finalStr;
 }
 
