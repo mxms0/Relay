@@ -122,6 +122,7 @@
 		509A8367169FA1D00032BC2D /* RCNickButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 509A8366169FA1D00032BC2D /* RCNickButton.m */; };
 		509E1C2616D01A80001B1552 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 509E1C2416D01A80001B1552 /* Default-568h@2x.png */; };
 		509E1C2716D01A80001B1552 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 509E1C2516D01A80001B1552 /* Default@2x.png */; };
+		509F2DD11734671900867412 /* RCSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 509F2DD01734671900867412 /* RCSocket.m */; };
 		50A322001660208200F86E03 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A321FE1660208200F86E03 /* Icon.png */; };
 		50A322011660208200F86E03 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A321FF1660208200F86E03 /* Icon@2x.png */; };
 		50A3220616602A5B00F86E03 /* 0_bmv_pres.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A3220216602A5B00F86E03 /* 0_bmv_pres.png */; };
@@ -369,6 +370,8 @@
 		509A8366169FA1D00032BC2D /* RCNickButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCNickButton.m; sourceTree = "<group>"; };
 		509E1C2416D01A80001B1552 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		509E1C2516D01A80001B1552 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		509F2DCF1734671900867412 /* RCSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCSocket.h; sourceTree = "<group>"; };
+		509F2DD01734671900867412 /* RCSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCSocket.m; sourceTree = "<group>"; };
 		50A321FE1660208200F86E03 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		50A321FF1660208200F86E03 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
 		50A3220216602A5B00F86E03 /* 0_bmv_pres.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_bmv_pres.png; sourceTree = "<group>"; };
@@ -877,6 +880,8 @@
 				50E77A7F1505A21500E75C64 /* RCMessageFormatter.m */,
 				50E77A801505A21500E75C64 /* RCNetwork.h */,
 				50E77A811505A21500E75C64 /* RCNetwork.m */,
+				509F2DCF1734671900867412 /* RCSocket.h */,
+				509F2DD01734671900867412 /* RCSocket.m */,
 				50F0BFCC15DF73DC001B3F50 /* RCChannelInfo.h */,
 				50F0BFCD15DF73DC001B3F50 /* RCChannelInfo.m */,
 				EAF79C3915D77E9C0075AF47 /* NSString+IRCStringSupport.h */,
@@ -1189,6 +1194,7 @@
 				509A8367169FA1D00032BC2D /* RCNickButton.m in Sources */,
 				50498FA716A626BC00864ED3 /* RCPrettyButton.m in Sources */,
 				5076D81E16D1D5E800CCFA31 /* RCACMViewController.m in Sources */,
+				509F2DD11734671900867412 /* RCSocket.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
