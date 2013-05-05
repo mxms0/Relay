@@ -269,12 +269,7 @@
 		[rs release];
 		return;
 	}
-	if (useSSL) {
-		[self performSelectorInBackground:@selector(_ssl_connect) withObject:nil];
-	}
-	else {
-		[self performSelectorInBackground:@selector(_connect) withObject:nil];
-	}
+	[self performSelectorInBackground:@selector(_connect) withObject:nil];
 }
 
 - (void)_ssl_connect {
@@ -283,8 +278,6 @@
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	canSend = YES;
 	isRegistered = NO;
-	if (sendQueue) [sendQueue release];
-	sendQueue = nil;
 	if (status == RCSocketStatusConnecting) goto errme;
 	if (status == RCSocketStatusConnected) goto errme;
 	self.useNick = nick;
@@ -365,14 +358,12 @@ out_:
 	[p drain];
 }
 
-- (void)_connect {
+- (void)_connect {	
     BOOL oTT = tryingToConnect;
     tryingToConnect = YES;
-    NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
     canSend = YES;
     isRegistered = NO;
-    if (sendQueue) [sendQueue release];
-    sendQueue = nil;
     if (status == RCSocketStatusConnecting) goto errme;
     if (status == RCSocketStatusConnected) goto errme;
     self.useNick = nick;
@@ -386,6 +377,9 @@ out_:
     RCChannel *chan = [self consoleChannel];
     if (chan) [chan recievedMessage:[NSString stringWithFormat:@"Connecting to %@ on port %d", server, port] from:@"" type:RCMessageTypeNormal];
     status = RCSocketStatusConnecting;
+	sockfd = [[RCSocket sharedSocket] connectToAddr:server withSSL:useSSL andPort:port fromNetwork:self];
+	return;
+	
     sockfd = 0;
     int fd = 0;
     struct sockaddr_in serv_addr;
@@ -461,38 +455,6 @@ out_:
 	[p drain];
 }
 
-SSL_CTX *RCInitContext(void) {
-	SSL_METHOD *meth; // lol;
-	SSL_CTX *_ctx;
-	OpenSSL_add_all_algorithms();
-	SSL_load_error_strings();
-	meth = (SSL_METHOD *)SSLv23_client_method();
-	_ctx = SSL_CTX_new(meth);
-	if (_ctx == NULL) {
-		// fuck.
-		MARK;
-		NSLog(@"FUCKKKKK");
-		//	ERR_print_errors(stderr);
-	}
-	return _ctx;
-}
-
-char *RCIPForURL(NSString *URL) {
-	char *hostname = (char *)[URL UTF8String];
-	struct addrinfo hints, *res;
-	struct in_addr addr;
-	int err;
-	memset(&hints, 0, sizeof(hints));
-	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_family = AF_INET;
-	if ((err = getaddrinfo(hostname, NULL, &hints, &res)) != 0) {
-		return NULL;
-	}
-	addr.s_addr = ((struct sockaddr_in *)(res->ai_addr))->sin_addr.s_addr;
-	freeaddrinfo(res);
-	return inet_ntoa(addr);	
-}
-
 - (BOOL)sendMessage:(NSString *)msg {
 	return [self sendMessage:msg canWait:YES];
 }
@@ -501,6 +463,10 @@ char *RCIPForURL(NSString *URL) {
 #if LOGALL
 	NSLog(@"HAI OUTGOING ((%@))",msg);
 #endif
+	
+	
+	
+	/*
 	if ((!canWait) || isRegistered) {
 		msg = [msg stringByAppendingString:@"\r\n"];
 		if (canSend) {
@@ -522,9 +488,7 @@ char *RCIPForURL(NSString *URL) {
 			}
 		}
 	}
-	NSLog(@"Adding to queue... %@:%d:%d",msg, (int)canWait, (int)isRegistered);
-	if (!sendQueue) sendQueue = [[NSMutableString alloc] init];
-	[sendQueue appendFormat:@"%@\r\n", msg];
+	 */
 	return NO;
 }
 
@@ -605,8 +569,6 @@ char *RCIPForURL(NSString *URL) {
 	if ((status == RCSocketStatusConnected) || (status == RCSocketStatusConnecting)) {
 		[self sendMessage:[@"QUIT :" stringByAppendingString:([msg isEqualToString:@"Disconnected."] ? [self defaultQuitMessage] : msg)] canWait:NO];
 		status = RCSocketStatusClosed;
-		if (sendQueue) [sendQueue release];
-		sendQueue = nil;
 		close(sockfd);
 		if (useSSL)
 			SSL_CTX_free(ctx);

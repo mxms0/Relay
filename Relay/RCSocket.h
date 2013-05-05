@@ -23,8 +23,15 @@
 #include "openssl/err.h"
 #include <ifaddrs.h>
 
-@interface RCSocket : NSObject
+@class RCNetwork;
+@interface RCSocket : NSObject {
+	int task;
+	BOOL _isReading;
+	BOOL isPolling;
+}
 
-- (int)connectToAddr:(NSString *)addr withSSL:(BOOL)ssl andPort:(int)port;
-
++ (id)sharedSocket;
+- (int)connectToAddr:(NSString *)server withSSL:(BOOL)ssl andPort:(int)port fromNetwork:(RCNetwork *)net;
+SSL_CTX *RCInitContext(void);
+char *RCIPForURL(NSString *URL);
 @end

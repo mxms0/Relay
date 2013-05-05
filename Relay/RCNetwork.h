@@ -9,22 +9,7 @@
 #import "RCChannel.h"
 #import "RCConsoleChannel.h"
 #import "RCPMChannel.h"
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <errno.h>
-#include <string.h>
-#include <sys/types.h>
-#include <netdb.h>
-#include <time.h>
-#include <resolv.h>
-#include <netdb.h>
-#include "openssl/ssl.h"
-#include "openssl/err.h"
-#include <ifaddrs.h>
+#import "RCSocket.h"
 #import "TestFlight.h"
 
 @class RCChannelManager;
@@ -36,6 +21,7 @@ typedef enum RCSocketStatus {
 } RCSocketStatus;
 
 @interface RCNetwork : NSObject <UIAlertViewDelegate> {
+	@public
 	NSMutableArray *_channels;
     NSMutableArray *_nicknames;
 	NSString *sDescription;
@@ -47,7 +33,6 @@ typedef enum RCSocketStatus {
 	NSString *spass;
 	NSString *npass;
 	NSString *userModes;
-	NSMutableString *sendQueue;
 	SSL_CTX *ctx;
 	SSL *ssl;
 	RCSocketStatus status;
