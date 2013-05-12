@@ -162,23 +162,22 @@ char *RCIPForURL(NSString *URL) {
 }
 
 - (void)configureSocketPoll {
-	NSLog(@"HI %@", [NSRunLoop currentRunLoop]);
 	[[NSRunLoop currentRunLoop] addTimer:[NSTimer timerWithTimeInterval:1 target:self selector:@selector(pollSockets) userInfo:nil repeats:YES] forMode:NSDefaultRunLoopMode];
 	[[NSRunLoop currentRunLoop] run];
 }
 
 - (void)pollSockets {
-	MARK;
 	if (_isReading) {
 		return;
 	}
 	_isReading = YES;
-	MARK;
+
 	for (RCNetwork *net in [[RCNetworkManager sharedNetworkManager] networks]) {
+		if (net->sockfd == -1) continue;
+		
 		char buf[512];
-		MARK;
 		int fd = 0;
-		NSMutableString *cache = [[NSMutableString alloc] init];
+		NSMutableString *cache = [net cache];
 		while ((fd = read(net->sockfd, buf, 512)) > 0) {
 			NSString *appenddee = [[NSString alloc] initWithBytesNoCopy:buf length:fd encoding:NSUTF8StringEncoding freeWhenDone:NO];
 			if (appenddee) {
@@ -188,15 +187,13 @@ char *RCIPForURL(NSString *URL) {
 					// should probably use NSCharacterSet, etc etc.
 					int loc = [cache rangeOfString:@"\r\n"].location+2;
 					NSString *cbuf = [cache substringToIndex:loc];
-					NSLog(@"GOT BUF %@", cbuf);
+					[net recievedMessage:cbuf];
 					[cache deleteCharactersInRange:NSMakeRange(0, loc)];
 				}
 			}
 		}
 	}
-	
 	_isReading = NO;
-	
 }
 
 - (void)sendMessage:(NSString *)msg forDescriptor:(int)fd isSSL:(BOOL)ssl {
@@ -210,13 +207,18 @@ char *RCIPForURL(NSString *URL) {
 			
 			}
 			else {
-				if (send(fd, [msg UTF8String], strlen([msg UTF8String]), 0) < 0) {
+				int ret = send(fd, [msg UTF8String], strlen([msg UTF8String]), 0);
+				if (ret == -1) {
+					NSLog(@"hi %d %d %d %s", EAGAIN, EWOULDBLOCK ,errno, strerror(errno));
+				}
+				
+			//	if (send(fd, [msg UTF8String], strlen([msg UTF8String]), 0) < 0) {
 					MARK;
 				// ffs
-				}
-				else {
+			//	}
+			//	else {
 				// k
-				}
+			//	}
 			}
 		}
 	}

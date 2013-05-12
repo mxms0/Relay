@@ -18,7 +18,7 @@
 
 @implementation RCNetwork
 
-@synthesize prefix, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _nicknames, shouldRequestSPass, shouldRequestNPass, namesCallback, expanded, _selected, SASL;
+@synthesize prefix, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _nicknames, shouldRequestSPass, shouldRequestNPass, namesCallback, expanded, _selected, SASL, cache;
 
 - (RCChannel *)consoleChannel {
     @synchronized(_channels) {
@@ -363,6 +363,7 @@ out_:
     tryingToConnect = YES;
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
     canSend = YES;
+	cache = [[NSMutableString alloc] init];
     isRegistered = NO;
     if (status == RCSocketStatusConnecting) goto errme;
     if (status == RCSocketStatusConnected) goto errme;
@@ -430,6 +431,7 @@ out_:
     [self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
     [self sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
 	[self sendMessage:@"CAP END" canWait:NO];
+	/*
 	NSMutableString *cache = [@"" mutableCopy];
 	char buf[512];
 	while ((fd = read(sockfd, buf, 512)) > 0) {
@@ -446,6 +448,7 @@ out_:
 			}
 		}
 	}
+	 */
 	if ([self isConnected]) {
 		[self disconnectWithMessage:@"End of stream"];
 	}
@@ -464,6 +467,7 @@ out_:
 	NSLog(@"HAI OUTGOING ((%@))",msg);
 #endif
 	
+	[[RCSocket sharedSocket] sendMessage:msg forDescriptor:sockfd isSSL:useSSL];
 	
 	
 	/*
@@ -500,6 +504,8 @@ out_:
 #if LOGALL
     NSLog(@"%@", msg);
 #endif
+	[self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
+	[self sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
 	if ([msg isEqualToString:@""] || msg == nil || [msg isEqualToString:@"\r\n"]) return;
 	msg = [msg stringByReplacingOccurrencesOfString:@"\r" withString:@""];
 	msg = [msg stringByReplacingOccurrencesOfString:@"\n" withString:@""];	
@@ -570,6 +576,8 @@ out_:
 		[self sendMessage:[@"QUIT :" stringByAppendingString:([msg isEqualToString:@"Disconnected."] ? [self defaultQuitMessage] : msg)] canWait:NO];
 		status = RCSocketStatusClosed;
 		close(sockfd);
+		sockfd = -1;
+		[cache release];
 		if (useSSL)
 			SSL_CTX_free(ctx);
 		[[UIApplication sharedApplication] endBackgroundTask:task];
