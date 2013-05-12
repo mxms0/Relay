@@ -68,18 +68,26 @@ char *RCIPForURL(NSString *URL) {
 			task = UIBackgroundTaskInvalid;
 		}];
 	}
+	NSString *spass = [net spass];
+	NSString *nick = [net nick];
+	NSString *useNick = nick;
+	NSString *realname = nick;
+	NSString *username = nick;
+	BOOL SASL = [net SASL];
 	int sockfd = 0;
 	if (ssl) {
+		
+		sockfd = 0;
 		SSL_library_init();
-		//	SSL_CTX *ctx = RCInitContext();
-		//SSL *ssl = NULL;
+		SSL_CTX *ctx = RCInitContext();
+		net->ctx = ctx;
 		struct hostent *host;
 		struct sockaddr_in addr;
 		if ((host = gethostbyname([server UTF8String])) == NULL) {
-			// ERROR.
 			MARK;
+			//[self disconnectWithMessage:@"Error obtaining host."];
 			[p drain];
-			return -1;
+			return NO;
 		}
 		sockfd = socket(PF_INET, SOCK_STREAM, 0);
 		int set = 1;
@@ -90,12 +98,38 @@ char *RCIPForURL(NSString *URL) {
 		addr.sin_addr.s_addr = *(long *)(host->h_addr);
 		if (connect(sockfd, (struct sockaddr *)&addr, sizeof(addr)) != 0) {
 			MARK;
+			//[self disconnectWithMessage:@"Error connecting to host."];
 			[p drain];
-			return -2;
-		}		
+			return NO;
+		}
+		ssl = SSL_new(ctx);
+		SSL_set_fd(ssl, sockfd);
+		if (SSL_connect(ssl) == -1) {
+			MARK;
+			//[self disconnectWithMessage:@"Error connecting with SSL."];
+			[p drain];
+			return NO;
+		}
+		int opts = fcntl(sockfd, F_GETFL);
+		opts = (opts | O_NONBLOCK);
+		if (fcntl(sockfd, F_SETFL, opts) < 0) {
+			MARK;
+			return -1;
+		}
+		if (SASL) {
+			[net sendMessage:@"CAP LS" canWait:NO];
+		}
+		if ([spass length] > 0) {
+			[net sendMessage:[@"PASS " stringByAppendingString:spass] canWait:NO];
+		}
+		if (!nick || [nick isEqualToString:@""]) {
+			nick = @"__GUEST";
+			useNick = @"__GUEST";
+		}
+		[net sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
+		[net sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
 	}
 	else {
-		int fd = 0;
 		struct sockaddr_in serv_addr;
 		sockfd = socket(AF_INET, SOCK_STREAM, 0);
 		if (sockfd < 0) {
@@ -127,13 +161,6 @@ char *RCIPForURL(NSString *URL) {
 			MARK;
 			return -1;
 		}
-		NSString *spass = [net spass];
-		NSString *nick = [net nick];
-		NSString *useNick = nick;
-		NSString *realname = nick;
-		NSString *username = nick;
-		BOOL SASL = [net SASL];
-		BOOL useSSL = [net useSSL];
 		if ([spass length] > 0) {
 			[net sendMessage:[@"PASS " stringByAppendingString:spass] canWait:NO];
 		}
@@ -220,34 +247,6 @@ char *RCIPForURL(NSString *URL) {
 		}
 	}*/
 	_isReading = NO;
-}
-
-- (void)sendMessage:(NSString *)msg forDescriptor:(int)fd isSSL:(BOOL)ssl {
-#if LOGALL
-	NSLog(@"HAI OUTGOING ((%@))",msg);
-#endif
-	@synchronized(self) {
-		@autoreleasepool {
-			msg = [msg stringByAppendingString:@"\r\n"];
-			if (ssl) {
-			
-			}
-			else {
-				int ret = send(fd, [msg UTF8String], strlen([msg UTF8String]), 0);
-				if (ret == -1) {
-					NSLog(@"hi %d %d %d %s", EAGAIN, EWOULDBLOCK ,errno, strerror(errno));
-				}
-				
-			//	if (send(fd, [msg UTF8String], strlen([msg UTF8String]), 0) < 0) {
-					MARK;
-				// ffs
-			//	}
-			//	else {
-				// k
-			//	}
-			}
-		}
-	}
 }
 
 @end

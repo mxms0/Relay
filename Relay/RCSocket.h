@@ -22,6 +22,7 @@
 #include "openssl/ssl.h"
 #include "openssl/err.h"
 #include <ifaddrs.h>
+#include <sys/ioctl.h>
 
 @class RCNetwork;
 @interface RCSocket : NSObject {

@@ -34,15 +34,14 @@ typedef enum RCSocketStatus {
 	NSString *npass;
 	NSString *userModes;
 	NSMutableString *cache;
+	NSMutableString *writebuf;
+	NSMutableString *rcache;
 	SSL_CTX *ctx;
 	SSL *ssl;
 	RCSocketStatus status;
 	int task;
 	int port;
 	int sockfd;
-	unsigned long long bytes_read;
-	char *readbuf;
-	NSMutableString *writebuf;
 	BOOL isRegistered;
 	BOOL useSSL;
 	BOOL COL;
@@ -51,7 +50,7 @@ typedef enum RCSocketStatus {
 	BOOL SASL;
 	BOOL _selected;
 	BOOL expanded;
-	BOOL _isDiconnecting;
+	BOOL _isDisconnecting;
 	BOOL shouldRequestSPass;
 	BOOL shouldRequestNPass;
 	BOOL hasPendingBites; //nom
@@ -59,7 +58,7 @@ typedef enum RCSocketStatus {
     BOOL tryingToConnect;
     NSDictionary *prefix;
 }
-@property (nonatomic, retain) NSDictionary* prefix;
+@property (nonatomic, retain) NSDictionary *prefix;
 @property (nonatomic, retain) NSMutableArray *_channels;
 @property (nonatomic, retain) NSMutableArray *_nicknames;
 @property (nonatomic, retain) NSString *sDescription;

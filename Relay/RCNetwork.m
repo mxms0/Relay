@@ -43,7 +43,7 @@
         prefix = nil;
 		expanded = NO;
 		_channels = [[NSMutableArray alloc] init];
-		_isDiconnecting = NO;
+		_isDisconnecting = NO;
         _nicknames = [[NSMutableArray alloc] init];
         if ([self useNick])
             [_nicknames addObject:[self useNick]];
@@ -272,97 +272,12 @@
 	[self performSelectorInBackground:@selector(_connect) withObject:nil];
 }
 
-- (void)_ssl_connect {
-	BOOL oTT = tryingToConnect;
-	tryingToConnect = YES;
-	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
-	canSend = YES;
-	isRegistered = NO;
-	if (status == RCSocketStatusConnecting) goto errme;
-	if (status == RCSocketStatusConnected) goto errme;
-	self.useNick = nick;
-	self.userModes = @"~&@%+";
-	if (kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iPhoneOS_4_0) {
-		task = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
-			[[UIApplication sharedApplication] endBackgroundTask:task];
-			task = UIBackgroundTaskInvalid;
-		}];
-	}
-	RCChannel *chan = [self consoleChannel];
-	if (chan) [chan recievedMessage:[NSString stringWithFormat:@"Connecting to %@ on port %d", server, port] from:@"" type:RCMessageTypeNormal];
-	status = RCSocketStatusConnecting;
-	sockfd = 0;
-	SSL_library_init();
-	ctx = RCInitContext();
-	struct hostent *host;
-	struct sockaddr_in addr;
-	if ((host = gethostbyname([server UTF8String])) == NULL) {
-		[self disconnectWithMessage:@"Error obtaining host."];
-		[p drain];
-		return;
-	}
-	sockfd = socket(PF_INET, SOCK_STREAM, 0);
-	int set = 1;
-	setsockopt(sockfd, SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(int));
-	bzero(&addr, sizeof(addr));
-	addr.sin_family = AF_INET;
-	addr.sin_port = htons(port);
-	addr.sin_addr.s_addr = *(long *)(host->h_addr);
-	if (connect(sockfd, (struct sockaddr *)&addr, sizeof(addr)) != 0) {
-		[self disconnectWithMessage:@"Error connecting to host."];
-		[p drain];
-		return;
-	}
-	ssl = SSL_new(ctx);
-	SSL_set_fd(ssl, sockfd);
-	if (SSL_connect(ssl) == -1) {
-		[self disconnectWithMessage:@"Error connecting with SSL."];
-		[p drain];
-		return;
-	}
-	
-	int fd = 0;
-	if (SASL) {
-		[self sendMessage:@"CAP LS" canWait:NO];
-	}
-	if ([spass length] > 0) {
-		[self sendMessage:[@"PASS " stringByAppendingString:spass] canWait:NO];
-	}
-	if (!nick || [nick isEqualToString:@""]) {
-		nick = @"__GUEST";
-		useNick = @"__GUEST";
-	}
-	[self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
-	[self sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
-	NSMutableString *cache = [@"" mutableCopy];
-	char buf[512];
-	while ((fd = SSL_read(ssl, buf, 512)) > 0) {
-		NSString *appenddee = [[NSString alloc] initWithBytesNoCopy:buf length:fd encoding:NSUTF8StringEncoding freeWhenDone:NO];
-		if (appenddee) {
-			[cache appendString:appenddee];
-			[appenddee release];
-			while (([cache rangeOfString:@"\r\n"].location != NSNotFound)) {
-				int loc = [cache rangeOfString:@"\r\n"].location+2;
-				NSString *cbuf = [cache substringToIndex:loc];
-				[self recievedMessage:cbuf];
-				[cache deleteCharactersInRange:NSMakeRange(0, loc)];
-			}
-		}
-	}
-	if ([self isConnected]) {
-		[self disconnectWithMessage:@"End of stream"];
-	}
-errme:
-	tryingToConnect = oTT;
-out_:
-	[p drain];
-}
-
 - (void)_connect {	
     BOOL oTT = tryingToConnect;
     tryingToConnect = YES;
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	writebuf = [[NSMutableString alloc] init];
+	rcache = [[NSMutableString alloc] init];
     canSend = YES;
 	cache = [[NSMutableString alloc] init];
     isRegistered = NO;
@@ -380,80 +295,6 @@ out_:
     if (chan) [chan recievedMessage:[NSString stringWithFormat:@"Connecting to %@ on port %d", server, port] from:@"" type:RCMessageTypeNormal];
     status = RCSocketStatusConnecting;
 	sockfd = [[RCSocket sharedSocket] connectToAddr:server withSSL:useSSL andPort:port fromNetwork:self];
-	readbuf = (char *)malloc(READ_BUF_LEN);
-	return;
-	
-    sockfd = 0;
-    int fd = 0;
-    struct sockaddr_in serv_addr;
-	sockfd = socket(AF_INET, SOCK_STREAM, 0);
-	if (sockfd < 0) {
-        NSLog(@"ERRRRRRRR00");
-		[self disconnectWithMessage:@"Error socketing"];
-		goto errme;
-    }
-	int set = 1;
-	setsockopt(sockfd, SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(int));
-    memset(&serv_addr, 0, sizeof(serv_addr));
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(port);
-    char *ip = RCIPForURL(server);
-    NSLog(@"hi %@", CFNetworkCopySystemProxySettings());
-    if (ip == NULL) {
-        // report error..
-        NSLog(@"ERRRRRRRR");
-        [self disconnectWithMessage:@"Host not found."];
-        goto errme;
-    }
-    if (inet_pton(AF_INET, ip, &serv_addr.sin_addr) <= 0) {
-        [self disconnectWithMessage:@"Invalid address."];
-        NSLog(@"Errrrrr");
-        goto errme;
-    }
-    if (connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
-        [self disconnectWithMessage:[@"Socket error: " stringByAppendingFormat:@"%s", strerror(errno)]];
-        NSLog(@"Errrr");
-        goto errme;
-    }
-    if ([spass length] > 0) {
-        [self sendMessage:[@"PASS " stringByAppendingString:spass] canWait:NO];
-    }
-	[self sendMessage:@"CAP LS" canWait:NO];
-	if (SASL) {
-		//	[self sendMessage:@"CAP REQ :mutli-prefix sasl server-time" canWait:NO];
-		[self sendMessage:@"CAP REQ :sasl" canWait:NO];
-	}
-	else {
-		//	[self sendMessage:@"CAP REQ :server-time" canWait:NO];
-	}
-	if (!nick || [nick isEqualToString:@""]) {
-		nick = @"__GUEST";
-		useNick = @"__GUEST";
-	}
-    [self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
-    [self sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
-	[self sendMessage:@"CAP END" canWait:NO];
-	/*
-	NSMutableString *cache = [@"" mutableCopy];
-	char buf[512];
-	while ((fd = read(sockfd, buf, 512)) > 0) {
-		NSString *appenddee = [[NSString alloc] initWithBytesNoCopy:buf length:fd encoding:NSUTF8StringEncoding freeWhenDone:NO];
-		if (appenddee) {
-			[cache appendString:appenddee];
-			[appenddee release];
-			while (([cache rangeOfString:@"\r\n"].location != NSNotFound)) {
-				// should probably use NSCharacterSet, etc etc.
-				int loc = [cache rangeOfString:@"\r\n"].location+2;
-				NSString *cbuf = [cache substringToIndex:loc];
-				[self recievedMessage:cbuf];
-				[cache deleteCharactersInRange:NSMakeRange(0, loc)];
-			}
-		}
-	}
-	 */
-	if ([self isConnected]) {
-		[self disconnectWithMessage:@"End of stream"];
-	}
 errme:
 	tryingToConnect = oTT;
 out_:
@@ -461,49 +302,57 @@ out_:
 }
 
 - (BOOL)read {
-	static char buffr[513];
+	static BOOL isReading;
+	if (isReading) return YES;
+	isReading = YES;
 	int rc = 0;
-	if (bytes_read < READ_BUF_LEN) {
-		if (useSSL)
-			rc = SSL_read(ssl, readbuf + bytes_read, READ_BUF_LEN-bytes_read);
-		else
-			rc = read(sockfd, readbuf + bytes_read, READ_BUF_LEN-bytes_read);
-	}
-	if (rc == 0) return YES;
-	if (rc > 0) {
-		bytes_read += rc;
-		readbuf[bytes_read] = '\0';
-	}
-	char *lptr;
-	while ((lptr = strstr(readbuf, "\r\n")) != NULL) {
-		int lp = lptr - readbuf;
-		if (lp > 0) {
-			strncpy(buffr, readbuf, lp);
-			buffr[lp] = '\0';
-		}
-		int consumed = lp;
-		
-		while (readbuf[consumed] == '\n' || readbuf[consumed] == '\r') ++consumed;
-		memmove(readbuf, readbuf+consumed, READ_BUF_LEN-consumed);
-		bytes_read -= consumed;
-		NSLog(@"[%d]Chomped %d bytes. Total bytes in buffer: %llu\n", lp, consumed, bytes_read);
-		if (lp > 0) {
-			[self recievedMessage:[NSString stringWithCString:buffr encoding:NSUTF8StringEncoding]];
+	char buf[512];
+	if (useSSL) {
+		while ((rc = SSL_read(ssl, buf, 512)) > 0) {
+			NSString *appenddee = [[NSString alloc] initWithBytesNoCopy:buf length:rc encoding:NSUTF8StringEncoding freeWhenDone:NO];
+			if (appenddee) {
+				[rcache appendString:appenddee];
+				[appenddee release];
+				while (([rcache rangeOfString:@"\r\n"].location != NSNotFound)) {
+					// should probably use NSCharacterSet, etc etc.
+					int loc = [rcache rangeOfString:@"\r\n"].location+2;
+					NSString *cbuf = [rcache substringToIndex:loc];
+					[self recievedMessage:cbuf];
+					[rcache deleteCharactersInRange:NSMakeRange(0, loc)];
+				}
+			}
 		}
 	}
-	return YES;
+	else {
+		while ((rc = read(sockfd, buf, 512)) > 0) {
+			NSString *appenddee = [[NSString alloc] initWithBytesNoCopy:buf length:rc encoding:NSUTF8StringEncoding freeWhenDone:NO];
+			if (appenddee) {
+				[rcache appendString:appenddee];
+				[appenddee release];
+				while (([rcache rangeOfString:@"\r\n"].location != NSNotFound)) {
+					// should probably use NSCharacterSet, etc etc.
+					int loc = [rcache rangeOfString:@"\r\n"].location+2;
+					NSString *cbuf = [rcache substringToIndex:loc];
+					[self recievedMessage:cbuf];
+					[rcache deleteCharactersInRange:NSMakeRange(0, loc)];
+				}
+			}
+		}
+	}
+	// i know this makes me a bad person.
+	isReading = NO;
+	return NO;
 }
 
 - (BOOL)write {
-	MARK;
 	int written = 0;
-	NSLog(@"HI %@", writebuf);
 	if (useSSL) written = SSL_write(ssl, [writebuf UTF8String], [writebuf length]);
 	else written = write(sockfd, [writebuf UTF8String], strlen([writebuf UTF8String]));
 	const char *buf = [writebuf UTF8String];
 	buf = buf + written;
 	[writebuf release];
 	writebuf = [[NSMutableString alloc] initWithCString:buf encoding:NSUTF8StringEncoding];
+	if ([writebuf length] == 0) hasPendingBites = NO;
 	// this is derp. must be a better method. ;P
 	return YES;
 }
@@ -524,7 +373,6 @@ out_:
 		[cacheLine release];
 		cacheLine = nil;
 	}
-	
 	if (isRegistered || !canWait) {
 		[writebuf appendString:msg];
 	}
@@ -532,8 +380,7 @@ out_:
 		cacheLine = [[NSMutableString alloc] init];
 		[cacheLine appendString:cacheLine];
 	}
-	
-	return NO;
+	return YES;
 }
 
 - (void)errorOccured:(NSError *)error {
@@ -607,18 +454,17 @@ out_:
 }
 
 - (BOOL)disconnectWithMessage:(NSString *)msg {
-    if (_isDiconnecting) return NO;
-	_isDiconnecting = YES;
+    if (_isDisconnecting) return NO;
+	_isDisconnecting = YES;
 	if (status == RCSocketStatusClosed) return NO;
 	if ((status == RCSocketStatusConnected) || (status == RCSocketStatusConnecting)) {
 		[self sendMessage:[@"QUIT :" stringByAppendingString:([msg isEqualToString:@"Disconnected."] ? [self defaultQuitMessage] : msg)] canWait:NO];
 		status = RCSocketStatusClosed;
 		close(sockfd);
+		[rcache release];
 		sockfd = -1;
 		[cache release];
-		free(readbuf);
 		[writebuf release];
-		bytes_read = 0;
 		if (useSSL)
 			SSL_CTX_free(ctx);
 		[[UIApplication sharedApplication] endBackgroundTask:task];
@@ -629,7 +475,7 @@ out_:
 			[_chan disconnected:msg];
 		}
 	}
-	_isDiconnecting = NO;
+	_isDisconnecting = NO;
 	return YES;
 }
 
@@ -687,7 +533,9 @@ out_:
 	}
 	useNick = [meee retain];
 	//:Welcome to the IRCNode Internet Relay Chat Network Maximus|ZNC
+#if LOGALL
 	NSLog(@"WAT IS HAPPENING %@ %@", useNick, welcome);
+#endif
 	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
 	RCChannel *chan = [self consoleChannel];
 	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
@@ -757,8 +605,10 @@ out_:
                 if ([values count]) {
                     if ([[values objectAtIndex:0] isEqualToString:@"PREFIX"]) {
                         if ([values count] - 1) {
+#if LOGALL
                             NSLog(@"prefix is %@", [values objectAtIndex:1]);
-                            NSString* lprefix = [values objectAtIndex:1];
+#endif
+                            NSString *lprefix = [values objectAtIndex:1];
                             if ([lprefix hasPrefix:@"("]) {
                                 lprefix = [lprefix substringFromIndex:1];
                                 int prefixes = [lprefix rangeOfString:@")"].location;
@@ -775,7 +625,9 @@ out_:
                                 }
 								self.prefix = [[lprefix copy] autorelease];
 								[lprefix release];
+#if LOGALL
 								NSLog(@"prefix: %@", prefix);
+#endif
 							}
 						}
 					}
@@ -1253,6 +1105,7 @@ out_:
 	// is able to switch channels before getting a response from the network.
 	RCChannel *currentChannel_ = [[[RCChatController sharedController] currentPanel] channel];
 	RCChannel *target = [self consoleChannel];
+	// the check below fails. make better comparison method max.
 	if ([[currentChannel_ delegate] isEqual:self]) {
 		target = currentChannel_;
 	}
@@ -1610,8 +1463,10 @@ out_:
         vdx = [request length];
     }
     NSString *command = [request substringToIndex:vdx];
+#if LOGALL
 	NSLog(@"Meh. %@", command);
-	if ([command isEqualToString:@"TIME"]) 
+#endif
+	if ([command isEqualToString:@"TIME"])
 		extra = [NSString stringWithFormat:@"%@", [NSDate date]];
 	else if ([command isEqualToString:@"VERSION"]) 
 		extra = @"Relay 1.0";

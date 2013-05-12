@@ -107,7 +107,9 @@ static NSMutableArray *networks = nil;
 		NSLog(@"CAN'T FIND HOME DIRECTORY TO LOAD NETWORKS");
 		exit(1);
 	}
-	NSString *absol = [[NSString stringWithFormat:@"%s/Documents/Networks.plist", hdir] retain];
+	char dir[4096];
+	sprintf(dir, "%s/Documents/Networks.plist", hdir);
+	NSString *absol = [[[NSString alloc] initWithUTF8String:dir] retain];
 	return [absol autorelease];
 }
 

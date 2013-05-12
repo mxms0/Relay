@@ -107,6 +107,9 @@ static NSString *template = nil;
 			name = [self stringByEvaluatingJavaScriptFromString:@"createMessage(false);"];
 		}
 		NSString *res = [self stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"postMessage('%@', '%@', %@)", name, ms.string, (self.scrollView.tracking ? @"false" : @"true")]];
+		if ([res isEqualToString:@"nop"]) {
+			//hi
+		}
 		[ms release];
 	});
 }
