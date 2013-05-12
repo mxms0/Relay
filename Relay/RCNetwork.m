@@ -18,7 +18,7 @@
 
 @implementation RCNetwork
 
-@synthesize prefix, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _nicknames, shouldRequestSPass, shouldRequestNPass, namesCallback, expanded, _selected, SASL, cache;
+@synthesize prefix, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _nicknames, shouldRequestSPass, shouldRequestNPass, namesCallback, expanded, _selected, SASL, cache, hasPendingBites;
 
 - (RCChannel *)consoleChannel {
     @synchronized(_channels) {
@@ -362,6 +362,7 @@ out_:
     BOOL oTT = tryingToConnect;
     tryingToConnect = YES;
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+	writebuf = [[NSMutableString alloc] init];
     canSend = YES;
 	cache = [[NSMutableString alloc] init];
     isRegistered = NO;
@@ -379,6 +380,7 @@ out_:
     if (chan) [chan recievedMessage:[NSString stringWithFormat:@"Connecting to %@ on port %d", server, port] from:@"" type:RCMessageTypeNormal];
     status = RCSocketStatusConnecting;
 	sockfd = [[RCSocket sharedSocket] connectToAddr:server withSSL:useSSL andPort:port fromNetwork:self];
+	readbuf = (char *)malloc(READ_BUF_LEN);
 	return;
 	
     sockfd = 0;
@@ -458,6 +460,54 @@ out_:
 	[p drain];
 }
 
+- (BOOL)read {
+	static char buffr[513];
+	int rc = 0;
+	if (bytes_read < READ_BUF_LEN) {
+		if (useSSL)
+			rc = SSL_read(ssl, readbuf + bytes_read, READ_BUF_LEN-bytes_read);
+		else
+			rc = read(sockfd, readbuf + bytes_read, READ_BUF_LEN-bytes_read);
+	}
+	if (rc == 0) return YES;
+	if (rc > 0) {
+		bytes_read += rc;
+		readbuf[bytes_read] = '\0';
+	}
+	char *lptr;
+	while ((lptr = strstr(readbuf, "\r\n")) != NULL) {
+		int lp = lptr - readbuf;
+		if (lp > 0) {
+			strncpy(buffr, readbuf, lp);
+			buffr[lp] = '\0';
+		}
+		int consumed = lp;
+		
+		while (readbuf[consumed] == '\n' || readbuf[consumed] == '\r') ++consumed;
+		memmove(readbuf, readbuf+consumed, READ_BUF_LEN-consumed);
+		bytes_read -= consumed;
+		NSLog(@"[%d]Chomped %d bytes. Total bytes in buffer: %llu\n", lp, consumed, bytes_read);
+		if (lp > 0) {
+			[self recievedMessage:[NSString stringWithCString:buffr encoding:NSUTF8StringEncoding]];
+		}
+	}
+	return YES;
+}
+
+- (BOOL)write {
+	MARK;
+	int written = 0;
+	NSLog(@"HI %@", writebuf);
+	if (useSSL) written = SSL_write(ssl, [writebuf UTF8String], [writebuf length]);
+	else written = write(sockfd, [writebuf UTF8String], strlen([writebuf UTF8String]));
+	const char *buf = [writebuf UTF8String];
+	buf = buf + written;
+	[writebuf release];
+	writebuf = [[NSMutableString alloc] initWithCString:buf encoding:NSUTF8StringEncoding];
+	// this is derp. must be a better method. ;P
+	return YES;
+}
+
 - (BOOL)sendMessage:(NSString *)msg {
 	return [self sendMessage:msg canWait:YES];
 }
@@ -466,33 +516,23 @@ out_:
 #if LOGALL
 	NSLog(@"HAI OUTGOING ((%@))",msg);
 #endif
-	
-	[[RCSocket sharedSocket] sendMessage:msg forDescriptor:sockfd isSSL:useSSL];
-	
-	
-	/*
-	if ((!canWait) || isRegistered) {
-		msg = [msg stringByAppendingString:@"\r\n"];
-		if (canSend) {
-			if (useSSL) {
-				if (SSL_write(ssl, [msg UTF8String], strlen([msg UTF8String])) < 0) {
-					return NO;
-				}
-				return YES;
-			}
-			else {
-				if (send(sockfd, [msg UTF8String], strlen([msg UTF8String]), 0) < 0) {
-					NSLog(@"BLASPHEMYY");
-					return NO;
-				}
-				else {
-				// success! :D
-					return YES;
-				}
-			}
-		}
+	msg = [msg stringByAppendingString:@"\r\n"];
+	hasPendingBites = YES;
+	static NSMutableString *cacheLine = nil;
+	if (isRegistered && !!cacheLine) {
+		[writebuf appendString:cacheLine];
+		[cacheLine release];
+		cacheLine = nil;
 	}
-	 */
+	
+	if (isRegistered || !canWait) {
+		[writebuf appendString:msg];
+	}
+	else {
+		cacheLine = [[NSMutableString alloc] init];
+		[cacheLine appendString:cacheLine];
+	}
+	
 	return NO;
 }
 
@@ -504,8 +544,6 @@ out_:
 #if LOGALL
     NSLog(@"%@", msg);
 #endif
-	[self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
-	[self sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
 	if ([msg isEqualToString:@""] || msg == nil || [msg isEqualToString:@"\r\n"]) return;
 	msg = [msg stringByReplacingOccurrencesOfString:@"\r" withString:@""];
 	msg = [msg stringByReplacingOccurrencesOfString:@"\n" withString:@""];	
@@ -578,6 +616,9 @@ out_:
 		close(sockfd);
 		sockfd = -1;
 		[cache release];
+		free(readbuf);
+		[writebuf release];
+		bytes_read = 0;
 		if (useSSL)
 			SSL_CTX_free(ctx);
 		[[UIApplication sharedApplication] endBackgroundTask:task];
@@ -796,6 +837,10 @@ out_:
 	}
 	[scanr release];*/
 	// Relay[2794:f803] MSG: :fr.ac3xx.com 005 _m WALLCHOPS WATCH=128 WATCHOPTS=A SILENCE=15 MODES=12 CHANTYPES=# PREFIX=(qaohv)~&@%+ CHANMODES=beI,kfL,lj,psmntirRcOAQKVCuzNSMTGZ NETWORK=ROXnet CASEMAPPING=ascii EXTBAN=~,qjncrR ELIST=MNUCT STATUSMSG=~&@%+ :are supported by this server
+}
+
+- (void)handle042:(NSString *)msg {
+	
 }
 
 - (void)handle252:(NSString *)opsOnline {

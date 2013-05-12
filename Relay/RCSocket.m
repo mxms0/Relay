@@ -135,12 +135,12 @@ char *RCIPForURL(NSString *URL) {
 		BOOL SASL = [net SASL];
 		BOOL useSSL = [net useSSL];
 		if ([spass length] > 0) {
-			[self sendMessage:[@"PASS " stringByAppendingString:spass] forDescriptor:sockfd isSSL:useSSL];
+			[net sendMessage:[@"PASS " stringByAppendingString:spass] canWait:NO];
 		}
-		[self sendMessage:@"CAP LS" forDescriptor:fd isSSL:useSSL];
+		[net sendMessage:@"CAP LS" canWait:NO];
 		if (SASL) {
 			//	[self sendMessage:@"CAP REQ :mutli-prefix sasl server-time" canWait:NO];
-			[self sendMessage:@"CAP REQ :sasl" forDescriptor:fd isSSL:useSSL];
+			[net sendMessage:@"CAP REQ :sasl" canWait:NO];
 		}
 		else {
 			//	[self sendMessage:@"CAP REQ :server-time" canWait:NO];
@@ -149,9 +149,9 @@ char *RCIPForURL(NSString *URL) {
 			nick = @"__GUEST";
 			useNick = @"__GUEST";
 		}
-		[self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] forDescriptor:fd isSSL:useSSL];
-		[self sendMessage:[@"NICK " stringByAppendingString:nick] forDescriptor:fd isSSL:useSSL];
-		[self sendMessage:@"CAP END" forDescriptor:fd isSSL:useSSL];
+		[net sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
+		[net sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
+		[net sendMessage:@"CAP END" canWait:NO];
 	}
 	[p drain];
 	if (!isPolling) {
@@ -171,7 +171,33 @@ char *RCIPForURL(NSString *URL) {
 		return;
 	}
 	_isReading = YES;
-
+	fd_set rfds, wfds;
+	int mfds = 0;
+	FD_ZERO(&rfds);
+	FD_ZERO(&wfds);
+	for (RCNetwork *net in [[RCNetworkManager sharedNetworkManager] networks]) {
+		int fd = net->sockfd;
+		if (fd == -1) continue;
+		FD_SET(fd, &rfds);
+		FD_SET(fd, &wfds);
+		mfds = MAX(mfds, fd);
+	}
+	mfds++;
+	int sel = select(mfds, &rfds, &wfds, NULL, NULL);
+	if (sel == -1) {
+		MARK;
+		return;
+	}
+	for (RCNetwork *net in [[RCNetworkManager sharedNetworkManager] networks]) {
+		int sockfd = net->sockfd;
+		if (FD_ISSET(sockfd, &rfds)) {
+			[net read];
+		}
+		if (FD_ISSET(sockfd, &wfds) && [net hasPendingBites]) {
+			[net write];
+		}
+	}
+/*
 	for (RCNetwork *net in [[RCNetworkManager sharedNetworkManager] networks]) {
 		if (net->sockfd == -1) continue;
 		
@@ -192,7 +218,7 @@ char *RCIPForURL(NSString *URL) {
 				}
 			}
 		}
-	}
+	}*/
 	_isReading = NO;
 }
 

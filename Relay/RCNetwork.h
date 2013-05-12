@@ -40,6 +40,9 @@ typedef enum RCSocketStatus {
 	int task;
 	int port;
 	int sockfd;
+	unsigned long long bytes_read;
+	char *readbuf;
+	NSMutableString *writebuf;
 	BOOL isRegistered;
 	BOOL useSSL;
 	BOOL COL;
@@ -51,6 +54,7 @@ typedef enum RCSocketStatus {
 	BOOL _isDiconnecting;
 	BOOL shouldRequestSPass;
 	BOOL shouldRequestNPass;
+	BOOL hasPendingBites; //nom
 	RCChannelManager *namesCallback;
     BOOL tryingToConnect;
     NSDictionary *prefix;
@@ -78,6 +82,7 @@ typedef enum RCSocketStatus {
 @property (nonatomic, assign) RCChannelManager *namesCallback;
 @property (nonatomic, assign) BOOL _selected;
 @property (nonatomic, assign) BOOL expanded;
+@property (nonatomic, readonly) BOOL hasPendingBites;
 + (RCNetwork *)networkWithInfoDictionary:(NSDictionary *)dict;
 - (RCChannel *)channelWithChannelName:(NSString *)chan;
 - (NSString *)_description;
@@ -98,6 +103,8 @@ typedef enum RCSocketStatus {
 - (void)handleCTCPRequest:(NSString *)request;
 - (BOOL)isTryingToConnectOrConnected;
 - (NSString *)defaultQuitMessage;
+- (BOOL)read;
+- (BOOL)write;
 - (id)infoDictionary;
 @end
 SSL_CTX *RCInitContext(void);
