@@ -217,6 +217,7 @@ char *RCIPForURL(NSString *URL) {
 	}
 	for (RCNetwork *net in [[RCNetworkManager sharedNetworkManager] networks]) {
 		int sockfd = net->sockfd;
+		if (sockfd == -1) continue;
 		if (FD_ISSET(sockfd, &rfds)) {
 			[net read];
 		}

@@ -345,6 +345,7 @@ out_:
 }
 
 - (BOOL)write {
+	if (sockfd == -1) return NO;
 	int written = 0;
 	if (useSSL) written = SSL_write(ssl, [writebuf UTF8String], [writebuf length]);
 	else written = write(sockfd, [writebuf UTF8String], strlen([writebuf UTF8String]));
