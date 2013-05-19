@@ -259,7 +259,8 @@ static RCNetwork *currentNetwork = nil;
 - (void)showNetworkOptions:(id)arg1 {
 	currentNetwork = [(RCNetworkHeaderButton *)[arg1 superview] net];
 	RCPrettyActionSheet *sheet = [[RCPrettyActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"What do you want to do for %@?", [currentNetwork _description]] delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Delete" otherButtonTitles:@"Edit", ([currentNetwork isTryingToConnectOrConnected] ? @"Disconnect" : @"Connect"), nil];
-	[sheet showInView:[[[UIApp delegate] navigationController] view]];
+	[sheet setButtonCount:4];
+	[sheet showInView:[[((RCAppDelegate *)[UIApp delegate]) navigationController] view]];
 	[sheet release];
 }
 

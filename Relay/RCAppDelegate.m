@@ -98,7 +98,9 @@ static BOOL isSetup = NO;
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-	NSLog(@"Meh %f", [UIApp backgroundTimeRemaining]);
+#if LOGALL
+	NSLog(@"Background Time Remaining %f", [UIApp backgroundTimeRemaining]);
+#endif
 	double ttime = [UIApp backgroundTimeRemaining];
 	if (ttime > 60.00)
 		ttime -= 60.00;

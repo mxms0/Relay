@@ -109,7 +109,7 @@ static NSMutableArray *networks = nil;
 	}
 	char dir[4096];
 	sprintf(dir, "%s/Documents/Networks.plist", hdir);
-	NSString *absol = [[[NSString alloc] initWithUTF8String:dir] retain];
+	NSString *absol = [[NSString alloc] initWithUTF8String:dir];
 	return [absol autorelease];
 }
 

@@ -7,7 +7,6 @@
 //
 
 #import "RCChatController.h"
-#define DEFAULT_NAVIGATION_BAR_HEIGHT 44
 
 @interface RCXLChatController : RCChatController
 

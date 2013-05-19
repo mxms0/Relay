@@ -24,6 +24,13 @@
 	[e registerSelector:@selector(handleTWEET:net:channel:) forCommands:@"tweet" usingClass:self];
 	[e registerSelector:@selector(handleDATE:net:channel:) forCommands:@"date" usingClass:self];
 	[e registerSelector:@selector(handleSLAP:net:channel:) forCommands:@"slap" usingClass:self];
+	[e registerSelector:@selector(handleMYVERSION:net:channel:) forCommands:@"myversion" usingClass:self];
+}
+
+- (void)handleMYVERSION:(NSString *)vs net:(RCNetwork *)_net channel:(RCChannel *)_chan {
+	NSString *vsr = @"Current Version: Relay 1.0 (Build NaNaNaNaNaNaN)";
+	[_chan recievedMessage:vsr from:[_net useNick] type:RCMessageTypeNormal];
+	[_net sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", [_chan channelName], vsr]];
 }
 
 - (void)handleSLAP:(NSString *)slap net:(RCNetwork *)net channel:(RCChannel *)chan {

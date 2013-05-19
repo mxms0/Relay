@@ -42,6 +42,7 @@
 		[tableView setShowsVerticalScrollIndicator:YES];
 		[tableView setDelegate:self];
 		[tableView setDataSource:self];
+		[tableView setScrollsToTop:YES];
 		[self.view addSubview:tableView];
 		[tableView release];
 	}
@@ -122,6 +123,14 @@
 	}
 	[c setNeedsDisplay];
 	return c;
+}
+
+- (void)tableView:(UITableView *)_tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	if (showingUserInfo) return;
+	RCPrettyActionSheet *ac = [[RCPrettyActionSheet alloc] initWithTitle:[[currentChan fullUserList] objectAtIndex:indexPath.row] delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Kick" otherButtonTitles:@"Private Message", @"User Info", @"Operator Actions", nil];
+	[ac setButtonCount:5];
+	[ac showInView:[UIApp keyWindow]];
+	[ac release];
 }
 
 - (void)setCenter:(CGPoint)ct {

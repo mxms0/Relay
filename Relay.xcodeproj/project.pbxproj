@@ -634,6 +634,17 @@
 			name = "View Objects";
 			sourceTree = "<group>";
 		};
+		5080B08A1749771900635A07 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				EAF79C3915D77E9C0075AF47 /* NSString+IRCStringSupport.h */,
+				EAF79C3A15D77E9C0075AF47 /* NSString+IRCStringSupport.m */,
+				50E77A761505A21500E75C64 /* NSString+Utils.h */,
+				50E77A771505A21500E75C64 /* NSString+Utils.m */,
+			);
+			name = Categories;
+			sourceTree = "<group>";
+		};
 		50A7FB7114C0F0A800ABADEA = {
 			isa = PBXGroup;
 			children = (
@@ -859,11 +870,10 @@
 		50A7FBAA14C0F7E200ABADEA /* Backend */ = {
 			isa = PBXGroup;
 			children = (
+				5080B08A1749771900635A07 /* Categories */,
 				50EF930C162CD52600DE3443 /* Command Engine */,
 				50376D2815B3CCAD00E13006 /* RCDateManager.h */,
 				50376D2915B3CCAD00E13006 /* RCDateManager.m */,
-				50E77A761505A21500E75C64 /* NSString+Utils.h */,
-				50E77A771505A21500E75C64 /* NSString+Utils.m */,
 				50E77A781505A21500E75C64 /* RCAppDelegate.h */,
 				50E77A791505A21500E75C64 /* RCAppDelegate.m */,
 				50151F67164DD7AA00248AB7 /* RCXLChatController.h */,
@@ -884,8 +894,6 @@
 				509F2DD01734671900867412 /* RCSocket.m */,
 				50F0BFCC15DF73DC001B3F50 /* RCChannelInfo.h */,
 				50F0BFCD15DF73DC001B3F50 /* RCChannelInfo.m */,
-				EAF79C3915D77E9C0075AF47 /* NSString+IRCStringSupport.h */,
-				EAF79C3A15D77E9C0075AF47 /* NSString+IRCStringSupport.m */,
 				50E77A821505A21500E75C64 /* RCNetworkManager.h */,
 				50E77A831505A21500E75C64 /* RCNetworkManager.m */,
 				50E77A841505A21500E75C64 /* RCWelcomeNetwork.h */,

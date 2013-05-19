@@ -10,7 +10,7 @@
 #import "RCUserTableCell.h"
 
 @class RCChannel;
-@interface RCUserListViewController : RCBaseNavigationViewController <UITableViewDataSource, UITableViewDelegate> {
+@interface RCUserListViewController : RCBaseNavigationViewController <UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate> {
 	RCSuperSpecialTableView *tableView;
 	RCChannel *currentChan;
 	BOOL showingUserInfo;

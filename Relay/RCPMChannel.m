@@ -93,12 +93,9 @@
 } 
 
 - (void)setSuccessfullyJoined:(BOOL)success {
-
-	return;
 }
 
 - (void)setJoined:(BOOL)joind {
-    return;
 }
 
 - (BOOL)joined {

@@ -9,6 +9,7 @@
 #import "RCPrettyActionSheet.h"
 
 @implementation RCPrettyActionSheet
+@synthesize buttonCount;
 
 - (void)layoutSubviews {
 	[super layoutSubviews];
@@ -27,8 +28,22 @@
 				[vs setBackgroundImage:[[UIImage imageNamed:@"0_as_press"] stretchableImageWithLeftCapWidth:11 topCapHeight:0] forState:UIControlStateHighlighted];
 				break;
 			case 4:
-				[vs setBackgroundImage:[[UIImage imageNamed:@"0_as_cancel"] stretchableImageWithLeftCapWidth:11 topCapHeight:0] forState:UIControlStateNormal];
-				[vs setBackgroundImage:[[UIImage imageNamed:@"0_as_cancel_press"] stretchableImageWithLeftCapWidth:10 topCapHeight:0] forState:UIControlStateHighlighted];
+				if ([vs tag] == buttonCount) {
+					[vs setBackgroundImage:[[UIImage imageNamed:@"0_as_cancel"] stretchableImageWithLeftCapWidth:11	topCapHeight:0] forState:UIControlStateNormal];
+					[vs setBackgroundImage:[[UIImage imageNamed:@"0_as_cancel_press"] stretchableImageWithLeftCapWidth:10 topCapHeight:0] forState:UIControlStateHighlighted];
+				}
+				else {
+					[vs setBackgroundImage:[[UIImage imageNamed:@"0_as"] stretchableImageWithLeftCapWidth:11 topCapHeight:0] forState:UIControlStateNormal];
+					[vs setBackgroundImage:[[UIImage imageNamed:@"0_as_press"] stretchableImageWithLeftCapWidth:11 topCapHeight:0] forState:UIControlStateHighlighted];				}
+				break;
+			case 5:
+				if ([vs tag] == buttonCount) {
+					[vs setBackgroundImage:[[UIImage imageNamed:@"0_as_cancel"] stretchableImageWithLeftCapWidth:11	topCapHeight:0] forState:UIControlStateNormal];
+					[vs setBackgroundImage:[[UIImage imageNamed:@"0_as_cancel_press"] stretchableImageWithLeftCapWidth:10 topCapHeight:0] forState:UIControlStateHighlighted];
+				}
+				else {
+					[vs setBackgroundImage:[[UIImage imageNamed:@"0_as"] stretchableImageWithLeftCapWidth:11 topCapHeight:0] forState:UIControlStateNormal];
+					[vs setBackgroundImage:[[UIImage imageNamed:@"0_as_press"] stretchableImageWithLeftCapWidth:11 topCapHeight:0] forState:UIControlStateHighlighted];				}
 				break;
 			default:
 				break;

@@ -10,7 +10,7 @@
 @implementation RCXLChatController
 
 - (CGRect)frameForChatPanel {
-	return CGRectMake(0, DEFAULT_NAVIGATION_BAR_HEIGHT-1, [[UIScreen mainScreen] applicationFrame].size.width, 465);
+	return CGRectMake(0, 43, [[UIScreen mainScreen] applicationFrame].size.width, 465);
 }
 
 - (CGFloat)suggestionLocation {

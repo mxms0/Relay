@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface RCPrettyActionSheet : UIActionSheet
-
+@property (nonatomic, assign) int buttonCount;
 @end
