@@ -25,6 +25,11 @@
 	[e registerSelector:@selector(handleDATE:net:channel:) forCommands:@"date" usingClass:self];
 	[e registerSelector:@selector(handleSLAP:net:channel:) forCommands:@"slap" usingClass:self];
 	[e registerSelector:@selector(handleMYVERSION:net:channel:) forCommands:@"myversion" usingClass:self];
+	[e registerSelector:@selector(handleCLEAR:net:channel:) forCommands:@"clear" usingClass:self];
+}
+
+- (void)handleCLEAR:(NSString *)cle net:(RCNetwork *)net channel:(RCChannel *)chan {
+	[chan clearAllMessages];
 }
 
 - (void)handleMYVERSION:(NSString *)vs net:(RCNetwork *)_net channel:(RCChannel *)_chan {

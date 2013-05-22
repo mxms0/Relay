@@ -281,8 +281,14 @@
     canSend = YES;
 	cache = [[NSMutableString alloc] init];
     isRegistered = NO;
-    if (status == RCSocketStatusConnecting) goto errme;
-    if (status == RCSocketStatusConnected) goto errme;
+    if (status == RCSocketStatusConnecting) {
+		[p drain];
+		return;
+	}
+    if (status == RCSocketStatusConnected) {
+		[p drain];
+		return;	
+	}
     self.useNick = nick;
     self.userModes = @"~&@%+";
     if (kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iPhoneOS_4_0) {
@@ -295,9 +301,6 @@
     if (chan) [chan recievedMessage:[NSString stringWithFormat:@"Connecting to %@ on port %d", server, port] from:@"" type:RCMessageTypeNormal];
     status = RCSocketStatusConnecting;
 	sockfd = [[RCSocket sharedSocket] connectToAddr:server withSSL:useSSL andPort:port fromNetwork:self];
-errme:
-	tryingToConnect = oTT;
-out_:
 	[p drain];
 }
 
@@ -309,6 +312,7 @@ out_:
 	char buf[512];
 	if (useSSL) {
 		while ((rc = SSL_read(ssl, buf, 512)) > 0) {
+			if (![self isTryingToConnectOrConnected]) return NO;
 			NSString *appenddee = [[NSString alloc] initWithBytesNoCopy:buf length:rc encoding:NSUTF8StringEncoding freeWhenDone:NO];
 			if (appenddee) {
 				[rcache appendString:appenddee];
@@ -325,16 +329,19 @@ out_:
 	}
 	else {
 		while ((rc = read(sockfd, buf, 512)) > 0) {
+			if (![self isTryingToConnectOrConnected]) return NO;
 			NSString *appenddee = [[NSString alloc] initWithBytesNoCopy:buf length:rc encoding:NSUTF8StringEncoding freeWhenDone:NO];
 			if (appenddee) {
 				[rcache appendString:appenddee];
 				[appenddee release];
-				while (([rcache rangeOfString:@"\r\n"].location != NSNotFound)) {
+				while (([rcache rangeOfString:@"\r\n"].location != NSNotFound) && !!rcache) {
 					// should probably use NSCharacterSet, etc etc.
-					int loc = [rcache rangeOfString:@"\r\n"].location+2;
-					NSString *cbuf = [rcache substringToIndex:loc];
-					[self recievedMessage:cbuf];
-					[rcache deleteCharactersInRange:NSMakeRange(0, loc)];
+					@synchronized(self) {
+						int loc = [rcache rangeOfString:@"\r\n"].location+2;
+						NSString *cbuf = [rcache substringToIndex:loc];
+						[self recievedMessage:cbuf];
+						[rcache deleteCharactersInRange:NSMakeRange(0, loc)];
+					}
 				}
 			}
 		}
@@ -404,10 +411,6 @@ out_:
 		NSLog(@"Errorz. %@:%@", msg, server);
 		NSString *error = [msg substringWithRange:NSMakeRange(5, [msg length]-5)];
 		if ([error hasPrefix:@" :"]) error = [error substringFromIndex:2];
-        @synchronized(self) {
-            RCChannel *chan = [self consoleChannel];
-            [chan recievedMessage:error from:@"" type:RCMessageTypeNormal];
-        }
 		[self disconnectWithMessage:error];
 		return;
 	}
@@ -463,6 +466,7 @@ out_:
 		status = RCSocketStatusClosed;
 		close(sockfd);
 		[rcache release];
+		rcache = nil;
 		sockfd = -1;
 		[cache release];
 		[writebuf release];
@@ -470,6 +474,7 @@ out_:
 			SSL_CTX_free(ctx);
 		[[UIApplication sharedApplication] endBackgroundTask:task];
 		task = UIBackgroundTaskInvalid;
+		tryingToConnect = NO;
 		status = RCSocketStatusClosed;
 		isRegistered = NO;
 		for (RCChannel *_chan in _channels) {

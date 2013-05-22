@@ -448,7 +448,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
         return;
     }
     if (![NSThread isMainThread]) {
-        [self performSelectorOnMainThread:@selector(setUserJoined:) withObject:_joined waitUntilDone:YES];
+        [self performSelectorOnMainThread:@selector(setUserJoined:) withObject:_joined waitUntilDone:NO];
         return;
     }
     @synchronized(self) {
@@ -489,6 +489,10 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 	[fullUserList removeAllObjects];
 	[self recievedMessage:@"You left the channel." from:@"" type:RCMessageTypeEvent];
 	joined = NO;
+}
+
+- (void)clearAllMessages {
+	[panel stringByEvaluatingJavaScriptFromString:@"clearMessages()"];
 }
 
 - (void)disconnected:(NSString *)msg {

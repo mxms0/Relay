@@ -62,6 +62,7 @@
 - (BOOL)isUserInChannel:(NSString*)user;
 - (void)setSuccessfullyJoined:(BOOL)success;
 - (BOOL)isPrivate;
+- (void)clearAllMessages;
 - (void)setJoined:(BOOL)joind;
 NSString *RCUserRank(NSString *user, RCNetwork* network);
 UIImage *RCImageForRank(NSString *rank, RCNetwork* network);

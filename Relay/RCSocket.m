@@ -76,7 +76,6 @@ char *RCIPForURL(NSString *URL) {
 	BOOL SASL = [net SASL];
 	int sockfd = 0;
 	if (ssl) {
-		
 		sockfd = 0;
 		SSL_library_init();
 		SSL_CTX *ctx = RCInitContext();
