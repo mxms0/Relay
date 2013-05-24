@@ -273,7 +273,6 @@
 }
 
 - (void)_connect {	
-    BOOL oTT = tryingToConnect;
     tryingToConnect = YES;
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	writebuf = [[NSMutableString alloc] init];

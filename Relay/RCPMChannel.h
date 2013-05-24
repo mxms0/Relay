@@ -16,7 +16,7 @@
 @property (nonatomic, retain) NSString *ipInfo;
 @property (nonatomic, retain) NSString *chanInfos;
 @property (nonatomic, retain) NSString *connectAddr;
-@property (nonatomic, readonly) BOOL thirstyForWhois
+@property (nonatomic, readonly) BOOL thirstyForWhois;
 - (BOOL)isPrivate;
 - (void)_reallySetWhois:(NSString *)whois;
 - (void)requestWhoisInformation;
