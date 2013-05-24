@@ -507,45 +507,50 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 }
 
 #define NICK_NO_RANK(nick,network) [nick substringFromIndex:[RCUserRank(nick,network) length]]
-#define REFRESH_TABLE   \
+#define REFRESH_TABLE \
 NSString *cur_rank = @"";\
 int max = 999;\
-for (NSString* rank in current) {\
-int nm = rankToNumber([rank characterAtIndex:0], [self delegate]);\
-if (max > nm) {\
-max = nm;\
-cur_rank = rank;\
+for (NSString *rank in current) {\
+	int nm = rankToNumber([rank characterAtIndex:0], [self delegate]);\
+	if (max > nm) {\
+		max = nm;\
+		cur_rank = rank;\
+	}\
 }\
-} if(![or isEqualToString:cur_rank]){ \
-[self setUserLeft:nnr];\
-[self setUserJoined:[cur_rank stringByAppendingString:nnr]];\
+if (![or isEqualToString:cur_rank]) { \
+	[self setUserLeft:nnr];\
+	[self setUserJoined:[cur_rank stringByAppendingString:nnr]];\
 }
 
-#define SET_MODE    \
+#define SET_MODE \
 partialLen = [modes substringWithRange:NSMakeRange(stptr, endptr-stptr)];\
-for (int a = 0; a < [partialLen length]; a++) { \
-if (adding) {\
-    NSString* rankf = [[[delegate prefix] objectForKey:[partialLen substringWithRange:NSMakeRange(a, 1)]] objectAtIndex:1];if(rankf){\
-		NSString *full_user = [self nickAndRankForNick:[users objectAtIndex:modecnt]]; NSString* or = RCUserRank(full_user,[self delegate]);\
-		NSString *nnr = NICK_NO_RANK(full_user, [self delegate]);\
-		NSArray *current = [userRanksAdv objectForKey:nnr];   \
-		if (!current) current = [[NSArray new] autorelease]; \
-		current = [current arrayByAddingObject:rankf];\
-		[userRanksAdv setObject:current forKey:nnr];\
-		REFRESH_TABLE;}\
+for (int a = 0; a < [partialLen length]; a++) {\
+	if (adding) {\
+		NSString *rankf = [[[delegate prefix] objectForKey:[partialLen substringWithRange:NSMakeRange(a, 1)]] objectAtIndex:1];\
+		if (rankf) {\
+			NSString *full_user = [self nickAndRankForNick:[users objectAtIndex:modecnt]]; NSString* or = RCUserRank(full_user,[self delegate]);\
+			NSString *nnr = NICK_NO_RANK(full_user, [self delegate]);\
+			NSArray *current = [userRanksAdv objectForKey:nnr];\
+			if (!current) current = [[NSArray new] autorelease];\
+			current = [current arrayByAddingObject:rankf];\
+			[userRanksAdv setObject:current forKey:nnr];\
+			REFRESH_TABLE;\
+		}\
+	}\
+	else if (subtracting) {\
+		NSString *rankf = [[[delegate prefix] objectForKey:[partialLen substringWithRange:NSMakeRange(a, 1)]] objectAtIndex:1];\
+		if (rankf) {\
+			NSString *full_user = [self nickAndRankForNick:[users objectAtIndex:modecnt]];NSString *or = RCUserRank(full_user, [self delegate]);\
+			NSString *nnr = NICK_NO_RANK(full_user, [self delegate]);\
+			NSMutableArray *current = [[[userRanksAdv objectForKey:nnr] mutableCopy] autorelease];\
+			[current removeObject:rankf];\
+			if (current) [userRanksAdv setObject:[[current copy] autorelease] forKey:nnr];\
+			REFRESH_TABLE;\
+		}\
+	}\
+	modecnt++;\
 }\
-else if (subtracting) {\
-    NSString* rankf = [[[delegate prefix] objectForKey:[partialLen substringWithRange:NSMakeRange(a, 1)]] objectAtIndex:1]; if(rankf){\
-		NSString *full_user = [self nickAndRankForNick:[users objectAtIndex:modecnt]];NSString *or = RCUserRank(full_user,[self delegate]);\
-		NSString *nnr = NICK_NO_RANK(full_user, [self delegate]);\
-		NSMutableArray * current = [[[userRanksAdv objectForKey:nnr] mutableCopy] autorelease];   \
-		[current removeObject:rankf];\
-		if (current)     [userRanksAdv setObject:[[current copy] autorelease] forKey:nnr];\
-		REFRESH_TABLE;}\
-}\
-modecnt++;\
-}\
-
+// i promise i'll get rid of this one day.
 
 - (void)setMode:(NSString *)modes forUser:(NSString *)user {
     @synchronized(userRanksAdv) {

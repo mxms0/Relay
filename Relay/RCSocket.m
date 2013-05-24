@@ -224,28 +224,6 @@ char *RCIPForURL(NSString *URL) {
 			[net write];
 		}
 	}
-/*
-	for (RCNetwork *net in [[RCNetworkManager sharedNetworkManager] networks]) {
-		if (net->sockfd == -1) continue;
-		
-		char buf[512];
-		int fd = 0;
-		NSMutableString *cache = [net cache];
-		while ((fd = read(net->sockfd, buf, 512)) > 0) {
-			NSString *appenddee = [[NSString alloc] initWithBytesNoCopy:buf length:fd encoding:NSUTF8StringEncoding freeWhenDone:NO];
-			if (appenddee) {
-				[cache appendString:appenddee];
-				[appenddee release];
-				while (([cache rangeOfString:@"\r\n"].location != NSNotFound)) {
-					// should probably use NSCharacterSet, etc etc.
-					int loc = [cache rangeOfString:@"\r\n"].location+2;
-					NSString *cbuf = [cache substringToIndex:loc];
-					[net recievedMessage:cbuf];
-					[cache deleteCharactersInRange:NSMakeRange(0, loc)];
-				}
-			}
-		}
-	}*/
 	_isReading = NO;
 }
 

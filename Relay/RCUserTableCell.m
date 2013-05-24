@@ -68,6 +68,9 @@
 		}
 		else {
 			whois = [@"Loading.. (not really)" mutableCopy];
+			dispatch_async(dispatch_get_current_queue(), ^ {
+				[chan requestWhoisInformation];
+			});
 		}
 		if (!whois) return;
 		if (!NSClassFromString(@"NSRegularExpression")) return;

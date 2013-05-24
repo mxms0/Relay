@@ -11,7 +11,7 @@
 #import "NSString+IRCStringSupport.h"
 
 @implementation RCPMChannel
-@synthesize ipInfo, chanInfos, connectAddr;
+@synthesize ipInfo, chanInfos, connectAddr, thirstyForWhois;
 
 - (id)initWithChannelName:(NSString *)_name {
 	if ((self = [super initWithChannelName:_name])) {
@@ -77,6 +77,12 @@
 	}
 }
 
+- (void)requestWhoisInformation {
+	thirstyForWhois = YES;
+	// remember: override users WHOIS command and do remote WHOIS, similar to this below.
+	[delegate sendMessage:[NSString stringWithFormat:@"WHOIS %@ %@", channelName, channelName]];
+}
+
 - (void)_reallySetWhois:(NSString *)whois {
 
 }
@@ -93,6 +99,7 @@
 } 
 
 - (void)setSuccessfullyJoined:(BOOL)success {
+	
 }
 
 - (void)setJoined:(BOOL)joind {

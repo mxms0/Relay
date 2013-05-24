@@ -1,16 +1,23 @@
 [15:48] <+Maximus>	 Relay, Relé, Relau, (It GOES BY MANY NAMES)
-[15:48] <+Maximus>	 Welcome to the fucked up shithole named relau
 [15:48] <@huru>	 Codenamed 'bitchesbecray'
 
-There's a lot that needs to be done before the initial release. 
 Updating of channels modes needs to be fixed, + need to refresh user list modes after mode changes.
 Built in server selection list. 
 Create the on-connect commands controller.
 Finish the RCChannelManager. // just fixes left.
 Handle INVITEs properly. 
 Add option to disable chat autocapitalization
+message tags. need to parse.
+[16:07:56] <Fudge>	 @blah=himaximus;something=no :max!max@max PRIVMSG #relay :hi!
+[16:09:35] <Fudge>	 [21:09:23] The following capabilities are currently enabled: znc.in/server-time-iso, multi-prefix, userhost-in-namess
 stuffs.
-// this is old, so k
+
+Commands.
+–––––
+TOPIC, WHOIS, q, close, etc
+MODE
+kick/ban/op/deop/dehalfop/etc
+
 
 settings
 –––––
