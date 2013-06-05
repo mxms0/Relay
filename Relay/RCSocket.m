@@ -188,7 +188,8 @@ char *RCIPForURL(NSString *URL) {
 }
 
 - (void)configureSocketPoll {
-	[[NSRunLoop currentRunLoop] addTimer:[NSTimer timerWithTimeInterval:1 target:self selector:@selector(pollSockets) userInfo:nil repeats:YES] forMode:NSDefaultRunLoopMode];
+	tv = [NSTimer timerWithTimeInterval:1 target:self selector:@selector(pollSockets) userInfo:nil repeats:YES];
+	[[NSRunLoop currentRunLoop] addTimer:tv forMode:NSDefaultRunLoopMode];
 	[[NSRunLoop currentRunLoop] run];
 }
 
@@ -201,12 +202,20 @@ char *RCIPForURL(NSString *URL) {
 	int mfds = 0;
 	FD_ZERO(&rfds);
 	FD_ZERO(&wfds);
+	int c = 0;
 	for (RCNetwork *net in [[RCNetworkManager sharedNetworkManager] networks]) {
 		int fd = net->sockfd;
+		c++;
 		if (fd == -1) continue;
 		FD_SET(fd, &rfds);
 		FD_SET(fd, &wfds);
 		mfds = MAX(mfds, fd);
+	}
+	if (c == 0) {
+		[tv invalidate];
+		tv = nil;
+		isPolling = NO;
+		return;
 	}
 	mfds++;
 	int sel = select(mfds, &rfds, &wfds, NULL, NULL);

@@ -351,12 +351,22 @@
 }
 
 - (BOOL)write {
+#if LOGALL
+	MARK;
+#endif
 	if (sockfd == -1) return NO;
+#if LOGALL
+	NSLog(@"WRITING BUFFER %d", sockfd);
+#endif
 	int written = 0;
 	if (useSSL) written = SSL_write(ssl, [writebuf UTF8String], [writebuf length]);
 	else written = write(sockfd, [writebuf UTF8String], strlen([writebuf UTF8String]));
 	const char *buf = [writebuf UTF8String];
+#if LOGALL
+	NSLog(@"Wrote %d bytes", written);
+#endif
 	buf = buf + written;
+	NSLog(@"hi %s", buf);
 	[writebuf release];
 	writebuf = [[NSMutableString alloc] initWithCString:buf encoding:NSUTF8StringEncoding];
 	if ([writebuf length] == 0) hasPendingBites = NO;
