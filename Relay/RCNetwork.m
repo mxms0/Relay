@@ -366,7 +366,6 @@
 	NSLog(@"Wrote %d bytes", written);
 #endif
 	buf = buf + written;
-	NSLog(@"hi %s", buf);
 	[writebuf release];
 	writebuf = [[NSMutableString alloc] initWithCString:buf encoding:NSUTF8StringEncoding];
 	if ([writebuf length] == 0) hasPendingBites = NO;
@@ -424,13 +423,14 @@
 		return;
 	}
 	else if ([msg hasPrefix:@"@"]) {
+		[self parseIRCV3MessageTagAndContinue:[msg substringFromIndex:1]];
 		// sending these messages somewhere else.
 		// not handling them here.
 		//msg = [msg substringFromIndex:1];
 		//	NSDateFormatter *df = [[NSDateFormatter alloc] init];
 		//[df setDateFormat:@"YYYY-MM-DDThh:mm:ss.sssZ"];
 		//	NSDate *aDate = [df dateFromString:nil];
-		NSLog(@"IRV3 I C. %@", msg);
+		NSLog(@"IRV3 I C. %@:[%@]", msg, [msg dataUsingEncoding:NSUTF8StringEncoding]);
 		return;
 	}
 	if (![msg hasPrefix:@":"]) {
@@ -456,6 +456,35 @@
 		NSLog(@"Meh. %@\r\n%@", cmd, rest);	
 	}
 	[scanner release];
+}
+
+- (void)parseIRCV3MessageTagAndContinue:(NSString *)shit {
+	NSRange k = [shit rangeOfString:@" :"];
+	if (k.location != NSNotFound) {
+		NSString *superImportantMsg = [shit substringWithRange:NSMakeRange(k.location, shit.length-k.location)];
+		NSString *message_tags = [shit substringWithRange:NSMakeRange(0, k.location)];
+		if ([superImportantMsg hasPrefix:@" "])
+			superImportantMsg = [superImportantMsg substringFromIndex:1];
+		NSArray *tags = [message_tags componentsSeparatedByString:@";"];
+		NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+		for (NSString *str in tags) {
+			NSArray *shits = [str componentsSeparatedByString:@"="];
+			if ([shits count] == 1) {
+				[dict setObject:(id)kCFBooleanTrue forKey:str];
+			}
+			else {
+				if ([[shits objectAtIndex:0] isEqualToString:@"time"]) {
+					NSDateFormatter *parser = [[NSDateFormatter alloc] init];
+					[parser setDateFormat:@"yyyy-MM-ddhh:mm:ss.sssZ"];
+					NSDate *dd = [parser dateFromString:[shits objectAtIndex:1]];
+					NSLog(@"hi %@", dd);
+				}
+				[dict setObject:[shits objectAtIndex:1] forKey:[shits objectAtIndex:0]];
+			}
+		}
+		NSLog(@"tags :%@",dict);
+	}
+	
 }
 
 - (BOOL)isTryingToConnectOrConnected {
@@ -1655,7 +1684,19 @@
 }
 
 - (void)handleCAP:(NSString *)cap {
+	if ([cap rangeOfString:@"CAP * LS"].location != NSNotFound) {
+		NSLog(@"sending reqs");
+		NSString *reqs = @"CAP REQ :";
+		if ([cap rangeOfString:@"server-time"].location != NSNotFound)
+			reqs = [reqs stringByAppendingString:@" server-time"];
+		if (SASL)
+			if ([cap rangeOfString:@"sasl"].location != NSNotFound)
+				reqs = [reqs stringByAppendingString:@" sasl"];
+		[self sendMessage:reqs canWait:NO];
+	}
+	NSLog(@"HI %@ [[[[", cap);
 	[self sendMessage:@"AUTHENTICATE PLAIN" canWait:NO];
+//	:hitchcock.freenode.net CAP mxms__ LS :account-notify extended-join identify-msg multi-prefix sasl
 }
 
 void RCParseUserMask(NSString *mask, NSString **_nick, NSString **user, NSString **hostmask) {

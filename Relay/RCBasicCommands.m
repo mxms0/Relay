@@ -26,6 +26,15 @@
 	[e registerSelector:@selector(handleSLAP:net:channel:) forCommands:@"slap" usingClass:self];
 	[e registerSelector:@selector(handleMYVERSION:net:channel:) forCommands:@"myversion" usingClass:self];
 	[e registerSelector:@selector(handleCLEAR:net:channel:) forCommands:@"clear" usingClass:self];
+	[e registerSelector:@selector(handleTOPIC:net:channel:) forCommands:@"topic" usingClass:self];
+}
+
+- (void)handleTOPIC:(NSString *)tp net:(RCNetwork *)net channel:(RCChannel *)chan {
+	if (!tp) {
+		[net sendMessage:[NSString stringWithFormat:@"TOPIC %@", [chan channelName]]];
+		return;
+	}
+	[net sendMessage:[NSString stringWithFormat:@"TOPIC %@", tp]];
 }
 
 - (void)handleCLEAR:(NSString *)cle net:(RCNetwork *)net channel:(RCChannel *)chan {
