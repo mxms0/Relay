@@ -16,6 +16,9 @@ static id _dManager = nil;
 		formatter.PMSymbol = @"";
 		formatter.AMSymbol = @"";
 		formatter.timeStyle = NSDateFormatterShortStyle;
+		[formatter setLocale:[[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"] autorelease]];
+		[formatter setTimeZone:[NSTimeZone localTimeZone]];
+		eightsixohoneformatter = [[ISO8601DateFormatter alloc] init];
 	}
 	_dManager = self;
 	return _dManager;
@@ -28,6 +31,11 @@ static id _dManager = nil;
 
 - (NSString *)currentDateAsString {
 	return [formatter stringFromDate:[NSDate date]];
+}
+
+- (NSString *)properlyFormattedTimeFromISO8601DateString:(NSString *)str {
+	NSDate *date = [eightsixohoneformatter dateFromString:str];	
+	return [formatter stringFromDate:date];	
 }
 
 @end

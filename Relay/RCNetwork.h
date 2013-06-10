@@ -11,6 +11,7 @@
 #import "RCPMChannel.h"
 #import "RCSocket.h"
 #import "TestFlight.h"
+#import "ISO8601DateFormatter.h"
 
 @class RCChannelManager;
 typedef enum RCSocketStatus {
@@ -53,7 +54,6 @@ typedef enum RCSocketStatus {
 	BOOL _isDisconnecting;
 	BOOL shouldRequestSPass;
 	BOOL shouldRequestNPass;
-	BOOL hasPendingBites; //nom
 	RCChannelManager *namesCallback;
     BOOL tryingToConnect;
     NSDictionary *prefix;
@@ -81,7 +81,6 @@ typedef enum RCSocketStatus {
 @property (nonatomic, assign) RCChannelManager *namesCallback;
 @property (nonatomic, assign) BOOL _selected;
 @property (nonatomic, assign) BOOL expanded;
-@property (nonatomic, readonly) BOOL hasPendingBites;
 + (RCNetwork *)networkWithInfoDictionary:(NSDictionary *)dict;
 - (RCChannel *)channelWithChannelName:(NSString *)chan;
 - (NSString *)_description;
@@ -104,6 +103,7 @@ typedef enum RCSocketStatus {
 - (NSString *)defaultQuitMessage;
 - (BOOL)read;
 - (BOOL)write;
+- (BOOL)hasPendingBites; //nom
 - (id)infoDictionary;
 @end
 SSL_CTX *RCInitContext(void);

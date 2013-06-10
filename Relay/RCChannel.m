@@ -19,20 +19,18 @@
 @synthesize channelName, joinOnConnect, panel, topic, usersPanel, password, temporaryJoinOnConnect, fullUserList, newMessageCount, cellRepresentation;
 
 NSString *RCUserRank(NSString *user, RCNetwork *network) {
-    @synchronized(network) {
-        if (![network prefix]) {
-            return @"";
-        }
-        for (id karr in [[network prefix] allKeys]) {
-            NSArray *arr = [[network prefix] objectForKey:karr];
-            if ([arr count] == 2) {
-                if ([[arr objectAtIndex:1] characterAtIndex:0] == [user characterAtIndex:0]) {
-                    return [arr objectAtIndex:1];
-                }
-            }
-        }
-        return nil;
-    }
+	if (![network prefix]) {
+			return @"";
+		}
+		for (id karr in [[network prefix] allKeys]) {
+			NSArray *arr = [[network prefix] objectForKey:karr];
+			if ([arr count] == 2) {
+				if ([[arr objectAtIndex:1] characterAtIndex:0] == [user characterAtIndex:0]) {
+					return [arr objectAtIndex:1];
+				}
+			}
+		}
+	return nil;
 }
 
 BOOL RCIsRankHigher(NSString *rank, NSString *rank2, RCNetwork* network) {
@@ -241,6 +239,16 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 
 - (void)recievedMessage:(NSString *)message from:(NSString *)from time:(NSString *)time type:(RCMessageType)type {
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+	NSRange rhacksorry = [message rangeOfString:@"\x12\x13"];
+	if ([message rangeOfString:@"\x12\x13"].location != NSNotFound) {
+		time = [message substringWithRange:NSMakeRange(rhacksorry.location, message.length-rhacksorry.location)];
+		if ([time hasSuffix:@" "])
+			time = [time substringToIndex:time.length-1];
+		message = [message substringWithRange:NSMakeRange(0, rhacksorry.location)];
+	}
+	if (!time) {
+		time = [[RCDateManager sharedInstance] currentDateAsString];
+	}
 	NSString *msg = @"";
     from = [from stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
     from = [from stringByReplacingOccurrencesOfString:@"\x05" withString:@""];

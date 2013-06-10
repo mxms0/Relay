@@ -6,11 +6,13 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "ISO8601DateFormatter.h"
 
 @interface RCDateManager : NSObject {
 	NSDateFormatter *formatter;
+	ISO8601DateFormatter *eightsixohoneformatter;
 }
 + (id)sharedInstance;
 - (NSString *)currentDateAsString;
-
+- (NSString *)properlyFormattedTimeFromISO8601DateString:(NSString *)str;
 @end

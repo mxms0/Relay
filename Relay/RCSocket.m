@@ -60,7 +60,7 @@ char *RCIPForURL(NSString *URL) {
 	return self;
 }
 
-- (int)connectToAddr:(NSString *)server withSSL:(BOOL)ssl andPort:(int)port fromNetwork:(RCNetwork *)net {
+- (int)connectToAddr:(NSString *)server withSSL:(BOOL)_ssl andPort:(int)port fromNetwork:(RCNetwork *)net {
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	if (kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iPhoneOS_4_0) {
 		task = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
@@ -73,10 +73,8 @@ char *RCIPForURL(NSString *URL) {
 	NSString *useNick = nick;
 	NSString *realname = nick;
 	NSString *username = nick;
-	BOOL SASL = [net SASL];
 	int sockfd = 0;
-	if (ssl) {
-		sockfd = 0;
+	if (_ssl) {
 		SSL_library_init();
 		SSL_CTX *ctx = RCInitContext();
 		net->ctx = ctx;
@@ -86,9 +84,13 @@ char *RCIPForURL(NSString *URL) {
 			MARK;
 			//[self disconnectWithMessage:@"Error obtaining host."];
 			[p drain];
-			return NO;
+			return -1;
 		}
 		sockfd = socket(PF_INET, SOCK_STREAM, 0);
+		if (sockfd < 0) {
+			MARK;
+			return -1;
+		}
 		int set = 1;
 		setsockopt(sockfd, SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(int));
 		bzero(&addr, sizeof(addr));
@@ -99,34 +101,16 @@ char *RCIPForURL(NSString *URL) {
 			MARK;
 			//[self disconnectWithMessage:@"Error connecting to host."];
 			[p drain];
-			return NO;
+			return -1;
 		}
-		ssl = SSL_new(ctx);
-		SSL_set_fd(ssl, sockfd);
-		if (SSL_connect(ssl) == -1) {
+		net->ssl = SSL_new(ctx);
+		SSL_set_fd(net->ssl, sockfd);
+		if (SSL_connect(net->ssl) == -1) {
 			MARK;
 			//[self disconnectWithMessage:@"Error connecting with SSL."];
 			[p drain];
 			return NO;
 		}
-		int opts = fcntl(sockfd, F_GETFL);
-		opts = (opts | O_NONBLOCK);
-		if (fcntl(sockfd, F_SETFL, opts) < 0) {
-			MARK;
-			return -1;
-		}
-		if (SASL) {
-			[net sendMessage:@"CAP LS" canWait:NO];
-		}
-		if ([spass length] > 0) {
-			[net sendMessage:[@"PASS " stringByAppendingString:spass] canWait:NO];
-		}
-		if (!nick || [nick isEqualToString:@""]) {
-			nick = @"__GUEST";
-			useNick = @"__GUEST";
-		}
-		[net sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
-		[net sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
 	}
 	else {
 		struct sockaddr_in serv_addr;
@@ -154,36 +138,28 @@ char *RCIPForURL(NSString *URL) {
 			MARK;
 			return -1;
 		}
-		int opts = fcntl(sockfd, F_GETFL);
-		opts = (opts | O_NONBLOCK);
-		if (fcntl(sockfd, F_SETFL, opts) < 0) {
-			MARK;
-			return -1;
-		}
-		if ([spass length] > 0) {
-			[net sendMessage:[@"PASS " stringByAppendingString:spass] canWait:NO];
-		}
-		[net sendMessage:@"CAP LS" canWait:NO];
-		if (SASL) {
-			//	[self sendMessage:@"CAP REQ :mutli-prefix sasl server-time" canWait:NO];
-			[net sendMessage:@"CAP REQ :sasl" canWait:NO];
-		}
-		else {
-			//	[self sendMessage:@"CAP REQ :server-time" canWait:NO];
-		}
-		if (!nick || [nick isEqualToString:@""]) {
-			nick = @"__GUEST";
-			useNick = @"__GUEST";
-		}
-		[net sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
-		[net sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
-		[net sendMessage:@"CAP END" canWait:NO];
 	}
+	int opts = fcntl(sockfd, F_GETFL);
+	opts = (opts | O_NONBLOCK);
+	if (fcntl(sockfd, F_SETFL, opts) < 0) {
+		MARK;
+		return -1;
+	}
+	[net sendMessage:@"CAP LS" canWait:NO];
+	if ([spass length] > 0) {
+		[net sendMessage:[@"PASS " stringByAppendingString:spass] canWait:NO];
+	}
+	if (!nick || [nick isEqualToString:@""]) {
+		nick = @"__GUEST";
+		useNick = @"__GUEST";
+	}
+	[net sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
+	[net sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
 	[p drain];
 	if (!isPolling) {
 		[NSThread detachNewThreadSelector:@selector(configureSocketPoll) toTarget:self withObject:nil];
+		isPolling = YES;
 	}
-	isPolling = YES;
 	return sockfd;
 }
 
@@ -205,13 +181,14 @@ char *RCIPForURL(NSString *URL) {
 	int c = 0;
 	for (RCNetwork *net in [[RCNetworkManager sharedNetworkManager] networks]) {
 		int fd = net->sockfd;
-		c++;
 		if (fd == -1) continue;
+		c++;
 		FD_SET(fd, &rfds);
 		FD_SET(fd, &wfds);
 		mfds = MAX(mfds, fd);
 	}
 	if (c == 0) {
+		_isReading = NO;
 		[tv invalidate];
 		tv = nil;
 		isPolling = NO;
@@ -230,6 +207,7 @@ char *RCIPForURL(NSString *URL) {
 			[net read];
 		}
 		if (FD_ISSET(sockfd, &wfds) && [net hasPendingBites]) {
+			MARK;
 			[net write];
 		}
 	}

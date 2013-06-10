@@ -18,7 +18,7 @@
 
 @implementation RCNetwork
 
-@synthesize prefix, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _nicknames, shouldRequestSPass, shouldRequestNPass, namesCallback, expanded, _selected, SASL, cache, hasPendingBites;
+@synthesize prefix, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _nicknames, shouldRequestSPass, shouldRequestNPass, namesCallback, expanded, _selected, SASL, cache;
 
 - (RCChannel *)consoleChannel {
     @synchronized(_channels) {
@@ -37,6 +37,7 @@
 		shouldSave = NO;
 		isRegistered = NO;
 		canSend = YES;
+		sockfd = -1;
 		ctx = NULL;
 		ssl = NULL;
 		_selected = NO;
@@ -303,8 +304,13 @@
 	[p drain];
 }
 
+- (BOOL)hasPendingBites {
+	return [writebuf length] > 0;
+}
+
 - (BOOL)read {
 	static BOOL isReading;
+	if (sockfd == -1) return NO;
 	if (isReading) return YES;
 	isReading = YES;
 	int rc = 0;
@@ -316,7 +322,7 @@
 			if (appenddee) {
 				[rcache appendString:appenddee];
 				[appenddee release];
-				while (([rcache rangeOfString:@"\r\n"].location != NSNotFound)) {
+				while (!!rcache && ([rcache rangeOfString:@"\r\n"].location != NSNotFound)) {
 					// should probably use NSCharacterSet, etc etc.
 					int loc = [rcache rangeOfString:@"\r\n"].location+2;
 					NSString *cbuf = [rcache substringToIndex:loc];
@@ -333,7 +339,7 @@
 			if (appenddee) {
 				[rcache appendString:appenddee];
 				[appenddee release];
-				while (([rcache rangeOfString:@"\r\n"].location != NSNotFound) && !!rcache) {
+				while (!!rcache && ([rcache rangeOfString:@"\r\n"].location != NSNotFound) && !!rcache) {
 					// should probably use NSCharacterSet, etc etc.
 					@synchronized(self) {
 						int loc = [rcache rangeOfString:@"\r\n"].location+2;
@@ -358,9 +364,15 @@
 #if LOGALL
 	NSLog(@"WRITING BUFFER %d", sockfd);
 #endif
+	NSLog(@"BEFORE %@", writebuf);
 	int written = 0;
-	if (useSSL) written = SSL_write(ssl, [writebuf UTF8String], [writebuf length]);
-	else written = write(sockfd, [writebuf UTF8String], strlen([writebuf UTF8String]));
+	if (useSSL) {
+		NSLog(@"hi %@", writebuf);
+		written = SSL_write(ssl, [writebuf UTF8String], [writebuf length]);
+	}
+	else {
+		written = write(sockfd, [writebuf UTF8String], strlen([writebuf UTF8String]));
+	}
 	const char *buf = [writebuf UTF8String];
 #if LOGALL
 	NSLog(@"Wrote %d bytes", written);
@@ -368,7 +380,7 @@
 	buf = buf + written;
 	[writebuf release];
 	writebuf = [[NSMutableString alloc] initWithCString:buf encoding:NSUTF8StringEncoding];
-	if ([writebuf length] == 0) hasPendingBites = NO;
+	NSLog(@"AFTER %@", writebuf);
 	// this is derp. must be a better method. ;P
 	return YES;
 }
@@ -382,7 +394,6 @@
 	NSLog(@"HAI OUTGOING ((%@))",msg);
 #endif
 	msg = [msg stringByAppendingString:@"\r\n"];
-	hasPendingBites = YES;
 	static NSMutableString *cacheLine = nil;
 	if (isRegistered && !!cacheLine) {
 		[writebuf appendString:cacheLine];
@@ -460,8 +471,9 @@
 
 - (void)parseIRCV3MessageTagAndContinue:(NSString *)shit {
 	NSRange k = [shit rangeOfString:@" :"];
+	NSString *superImportantMsg = shit;
 	if (k.location != NSNotFound) {
-		NSString *superImportantMsg = [shit substringWithRange:NSMakeRange(k.location, shit.length-k.location)];
+		superImportantMsg = [shit substringWithRange:NSMakeRange(k.location, shit.length-k.location)];
 		NSString *message_tags = [shit substringWithRange:NSMakeRange(0, k.location)];
 		if ([superImportantMsg hasPrefix:@" "])
 			superImportantMsg = [superImportantMsg substringFromIndex:1];
@@ -470,21 +482,29 @@
 		for (NSString *str in tags) {
 			NSArray *shits = [str componentsSeparatedByString:@"="];
 			if ([shits count] == 1) {
+#if LOGALL
+				NSLog(@"NOT HANDLING TAG %@", str);
+#endif
 				[dict setObject:(id)kCFBooleanTrue forKey:str];
 			}
 			else {
 				if ([[shits objectAtIndex:0] isEqualToString:@"time"]) {
-					NSDateFormatter *parser = [[NSDateFormatter alloc] init];
-					[parser setDateFormat:@"yyyy-MM-ddhh:mm:ss.sssZ"];
-					NSDate *dd = [parser dateFromString:[shits objectAtIndex:1]];
-					NSLog(@"hi %@", dd);
+					NSString *propr = [[RCDateManager sharedInstance] properlyFormattedTimeFromISO8601DateString:[shits objectAtIndex:1]];
+					superImportantMsg = [superImportantMsg stringByAppendingString:@"\x12\x13"];
+					superImportantMsg = [superImportantMsg stringByAppendingString:propr];
+					continue;
 				}
-				[dict setObject:[shits objectAtIndex:1] forKey:[shits objectAtIndex:0]];
+#if LOGALL
+				NSLog(@"NOT HANDLING MESSAGE TAG [%@:%@]", [shits objectAtIndex:0], [shits objectAtIndex:1]);
+#endif
 			}
 		}
-		NSLog(@"tags :%@",dict);
+#if LOGALL
+		NSLog(@"tags :%@", dict);
+#endif
+		[dict release];
 	}
-	
+	[self recievedMessage:superImportantMsg];
 }
 
 - (BOOL)isTryingToConnectOrConnected {
@@ -1689,13 +1709,17 @@
 		NSString *reqs = @"CAP REQ :";
 		if ([cap rangeOfString:@"server-time"].location != NSNotFound)
 			reqs = [reqs stringByAppendingString:@" server-time"];
+		if ([cap rangeOfString:@"znc.in/server-time-iso"].location != NSNotFound)
+			reqs = [reqs stringByAppendingString:@" znc.in/server-time-iso"];
 		if (SASL)
 			if ([cap rangeOfString:@"sasl"].location != NSNotFound)
 				reqs = [reqs stringByAppendingString:@" sasl"];
-		[self sendMessage:reqs canWait:NO];
+		if (![reqs isEqualToString:@"CAP REQ :"])
+			[self sendMessage:reqs canWait:NO];
 	}
 	NSLog(@"HI %@ [[[[", cap);
-	[self sendMessage:@"AUTHENTICATE PLAIN" canWait:NO];
+//	[self sendMessage:@"AUTHENTICATE PLAIN" canWait:NO];
+	[self sendMessage:@"CAP END" canWait:NO];
 //	:hitchcock.freenode.net CAP mxms__ LS :account-notify extended-join identify-msg multi-prefix sasl
 }
 
