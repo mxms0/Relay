@@ -129,7 +129,6 @@ char *RCIPForURL(NSString *URL) {
 			MARK;
 			return -2;
 		}
-		NSLog(@"hi %@", CFNetworkCopySystemProxySettings());;
 		if (inet_pton(AF_INET, ip, &serv_addr.sin_addr) <= 0) {
 			MARK;
 			return -1;
@@ -139,6 +138,9 @@ char *RCIPForURL(NSString *URL) {
 			return -1;
 		}
 	}
+#if LOGALL
+		NSLog(@"System Proxy Settings: {{%@}};", CFNetworkCopySystemProxySettings());
+#endif
 	int opts = fcntl(sockfd, F_GETFL);
 	opts = (opts | O_NONBLOCK);
 	if (fcntl(sockfd, F_SETFL, opts) < 0) {

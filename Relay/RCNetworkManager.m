@@ -25,7 +25,8 @@ static NSMutableArray *networks = nil;
 		}
 	}
 	if (![_net consoleChannel]) [_net addChannel:@"\x01IRC" join:NO];
-	[networks addObject:_net];
+	[networks insertObject:_net atIndex:[networks count]];
+//	[networks addObject:_net];
 	if ([_net COL]) [_net connect];
 	if (!isSetup) [self saveNetworks];
 }
@@ -120,6 +121,8 @@ static NSMutableArray *networks = nil;
 		if (![net isKindOfClass:[RCWelcomeNetwork class]])
 			if ([net uUID])	[dict setObject:[net infoDictionary] forKey:[net uUID]];
 	}
+	// this is why order isn't maintained. it's being added to a dictionary.
+	// fixx THIS LATER MAX OR FUDGE WILL KILL YOU.
 	NSString *error;
 	NSData *saveData = [NSPropertyListSerialization dataFromPropertyList:dict format:NSPropertyListBinaryFormat_v1_0 errorDescription:&error];
 	if (![saveData writeToFile:[self networkPreferencesPath] atomically:NO]) {
