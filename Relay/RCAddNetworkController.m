@@ -176,8 +176,15 @@
 	if ([network spass] == nil) {
 		[network setSpass:@""];
 	}
+	if (![network uUID]) {
+		CFUUIDRef uRef = CFUUIDCreate(NULL);
+		CFStringRef uStringRef = CFUUIDCreateString(NULL, uRef);
+		CFRelease(uRef);
+		[network setUUID:(NSString *)uStringRef];
+		CFRelease(uStringRef);
+	}
 	else {
-		RCKeychainItem *keychain = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@spass", [network _description]]];
+		RCKeychainItem *keychain = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@spass", [network uUID]]];
         [keychain setObject:[network spass] forKey:(id)kSecValueData];
 		[keychain release];
 	}
@@ -185,7 +192,7 @@
 		[network setNpass:@""];
 	}
 	else {
-		RCKeychainItem *keychain = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@npass", [network _description]]];
+		RCKeychainItem *keychain = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@npass", [network uUID]]];
         [keychain setObject:[network npass] forKey:(id)kSecValueData];
 		[keychain release];
 	}

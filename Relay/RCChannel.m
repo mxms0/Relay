@@ -398,7 +398,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 			[nc setFireDate:[NSDate date]];
 			[nc setAlertBody:[msg stringByStrippingIRCMetadata]];
             [nc setSoundName:UILocalNotificationDefaultSoundName];
-			[nc setUserInfo:[NSDictionary dictionaryWithObjectsAndKeys:[delegate _description], RCCurrentNetKey, [self channelName], RCCurrentChanKey, nil]];
+			[nc setUserInfo:[NSDictionary dictionaryWithObjectsAndKeys:[delegate uUID], RCCurrentNetKey, [self channelName], RCCurrentChanKey, nil]];
 			[[UIApplication sharedApplication] scheduleLocalNotification:nc];
 			[nc release];
 		}
@@ -639,7 +639,7 @@ for (int a = 0; a < [partialLen length]; a++) {\
 	if (![NSStringFromClass([self class]) isEqualToString:NSStringFromClass([obj class])]) {
 		return NO;
 	}
-	if (![[delegate _description] isEqualToString:[[obj delegate] _description]]) {
+	if (![[delegate uUID] isEqualToString:[[obj delegate] uUID]]) {
 		return NO;
 	}
 	if ([channelName isEqualToString:[obj channelName]]) {

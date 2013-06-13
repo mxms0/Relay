@@ -20,7 +20,7 @@ static NSMutableArray *networks = nil;
 
 - (void)addNetwork:(RCNetwork *)_net {
 	for (RCNetwork *net in networks) {
-		if ([[net _description] isEqualToString:[_net _description]]) {
+		if ([[net uUID] isEqualToString:[_net uUID]]) {
 			return;
 		}
 	}
@@ -33,7 +33,7 @@ static NSMutableArray *networks = nil;
 - (BOOL)replaceNetwork:(RCNetwork *)orig withNetwork:(RCNetwork *)anew {
 	for (int i = 0; i < [networks count]; i++) {
 		RCNetwork *someNet = [networks objectAtIndex:i];
-		if ([[someNet _description] isEqualToString:[orig _description]]) {
+		if ([[someNet uUID] isEqualToString:[orig uUID]]) {
 			[networks removeObjectAtIndex:i];
 			someNet = nil;
 			[networks insertObject:anew atIndex:i];
@@ -96,7 +96,7 @@ static NSMutableArray *networks = nil;
 
 - (RCNetwork *)networkWithDescription:(NSString *)_desc {
 	for (RCNetwork *net in networks) {
-		if ([[net _description] isEqualToString:_desc]) return net;
+		if ([[net uUID] isEqualToString:_desc]) return net;
 	}
 	return nil;
 }
@@ -118,7 +118,7 @@ static NSMutableArray *networks = nil;
 	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 	for (RCNetwork *net in networks) {
 		if (![net isKindOfClass:[RCWelcomeNetwork class]])
-			if ([net _description])	[dict setObject:[net infoDictionary] forKey:[net _description]];
+			if ([net uUID])	[dict setObject:[net infoDictionary] forKey:[net uUID]];
 	}
 	NSString *error;
 	NSData *saveData = [NSPropertyListSerialization dataFromPropertyList:dict format:NSPropertyListBinaryFormat_v1_0 errorDescription:&error];

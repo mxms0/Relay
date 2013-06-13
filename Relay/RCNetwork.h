@@ -24,7 +24,7 @@ typedef enum RCSocketStatus {
 @interface RCNetwork : NSObject <UIAlertViewDelegate> {
 	@public
 	NSMutableArray *_channels;
-    NSMutableArray *_nicknames;
+	NSMutableArray *_nicknames;
 	NSString *sDescription;
 	NSString *server;
 	NSString *nick;
@@ -34,6 +34,7 @@ typedef enum RCSocketStatus {
 	NSString *spass;
 	NSString *npass;
 	NSString *userModes;
+	NSString *uUID;
 	NSMutableString *cache;
 	NSMutableString *writebuf;
 	NSMutableString *rcache;
@@ -55,12 +56,12 @@ typedef enum RCSocketStatus {
 	BOOL shouldRequestSPass;
 	BOOL shouldRequestNPass;
 	RCChannelManager *namesCallback;
-    BOOL tryingToConnect;
-    NSDictionary *prefix;
+	BOOL tryingToConnect;
+	NSDictionary *prefix;
 }
 @property (nonatomic, retain) NSDictionary *prefix;
-@property (nonatomic, retain) NSMutableArray *_channels;
-@property (nonatomic, retain) NSMutableArray *_nicknames;
+@property (nonatomic, readonly) NSMutableArray *_channels;
+@property (nonatomic, readonly) NSMutableArray *_nicknames;
 @property (nonatomic, retain) NSString *sDescription;
 @property (nonatomic, retain) NSString *server;
 @property (nonatomic, retain) NSString *nick;
@@ -70,6 +71,7 @@ typedef enum RCSocketStatus {
 @property (nonatomic, retain) NSString *npass;
 @property (nonatomic, retain) NSString *useNick;
 @property (nonatomic, retain) NSString *userModes;
+@property (nonatomic, retain) NSString *uUID;
 @property (nonatomic, readonly) NSMutableString *cache;
 @property (nonatomic, assign) int port;
 @property (nonatomic, assign) BOOL isRegistered;

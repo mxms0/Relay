@@ -18,7 +18,7 @@
 
 @implementation RCNetwork
 
-@synthesize prefix, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _nicknames, shouldRequestSPass, shouldRequestNPass, namesCallback, expanded, _selected, SASL, cache;
+@synthesize prefix, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _nicknames, shouldRequestSPass, shouldRequestNPass, namesCallback, expanded, _selected, SASL, cache, uUID;
 
 - (RCChannel *)consoleChannel {
     @synchronized(_channels) {
@@ -61,10 +61,11 @@
 	[network setServer:[info objectForKey:SERVR_ADDR_KEY]];
 	[network setPort:[[info objectForKey:PORT_KEY] intValue]];
 	[network setUseSSL:[[info objectForKey:SSL_KEY] boolValue]];
-	[network setCOL:[[info objectForKey:COL_KEY] boolValue]];	
+	[network setCOL:[[info objectForKey:COL_KEY] boolValue]];
+	[network setUUID:[info objectForKey:UUID_KEY]];
 	if ([[info objectForKey:S_PASS_KEY] boolValue]) {
         //[network setSpass:([wrapper objectForKey:S_PASS_KEY] ?: @"")];
-		RCKeychainItem *item = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@spass", [network _description]]];
+		RCKeychainItem *item = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@spass", [network uUID]]];
 		[network setSpass:([item objectForKey:(id)kSecValueData] ?: @"")];
 		if ([network spass] == nil || [[network spass] length] == 0) {
 			[network setShouldRequestSPass:YES];
@@ -73,7 +74,7 @@
 	}
 	if ([[info objectForKey:N_PASS_KEY] boolValue]) {
 		//[network setNpass:([wrapper objectForKey:N_PASS_KEY] ?: @"")];
-		RCKeychainItem *item = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@npass", [network _description]]];
+		RCKeychainItem *item = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@npass", [network uUID]]];
 		[network setNpass:([item objectForKey:(id)kSecValueData] ?: @"")];
 		if ([network npass] == nil || [[network npass] length] == 0) {
 			[network setShouldRequestNPass:YES];
@@ -113,6 +114,7 @@
 			(sDescription ?: @""), DESCRIPTION_KEY,
 			(server ?: @""), SERVR_ADDR_KEY,
 			(SASL ? (id)kCFBooleanTrue : (id)kCFBooleanFalse), SASL_KEY,
+			uUID, UUID_KEY,
 			[NSNumber numberWithInt:port], PORT_KEY,
 			[NSNumber numberWithBool:useSSL], SSL_KEY,
 			[NSNumber numberWithBool:COL], COL_KEY,
@@ -160,7 +162,7 @@
 		[self addChannel:chan join:NO];
 		RCChannel *_chan = [self channelWithChannelName:chan];
 		[_chan setJoinOnConnect:jOC];
-		RCKeychainItem *item = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@%@rpass", [self _description], chan]];
+		RCKeychainItem *item = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@%@rpass", [self uUID], chan]];
 		[_chan setPassword:[item objectForKey:(id)kSecValueData]];
 		[item release];		
 	}
@@ -364,7 +366,6 @@
 #if LOGALL
 	NSLog(@"WRITING BUFFER %d", sockfd);
 #endif
-	NSLog(@"BEFORE %@", writebuf);
 	int written = 0;
 	if (useSSL) {
 		NSLog(@"hi %@", writebuf);
@@ -380,7 +381,6 @@
 	buf = buf + written;
 	[writebuf release];
 	writebuf = [[NSMutableString alloc] initWithCString:buf encoding:NSUTF8StringEncoding];
-	NSLog(@"AFTER %@", writebuf);
 	// this is derp. must be a better method. ;P
 	return YES;
 }

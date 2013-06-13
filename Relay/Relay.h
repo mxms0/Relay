@@ -31,6 +31,7 @@ static inline void NOLog(NSString* a, ...) {
 	#define SASL_KEY @"0_SASLK"
 	#define BG_NOTIF @"0_BGNOTIF"
 	#define CHANNAMEKEY @"0_CHANKEYNAME"
+	#define UUID_KEY @"0_UDIDKEY"
 	#ifndef kCFCoreFoundationVersionNumber_iPhoneOS_4_0
 		#define kCFCoreFoundationVersionNumber_iPhoneOS_4_0 550.32
 	#endif

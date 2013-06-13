@@ -197,7 +197,6 @@ char *RCIPForURL(NSString *URL) {
 	mfds++;
 	int sel = select(mfds, &rfds, &wfds, NULL, NULL);
 	if (sel == -1) {
-		MARK;
 		return;
 	}
 	for (RCNetwork *net in [[RCNetworkManager sharedNetworkManager] networks]) {
@@ -207,7 +206,6 @@ char *RCIPForURL(NSString *URL) {
 			[net read];
 		}
 		if (FD_ISSET(sockfd, &wfds) && [net hasPendingBites]) {
-			MARK;
 			[net write];
 		}
 	}
