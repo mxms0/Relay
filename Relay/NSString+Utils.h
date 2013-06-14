@@ -13,5 +13,6 @@
 - (BOOL)hasPrefixNoCase:(NSString *)string;
 - (BOOL)hasSuffixNoCase:(NSString *)string;
 - (NSString *)recursivelyRemovePrefix:(NSString *)prefix;
+- (NSString *)recursivelyRemoveSuffix:(NSString *)suffix;
 - (NSString *)base64;
 @end

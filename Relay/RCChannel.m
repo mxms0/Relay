@@ -242,8 +242,9 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 	NSRange rhacksorry = [message rangeOfString:@"\x12\x13"];
 	if ([message rangeOfString:@"\x12\x13"].location != NSNotFound) {
 		time = [message substringWithRange:NSMakeRange(rhacksorry.location, message.length-rhacksorry.location)];
-		if ([time hasSuffix:@" "])
-			time = [time substringToIndex:time.length-1];
+		if ([time hasSuffix:@" "]) {
+			time = [time recursivelyRemoveSuffix:@" "];
+		}
 		message = [message substringWithRange:NSMakeRange(0, rhacksorry.location)];
 	}
 	if (!time) {
