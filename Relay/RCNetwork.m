@@ -192,17 +192,16 @@
     if ([chan isKindOfClass:[RCChannel class]]) {
         return (RCChannel *)chan;
     }
-    @synchronized(self) {
-        @synchronized(_channels) {
-            for (RCChannel *chann in _channels) {
-                if ([[[chann channelName] lowercaseString] isEqualToString:[chan lowercaseString]]) return chann;
-            }
-            if (cr) {
-                [self addChannel:chan join:NO];
-            }
-            return nil;
-        }
-    }
+	@synchronized(_channels) {
+		for (RCChannel *chann in _channels) {
+			if ([[[chann channelName] lowercaseString] isEqualToString:[chan lowercaseString]])
+				return chann;
+		}
+		if (cr) {
+			[self addChannel:chan join:NO];
+		}
+		return nil;
+	}
 }
 
 - (RCChannel *)addChannel:(NSString *)_chan join:(BOOL)join {
@@ -259,6 +258,22 @@
         [_channels removeObject:chan];
         [[RCNetworkManager sharedNetworkManager] saveNetworks];
     }
+}
+
+- (void)savePasswords {
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^ {
+		if ([self spass]) {
+			RCKeychainItem *keychain = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@spass", uUID]];
+			[keychain setObject:spass forKey:(id)kSecValueData];
+			[keychain release];
+		}
+		if ([self npass]) {
+			RCKeychainItem *keychain = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@npass", uUID]];
+			[keychain setObject:npass forKey:(id)kSecValueData];
+			[keychain release];
+		}
+	});
+	// should consider making RCPasswordStore or something.
 }
 
 #pragma mark - SOCKET STUFF
@@ -1187,6 +1202,16 @@
 	NSLog(@"Ohai. %@", motd);
 }
 
+- (void)handle432:(NSString *)fourthirtytwo {
+	dispatch_async(dispatch_get_main_queue(), ^{ 
+		RCPrettyAlertView *ac = [[RCPrettyAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Invalid Nickname (%@)", [self _description]] message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Change", nil];
+		[ac setTag:RCALERR_INCNICK];
+		[ac setAlertViewStyle:UIAlertViewStylePlainTextInput];
+		[ac show];
+		[ac release];
+	});
+}
+
 - (void)handle433:(NSString *)use {
 	// nick is in use.
     self.useNick = [useNick stringByAppendingString:@"_"];
@@ -1216,6 +1241,26 @@
 	if (kchan) [kchan recievedMessage:mesg from:@"" type:RCMessageTypeError];
     [[self consoleChannel] recievedMessage:mesg from:chan type:RCMessageTypeNormal];
     NSLog(@"kay %@ %@ %@", raw, chan, mesg);
+}
+
+- (void)handle461:(NSString *)fsixtyone {
+	dispatch_async(dispatch_get_main_queue(), ^{
+		RCPrettyAlertView *ac = [[RCPrettyAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Invalid Username (%@)", [self _description]] message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Change", nil];
+		[ac setTag:RCALERR_INCUNAME];
+		[ac setAlertViewStyle:UIAlertViewStylePlainTextInput];
+		[ac show];
+		[ac release];
+	});
+}
+
+- (void)handle464:(NSString *)foursixtyfour {
+	dispatch_async(dispatch_get_main_queue(), ^{
+		RCPrettyAlertView *ac = [[RCPrettyAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Invalid Username (%@)", [self _description]] message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Change", nil];
+		[ac setTag:RCALERR_INCSPASS];
+		[ac setAlertViewStyle:UIAlertViewStylePlainTextInput];
+		[ac show];
+		[ac release];
+	});
 }
 
 - (void)handle473:(NSString *)args {
@@ -1416,16 +1461,21 @@
     [self performSelectorOnMainThread:@selector(showInviteAlert:) withObject:invite waitUntilDone:YES];
 }
 
-- (void)showInviteAlert:(NSString*)invite{
+- (void)showInviteAlert:(NSString *)invite {
+	NSLog(@"k _ %@", invite);
     NSScanner *_scanner = [[NSScanner alloc] initWithString:invite];
 	NSString *from = @"";
     NSString *chan = @"";
+	NSString *crap;
     [_scanner scanUpToString:@" " intoString:&from];
-    [_scanner scanUpToString:@" " intoString:&from];
-    [_scanner scanUpToString:@" " intoString:&from];
+    [_scanner scanUpToString:@" " intoString:&crap];
+    [_scanner scanUpToString:@" " intoString:&crap];
     [_scanner scanUpToString:@" " intoString:&chan];
+	if ([from hasPrefix:@":"])
+		from = [from substringFromIndex:1];
+	RCParseUserMask(from, &from, nil, nil);
     chan = [chan substringFromIndex:1];
-	RCInviteRequestAlert *alert = [[RCInviteRequestAlert alloc] initWithTitle:[NSString stringWithFormat:@"%@",chan] message:[NSString stringWithFormat:@"%@ has invited you to %@", from, chan] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Join", nil];
+	RCInviteRequestAlert *alert = [[RCInviteRequestAlert alloc] initWithTitle:[NSString stringWithFormat:@"%@\r\n(%@)",chan, [self _description]] message:[NSString stringWithFormat:@"%@ has invited you to %@", from, chan] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Join", nil];
 	[alert show];
 	[alert release];
 }
@@ -1746,13 +1796,26 @@ void RCParseUserMask(NSString *mask, NSString **_nick, NSString **user, NSString
 	[scanr scanUpToString:@"" intoString:hostmask];
 }
 
+- (void)willPresentAlertView:(UIAlertView *)alertView {
+	if (![alertView isKindOfClass:[RCInviteRequestAlert class]]) return;
+	NSString *str = alertView.title;
+	NSRange rrs = [str rangeOfString:@"\r\n"];
+	str = [str substringToIndex:rrs.location];
+	if ([self channelWithChannelName:str]) {
+		[alertView dismissWithClickedButtonIndex:0 animated:NO];
+	}
+}
+
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
 	if ([alertView isKindOfClass:[RCInviteRequestAlert class]]) {
 		switch (buttonIndex) {
 			case 0:
 				break;
 			case 1: {
-				RCChannel *chan = [self addChannel:alertView.title join:YES];
+				NSString *str = alertView.title;
+				NSRange rrs = [str rangeOfString:@"\r\n"];
+				str = [str substringToIndex:rrs.location];
+				RCChannel *chan = [self addChannel:str join:YES];
 				reloadNetworks();
 				[[RCChatController sharedController] selectChannel:[chan channelName] fromNetwork:self];
 				// select network here
@@ -1760,6 +1823,55 @@ void RCParseUserMask(NSString *mask, NSString **_nick, NSString **user, NSString
 			}
 			default:
 				break;
+		}
+	}
+	switch ([alertView tag]) {
+		case RCALERR_INCNICK: {
+			if (buttonIndex == 0) {
+				// cancel
+				[self disconnect];
+			}
+			else {
+				[self setNick:[alertView textFieldAtIndex:0].text];
+				[[RCNetworkManager sharedNetworkManager] saveNetworks];
+				if ([self isTryingToConnectOrConnected]) {
+					[self sendMessage:[NSString stringWithFormat:@"NICK %@", nick] canWait:NO];
+				}
+				else {
+					[self connect];
+				}
+			}
+		}
+		case RCALERR_INCUNAME: {
+			if (buttonIndex == 0) {
+				// cancel
+				[self disconnect];
+			}
+			else {
+				[self setUsername:[alertView textFieldAtIndex:0].text];
+				[[RCNetworkManager sharedNetworkManager] saveNetworks];
+				if ([self isTryingToConnectOrConnected]) {
+					[self sendMessage:[NSString stringWithFormat:@"USER %@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
+				}
+				else {
+					[self connect];
+				}
+			}
+		}
+		case RCALERR_INCSPASS: {
+			if (buttonIndex == 0) {
+				[self disconnect];
+			}
+			else {
+				[self setSpass:[alertView textFieldAtIndex:0].text];
+				[self savePasswords];
+				if ([self isTryingToConnectOrConnected]) {
+					[self sendMessage:[NSString stringWithFormat:@"PASS %@", spass]];
+				}
+				else {
+					[self connect];
+				}
+			}
 		}
 	}
 }

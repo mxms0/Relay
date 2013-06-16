@@ -19,7 +19,7 @@
 	if ((self = [super initWithFrame:frame])) {
 		[self setTextColor:UIColorFromRGB(0x56595A)];
 		[self setFont:[UIFont systemFontOfSize:12]];
-		[self setClearButtonMode:UITextFieldViewModeAlways];
+		[self setClearButtonMode:UITextFieldViewModeWhileEditing];
 #if USE_PRIVATE
 		if ([self respondsToSelector:@selector(setInsertionPointColor:)])
 			[self setInsertionPointColor:UIColorFromRGB(0x4F94EA)];

@@ -107,6 +107,7 @@ typedef enum RCSocketStatus {
 - (BOOL)write;
 - (BOOL)hasPendingBites; //nom
 - (id)infoDictionary;
+- (void)savePasswords;
 @end
 SSL_CTX *RCInitContext(void);
 char *RCIPForURL(NSString *URL);

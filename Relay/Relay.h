@@ -50,6 +50,9 @@ static inline void NOLog(NSString* a, ...) {
 	#define UIApp [UIApplication sharedApplication]
 	#define LOGALL 0
 	#define READ_BUF_LEN 4096
+	#define RCALERR_INCNICK 666
+	#define RCALERR_INCUNAME 667
+	#define RCALERR_INCSPASS 668
 	#define CMLog(format, ...) NSLog(@"(%s) in [%s:%d] ::: %@", __PRETTY_FUNCTION__, __FILE__, __LINE__, [NSString stringWithFormat:format, ## __VA_ARGS__])
 	#define MARK CMLog(@"%s", __PRETTY_FUNCTION__);
 
