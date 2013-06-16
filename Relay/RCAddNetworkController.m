@@ -229,7 +229,21 @@ _end:
 	return 0;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+	UIView *base = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 35)];
+	UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(2, (section == 0 ? 7 : -2), 300, 25)];
+	[lbl setTextColor:[UIColor whiteColor]];
+	[lbl setShadowColor:[UIColor blackColor]];
+	[lbl setShadowOffset:CGSizeMake(0, 1)];
+	[lbl setBackgroundColor:[UIColor clearColor]];
+	[lbl setFont:[UIFont boldSystemFontOfSize:14.5]];
+	[lbl setText:[self titleForHeaderInSection:section]];
+	[base addSubview:lbl];
+	[lbl release];
+	return [base autorelease];
+}
+
+- (NSString *)titleForHeaderInSection:(NSInteger)section {
 	switch (section) {
 		case 0:
 			return @"   CONNECTION INFORMATION";
