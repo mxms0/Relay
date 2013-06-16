@@ -3,7 +3,6 @@
 //  Relay
 //
 //  Created by Max Shavrick on 10/24/12.
-//  Copyright (c) 2012 American Heritage School. All rights reserved.
 //
 
 #import "RCSpecialTableView.h"

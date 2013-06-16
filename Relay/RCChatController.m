@@ -267,7 +267,7 @@ static RCNetwork *currentNetwork = nil;
 - (void)presentViewControllerInMainViewController:(UIViewController *)hi {
 	UIViewController *rc = [((RCAppDelegate *)[[UIApplication sharedApplication] delegate]) navigationController];
 	UINavigationController *ctrl = [[UINavigationController alloc] initWithRootViewController:hi];
-	[ctrl setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
+	[ctrl setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
 	[rc presentModalViewController:ctrl animated:YES];
 	[ctrl release];
 }

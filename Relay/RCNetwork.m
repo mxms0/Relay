@@ -170,6 +170,7 @@
 }
 
 - (void)setupRooms:(NSArray *)rooms {
+	// old deprecated method. may still be used for RCAddNetworkController stuff.
 	[rooms retain];
 	for (NSString *_chan in rooms) {
 		[self addChannel:_chan join:NO];
@@ -1122,6 +1123,10 @@
 	// :irc.saurik.com 376 _m :End of message of the day.
 }
 
+- (void)handle381:(NSString *)oofancyOper {
+	MARK;
+}
+
 - (void)handle401:(NSString *)blasphemey {
 	// no such nick/channel
 }
@@ -1705,7 +1710,6 @@
 
 - (void)handleCAP:(NSString *)cap {
 	if ([cap rangeOfString:@"CAP * LS"].location != NSNotFound) {
-		NSLog(@"sending reqs");
 		NSString *reqs = @"CAP REQ :";
 		if ([cap rangeOfString:@"server-time"].location != NSNotFound)
 			reqs = [reqs stringByAppendingString:@" server-time"];

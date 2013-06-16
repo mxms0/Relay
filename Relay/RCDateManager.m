@@ -15,7 +15,9 @@ static id _dManager = nil;
 		formatter.dateStyle = NSDateFormatterNoStyle;
 		formatter.PMSymbol = @"";
 		formatter.AMSymbol = @"";
-		formatter.timeStyle = NSDateFormatterShortStyle;
+		formatter.dateFormat = @"hh:mm";
+		// :ss for seconds
+		// HH for 24 hour time
 		[formatter setLocale:[[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"] autorelease]];
 		[formatter setTimeZone:[NSTimeZone localTimeZone]];
 		eightsixohoneformatter = [[ISO8601DateFormatter alloc] init];

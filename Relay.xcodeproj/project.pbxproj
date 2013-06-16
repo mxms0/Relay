@@ -1254,8 +1254,8 @@
 			buildSettings = {
 				ALTERNATE_MODE = "";
 				CODE_SIGN_ENTITLEMENTS = Relay/Relay.entitlements;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Evolse Limited (2BR9U9X858)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Evolse Limited (2BR9U9X858)";
 				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Relay/Relay-Prefix.pch";
@@ -1274,6 +1274,8 @@
 				);
 				OTHER_LDFLAGS = "-Wl,-no_implicit_dylibs";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "747CA829-41F0-4BA4-BC13-A314419CA903";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "747CA829-41F0-4BA4-BC13-A314419CA903";
 				STRIP_INSTALLED_PRODUCT = YES;
 				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = app;
@@ -1336,8 +1338,8 @@
 			buildSettings = {
 				ALTERNATE_MODE = "";
 				CODE_SIGN_ENTITLEMENTS = Relay/Relay.entitlements;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Evolse Limited (2BR9U9X858)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Evolse Limited (2BR9U9X858)";
 				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Relay/Relay-Prefix.pch";
@@ -1355,6 +1357,8 @@
 				);
 				OTHER_LDFLAGS = "-Wl,-no_implicit_dylibs";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "747CA829-41F0-4BA4-BC13-A314419CA903";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "747CA829-41F0-4BA4-BC13-A314419CA903";
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = app;
@@ -1366,8 +1370,8 @@
 			buildSettings = {
 				ALTERNATE_MODE = "";
 				CODE_SIGN_ENTITLEMENTS = Relay/Relay.entitlements;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Evolse Limited (2BR9U9X858)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Evolse Limited (2BR9U9X858)";
 				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Relay/Relay-Prefix.pch";
@@ -1386,6 +1390,8 @@
 				);
 				OTHER_LDFLAGS = "-Wl,-no_implicit_dylibs";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "747CA829-41F0-4BA4-BC13-A314419CA903";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "747CA829-41F0-4BA4-BC13-A314419CA903";
 				STRIP_INSTALLED_PRODUCT = YES;
 				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = app;

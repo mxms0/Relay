@@ -19,6 +19,7 @@ static NSString *template = nil;
 		[self setChannel:chan];
 		[self setBackgroundColor:[UIColor clearColor]];
 		self.opaque = NO;
+		[self setHidden:YES];
 		if (!template) {
 			template = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"chatview" ofType:@"html"] encoding:NSUTF8StringEncoding error:nil];
 			template = [[NSString stringWithFormat:template, [[NSBundle mainBundle] pathForResource:@"0_jaggs@2x" ofType:@"png"]]retain];
@@ -90,6 +91,9 @@ static NSString *template = nil;
 }
 
 - (void)layoutMessage:(RCMessageFormatter *)ms {
+	if (self.hidden) {
+		self.hidden = NO;
+	}
 	@synchronized(self) {
 		if (preloadPool) {
 			NSLog(@"GOING SWIMMMING");

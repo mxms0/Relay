@@ -80,13 +80,13 @@ static NSMutableArray *networks = nil;
 			isSetup = NO;
 			return;
 		}
-		if ([[dict allKeys] count] == 0) {
+		NSArray *nets = [dict objectForKey:@"0_NSO"];
+		if ([nets count] == 0) {
 			[self setupWelcomeView];
 			isSetup = NO;
 			return;
 		}
-		for (NSString *_net in [dict allKeys]) {
-			NSDictionary *_info = [dict objectForKey:_net];
+		for (NSDictionary *_info in nets) {
 			[self ircNetworkWithInfo:_info isNew:NO];
 		}
 	}
@@ -117,10 +117,13 @@ static NSMutableArray *networks = nil;
 - (void)saveNetworks {
 	if (isSetup) return;
 	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+	NSMutableArray *sav = [[NSMutableArray alloc] init];
 	for (RCNetwork *net in networks) {
 		if (![net isKindOfClass:[RCWelcomeNetwork class]])
-			if ([net uUID])	[dict setObject:[net infoDictionary] forKey:[net uUID]];
+			if ([net uUID]) [sav addObject:[net infoDictionary]];
 	}
+	[dict setObject:sav forKey:@"0_NSO"];
+	[sav release];
 	// this is why order isn't maintained. it's being added to a dictionary.
 	// fixx THIS LATER MAX OR FUDGE WILL KILL YOU.
 	NSString *error;

@@ -29,12 +29,23 @@
 		[datas release];
 		[self.view setOpaque:YES];
 		self.title = @"";
+		UILongPressGestureRecognizer *lpg = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressGestureTriggered:)];
+		[lpg setMinimumPressDuration:1];
+		[datas addGestureRecognizer:lpg];
+		[lpg release];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadData) name:@"us.mxms.relay.reload" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeNetwork:) name:@"us.mxms.relay.del" object:nil];
 	}
 	// move to loadView.
 	// don't touch self.view in init. ever.
 	return self;
+}
+
+- (void)longPressGestureTriggered:(UILongPressGestureRecognizer *)pg {
+//	NSLog(@"hi %@", [[pg view] subviews]);
+//	CGPoint loc = [pg locationInView:datas];
+//	NSIndexPath *path = [datas indexPathForRowAtPoint:loc];
+	MARK;
 }
 
 - (void)removeNetwork:(NSNotification *)_net {

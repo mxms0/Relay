@@ -455,6 +455,11 @@ _end:
 				break;
 		}
 	}
+	if ([[cell accessoryView] isKindOfClass:[RCTextField class]]) {
+		RCTextField *tf = (RCTextField *)[cell accessoryView];
+		[tf setFrame:CGRectMake(0, 0, 180,44)];
+		[tf setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+	}
     // Configure the cell...
     return cell;
 }
