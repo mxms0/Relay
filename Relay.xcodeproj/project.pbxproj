@@ -76,6 +76,8 @@
 		505012C01662BBF500642B8B /* 0_usl.png in Resources */ = {isa = PBXBuildFile; fileRef = 505012BE1662BBF500642B8B /* 0_usl.png */; };
 		505012C11662BBF500642B8B /* 0_usl@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 505012BF1662BBF500642B8B /* 0_usl@2x.png */; };
 		505234401556D938002EC9AC /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5052343F1556D938002EC9AC /* libz.dylib */; };
+		50528955176E70F600127EC0 /* RCViewCard.m in Sources */ = {isa = PBXBuildFile; fileRef = 50528954176E70F600127EC0 /* RCViewCard.m */; };
+		50528958176EDC4100127EC0 /* RCTopViewCard.m in Sources */ = {isa = PBXBuildFile; fileRef = 50528957176EDC4100127EC0 /* RCTopViewCard.m */; };
 		505BF8511634B192002BBED5 /* 0_cell_selec.png in Resources */ = {isa = PBXBuildFile; fileRef = 505BF84F1634B192002BBED5 /* 0_cell_selec.png */; };
 		505BF8521634B192002BBED5 /* 0_cell_selec@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 505BF8501634B192002BBED5 /* 0_cell_selec@2x.png */; };
 		505BF85C1634BAFC002BBED5 /* 0_underline.png in Resources */ = {isa = PBXBuildFile; fileRef = 505BF85A1634BAEE002BBED5 /* 0_underline.png */; };
@@ -317,6 +319,10 @@
 		505012BE1662BBF500642B8B /* 0_usl.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_usl.png; sourceTree = "<group>"; };
 		505012BF1662BBF500642B8B /* 0_usl@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_usl@2x.png"; sourceTree = "<group>"; };
 		5052343F1556D938002EC9AC /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		50528953176E70F600127EC0 /* RCViewCard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCViewCard.h; sourceTree = "<group>"; };
+		50528954176E70F600127EC0 /* RCViewCard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCViewCard.m; sourceTree = "<group>"; };
+		50528956176EDC4000127EC0 /* RCTopViewCard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTopViewCard.h; sourceTree = "<group>"; };
+		50528957176EDC4100127EC0 /* RCTopViewCard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTopViewCard.m; sourceTree = "<group>"; };
 		505BF84F1634B192002BBED5 /* 0_cell_selec.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_cell_selec.png; sourceTree = "<group>"; };
 		505BF8501634B192002BBED5 /* 0_cell_selec@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_cell_selec@2x.png"; sourceTree = "<group>"; };
 		505BF85A1634BAEE002BBED5 /* 0_underline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_underline.png; sourceTree = "<group>"; };
@@ -585,6 +591,10 @@
 				503742281511478300F4DA1A /* RCUserListPanel.m */,
 				50E77A661505A18700E75C64 /* RCChatPanel.h */,
 				50E77A671505A18700E75C64 /* RCChatPanel.m */,
+				50528953176E70F600127EC0 /* RCViewCard.h */,
+				50528954176E70F600127EC0 /* RCViewCard.m */,
+				50528956176EDC4000127EC0 /* RCTopViewCard.h */,
+				50528957176EDC4100127EC0 /* RCTopViewCard.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1209,6 +1219,8 @@
 				5076D81E16D1D5E800CCFA31 /* RCACMViewController.m in Sources */,
 				509F2DD11734671900867412 /* RCSocket.m in Sources */,
 				50B7413C17651DAA003FD20A /* ISO8601DateFormatter.m in Sources */,
+				50528955176E70F600127EC0 /* RCViewCard.m in Sources */,
+				50528958176EDC4100127EC0 /* RCTopViewCard.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1255,9 +1255,9 @@
 
 - (void)handle464:(NSString *)foursixtyfour {
 	dispatch_async(dispatch_get_main_queue(), ^{
-		RCPrettyAlertView *ac = [[RCPrettyAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Invalid Username (%@)", [self _description]] message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Change", nil];
+		RCPrettyAlertView *ac = [[RCPrettyAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Invalid Server Password (%@)", [self _description]] message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Change", nil];
 		[ac setTag:RCALERR_INCSPASS];
-		[ac setAlertViewStyle:UIAlertViewStylePlainTextInput];
+		[ac setAlertViewStyle:UIAlertViewStyleSecureTextInput];
 		[ac show];
 		[ac release];
 	});

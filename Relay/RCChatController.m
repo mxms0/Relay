@@ -32,9 +32,6 @@ static id _inst = nil;
 				return self;
 			}
 		}
-		navigationController = nil;
-		leftView = nil;
-		topView = nil;
 		_inst = self;
 		[self layoutWithRootViewController:rc];
 	}
@@ -42,9 +39,113 @@ static id _inst = nil;
 }
 
 - (void)setDefaultTitleAndSubtitle {
-	[((RCChatNavigationBar *)[navigationController navigationBar]) setTitle:@"Relay"];
-	[((RCChatNavigationBar *)[navigationController navigationBar]) setSubtitle:@"Welcome to Relay"];
-	[[navigationController navigationBar] setNeedsDisplay];
+	[[chatView navigationBar] setTitle:@"Relay"];
+	[[chatView navigationBar] setSubtitle:@"Welcome to Relay"];
+	[[chatView navigationBar] setNeedsDisplay];
+}
+
+- (void)userSwiped:(UIPanGestureRecognizer *)pan {
+	if ([self isLandscape]) {
+		[self userSwiped_specialLikeFr0st:pan];
+		return;
+	}
+	if (pan.state == UIGestureRecognizerStateChanged) {
+		CGPoint tr = [pan translationInView:[chatView superview]];
+		CGPoint centr = CGPointMake([chatView center].x +tr.x, [chatView center].y);
+		if (draggingUserList && [infoView frame].origin.x > [infoView frame].size.width) {
+			draggingUserList = NO;
+		}
+#if LOGALL
+		NSLog(@"HI I AM @ %f", centr.x);
+#endif
+		if (centr.x < 157 || draggingUserList) {
+			draggingUserList = YES;
+			[infoView setCenter:CGPointMake([infoView center].x+tr.x, [infoView center].y)];
+			[pan setTranslation:CGPointZero inView:[chatView superview]];
+			return;
+		}
+		if (!draggingUserList) {
+			if (canDragMainView) {
+				//	if (centr.x <= 595 && centr.x > 285) {
+				[chatView setCenter:centr];
+				[pan setTranslation:CGPointZero inView:[chatView superview]];
+				//}
+			}
+		}
+	}
+	else if (pan.state == UIGestureRecognizerStateEnded) {
+		if (draggingUserList) {
+			if ([pan velocityInView:[chatView superview]].x > 0) {
+				[self popUserListWithDuration:0.30];
+			}
+			else {
+				[self pushUserListWithDuration:0.30];
+			}
+		}
+		else {
+			if (!canDragMainView) return;
+			if ([pan velocityInView:chatView.superview].x > 0) {
+				[self openWithDuration:0.30];
+			}
+			else
+				[self closeWithDuration:0.30];
+		}
+		draggingUserList = NO;
+	}
+	else if (pan.state == UIGestureRecognizerStateCancelled || pan.state == UIGestureRecognizerStateFailed) {
+		[self cleanLayersAndMakeMainChatVisible];
+	}
+}
+
+
+- (void)userPanned:(UIPanGestureRecognizer *)pan {
+	if (pan.state == UIGestureRecognizerStateChanged) {
+		CGPoint tr = [pan translationInView:[chatView superview]];
+		CGPoint centr = CGPointMake([chatView center].x +tr.x, [chatView center].y);
+		if (draggingUserList && [infoView frame].origin.x > [infoView frame].size.width) {
+			draggingUserList = NO;
+		}
+#if LOGALL
+		NSLog(@"HI I AM @ %f", centr.x);
+#endif
+		if (centr.x < 157 || draggingUserList) {
+			draggingUserList = YES;
+			[infoView setCenter:CGPointMake([infoView center].x+tr.x, [infoView center].y)];
+			[pan setTranslation:CGPointZero inView:[chatView superview]];
+			return;
+		}
+		if (!draggingUserList) {
+			if (canDragMainView) {
+				//	if (centr.x <= 595 && centr.x > 285) {
+				[chatView setCenter:centr];
+				[pan setTranslation:CGPointZero inView:[chatView superview]];
+				//}
+			}
+		}
+	}
+	else if (pan.state == UIGestureRecognizerStateEnded) {
+		if (draggingUserList) {
+			if ([pan velocityInView:[chatView superview]].x > 0) {
+				[self popUserListWithDuration:0.30];
+			}
+			else {
+				[self pushUserListWithDuration:0.30];
+			}
+		}
+		else {
+			if (!canDragMainView) return;
+			if ([pan velocityInView:chatView.superview].x > 0) {
+				[self openWithDuration:0.30];
+			}
+			else
+				[self closeWithDuration:0.30];
+		}
+		draggingUserList = NO;
+	}
+	else if (pan.state == UIGestureRecognizerStateCancelled || pan.state == UIGestureRecognizerStateFailed) {
+		[self cleanLayersAndMakeMainChatVisible];
+	}
+
 }
 
 - (void)layoutWithRootViewController:(RCViewController *)rc {
@@ -52,41 +153,22 @@ static id _inst = nil;
 	rootView = rc;
 	canDragMainView = YES;
 	CGSize frame = [[UIScreen mainScreen] applicationFrame].size;
+	bottomView = [[RCViewCard alloc] initWithFrame:CGRectMake(0, 0, frame.width, frame.height) isBottomView:YES];
+	[rc.view insertSubview:bottomView atIndex:0];
+	chatView = [[RCViewCard alloc] initWithFrame:CGRectMake(0, 0, frame.width, frame.height) isBottomView:NO];
+	[rc.view insertSubview:chatView atIndex:1];
+	infoView = [[RCTopViewCard alloc] initWithFrame:CGRectMake(frame.width, 0, frame.width, frame.height) isBottomView:NO];
+	[rc.view insertSubview:infoView atIndex:2];
+	UIPanGestureRecognizer *pg = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(userPanned:)];
+	[rc.view addGestureRecognizer:pg];
+	[pg release];
 	chatViewHeights[0] = frame.height-83;
 	chatViewHeights[1] = frame.height-299;
-	UIViewController *base = [[UIViewController alloc] init];
-	UIViewController *baseTwo = [[UIViewController alloc] init];
-	UIViewController *baseThree = [[UIViewController alloc] init];
-	navigationController = [[RCChatViewController alloc] initWithRootViewController:baseTwo];
-	[navigationController.view setFrame:CGRectMake(0, 0, frame.width, frame.height)];
-	[baseTwo.view setFrame:navigationController.view.frame];
 	[self setDefaultTitleAndSubtitle];
-	[rc.view addSubview:navigationController.view];
-	[navigationController setNavigationBarHidden:YES];
-	[navigationController setNavigationBarHidden:NO]; // strange hack to make toolbar at top of screen.. :s
-	[[navigationController navigationBar] setBackgroundImage:[UIImage imageNamed:@"0_headr"] forBarMetrics:UIBarMetricsDefault];
-	leftView = [[RCChatsListViewController alloc] initWithRootViewController:base];
-	[((RCChatNavigationBar *)[leftView navigationBar]) setTitle:@"Chats"];
-	[((RCChatNavigationBar *)[leftView navigationBar]) setSuperSpecialLikeAc3xx2:YES];
-	[rc.view insertSubview:leftView.view atIndex:0];
-	[leftView.view setFrame:CGRectMake(0, 0, frame.width, frame.height)];
-	[leftView setNavigationBarHidden:YES];
-	[leftView setNavigationBarHidden:NO]; // again. ffs
-	topView = [[RCUserListViewController alloc] initWithRootViewController:baseThree];
-	[topView.view setFrame:CGRectMake(frame.width, 0, frame.width, frame.height)];
-	[((RCChatNavigationBar *)[topView navigationBar]) setTitle:@"Memberlist"];
-	[((RCChatNavigationBar *)[topView navigationBar]) setSuperSpecialLikeAc3xx2:YES];
-	[rc.view insertSubview:topView.view atIndex:[[rc.view subviews] count]];
-	[baseThree.view setFrame:topView.view.frame];
-	[topView setNavigationBarHidden:YES];
-	[topView setNavigationBarHidden:NO];
-	[base release];
-	[baseTwo release];
-	[baseThree release];
-	UIPanGestureRecognizer *spr = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(bottomLayerSwiped:)];
-	[spr setDelegate:self];
-	[rc.view addGestureRecognizer:spr];
-	[spr release];
+	[[bottomView navigationBar] setTitle:@"Chats"];
+	[[bottomView navigationBar] setSuperSpecialLikeAc3xx2:YES];
+	[[infoView navigationBar] setTitle:@"Memberlist"];
+	[[infoView navigationBar] setSuperSpecialLikeAc3xx2:YES];
 	_bar = [[RCTextFieldBackgroundView alloc] initWithFrame:CGRectMake(0, 800, 320, 40)];
 	[_bar setOpaque:YES];
 	field = [[RCTextField alloc] initWithFrame:CGRectMake(15, 5, 299, 31)];
@@ -103,26 +185,37 @@ static id _inst = nil;
 	[field setClearButtonMode:UITextFieldViewModeWhileEditing];
 	[_bar addSubview:field];
 	[field release];
-	[navigationController.view insertSubview:_bar atIndex:3];
+	[chatView insertSubview:_bar atIndex:[[chatView subviews] count]];
+	suggestLocation = [self suggestionLocation];;
+	return;
+
+/*
+	UIPanGestureRecognizer *spr = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(bottomLayerSwiped:)];
+	[spr setDelegate:self];
+	[rc.view addGestureRecognizer:spr];
+	[spr release];
+ 
 	UIPanGestureRecognizer *panr = [[UIPanGestureRecognizer alloc] initWithTarget:[RCChatController sharedController] action:@selector(userSwiped:)];
 	[panr setDelegate:[RCChatController sharedController]];
 	[navigationController.view addGestureRecognizer:panr];
 	[panr release];
-	suggestLocation = [self suggestionLocation];
+ */
 }
 
 - (void)correctSubviewFrames {
 	CGSize fsize = [[UIScreen mainScreen] applicationFrame].size;
-	[leftView setFrame:CGRectMake(0, 0, fsize.width, fsize.height)];
-	[navigationController setFrame:CGRectMake(0, 0, fsize.width, fsize.height)];
+	[bottomView setFrame:CGRectMake(0, 0, fsize.width, fsize.height)];
+	[chatView setFrame:CGRectMake(0, 0, fsize.width, fsize.height)];
 	canDragMainView = YES;
 	[self setEntryFieldEnabled:YES];
 	[currentPanel setFrame:CGRectMake(currentPanel.frame.origin.x, currentPanel.frame.origin.y, fsize.width, fsize.height)];
+	/*
 	[[[[navigationController topViewController] navigationItem] leftBarButtonItem] setEnabled:YES];
+	 */
 	[UIView animateWithDuration:0.25 animations:^ {
-		[topView setFrame:CGRectMake(topView.view.frame.size.width, 0, topView.view.frame.size.width, topView.view.frame.size.height)];
+		[infoView setFrame:CGRectMake(infoView.frame.size.width, 0, infoView.frame.size.width, infoView.frame.size.height)];
 	} completion:^(BOOL fin) {
-		[topView findShadowAndDoStuffToIt];
+		[infoView findShadowAndDoStuffToIt];
 	}];
 }
 
@@ -194,7 +287,7 @@ static id _inst = nil;
 			dispatch_sync(dispatch_get_main_queue(), ^{
 				if ([found count] > 0) {
 					[[RCNickSuggestionView sharedInstance] setRange:rr inputField:tf];
-					[navigationController.view insertSubview:[RCNickSuggestionView sharedInstance] atIndex:5];
+					[chatView insertSubview:[RCNickSuggestionView sharedInstance] atIndex:5];
 					[[RCNickSuggestionView sharedInstance] showAtPoint:CGPointMake(10, suggestLocation) withNames:found];
 				}
 				else {
@@ -235,7 +328,7 @@ static id _inst = nil;
 
 - (BOOL)isLandscape {
 	// hopefully reliable..
-	return UIInterfaceOrientationIsLandscape(navigationController.interfaceOrientation);
+	return [UIApp statusBarFrame].size.width > 320;
 }
 
 - (void)menuButtonPressed:(id)unused {
@@ -244,7 +337,7 @@ static id _inst = nil;
 
 - (void)menuButtonPressed:(id)unused withSpeed:(NSTimeInterval)sped {
 	[currentPanel resignFirstResponder];
-	CGRect frame = navigationController.view.frame;
+	CGRect frame = chatView.frame;
 	if (frame.origin.x == 0.0) {
 		[self openWithDuration:sped];
 	}
@@ -328,18 +421,18 @@ static RCNetwork *currentNetwork = nil;
 
 - (void)closeWithDuration:(NSTimeInterval)dr {
 	[UIView animateWithDuration:dr animations:^{
-		[navigationController.view setFrame:CGRectMake(0, 0, navigationController.view.frame.size.width, navigationController.view.frame.size.height)];
+		[chatView setFrame:CGRectMake(0, 0, chatView.frame.size.width, chatView.frame.size.height)];
 	} completion:^(BOOL fin) {
 		[self setEntryFieldEnabled:YES];
-		[navigationController findShadowAndDoStuffToIt];
+		[chatView findShadowAndDoStuffToIt];
 	}];
 }
 
 - (void)openWithDuration:(NSTimeInterval)dr {
 	[UIView beginAnimations:nil context:nil];
 	[UIView setAnimationDuration:dr];
-	[navigationController.view setFrame:CGRectMake(267, 0, navigationController.view.frame.size.width, navigationController.view.frame.size.height)];
-	[navigationController findShadowAndDoStuffToIt];
+	[chatView setFrame:CGRectMake(267, 0, chatView.frame.size.width, chatView.frame.size.height)];
+	[chatView findShadowAndDoStuffToIt];
 	[UIView commitAnimations];
 	
 	//	[currentPanel resignFirstResponder];
@@ -350,26 +443,26 @@ static RCNetwork *currentNetwork = nil;
 - (void)pushUserListWithDuration:(NSTimeInterval)dr {
 	RCChannel *channel = [currentPanel channel];
 	if ([channel isKindOfClass:[RCPMChannel class]]) {
-		[topView showUserInfoPanel];
-		[((RCChatNavigationBar *)[topView navigationBar]) setSubtitle:nil];
+	//	[topView showUserInfoPanel];
+		[((RCChatNavigationBar *)[infoView navigationBar]) setSubtitle:nil];
 	}
 	else if ([channel isKindOfClass:[RCConsoleChannel class]]) {
-		[((RCChatNavigationBar *)[topView navigationBar]) setSubtitle:nil];
-		[topView showUserListPanel];
+		[((RCChatNavigationBar *)[infoView navigationBar]) setSubtitle:nil];
+	//	[topView showUserListPanel];
 	}
 	else if ([channel isKindOfClass:[RCChannel class]]) {
-		[((RCChatNavigationBar *)[topView navigationBar]) setSubtitle:[NSString stringWithFormat:@"%d users in %@", [[channel fullUserList] count], [channel channelName]]];
-		[topView showUserListPanel];
+		[[infoView navigationBar] setSubtitle:[NSString stringWithFormat:@"%d users in %@", [[channel fullUserList] count], [channel channelName]]];
+	//	[topView showUserListPanel];
 	}
-	[((RCChatNavigationBar *)[topView navigationBar]) setNeedsDisplay];
-	[topView reloadData];
+	[[infoView navigationBar] setNeedsDisplay];
+	//[topView reloadData];
 	canDragMainView = NO;
 	[self closeWithDuration:0.00];
-	[[[[navigationController topViewController] navigationItem] leftBarButtonItem] setEnabled:NO];
+	//[[[[navigationController topViewController] navigationItem] leftBarButtonItem] setEnabled:NO];
 	[UIView beginAnimations:nil context:nil];
 	[UIView setAnimationDuration:dr];
-	[topView setFrame:CGRectMake(52, 0, topView.view.frame.size.width, topView.view.frame.size.height)];
-	[topView findShadowAndDoStuffToIt];
+	[infoView setFrame:CGRectMake(52, 0, infoView.frame.size.width, infoView.frame.size.height)];
+	[infoView findShadowAndDoStuffToIt];
 	[UIView commitAnimations];
 	[currentPanel resignFirstResponder];
 	[self setEntryFieldEnabled:NO];
@@ -379,11 +472,11 @@ static RCNetwork *currentNetwork = nil;
 - (void)popUserListWithDuration:(NSTimeInterval)dr {
 	canDragMainView = YES;
 	[self setEntryFieldEnabled:YES];
-	[[[[navigationController topViewController] navigationItem] leftBarButtonItem] setEnabled:YES];
+	//[[[[navigationController topViewController] navigationItem] leftBarButtonItem] setEnabled:YES];
 	[UIView animateWithDuration:dr animations:^ {
-		[topView setFrame:CGRectMake(topView.view.frame.size.width, 0, topView.view.frame.size.width, topView.view.frame.size.height)];
+		[infoView setFrame:CGRectMake(infoView.frame.size.width, 0, infoView.frame.size.width, infoView.frame.size.height)];
 	} completion:^(BOOL fin) {
-		[topView findShadowAndDoStuffToIt];
+		[infoView findShadowAndDoStuffToIt];
 	}];
 }
 
@@ -404,15 +497,15 @@ static RCNetwork *currentNetwork = nil;
 
 - (void)userSwiped_specialLikeAc3xx:(UIPanGestureRecognizer *)pan {
 	if (pan.state == UIGestureRecognizerStateChanged) {
-		CGPoint tr = [pan translationInView:[navigationController.view superview]];
-		CGPoint cr = CGPointMake([topView.view center].x + tr.x, topView.view.center.y);
+		CGPoint tr = [pan translationInView:[chatView superview]];
+		CGPoint cr = CGPointMake([infoView center].x + tr.x, infoView.center.y);
 		if (cr.x >= 180) {
-			[topView setCenter:cr];
-			[pan setTranslation:CGPointZero inView:[navigationController.view superview]];
+			[infoView setCenter:cr];
+			[pan setTranslation:CGPointZero inView:[chatView superview]];
 		}
 	}
 	else if (pan.state == UIGestureRecognizerStateEnded) {
-		if ([pan velocityInView:[navigationController.view superview]].x > 0) {
+		if ([pan velocityInView:[chatView superview]].x > 0) {
 			[self popUserListWithDuration:0.30];
 		}
 		else {
@@ -423,15 +516,15 @@ static RCNetwork *currentNetwork = nil;
 
 - (void)bottomLayerSwiped:(UIPanGestureRecognizer *)pan {
 	if (pan.state == UIGestureRecognizerStateChanged) {
-		CGPoint tr = [pan translationInView:[navigationController.view superview]];
-		CGPoint cr = CGPointMake([navigationController.view center].x + tr.x, navigationController.view.center.y);
+		CGPoint tr = [pan translationInView:[chatView superview]];
+		CGPoint cr = CGPointMake([chatView center].x + tr.x, chatView.center.y);
 		if (cr.x >= 180) {
-			[navigationController setCenter:cr];
-			[pan setTranslation:CGPointZero inView:[navigationController.view superview]];
+			[chatView setCenter:cr];
+			[pan setTranslation:CGPointZero inView:[chatView superview]];
 		}
 	}
 	else if (pan.state == UIGestureRecognizerStateEnded) {
-		if ([pan velocityInView:[navigationController.view superview]].x > 0) {
+		if ([pan velocityInView:[chatView superview]].x > 0) {
 			[self openWithDuration:0.30];
 		}
 		else {
@@ -455,59 +548,6 @@ static RCNetwork *currentNetwork = nil;
 	}
 }
 
-- (void)userSwiped:(UIPanGestureRecognizer *)pan {
-	if ([self isLandscape]) {
-		[self userSwiped_specialLikeFr0st:pan];
-		return;
-	}
-	if (pan.state == UIGestureRecognizerStateChanged) {
-		CGPoint tr = [pan translationInView:[navigationController.view superview]];
-		CGPoint centr = CGPointMake([navigationController.view center].x +tr.x, [navigationController.view center].y);
-		if (draggingUserList && [topView.view frame].origin.x > [topView.view frame].size.width) {
-			draggingUserList = NO;
-		}
-#if LOGALL
-		NSLog(@"HI I AM @ %f", centr.x);
-#endif
-		if (centr.x < 157 || draggingUserList) {
-			draggingUserList = YES;
-			[topView setCenter:CGPointMake([topView.view center].x+tr.x, [topView.view center].y)];
-			[pan setTranslation:CGPointZero inView:[navigationController.view superview]];
-			return;
-		}
-		if (!draggingUserList) {
-			if (canDragMainView) {
-				//	if (centr.x <= 595 && centr.x > 285) {
-					[navigationController setCenter:centr];
-					[pan setTranslation:CGPointZero inView:[navigationController.view superview]];
-				//}
-			}
-		}
-	}
-	else if (pan.state == UIGestureRecognizerStateEnded) {
-		if (draggingUserList) {
-			if ([pan velocityInView:[navigationController.view superview]].x > 0) {
-				[self popUserListWithDuration:0.30];
-			}
-			else {
-				[self pushUserListWithDuration:0.30];
-			}
-		}
-		else {
-			if (!canDragMainView) return;
-			if ([pan velocityInView:navigationController.view.superview].x > 0) {
-				[self openWithDuration:0.30];
-			}
-			else
-				[self closeWithDuration:0.30];
-		}
-		draggingUserList = NO;
-	}
-	else if (pan.state == UIGestureRecognizerStateCancelled || pan.state == UIGestureRecognizerStateFailed) {
-		[self cleanLayersAndMakeMainChatVisible];
-	}
-}
-
 - (void)cleanLayersAndMakeMainChatVisible {
 	[self popUserListWithDuration:0.00];
 	[self closeWithDuration:0.30];
@@ -515,7 +555,7 @@ static RCNetwork *currentNetwork = nil;
 
 - (void)showMenuOptions:(id)unused {
 	if ([[currentPanel channel] isKindOfClass:[RCConsoleChannel class]]) return;
-	RCChatNavigationBar *rc = (RCChatNavigationBar *)[navigationController navigationBar];
+	RCChatNavigationBar *rc = (RCChatNavigationBar *)[chatView navigationBar];
 	NSMutableArray *buttons = [[NSMutableArray alloc] init];
 	UIButton *joinr = [[UIButton alloc] init];
 	SEL jsel = @selector(joinOrConnectDependingOnState);
@@ -569,7 +609,7 @@ static RCNetwork *currentNetwork = nil;
 }
 
 - (void)dismissMenuOptions {
-	RCChatNavigationBar *rc = (RCChatNavigationBar *)[navigationController navigationBar];
+	RCChatNavigationBar *rc = (RCChatNavigationBar *)[chatView navigationBar];
 	for (UIButton *subv in [rc subviews]) {
 		if ([subv isKindOfClass:[UIButton class]]) {
 			if ([subv tag] != 1132) {
@@ -610,7 +650,7 @@ static RCNetwork *currentNetwork = nil;
 }
 
 - (BOOL)gestureRecognizerShouldBegin:(UIPanGestureRecognizer *)pan {
-	CGPoint translation = [pan translationInView:navigationController.view.superview];
+	CGPoint translation = [pan translationInView:[chatView superview]];
 	return fabs(translation.x) > fabs(translation.y);
 }
 
@@ -621,16 +661,16 @@ static RCNetwork *currentNetwork = nil;
 }
 
 - (BOOL)isShowingChatListView {
-	return (navigationController.view.frame.origin.x > 0);
+	return (chatView.frame.origin.x > 0);
 }
 
 - (void)reloadUserCount {
 	RCChannel *chan = [currentPanel channel];
-	[((RCChatNavigationBar *)[topView navigationBar]) setSubtitle:[NSString stringWithFormat:@"%d users in %@", [[chan fullUserList] count], [chan channelName]]];
+	[((RCChatNavigationBar *)[chatView navigationBar]) setSubtitle:[NSString stringWithFormat:@"%d users in %@", [[chan fullUserList] count], [chan channelName]]];
 }
 
 - (void)selectChannel:(NSString *)channel fromNetwork:(RCNetwork *)_net {
-	for (UIView *subv in [navigationController.view subviews]) {
+	for (UIView *subv in [chatView subviews]) {
 		if ([subv isKindOfClass:[RCChatPanel class]])
 			[subv removeFromSuperview];
 	}
@@ -640,7 +680,7 @@ static RCNetwork *currentNetwork = nil;
 	if (!_net) net = [[currentPanel channel] delegate];
 	RCChannel *chan = [net channelWithChannelName:channel];
 	[chan setNewMessageCount:0];
-	[((RCChatNavigationBar *)[topView navigationBar]) setNeedsDisplay];
+	[((RCChatNavigationBar *)[chatView navigationBar]) setNeedsDisplay];
 	if (!chan) {
 		NSLog(@"AN ERROR OCCURED. THIS CHANNEL DOES NOT EXIST BUT IS IN THE TABLE VIEW ANYWAYS.");
 		return;
@@ -649,15 +689,15 @@ static RCNetwork *currentNetwork = nil;
 	[panel setFrame:CGRectMake(0, 43, 320, chatViewHeights[0])];
 	[_bar setFrame:CGRectMake(0, panel.frame.origin.y+panel.frame.size.height, _bar.frame.size.width, _bar.frame.size.height)];
 	currentPanel = panel;
-	[topView setChannel:chan];
-	[navigationController.view insertSubview:panel atIndex:4];
-	[((RCChatNavigationBar *)[navigationController navigationBar]) setTitle:[chan channelName]];
+	[infoView setChannel:chan];
+	[chatView insertSubview:panel atIndex:4];
+	[((RCChatNavigationBar *)[chatView navigationBar]) setTitle:[chan channelName]];
 	NSString *sub = [net _description];
 	if (![[net server] isEqualToString:[net _description]])
 		sub = [NSString stringWithFormat:@"%@ – %@", [net _description], [net server]];
-	[((RCChatNavigationBar *)[navigationController navigationBar]) setSubtitle:sub];
-	[((RCChatNavigationBar *)[navigationController navigationBar]) setNeedsDisplay];
-	if (navigationController.view.frame.origin.x > 0)
+	[((RCChatNavigationBar *)[chatView navigationBar]) setSubtitle:sub];
+	[((RCChatNavigationBar *)[chatView navigationBar]) setNeedsDisplay];
+	if (chatView.frame.origin.x > 0)
 		[self menuButtonPressed:nil];
 }
 

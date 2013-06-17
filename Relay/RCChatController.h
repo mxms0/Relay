@@ -7,14 +7,16 @@
 
 #import <Foundation/Foundation.h>
 #import "RCViewController.h"
+#import "RCViewCard.h"
+#import "RCTopViewCard.h"
 
 @class RCChatViewController, RCChatsListViewController, RCUserListViewController;
 @interface RCChatController : NSObject <UIAlertViewDelegate, UIActionSheetDelegate, UIGestureRecognizerDelegate, UITextFieldDelegate> {
+	RCViewCard *bottomView;
+	RCViewCard *chatView;
+	RCTopViewCard *infoView;
 	RCViewController *rootView;
-	RCChatViewController *navigationController;
-	RCChatsListViewController *leftView;
 	RCChatPanel *currentPanel;
-	RCUserListViewController *topView;
 	RCTextFieldBackgroundView *_bar;
 	RCTextField *field;
 	CGFloat chatViewHeights[2];
