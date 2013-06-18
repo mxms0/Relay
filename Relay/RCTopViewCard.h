@@ -7,7 +7,8 @@
 
 #import <UIKit/UIKit.h>
 #import "RCViewCard.h"
+#import "RCChannel.h"
 
 @interface RCTopViewCard : RCViewCard
-
+- (void)setChannel:(RCChannel *)chan;
 @end

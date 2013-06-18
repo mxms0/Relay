@@ -9,10 +9,11 @@
 #import "RCViewController.h"
 #import "RCViewCard.h"
 #import "RCTopViewCard.h"
+#import "RCChatsListViewCard.h"
 
 @class RCChatViewController, RCChatsListViewController, RCUserListViewController;
 @interface RCChatController : NSObject <UIAlertViewDelegate, UIActionSheetDelegate, UIGestureRecognizerDelegate, UITextFieldDelegate> {
-	RCViewCard *bottomView;
+	RCChatsListViewCard *bottomView;
 	RCViewCard *chatView;
 	RCTopViewCard *infoView;
 	RCViewController *rootView;

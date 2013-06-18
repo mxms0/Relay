@@ -1,51 +1,48 @@
 //
-//  RCChatsListViewController.m
+//  RCChatsListViewCard.m
 //  Relay
 //
-//  Created by Max Shavrick on 10/26/12.
-//  Copyright (c) 2012 American Heritage School. All rights reserved.
+//  Created by Max Shavrick on 6/18/13.
 //
 
-#import "RCChatsListViewController.h"
+#import "RCChatsListViewCard.h"
+#import "RCChatController.h"
+#import "RCNetworkCell.h"
+#import "RCNetworkHeaderButton.h"
 
-@implementation RCChatsListViewController
+@implementation RCChatsListViewCard
 
-- (id)initWithRootViewController:(UIViewController *)rootViewController {
-	if ((self = [super initWithRootViewController:rootViewController])) {
-		[self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"0_bg"]]];
+- (id)initWithFrame:(CGRect)frame {
+	if ((self = [super initWithFrame:frame])) {
+		navigationBar = [[RCChatNavigationBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+		[self addSubview:navigationBar];
+		[navigationBar release];
+	//	[self setBackgroundColor:[UIColor clearColor]];
+		[self setOpaque:YES];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadData) name:@"us.mxms.relay.reload" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeNetwork:) name:@"us.mxms.relay.del" object:nil];
 		UIButton *fuckFudge = [[UIButton alloc] initWithFrame:CGRectMake(-20, 0, 75, 75)];
 		[fuckFudge setImage:[UIImage imageNamed:@"0_adn"] forState:UIControlStateNormal];
 		[fuckFudge setImage:[UIImage imageNamed:@"0_adn_pres"] forState:UIControlStateHighlighted];
 		[fuckFudge addTarget:[RCChatController sharedController] action:@selector(showNetworkAddViewController) forControlEvents:UIControlEventTouchUpInside];
 		_reloading = NO;
-		datas = [[RCSpecialTableView alloc] initWithFrame:CGRectMake(0, 44, 320, rootViewController.view.frame.size.height-44) style:UITableViewStylePlain];
+		datas = [[RCSpecialTableView alloc] initWithFrame:CGRectMake(0, 44, 320, frame.size.height-44) style:UITableViewStylePlain];
 		[datas setDelegate:self];
 		[datas setDataSource:self];
 		[datas setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 		[datas setBackgroundColor:[UIColor clearColor]];
 		[datas setTableFooterView:fuckFudge];
 		[fuckFudge release];
-		[self.view addSubview:datas];
+		[self addSubview:datas];
 		[datas release];
-		[self.view setOpaque:YES];
-		self.title = @"";
-		UILongPressGestureRecognizer *lpg = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressGestureTriggered:)];
-		[lpg setMinimumPressDuration:1];
-		[datas addGestureRecognizer:lpg];
-		[lpg release];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadData) name:@"us.mxms.relay.reload" object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeNetwork:) name:@"us.mxms.relay.del" object:nil];
-	}
-	// move to loadView.
-	// don't touch self.view in init. ever.
-	return self;
+		[self setOpaque:YES];
+    }
+    return self;
 }
 
-- (void)longPressGestureTriggered:(UILongPressGestureRecognizer *)pg {
-//	NSLog(@"hi %@", [[pg view] subviews]);
-//	CGPoint loc = [pg locationInView:datas];
-//	NSIndexPath *path = [datas indexPathForRowAtPoint:loc];
-	MARK;
+- (void)drawRect:(CGRect)rect {
+	UIImage *bg = [UIImage imageNamed:@"0_sbg"];
+	[bg drawAsPatternInRect:rect];
 }
 
 - (void)removeNetwork:(NSNotification *)_net {
@@ -56,7 +53,7 @@
 	_reloading = YES;
 	[datas reloadData];
 	_reloading = NO;
-	[datas reloadData];	
+	[datas reloadData];
 }
 
 - (void)reloadData {
@@ -66,6 +63,7 @@
 	[datas reloadData];
 }
 
+/*
 - (void)viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 	UIButton *renchthing = [[UIButton alloc] initWithFrame:CGRectMake(10, 10, 41, 31)];
@@ -76,15 +74,10 @@
 	[[[[self viewControllers]  objectAtIndex:0] navigationItem] setLeftBarButtonItem:bbs animated:NO];
 	[bbs release];
 	[renchthing release];
-}
+}*/
 
 - (void)showPreferences:(id)unused {
-
-}
-
-- (void)setFrame:(CGRect)frame {
-	[super setFrame:frame];
-	[datas setFrame:CGRectMake(0, 44, frame.size.width, frame.size.height-44)];
+	
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {

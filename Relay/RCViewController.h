@@ -8,7 +8,6 @@
 #import <UIKit/UIKit.h>
 #import "RCChannel.h"
 #import "RCChatController.h"
-#import "RCChatsListViewController.h"
 #import "RCChatNavigationBar.h"
 #import "RCChatViewController.h"
 

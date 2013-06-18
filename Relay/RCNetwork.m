@@ -1771,7 +1771,6 @@
 		if (![reqs isEqualToString:@"CAP REQ :"])
 			[self sendMessage:reqs canWait:NO];
 	}
-	NSLog(@"HI %@ [[[[", cap);
 //	[self sendMessage:@"AUTHENTICATE PLAIN" canWait:NO];
 	[self sendMessage:@"CAP END" canWait:NO];
 //	:hitchcock.freenode.net CAP mxms__ LS :account-notify extended-join identify-msg multi-prefix sasl

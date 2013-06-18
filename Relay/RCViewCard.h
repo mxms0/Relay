@@ -11,9 +11,7 @@
 @interface RCViewCard : UIView {
 	RCChatNavigationBar *navigationBar;
 }
-@property (nonatomic, assign) BOOL needsBlueBackground;
-@property (nonatomic, assign) BOOL isBottomView;
 @property (nonatomic, readonly) RCChatNavigationBar *navigationBar;
-- (id)initWithFrame:(CGRect)frame isBottomView:(BOOL)bb;
+- (id)initWithFrame:(CGRect)frame;
 - (void)findShadowAndDoStuffToIt;
 @end

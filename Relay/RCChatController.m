@@ -6,9 +6,9 @@
 //
 
 #import "RCChatController.h"
-#import "RCChatsListViewController.h"
 #import "RCXLChatController.h"
 #import "RCUserListViewController.h"
+
 
 @implementation RCChatController
 @synthesize currentPanel, canDragMainView;
@@ -153,11 +153,11 @@ static id _inst = nil;
 	rootView = rc;
 	canDragMainView = YES;
 	CGSize frame = [[UIScreen mainScreen] applicationFrame].size;
-	bottomView = [[RCViewCard alloc] initWithFrame:CGRectMake(0, 0, frame.width, frame.height) isBottomView:YES];
+	bottomView = [[RCChatsListViewCard alloc] initWithFrame:CGRectMake(0, 0, frame.width, frame.height)];
 	[rc.view insertSubview:bottomView atIndex:0];
-	chatView = [[RCViewCard alloc] initWithFrame:CGRectMake(0, 0, frame.width, frame.height) isBottomView:NO];
+	chatView = [[RCViewCard alloc] initWithFrame:CGRectMake(0, 0, frame.width, frame.height)];
 	[rc.view insertSubview:chatView atIndex:1];
-	infoView = [[RCTopViewCard alloc] initWithFrame:CGRectMake(frame.width, 0, frame.width, frame.height) isBottomView:NO];
+	infoView = [[RCTopViewCard alloc] initWithFrame:CGRectMake(frame.width, 0, frame.width, frame.height)];
 	[rc.view insertSubview:infoView atIndex:2];
 	UIPanGestureRecognizer *pg = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(userPanned:)];
 	[rc.view addGestureRecognizer:pg];
@@ -185,7 +185,6 @@ static id _inst = nil;
 	[field setClearButtonMode:UITextFieldViewModeWhileEditing];
 	[_bar addSubview:field];
 	[field release];
-	[chatView insertSubview:_bar atIndex:[[chatView subviews] count]];
 	suggestLocation = [self suggestionLocation];;
 	return;
 
@@ -350,7 +349,7 @@ static RCNetwork *currentNetwork = nil;
 // should probably just make UIAlertView subclass.. derp
 
 - (void)showNetworkOptions:(id)arg1 {
-	currentNetwork = [(RCNetworkHeaderButton *)[arg1 superview] net];
+	currentNetwork = [[arg1 superview] net];
 	RCPrettyActionSheet *sheet = [[RCPrettyActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"What do you want to do for %@?", [currentNetwork _description]] delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Delete" otherButtonTitles:@"Edit", ([currentNetwork isTryingToConnectOrConnected] ? @"Disconnect" : @"Connect"), nil];
 	[sheet setButtonCount:4];
 	[sheet showInView:[[((RCAppDelegate *)[UIApp delegate]) navigationController] view]];
@@ -699,6 +698,8 @@ static RCNetwork *currentNetwork = nil;
 	[((RCChatNavigationBar *)[chatView navigationBar]) setNeedsDisplay];
 	if (chatView.frame.origin.x > 0)
 		[self menuButtonPressed:nil];
+	if (!_bar.superview)
+		[chatView insertSubview:_bar atIndex:[[chatView subviews] count]];
 }
 
 - (CGFloat)suggestionLocation {

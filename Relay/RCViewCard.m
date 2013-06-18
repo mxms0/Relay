@@ -6,18 +6,20 @@
 //
 
 #import "RCViewCard.h"
+#import "RCChatsListViewCard.h"
 
 @implementation RCViewCard
-@synthesize needsBlueBackground, isBottomView, navigationBar;
+@synthesize navigationBar;
+@class RCChatsListViewCard;
 
-- (id)initWithFrame:(CGRect)frame isBottomView:(BOOL)bb {
+- (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
-		[self setIsBottomView:bb];
-		navigationBar = [[RCChatNavigationBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-		[self addSubview:navigationBar];
-		[navigationBar release];
-		[self setBackgroundColor:[UIColor clearColor]];
-		if (!bb) {
+		if (![self isKindOfClass:[RCChatsListViewCard class]]) {
+			navigationBar = [[RCChatNavigationBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+			[self addSubview:navigationBar];
+			navigationBar.layer.zPosition = 100000;
+			[navigationBar release];
+			[self setBackgroundColor:[UIColor clearColor]];
 			[self setOpaque:YES];
 			CALayer *shdw = [[CALayer alloc] init];
 			[shdw setName:@"0_fuckingshadow"];
@@ -32,7 +34,7 @@
 			[bg setBackgroundColor:UIColorFromRGB(0xDDE0E5).CGColor];
 			[bg setShouldRasterize:YES];
 			[bg setFrame:CGRectMake(0, 10, frame.size.width, frame.size.height)];
-			[self.layer insertSublayer:bg atIndex:[self.layer.sublayers count]-1];
+			[self.layer insertSublayer:bg atIndex:1];
 			[bg release];
 		}
     }
@@ -44,24 +46,28 @@
 	[self findShadowAndDoStuffToIt];
 }
 
+- (void)setFrame:(CGRect)frame {
+	[super setFrame:frame];
+}
+
 - (void)findShadowAndDoStuffToIt {
-	BOOL shouldBeVisible = ((self.frame.origin.x >= 0 && (self.frame.origin.x <= self.frame.size.width)));
+	BOOL shouldBeVisible = (self.frame.origin.x >= 0);
 	for (CALayer *sub in [self.layer sublayers]) {
 		if ([[sub name] isEqualToString:@"0_fuckingshadow"]) {
 			[sub setFrame:CGRectMake(sub.frame.origin.x, sub.frame.origin.y, sub.frame.size.width, self.frame.size.height)];
-			[sub setHidden:!shouldBeVisible];
+			if (self.frame.origin.x >= self.frame.size.width) {
+				[sub setHidden:YES];
+			}
+			else {
+				[sub setHidden:!shouldBeVisible];
+			}
 			break;
 		}
 	}
 }
 
 - (void)drawRect:(CGRect)rect {
-	if (needsBlueBackground) {
-		
-	}
-	else {
-		[UIColorFromRGB(0xDDE0E5) set];
-	}
+	[UIColorFromRGB(0xDDE0E5) set];
 	UIRectFill(CGRectMake(0, 10, rect.size.width, rect.size.height));
 }
 
