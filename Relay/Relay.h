@@ -49,6 +49,7 @@ static inline void NOLog(NSString* a, ...) {
 	#define _deg(x) ((x * M_PI)/180.0)
 	#define UIApp [UIApplication sharedApplication]
 	#define LOGALL 0
+	#define isiOS7 !!(objc_getClass("UIAttachmentBehavior"))
 	#define READ_BUF_LEN 4096
 	#define RCALERR_INCNICK 666
 	#define RCALERR_INCUNAME 667

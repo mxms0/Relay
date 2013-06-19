@@ -43,7 +43,6 @@ static BOOL isSetup = NO;
 	[rcv release];
 	self.window.rootViewController = self.navigationController;
     [self.window makeKeyAndVisible];
-	
 	[self performSelectorInBackground:@selector(_setup) withObject:nil];
 	return YES;
 }
@@ -125,8 +124,7 @@ static BOOL isSetup = NO;
 	[nb setAlertAction:@"Open"];
 	[nb setAlertBody:@"You will be disconnected in less than a minute due to inactivity."];
 	[UIApp presentLocalNotificationNow:nb];
-	[nb release];
-	
+	[nb release];	
 }
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
