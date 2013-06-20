@@ -7,6 +7,7 @@
 
 #import <UIKit/UIKit.h>
 #import "RCChatNavigationBar.h"
+#import "RCBarButtonItem.h"
 
 @interface RCViewCard : UIView {
 	RCChatNavigationBar *navigationBar;

@@ -58,12 +58,10 @@ static inline void NOLog(NSString* a, ...) {
 	#define MARK CMLog(@"%s", __PRETTY_FUNCTION__);
 
 	static inline BOOL readNumber(int* num, BOOL* isThereComma, unsigned int* size_of_num, NSString* istring);
-	static inline BOOL readNumber(int* num, BOOL* isThereComma, unsigned int* size_of_num, NSString* istring) {
+	static inline BOOL readNumber(int *num, BOOL *isThereComma, unsigned int *size_of_num, NSString *istring) {
 		if ([istring length] - *size_of_num) {
 			unichar n1 = [istring characterAtIndex:*size_of_num];
-			NSLog(@"%c!", n1);
 			if ('0' <= n1 && n1 <= '9' && (n1 & 0xFF00) == 0) {
-				NSLog(@"-> %c!", n1);
 				*size_of_num = (*size_of_num) + 1;
 				*num = n1 - '0';
 				if ([istring length] - *size_of_num) {
@@ -96,17 +94,11 @@ static inline void NOLog(NSString* a, ...) {
 				}
 			}
 			else {
-#if LOGALL
-				MARK;
-#endif
 				*isThereComma = NO;
 				return NO;
 			}
 		}
 		else {
-#if LOGALL
-			MARK;
-#endif
 			*isThereComma = NO;
 			return NO;
 		}

@@ -7,6 +7,7 @@
 
 #import "RCViewCard.h"
 #import "RCChatsListViewCard.h"
+#import "RCTopViewCard.h"
 
 @implementation RCViewCard
 @synthesize navigationBar;
@@ -36,6 +37,20 @@
 			[bg setFrame:CGRectMake(0, 10, frame.size.width, frame.size.height)];
 			[self.layer insertSublayer:bg atIndex:1];
 			[bg release];
+		}
+		else if (![self isKindOfClass:[RCTopViewCard class]]) {
+			
+			// no buttons shows up
+			// wat
+			// k
+			RCBarButtonItem *bs = [[RCBarButtonItem alloc] init];
+			[bs setImage:[UIImage imageNamed:@"0_listrbtn"] forState:UIControlStateNormal];
+			[bs setImage:[UIImage imageNamed:@"0_listrbtn_pressed"] forState:UIControlStateHighlighted];
+			[bs setFrame:CGRectMake(2, 2, 50, 45)];
+			[bs setHidden:NO];
+			[bs.layer setZPosition:100001];
+			[bs setBackgroundColor:[UIColor blackColor]];
+			[navigationBar addSubview:bs];
 		}
     }
     return self;
