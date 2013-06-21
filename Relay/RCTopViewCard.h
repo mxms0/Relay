@@ -8,7 +8,14 @@
 #import <UIKit/UIKit.h>
 #import "RCViewCard.h"
 #import "RCChannel.h"
+#import "RCSuperSpecialTableView.h"
 
-@interface RCTopViewCard : RCViewCard
+@interface RCTopViewCard : RCViewCard <UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate> {
+	RCSuperSpecialTableView *tableView;
+	BOOL showingUserInfo;
+	RCChannel *currentChan;
+}
+@property (nonatomic, assign) RCChannel *currentChan;
 - (void)setChannel:(RCChannel *)chan;
+- (void)reloadData;
 @end

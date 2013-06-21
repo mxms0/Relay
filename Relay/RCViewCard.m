@@ -8,6 +8,7 @@
 #import "RCViewCard.h"
 #import "RCChatsListViewCard.h"
 #import "RCTopViewCard.h"
+#import "RCChatController.h"
 
 @implementation RCViewCard
 @synthesize navigationBar;
@@ -15,6 +16,7 @@
 
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
+		[self setOpaque:YES];
 		if (![self isKindOfClass:[RCChatsListViewCard class]]) {
 			navigationBar = [[RCChatNavigationBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
 			[self addSubview:navigationBar];
@@ -38,7 +40,7 @@
 			[self.layer insertSublayer:bg atIndex:1];
 			[bg release];
 		}
-		else if (![self isKindOfClass:[RCTopViewCard class]]) {
+		if (![self isKindOfClass:[RCTopViewCard class]]) {
 			
 			// no buttons shows up
 			// wat
@@ -46,11 +48,17 @@
 			RCBarButtonItem *bs = [[RCBarButtonItem alloc] init];
 			[bs setImage:[UIImage imageNamed:@"0_listrbtn"] forState:UIControlStateNormal];
 			[bs setImage:[UIImage imageNamed:@"0_listrbtn_pressed"] forState:UIControlStateHighlighted];
-			[bs setFrame:CGRectMake(2, 2, 50, 45)];
-			[bs setHidden:NO];
-			[bs.layer setZPosition:100001];
-			[bs setBackgroundColor:[UIColor blackColor]];
+			[bs setFrame:CGRectMake(2, 0, 50, 45)];
+			[bs addTarget:[RCChatController sharedController] action:@selector(menuButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 			[navigationBar addSubview:bs];
+			[bs release];
+			RCBarButtonItem *cs = [[RCBarButtonItem alloc] init];
+			[cs setImage:[UIImage imageNamed:@"0_pple"] forState:UIControlStateNormal];
+			[cs setImage:[UIImage imageNamed:@"0_pple_press"] forState:UIControlStateHighlighted];
+			[cs setFrame:CGRectMake(frame.size.width - 52, 0, 50, 45)];
+			[cs addTarget:[RCChatController sharedController] action:@selector(pushUserListWithDefaultDuration) forControlEvents:UIControlEventTouchUpInside];
+			[navigationBar addSubview:cs];
+			[cs release];
 		}
     }
     return self;

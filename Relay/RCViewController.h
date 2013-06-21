@@ -9,7 +9,6 @@
 #import "RCChannel.h"
 #import "RCChatController.h"
 #import "RCChatNavigationBar.h"
-#import "RCChatViewController.h"
 
 @interface RCViewController : UIViewController {
 

@@ -7,8 +7,8 @@
 
 #import "RCChatController.h"
 #import "RCXLChatController.h"
-#import "RCUserListViewController.h"
-
+#import "RCPrettyActionSheet.h"
+#import "RCAddNetworkController.h"
 
 @implementation RCChatController
 @synthesize currentPanel, canDragMainView;
@@ -43,60 +43,6 @@ static id _inst = nil;
 	[[chatView navigationBar] setSubtitle:@"Welcome to Relay"];
 	[[chatView navigationBar] setNeedsDisplay];
 }
-
-- (void)userSwiped:(UIPanGestureRecognizer *)pan {
-	if ([self isLandscape]) {
-		[self userSwiped_specialLikeFr0st:pan];
-		return;
-	}
-	if (pan.state == UIGestureRecognizerStateChanged) {
-		CGPoint tr = [pan translationInView:[chatView superview]];
-		CGPoint centr = CGPointMake([chatView center].x +tr.x, [chatView center].y);
-		if (draggingUserList && [infoView frame].origin.x > [infoView frame].size.width) {
-			draggingUserList = NO;
-		}
-#if LOGALL
-		NSLog(@"HI I AM @ %f", centr.x);
-#endif
-		if (centr.x < 157 || draggingUserList) {
-			draggingUserList = YES;
-			[infoView setCenter:CGPointMake([infoView center].x+tr.x, [infoView center].y)];
-			[pan setTranslation:CGPointZero inView:[chatView superview]];
-			return;
-		}
-		if (!draggingUserList) {
-			if (canDragMainView) {
-				//	if (centr.x <= 595 && centr.x > 285) {
-				[chatView setCenter:centr];
-				[pan setTranslation:CGPointZero inView:[chatView superview]];
-				//}
-			}
-		}
-	}
-	else if (pan.state == UIGestureRecognizerStateEnded) {
-		if (draggingUserList) {
-			if ([pan velocityInView:[chatView superview]].x > 0) {
-				[self popUserListWithDuration:0.30];
-			}
-			else {
-				[self pushUserListWithDuration:0.30];
-			}
-		}
-		else {
-			if (!canDragMainView) return;
-			if ([pan velocityInView:chatView.superview].x > 0) {
-				[self openWithDuration:0.30];
-			}
-			else
-				[self closeWithDuration:0.30];
-		}
-		draggingUserList = NO;
-	}
-	else if (pan.state == UIGestureRecognizerStateCancelled || pan.state == UIGestureRecognizerStateFailed) {
-		[self cleanLayersAndMakeMainChatVisible];
-	}
-}
-
 
 - (void)userPanned:(UIPanGestureRecognizer *)pan {
 	if (pan.state == UIGestureRecognizerStateChanged) {
@@ -457,9 +403,10 @@ static RCNetwork *currentNetwork = nil;
 	//	[topView showUserListPanel];
 	}
 	[[infoView navigationBar] setNeedsDisplay];
-	//[topView reloadData];
+	[infoView reloadData];
 	canDragMainView = NO;
 	[self closeWithDuration:0.00];
+	
 	//[[[[navigationController topViewController] navigationItem] leftBarButtonItem] setEnabled:NO];
 	[UIView beginAnimations:nil context:nil];
 	[UIView setAnimationDuration:dr];
@@ -538,7 +485,7 @@ static RCNetwork *currentNetwork = nil;
 
 - (void)userSwiped_specialLikeFr0st:(UIPanGestureRecognizer *)pan {
 	if (![self isLandscape]) {
-		[self userSwiped:pan];
+		[self userPanned:pan];
 		return;
 	}
 	if (pan.state == UIGestureRecognizerStateBegan) {
@@ -613,7 +560,7 @@ static RCNetwork *currentNetwork = nil;
 - (void)dismissMenuOptions {
 	RCChatNavigationBar *rc = (RCChatNavigationBar *)[chatView navigationBar];
 	for (UIButton *subv in [rc subviews]) {
-		if ([subv isKindOfClass:[UIButton class]]) {
+		if (![subv isKindOfClass:[RCBarButtonItem class]]) {
 			if ([subv tag] != 1132) {
 				[subv removeFromSuperview];
 			}
@@ -668,7 +615,10 @@ static RCNetwork *currentNetwork = nil;
 
 - (void)reloadUserCount {
 	RCChannel *chan = [currentPanel channel];
-	[((RCChatNavigationBar *)[chatView navigationBar]) setSubtitle:[NSString stringWithFormat:@"%d users in %@", [[chan fullUserList] count], [chan channelName]]];
+	if ([chan isKindOfClass:[RCPMChannel class]] || [chan isKindOfClass:[RCConsoleChannel class]])
+		return;
+	[[infoView navigationBar] setSubtitle:[NSString stringWithFormat:@"%d users in %@", [[chan fullUserList] count], [chan channelName]]];
+	[[infoView navigationBar] setNeedsDisplay];
 }
 
 - (void)selectChannel:(NSString *)channel fromNetwork:(RCNetwork *)_net {

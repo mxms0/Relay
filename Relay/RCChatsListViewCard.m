@@ -17,7 +17,6 @@
 		navigationBar = [[RCChatNavigationBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
 		[self addSubview:navigationBar];
 		[navigationBar release];
-	//	[self setBackgroundColor:[UIColor clearColor]];
 		[self setOpaque:YES];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadData) name:@"us.mxms.relay.reload" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeNetwork:) name:@"us.mxms.relay.del" object:nil];
