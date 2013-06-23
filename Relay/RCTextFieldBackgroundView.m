@@ -11,7 +11,8 @@
 
 - (void)drawRect:(CGRect)rect {
 	[super drawRect:rect];
-	[[[UIImage imageNamed:@"0_input"] stretchableImageWithLeftCapWidth:20 topCapHeight:20] drawInRect:(CGRect){{0,0}, self.frame.size}];
+	[[UIColor clearColor] set];
+	[[[UIImage imageNamed:@"0_input"] stretchableImageWithLeftCapWidth:16 topCapHeight:20] drawInRect:(CGRect){{0,0}, self.frame.size}];
 }
 
 @end

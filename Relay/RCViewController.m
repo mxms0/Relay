@@ -43,6 +43,9 @@
 
 - (void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
+	if ([[[RCNetworkManager sharedNetworkManager] networks] count] == 0) {
+		[[RCChatController sharedController] presentInitialSetupView];
+	}
 }
 
 - (BOOL)shouldAutorotate {

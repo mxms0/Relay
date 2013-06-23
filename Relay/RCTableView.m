@@ -16,37 +16,6 @@
 	return self;
 }
 
-- (void)layoutSubviews {
-	[super layoutSubviews];
-	
-	NSArray *indexPathsForVisibleRows = [self indexPathsForVisibleRows];
-	if ([indexPathsForVisibleRows count] == 0) {
-		return;
-	}
-	
-	NSIndexPath *lastRow = [indexPathsForVisibleRows lastObject];
-	if ([lastRow section] == [self numberOfSections] - 1 &&
-		[lastRow row] == [self numberOfRowsInSection:[lastRow section]] - 1) {
-		UIView *cell = [self cellForRowAtIndexPath:lastRow];
-		if (!bottomShadow) {
-			bottomShadow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"0_shadow_t"]];
-			[cell insertSubview:bottomShadow atIndex:0];
-		}
-		else if ([cell.layer.sublayers indexOfObjectIdenticalTo:bottomShadow] != 0) {
-			[cell insertSubview:bottomShadow atIndex:0];
-		}
-		CGRect shadowFrame = bottomShadow.frame;
-		shadowFrame.size.width = cell.frame.size.width;
-		shadowFrame.origin.y = cell.frame.size.height;
-		bottomShadow.frame = shadowFrame;
-	}
-	else {
-		[bottomShadow removeFromSuperview];
-		[bottomShadow release];
-		bottomShadow = nil;
-	}
-}
-
 - (void)dealloc {
 	[super dealloc];
 }

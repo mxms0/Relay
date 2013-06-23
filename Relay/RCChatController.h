@@ -10,6 +10,7 @@
 #import "RCViewCard.h"
 #import "RCTopViewCard.h"
 #import "RCChatsListViewCard.h"
+#import "RCInitialSetupView.h"
 
 @class RCChatViewController, RCChatsListViewController, RCUserListViewController;
 @interface RCChatController : NSObject <UIAlertViewDelegate, UIActionSheetDelegate, UIGestureRecognizerDelegate, UITextFieldDelegate> {
@@ -43,4 +44,5 @@
 - (void)closeWithDuration:(NSTimeInterval)dur;
 - (void)setDefaultTitleAndSubtitle;
 - (void)layoutWithRootViewController:(RCViewController *)rc;
+- (void)presentInitialSetupView;
 @end

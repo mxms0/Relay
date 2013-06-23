@@ -119,8 +119,7 @@ static NSMutableArray *networks = nil;
 	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 	NSMutableArray *sav = [[NSMutableArray alloc] init];
 	for (RCNetwork *net in networks) {
-		if (![net isKindOfClass:[RCWelcomeNetwork class]])
-			if ([net uUID]) [sav addObject:[net infoDictionary]];
+		if ([net uUID]) [sav addObject:[net infoDictionary]];
 	}
 	[dict setObject:sav forKey:@"0_NSO"];
 	[sav release];

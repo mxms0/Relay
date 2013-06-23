@@ -7,7 +7,6 @@
 
 #import <Foundation/Foundation.h>
 #import "RCNetwork.h"
-#import "RCWelcomeNetwork.h"
 #import "RCKeychainItem.h"
 #import "RCPasswordRequestAlert.h"
 

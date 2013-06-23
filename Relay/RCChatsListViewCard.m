@@ -20,7 +20,7 @@
 		[self setOpaque:YES];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadData) name:@"us.mxms.relay.reload" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeNetwork:) name:@"us.mxms.relay.del" object:nil];
-		UIButton *fuckFudge = [[UIButton alloc] initWithFrame:CGRectMake(-20, 0, 75, 75)];
+		UIButton *fuckFudge = [[UIButton alloc] initWithFrame:CGRectMake(-20, 0, 84, 84)];
 		[fuckFudge setImage:[UIImage imageNamed:@"0_adn"] forState:UIControlStateNormal];
 		[fuckFudge setImage:[UIImage imageNamed:@"0_adn_pres"] forState:UIControlStateHighlighted];
 		[fuckFudge addTarget:[RCChatController sharedController] action:@selector(showNetworkAddViewController) forControlEvents:UIControlEventTouchUpInside];
@@ -40,8 +40,8 @@
 }
 
 - (void)drawRect:(CGRect)rect {
-	UIImage *bg = [UIImage imageNamed:@"0_sbg"];
-	[bg drawAsPatternInRect:rect];
+	[UIColorFromRGB(0x29324A) set];
+	UIRectFill(rect);
 }
 
 - (void)removeNetwork:(NSNotification *)_net {
@@ -60,23 +60,6 @@
 	[datas reloadData];
 	_reloading = NO;
 	[datas reloadData];
-}
-
-/*
-- (void)viewWillAppear:(BOOL)animated {
-	[super viewWillAppear:animated];
-	UIButton *renchthing = [[UIButton alloc] initWithFrame:CGRectMake(10, 10, 41, 31)];
-	[renchthing addTarget:self action:@selector(showPreferences:) forControlEvents:UIControlEventTouchUpInside];
-	[renchthing setImage:[UIImage imageNamed:@"0_prefs"] forState:UIControlStateNormal];
-	[renchthing setImage:[UIImage imageNamed:@"0_prefs_p"] forState:UIControlStateHighlighted];
-	UIBarButtonItem *bbs = [[UIBarButtonItem alloc] initWithCustomView:renchthing];
-	[[[[self viewControllers]  objectAtIndex:0] navigationItem] setLeftBarButtonItem:bbs animated:NO];
-	[bbs release];
-	[renchthing release];
-}*/
-
-- (void)showPreferences:(id)unused {
-	
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {

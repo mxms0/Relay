@@ -22,7 +22,8 @@ static NSString *template = nil;
 		[self setHidden:YES];
 		if (!template) {
 			template = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"chatview" ofType:@"html"] encoding:NSUTF8StringEncoding error:nil];
-			template = [[NSString stringWithFormat:template, [[NSBundle mainBundle] pathForResource:@"0_jaggs@2x" ofType:@"png"]]retain];
+			// must . fix. for. SD. displaayss
+			template = [[NSString stringWithFormat:template,[[NSBundle mainBundle] pathForResource:@"0_jaggs@2x" ofType:@"png"]] retain];
 		}
 		preloadPool = [[NSMutableArray alloc] init];
 		self.dataDetectorTypes = (UIDataDetectorTypeLink | UIDataDetectorTypePhoneNumber);
@@ -32,7 +33,7 @@ static NSString *template = nil;
 		[[self scrollView] setShowsVerticalScrollIndicator:NO];//just incase
         [[self scrollView] setDecelerationRate:UIScrollViewDecelerationRateNormal];
         [[self scrollView] setScrollsToTop:YES];
-		[self loadHTMLString:template baseURL:[NSURL URLWithString:@""]];	
+		[self loadHTMLString:template baseURL:[NSURL URLWithString:@""]];
 	}
 	return self;
 }

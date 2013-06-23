@@ -23,10 +23,7 @@
 		[hshdw setContents:(id)hfs.CGImage];
 		[hshdw setShouldRasterize:YES];
 		[hshdw setFrame:CGRectMake(0, 44, 320, hfs.size.height)];
-		// assuming the iphone app always launches in portrait..
-		// and assuming the iphone never changes it's width...
-		// for some reason apple passes CGRectZero as the frame.
-		// lame.
+		[hshdw setOpacity:0.7];
 		[self.layer setMasksToBounds:NO];
 		[self.layer addSublayer:hshdw];
 		[hshdw release];
@@ -62,7 +59,7 @@
 	[super drawRect:rect];
 	UIImage *bg = [UIImage imageNamed:@"0_headr"];
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
-	[bg drawAtPoint:CGPointMake(0, 0)];
+	[bg drawInRect:rect];
 	if (drawIndent) {
 		UIImage *indent = [UIImage imageNamed:@"0_indents"];
 		[indent drawAtPoint:CGPointMake(0, 2)];

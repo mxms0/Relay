@@ -55,23 +55,24 @@
 
 - (void)drawRect:(CGRect)rect {
 	UIColor *textColor = [UIColor colorWithRed:0.409 green:0.434 blue:0.523 alpha:1.000];
-	UIColor *shadowColor = [UIColor blackColor];
+	UIColor *subTextColor = UIColorFromRGB(0x3C4559);
 	if ([net expanded] || _pSelected) {
 		if ([net isConnected]) {
-			textColor = [UIColor colorWithRed:0.144 green:0.146 blue:0.253 alpha:1.000];
+			subTextColor = UIColorFromRGB(0xB6bdcd);
+			textColor = UIColorFromRGB(0xEdeff5);
 		}
 		else {
-			textColor = [UIColor colorWithRed:0.349 green:0.363 blue:0.447 alpha:1.000];
+			subTextColor = UIColorFromRGB(0x8c92a3);
+			textColor = UIColorFromRGB(0xd5d7dd);
 		}
-		shadowColor = [UIColor colorWithWhite:1.00 alpha:0.5];
 		UIImage *bg = [UIImage imageNamed:@"0_selch"];
 		[bg drawInRect:CGRectMake(0, 0, rect.size.width, 44)];
 		UIImage *arrow = [UIImage imageNamed:@"0_arrowd"];
 		[arrow drawInRect:CGRectMake(232,14, 16, 16)];
 	}
 	else {
-		UIImage *bg = [UIImage imageNamed:@"0_sbg"];
-		[bg drawAsPatternInRect:CGRectMake(0, 0, rect.size.width, 44)];
+		[UIColorFromRGB(0x29324A) set];
+		UIRectFill(rect);
 		UIImage *ul = [UIImage imageNamed:@"0_underline"];
 		[ul drawAsPatternInRect:CGRectMake(0, 42, rect.size.width, 2)];
 		UIImage *arrow = [UIImage imageNamed:@"0_arrowr"];
@@ -87,7 +88,7 @@
 	NSString *text = [net _description];
 	NSString *detail = [net server];
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
-	CGContextSetShadowWithColor(ctx, CGSizeMake(0, 1), 0, shadowColor.CGColor);
+//	CGContextSetShadowWithColor(ctx, CGSizeMake(0, 1), 0, shadowColor.CGColor);
 	CGContextSetFillColorWithColor(ctx, textColor.CGColor);
 	CGContextScaleCTM(ctx, [[UIScreen mainScreen] scale], [[UIScreen mainScreen] scale]);
 	[text drawInRect:CGRectMake(5, 1, 200, 40) withFont:[UIFont boldSystemFontOfSize:9] lineBreakMode:UILineBreakModeCharacterWrap alignment:UITextAlignmentLeft];

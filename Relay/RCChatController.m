@@ -119,8 +119,9 @@ static id _inst = nil;
 	[[infoView navigationBar] setTitle:@"Memberlist"];
 	[[infoView navigationBar] setSuperSpecialLikeAc3xx2:YES];
 	_bar = [[RCTextFieldBackgroundView alloc] initWithFrame:CGRectMake(0, 800, 320, 40)];
-	[_bar setOpaque:YES];
-	field = [[RCTextField alloc] initWithFrame:CGRectMake(15, 5, 299, 31)];
+	//[_bar setOpaque:YES];
+	[_bar setOpaque:NO];
+	field = [[RCTextField alloc] initWithFrame:CGRectMake(15, 7, 299, 31)];
 	[field setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
 	[field setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
 	[field setReturnKeyType:UIReturnKeySend];
@@ -135,19 +136,6 @@ static id _inst = nil;
 	[_bar addSubview:field];
 	[field release];
 	suggestLocation = [self suggestionLocation];;
-	return;
-
-/*
-	UIPanGestureRecognizer *spr = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(bottomLayerSwiped:)];
-	[spr setDelegate:self];
-	[rc.view addGestureRecognizer:spr];
-	[spr release];
- 
-	UIPanGestureRecognizer *panr = [[UIPanGestureRecognizer alloc] initWithTarget:[RCChatController sharedController] action:@selector(userSwiped:)];
-	[panr setDelegate:[RCChatController sharedController]];
-	[navigationController.view addGestureRecognizer:panr];
-	[panr release];
- */
 }
 
 - (void)correctSubviewFrames {
@@ -340,6 +328,15 @@ static RCNetwork *currentNetwork = nil;
 		// cancel.
 		// kbye
 	}
+}
+
+- (void)presentInitialSetupView {
+	return;
+	RCInitialSetupView *sv = [[RCInitialSetupView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
+	[sv prepareForDisplay];
+	[sv setWindowLevel:7777];
+	[sv setHidden:NO];
+	[sv setAlpha:5.0];
 }
 
 - (void)nickSuggestionCancelled {

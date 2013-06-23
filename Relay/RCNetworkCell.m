@@ -23,19 +23,18 @@
 }
 
 - (void)drawRect:(CGRect)rect {
-	[[UIColor colorWithRed:0.079 green:0.089 blue:0.118 alpha:1.000] set];
-	[UIColorFromRGB(0x1B1B23) set];
+	[UIColorFromRGB(0x141925) set];
 	UIRectFill(CGRectMake(0, 0, rect.size.width, rect.size.height));
 	UIImage *arrow = [UIImage imageNamed:@"0_arrowr"];
 	[arrow drawInRect:CGRectMake(232, 14, 16, 16)];
-	UIImage *ul = [UIImage imageNamed:@"0_underline"];
-	[ul drawAsPatternInRect:CGRectMake(0, rect.size.height-2, rect.size.width, 2)];
+	[UIColorFromRGB(0x2A2E37) set];
+	UIRectFill(CGRectMake(0,rect.size.height-1,rect.size.width, 1));
 	if (!self.channel) return;
 	BOOL isPM = (![self.channel hasPrefix:@"#"] && ![self.channel hasPrefix:@"\x01"]);
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	CGContextSetShadowWithColor(ctx, CGSizeMake(0, 1), 0, [UIColor blackColor].CGColor);
-	UIColor *def = [UIColor colorWithRed:0.529 green:0.549 blue:0.580 alpha:1.000];
-	if (white || fakeWhite) def = [UIColor whiteColor];
+	UIColor *def = UIColorFromRGB(0x545b69);
+	if (white || fakeWhite) def = UIColorFromRGB(0xd7d9dd);
 	CGContextSetFillColorWithColor(ctx, def.CGColor);
 	CGContextScaleCTM(ctx, [[UIScreen mainScreen] scale], [[UIScreen mainScreen] scale]);
 
