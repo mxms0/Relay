@@ -1029,6 +1029,7 @@
         website = [website substringFromIndex:1];
         [[self channelWithChannelName:channel] recievedMessage:[NSString stringWithFormat:@"Website is %@", website] from:@"" type:RCMessageTypeEvent];
     }
+    [scanner release];
 }
 
 - (void)handle331:(NSString *)noTopic {
@@ -1148,6 +1149,24 @@
 	if (chan) [chan recievedMessage:crap from:@" MOTD" type:RCMessageTypeNormal];
 	[scanner release];
 	// :irc.saurik.com 372 _m :- Please edit /etc/inspircd/motd
+}
+
+- (void)handle396:(NSString *)hiddenhost {
+    NSScanner *scanner = [[NSScanner alloc] initWithString:hiddenhost];
+    NSString *crap;
+    NSString *host;
+    NSString *infoString;
+    [scanner scanUpToString:@" " intoString:&crap];
+    [scanner scanUpToString:@" " intoString:&crap];
+    [scanner scanUpToString:@" " intoString:&crap];
+    [scanner scanUpToString:@" " intoString:&host];
+    [scanner scanUpToString:@"" intoString:&infoString];
+    infoString = [infoString substringFromIndex:1];
+    if (![infoString isEqualToString:@""]) {
+        RCChannel *chan = [self consoleChannel];
+        [chan recievedMessage:[NSString stringWithFormat:@"%@ %@", host, infoString] from:@"" type:RCMessageTypeEvent];
+    }
+    [scanner release];
 }
 
 - (void)handle376:(NSString *)endOfMotd {
