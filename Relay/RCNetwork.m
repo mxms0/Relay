@@ -1015,6 +1015,22 @@
 	[namesCallback removeStupidWarningView];
 }
 
+- (void)handle328:(NSString *)websiteinfo {
+    NSScanner *scanner = [[NSScanner alloc] initWithString:websiteinfo];
+    NSString *crap;
+    NSString *channel;
+    NSString *website;
+    [scanner scanUpToString:@" " intoString:&crap];
+    [scanner scanUpToString:@" " intoString:&crap];
+    [scanner scanUpToString:@" " intoString:&crap];
+    [scanner scanUpToString:@" " intoString:&channel];
+    [scanner scanUpToString:@" " intoString:&website];
+    if ([website hasPrefix:@":"]) {
+        website = [website substringFromIndex:1];
+        [[self channelWithChannelName:channel] recievedMessage:[NSString stringWithFormat:@"Website is %@", website] from:@"" type:RCMessageTypeEvent];
+    }
+}
+
 - (void)handle331:(NSString *)noTopic {
     [self handle332:noTopic];
 	// Relay[18195:707] MSG: :irc.saurik.com 331 _m #kk :No topic is set.
