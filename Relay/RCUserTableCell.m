@@ -44,8 +44,6 @@
 	[super drawRect:rect];
 	self.textLabel.hidden = isWhois;
 	[contentView setNeedsDisplay];
-	[[UIColor orangeColor]set];
-	UIRectFill(rect);
 }
 
 @end

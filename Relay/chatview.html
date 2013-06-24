@@ -106,7 +106,7 @@
 		<script>
             var cnt = 0;
             var maxscrollback = 150;
-					
+			
             function createMessage(needsCenter) {
             //    if (cnt >= maxscrollback) {
 			//		var dx = document.body.firstElementChild;
@@ -122,13 +122,14 @@
 				document.getElementById('chat').appendChild(newdiv);
                 return cnt;
             }
-            
+		
 			function postMessage(name, msg, tracking) {
 				var olddiv = document.getElementById('msg' + name);
 				olddiv.innerHTML = msg;
 				if (tracking) {
 					scrollToBottom();
 				}
+				
 				return "SUCCESS";
 			}
 			

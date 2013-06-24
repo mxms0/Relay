@@ -58,7 +58,7 @@
 	UIColor *subTextColor = UIColorFromRGB(0x3C4559);
 	if ([net expanded] || _pSelected) {
 		if ([net isConnected]) {
-			subTextColor = UIColorFromRGB(0xB6bdcd);
+			subTextColor = UIColorFromRGB(0xb5bbcc);
 			textColor = UIColorFromRGB(0xEdeff5);
 		}
 		else {
