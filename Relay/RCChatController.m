@@ -121,6 +121,7 @@ static id _inst = nil;
 	_bar = [[RCTextFieldBackgroundView alloc] initWithFrame:CGRectMake(0, 800, 320, 40)];
 	//[_bar setOpaque:YES];
 	[_bar setOpaque:NO];
+	[_bar.layer setZPosition:1000];
 	field = [[RCTextField alloc] initWithFrame:CGRectMake(15, 7, 299, 31)];
 	[field setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
 	[field setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
@@ -248,9 +249,9 @@ static id _inst = nil;
 		[UIView beginAnimations:nil context:nil];
 		[UIView setAnimationDuration:0.25];
 	}
-	CGRect main = CGRectMake(0, 43, 320, chatViewHeights[(int)us]);
+	CGRect main = CGRectMake(0, 43, 320, chatViewHeights[(int)us]+5);
 	[currentPanel setFrame:main];
-	[_bar setFrame:CGRectMake(0, currentPanel.frame.origin.y + currentPanel.frame.size.height, 320, 40)];
+	[_bar setFrame:CGRectMake(0, currentPanel.frame.origin.y-5 + currentPanel.frame.size.height, 320, 40)];
 	
 	if (anim) [UIView commitAnimations];
 	if (!us) {
@@ -635,8 +636,8 @@ static RCNetwork *currentNetwork = nil;
 		return;
 	}
 	RCChatPanel *panel = [chan panel];
-	[panel setFrame:CGRectMake(0, 43, 320, chatViewHeights[0])];
-	[_bar setFrame:CGRectMake(0, panel.frame.origin.y+panel.frame.size.height, _bar.frame.size.width, _bar.frame.size.height)];
+	[panel setFrame:CGRectMake(0, 43, 320, chatViewHeights[0]+2)];
+	[_bar setFrame:CGRectMake(0, panel.frame.origin.y+panel.frame.size.height-2, _bar.frame.size.width, _bar.frame.size.height)];
 	currentPanel = panel;
 	[infoView setChannel:chan];
 	[chatView insertSubview:panel atIndex:4];

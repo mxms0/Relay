@@ -1027,8 +1027,8 @@
     [scanner scanUpToString:@" " intoString:&website];
     if ([website hasPrefix:@":"]) {
         website = [website substringFromIndex:1];
-        [[self channelWithChannelName:channel] recievedMessage:[NSString stringWithFormat:@"Website is %@", website] from:@"" type:RCMessageTypeEvent];
     }
+	[[self channelWithChannelName:channel] recievedMessage:[NSString stringWithFormat:@"Website is %@", website] from:@"" type:RCMessageTypeEvent];
     [scanner release];
 }
 
