@@ -17,7 +17,7 @@
 
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
-		_setupClearButtonMode = UITextFieldViewModeWhileEditing;
+		clearMode = UITextFieldViewModeWhileEditing;
 		[self setTextColor:UIColorFromRGB(0x56595A)];
 		[self setFont:[UIFont systemFontOfSize:12]];
 		[self setRightViewMode:UITextFieldViewModeWhileEditing];
@@ -40,14 +40,14 @@
 
 - (BOOL)becomeFirstResponder {
 	BOOL ret = [super becomeFirstResponder];
-	if (ret && (_setupClearButtonMode == UITextFieldViewModeWhileEditing))
+	if (ret && (clearMode == UITextFieldViewModeWhileEditing))
 		self.rightViewMode = UITextFieldViewModeAlways ;
 	return ret ;
 }
 
 - (BOOL)resignFirstResponder {
     BOOL ret = [super resignFirstResponder];
-	if (ret && (_setupClearButtonMode == UITextFieldViewModeWhileEditing))
+	if (ret && (clearMode == UITextFieldViewModeWhileEditing))
 		self.rightViewMode = UITextFieldViewModeWhileEditing;
 	return ret ;
 }
