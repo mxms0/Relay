@@ -7,6 +7,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface RCBarButtonItem : UIButton
+@interface RCBarButtonItem : UIButton {
+	BOOL shouldDrawBG;
+}
 
 @end

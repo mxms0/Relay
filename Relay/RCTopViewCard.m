@@ -15,8 +15,7 @@
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
 		RCBarButtonItem *bt = [[RCBarButtonItem alloc] initWithFrame:CGRectMake(2, 0, 50, 45)];
-		[bt setImage:[UIImage imageNamed:@"0_bmv"] forState:UIControlStateNormal];
-		[bt setImage:[UIImage imageNamed:@"0_bmv_pres"] forState:UIControlStateHighlighted];
+		[bt setImage:[UIImage imageNamed:@"0_backa"] forState:UIControlStateNormal];
 		[bt addTarget:[RCChatController sharedController] action:@selector(popUserListWithDefaultDuration) forControlEvents:UIControlEventTouchUpInside];
 		[navigationBar addSubview:bt];
 		[bt release];

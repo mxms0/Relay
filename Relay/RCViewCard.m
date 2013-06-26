@@ -46,16 +46,14 @@
 			// wat
 			// k
 			RCBarButtonItem *bs = [[RCBarButtonItem alloc] init];
-			[bs setImage:[UIImage imageNamed:@"0_listrbtn"] forState:UIControlStateNormal];
-			[bs setImage:[UIImage imageNamed:@"0_listrbtn_pressed"] forState:UIControlStateHighlighted];
-			[bs setFrame:CGRectMake(2, 0, 50, 45)];
+			[bs setImage:[UIImage imageNamed:@"0_listbtn"] forState:UIControlStateNormal];
+			[bs setFrame:CGRectMake(1, 0, 50, 45)];
 			[bs addTarget:[RCChatController sharedController] action:@selector(menuButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 			[navigationBar addSubview:bs];
 			[bs release];
 			RCBarButtonItem *cs = [[RCBarButtonItem alloc] init];
-			[cs setImage:[UIImage imageNamed:@"0_pple"] forState:UIControlStateNormal];
-			[cs setImage:[UIImage imageNamed:@"0_pple_press"] forState:UIControlStateHighlighted];
-			[cs setFrame:CGRectMake(frame.size.width - 52, 0, 50, 45)];
+			[cs setImage:[UIImage imageNamed:@"0_ulist"] forState:UIControlStateNormal];
+			[cs setFrame:CGRectMake(frame.size.width - 50, 0, 50, 45)];
 			[cs addTarget:[RCChatController sharedController] action:@selector(pushUserListWithDefaultDuration) forControlEvents:UIControlEventTouchUpInside];
 			[navigationBar addSubview:cs];
 			[cs release];
