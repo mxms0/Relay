@@ -32,6 +32,9 @@
 		maskLayer.frame = CGRectMake(0, 0, 320, 48);
 		maskLayer.path = maskPath.CGPath;
 		self.layer.mask = maskLayer;
+		UITapGestureRecognizer *gs = [[UITapGestureRecognizer alloc] initWithTarget:[RCChatController sharedController] action:@selector(showMenuOptions:)];
+		[self addGestureRecognizer:gs];
+		[gs release];
     }
     return self;
 }
@@ -70,7 +73,7 @@
 	CGFloat size = 0.0;
 	float maxWidth = (rect.size.width-100);
 	[title sizeWithFont:[UIFont boldSystemFontOfSize:22] minFontSize:16 actualFontSize:&size forWidth:maxWidth lineBreakMode:UILineBreakModeClip];
-	[title drawInRect:CGRectMake((!superSpecialLikeAc3xx2 ? 50 : 30), (!!subtitle ? 1.5 : (((rect.size.height-4)/2)-(size/2)))+(size < 18 ? 2 : 0), maxWidth, 30) withFont:[UIFont boldSystemFontOfSize:size] lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentCenter];
+	[title drawInRect:CGRectMake((!superSpecialLikeAc3xx2 ? 50 : 30), (!!subtitle ? 1.5 : (((rect.size.height-4)/2)-(size/2)))+ (size < 18 ? 2 : 0), maxWidth, 30) withFont:[UIFont boldSystemFontOfSize:size] lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentCenter];
 	if (subtitle) {
 		CGFloat subsze = 0.0;
 		[subtitle sizeWithFont:[UIFont systemFontOfSize:12] minFontSize:11 actualFontSize:&subsze forWidth:maxWidth lineBreakMode:UILineBreakModeClip];

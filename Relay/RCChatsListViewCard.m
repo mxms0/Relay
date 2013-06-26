@@ -45,8 +45,6 @@
 }
 
 - (void)removeNetwork:(NSNotification *)_net {
-	// only temporary to test.
-	NSLog(@"HI %@", _net);
 	RCNetwork *net = [[RCNetworkManager sharedNetworkManager] networkWithDescription:[_net object]];
 	[[RCNetworkManager sharedNetworkManager] removeNet:net];
 	_reloading = YES;

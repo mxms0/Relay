@@ -30,6 +30,7 @@
 			[shdw setContents:(id)mfs.CGImage];
 			[shdw setShouldRasterize:YES];
 			[shdw setHidden:YES];
+			[shdw setOpacity:0.5];
 			[shdw setFrame:CGRectMake(-mfs.size.width+3, 0, mfs.size.width, self.frame.size.height)];
 			[self.layer insertSublayer:shdw atIndex:0];
 			[shdw release];
