@@ -790,6 +790,7 @@
 	}
 	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
 	RCChannel *chan = [self consoleChannel];
+	crap = [crap stringByReplacingOccurrencesOfString:@":" withString:@""];
 	if (chan) [chan recievedMessage:crap from:@"" type:RCMessageTypeNormal];
 	[scanner release];
 	// :irc.saurik.com 252 _m 2 :operator(s) online

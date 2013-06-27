@@ -50,7 +50,7 @@
 	}
 	else if (type == RCMessageTypeNormal) {
 		if (from) {
-			msg = [[NSString stringWithFormat:@"%@%c%@%c: %@", time, RCIRCAttributeBold, from, RCIRCAttributeBold, message] retain];
+			msg = [[NSString stringWithFormat:@"%@%c%@%c %@", time, RCIRCAttributeBold, from, RCIRCAttributeBold, message] retain];
 		}
 		else {
 			msg = [[NSString stringWithFormat:@"%@ %@", time, message] retain];

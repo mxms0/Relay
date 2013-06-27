@@ -18,7 +18,7 @@
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
 		clearMode = UITextFieldViewModeWhileEditing;
-		[self setTextColor:UIColorFromRGB(0x56595A)];
+		[self setTextColor:UIColorFromRGB(0xa5a6a7)];
 		[self setFont:[UIFont systemFontOfSize:12]];
 		[self setRightViewMode:UITextFieldViewModeWhileEditing];
 		UIButton *xx = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -50,6 +50,11 @@
 	if (ret && (clearMode == UITextFieldViewModeWhileEditing))
 		self.rightViewMode = UITextFieldViewModeWhileEditing;
 	return ret ;
+}
+
+- (void)drawPlaceholderInRect:(CGRect)rect {
+	[UIColorFromRGB(0x71737a) setFill];
+	[[self placeholder] drawInRect:rect withFont:[UIFont systemFontOfSize:13]];
 }
 
 @end

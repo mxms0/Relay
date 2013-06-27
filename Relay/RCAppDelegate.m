@@ -74,7 +74,7 @@ static BOOL isSetup = NO;
 
 - (void)configureUI {
 	UINavigationBar *nb = [UINavigationBar appearance];
-	[nb setBackgroundImage:[UIImage imageNamed:@"0_addnav"] forBarMetrics:UIBarMetricsDefault];
+	[nb setBackgroundImage:[UIImage imageNamed:@"0_headr"] forBarMetrics:UIBarMetricsDefault];
 	NSDictionary *formatting = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont boldSystemFontOfSize:11], UITextAttributeFont, UIColorFromRGB(0x454646), UITextAttributeTextColor,
 								[NSValue valueWithUIOffset:UIOffsetMake(0, 1)], UITextAttributeTextShadowOffset,
 								[UIColor whiteColor], UITextAttributeTextShadowColor, nil];

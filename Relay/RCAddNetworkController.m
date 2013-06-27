@@ -11,7 +11,7 @@
 @implementation RCAddNetworkController
 
 - (id)initWithNetwork:(RCNetwork *)net {
-	if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
+	if ((self = [super initWithStyle:UITableViewStylePlain])) {
 		isNew = NO;
 		datas = nil;
 		name = [[[UIDevice currentDevice] name] retain];
@@ -29,6 +29,7 @@
 			network = [net retain];
 			datas = [[[network infoDictionary] mutableCopy] retain];
 		}
+		self.tableView.separatorColor = UIColorFromRGB(0x141925);
 	}
 	return self;
 }
@@ -61,14 +62,22 @@
 		[self.navigationController.navigationBar addSubview:r_shadow];
 		[r_shadow release];
 	}
-	UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStyleBordered target:self action:@selector(doneWithJoin)];
+	RCBarButtonItem *ct = [[RCBarButtonItem alloc] initWithFrame:CGRectMake(0, 0, 50, 44)];
+	[ct addTarget:self action:@selector(doneWithJoin) forControlEvents:UIControlEventTouchUpInside];
+	[ct setImage:[UIImage imageNamed:@"0_cnclr"] forState:UIControlStateNormal];
+	UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithCustomView:ct];
 	[self.navigationItem setLeftBarButtonItem:cancel];
 	[cancel release];
+	[ct release];
 	
-	UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleBordered target:self action:@selector(doneConnection)];
+	RCBarButtonItem *bt = [[RCBarButtonItem alloc] initWithFrame:CGRectMake(0, 0, 50, 44)];
+	[bt addTarget:self action:@selector(doneConnection) forControlEvents:UIControlEventTouchUpInside];
+	[bt setImage:[UIImage imageNamed:@"0_checkr"] forState:UIControlStateNormal];
+	UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithCustomView:bt];
 	[done setEnabled:!isNew];
 	[self.navigationItem setRightBarButtonItem:done];
 	[done release];
+	[bt release];
 }
 
 - (void)viewDidLoad {
@@ -229,34 +238,9 @@ _end:
 	return 0;
 }
 
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-	UIView *base = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 35)];
-	UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(2, (section == 0 ? 7 : -2), 300, 25)];
-	[lbl setTextColor:[UIColor whiteColor]];
-	[lbl setShadowColor:[UIColor blackColor]];
-	[lbl setShadowOffset:CGSizeMake(0, 1)];
-	[lbl setBackgroundColor:[UIColor clearColor]];
-	[lbl setFont:[UIFont boldSystemFontOfSize:14.5]];
-	[lbl setText:[self titleForHeaderInSection:section]];
-	[base addSubview:lbl];
-	[lbl release];
-	return [base autorelease];
-}
-
-- (NSString *)titleForHeaderInSection:(NSInteger)section {
-	switch (section) {
-		case 0:
-			return @"   CONNECTION INFORMATION";
-		case 1:
-			return @"   USER INFORMATION";
-		case 2:
-			return @"   AUTHENTICATION";
-		case 3:
-			return @"   ADVANCED";
-		default:
-			break;
-	}
-	return @"Error.";
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+	if (section == 0) return 0;
+	return 15;
 }
 
 - (void)showStupidWarningsRegardingMichiganUniversity {
@@ -303,12 +287,13 @@ _end:
     RCBasicTextInputCell *cell = (RCBasicTextInputCell *)[_tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[RCBasicTextInputCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+		cell.textLabel.textColor = [UIColor whiteColor];
+		cell.textLabel.font = [UIFont systemFontOfSize:14];
 		switch (indexPath.section) {
 			case 0:
 				switch (indexPath.row) {
 					case 0:
 						cell.textLabel.text = @"Description";
-						cell.textLabel.font = [UIFont boldSystemFontOfSize:14];
 						RCTextField *dField = (RCTextField *)[cell accessoryView];
 						[dField setAdjustsFontSizeToFitWidth:YES];
 						[dField setPlaceholder:@"Enter a description"];
@@ -474,7 +459,6 @@ _end:
 		[tf setFrame:CGRectMake(0, 0, 180,44)];
 		[tf setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
 	}
-    // Configure the cell...
     return cell;
 }
 

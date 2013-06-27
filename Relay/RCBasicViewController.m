@@ -24,7 +24,7 @@
 @implementation RCBasicViewController
 
 - (id)initWithStyle:(UITableViewStyle)style {
-	if ((self = [super initWithStyle:style])) {
+	if ((self = [super initWithStyle:UITableViewStylePlain])) {
 		titleView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 180, 40)];
 		titleView.backgroundColor = [UIColor clearColor];
 		titleView.textAlignment = UITextAlignmentCenter;
@@ -60,10 +60,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-	UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"0_bg"]];
-	[bg setFrame:self.view.frame];
-	self.tableView.backgroundView = bg;
-	[bg release];
+	self.view.backgroundColor = UIColorFromRGB(0x141925);
+	self.tableView.backgroundView.backgroundColor = UIColorFromRGB(0x141925);
+	self.tableView.backgroundColor = UIColorFromRGB(0x141925);
 	titleView.text = [self titleText];
 }
 

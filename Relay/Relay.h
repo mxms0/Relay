@@ -57,7 +57,7 @@ static inline void NOLog(NSString* a, ...) {
 	#define CMLog(format, ...) NSLog(@"(%s) in [%s:%d] ::: %@", __PRETTY_FUNCTION__, __FILE__, __LINE__, [NSString stringWithFormat:format, ## __VA_ARGS__])
 	#define MARK CMLog(@"%s", __PRETTY_FUNCTION__);
 
-	static inline BOOL readNumber(int* num, BOOL* isThereComma, unsigned int* size_of_num, NSString* istring);
+	static inline BOOL readNumber(int *num, BOOL *isThereComma, unsigned int *size_of_num, NSString *istring);
 	static inline BOOL readNumber(int *num, BOOL *isThereComma, unsigned int *size_of_num, NSString *istring) {
 		if ([istring length] - *size_of_num) {
 			unichar n1 = [istring characterAtIndex:*size_of_num];
