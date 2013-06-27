@@ -379,6 +379,13 @@
 	MARK;
 #endif
 	if (sockfd == -1) return NO;
+	if (isWriting) {
+#if LOGALL
+		NSLog(@"WRITING ALREADY. Stop.");
+#endif
+		return NO;
+	}
+	isWriting = YES;
 #if LOGALL
 	NSLog(@"WRITING BUFFER %d", sockfd);
 #endif
@@ -398,6 +405,7 @@
 	[writebuf release];
 	writebuf = [[NSMutableString alloc] initWithCString:buf encoding:NSUTF8StringEncoding];
 	// this is derp. must be a better method. ;P
+	isWriting = NO;
 	return YES;
 }
 

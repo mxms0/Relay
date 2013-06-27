@@ -55,6 +55,7 @@ typedef enum RCSocketStatus {
 	BOOL _isDisconnecting;
 	BOOL shouldRequestSPass;
 	BOOL shouldRequestNPass;
+	BOOL isWriting;
 	RCChannelManager *namesCallback;
 	BOOL tryingToConnect;
 	NSDictionary *prefix;
