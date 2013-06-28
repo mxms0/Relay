@@ -1943,18 +1943,16 @@ void RCParseUserMask(NSString *mask, NSString **_nick, NSString **user, NSString
 				}
 			}
 		}
-        case RCALERR_SERVCHNGE: {
-            if (buttonIndex == 0) {
-                if ([self isConnected]) {
-                    [self disconnect];
-                } else {
-                    // fudge fails every tiem
-					RCServerChangeAlertView *acl = (RCServerChangeAlertView *)alertView;
-					[self setServer:[acl server]];
-					[self setPort:[acl port]];
-                }
-            }
-        }
+		case RCALERR_SERVCHNGE: {
+			if (buttonIndex == 0) {
+				[self disconnect];
+			}
+			else {
+				RCServerChangeAlertView *acl = (RCServerChangeAlertView *)alertView;
+				[self setServer:[acl server]];
+				[self setPort:[acl port]];
+			}
+		}
 	}
 }
 
