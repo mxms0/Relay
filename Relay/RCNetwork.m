@@ -324,6 +324,7 @@
 }
 
 - (BOOL)hasPendingBites {
+    if (!writebuf) return NO;
 	return [writebuf length] > 0;
 }
 
@@ -793,17 +794,19 @@
     [scanner scanUpToString:@" " intoString:&redirPort];
     [scanner release];
     NSString *alertString;
-    if ([self port] == [redirPort integerValue]) {
-        alertString = [NSString stringWithFormat:@"Server %@ (%@) is redirecting to %@.\nChange server?", [self _description], server, redirServer];
-    } else {
-        alertString = [NSString stringWithFormat:@"Server %@ (%@) is redirecting to %@ on port %@.\nChange server?", [self _description], server, redirServer, redirPort];
+    if ([redirPort integerValue] != 0) {
+        if ([self port] == [redirPort integerValue]) {
+            alertString = [NSString stringWithFormat:@"Server %@ (%@) is redirecting to %@.\nChange server?", [self _description], server, redirServer];
+        } else {
+            alertString = [NSString stringWithFormat:@"Server %@ (%@) is redirecting to %@ on port %@.\nChange server?", [self _description], server, redirServer, redirPort];
+        }
+        RCServerChangeAlertView *ac = [[RCServerChangeAlertView alloc] initWithTitle:alertString message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Change", nil];
+        ac.server = redirServer;
+        ac.port = [redirPort integerValue];
+        [ac setTag:RCALERR_SERVCHNGE];
+        [ac show];
+        [ac release];
     }
-    RCServerChangeAlertView *ac = [[RCServerChangeAlertView alloc] initWithTitle:alertString message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Change", nil];
-    ac.server = redirServer;
-    ac.port = [redirPort integerValue];
-    [ac setTag:RCALERR_SERVCHNGE];
-    [ac show];
-    [ac release];
 }
 
 - (void)handle042:(NSString *)msg {
@@ -1951,6 +1954,13 @@ void RCParseUserMask(NSString *mask, NSString **_nick, NSString **user, NSString
 				RCServerChangeAlertView *acl = (RCServerChangeAlertView *)alertView;
 				[self setServer:[acl server]];
 				[self setPort:[acl port]];
+                [[RCNetworkManager sharedNetworkManager] saveNetworks];
+                if ([self isConnected] == NO) {
+                    [self connect];
+                } else {
+                    [self disconnect];
+                    [self connect];
+                }
 			}
 		}
 	}
