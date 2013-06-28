@@ -26,7 +26,6 @@ static NSMutableArray *networks = nil;
 	}
 	if (![_net consoleChannel]) [_net addChannel:@"\x01IRC" join:NO];
 	[networks insertObject:_net atIndex:[networks count]];
-//	[networks addObject:_net];
 	if ([_net COL]) [_net connect];
 	if (!isSetup) [self saveNetworks];
 }

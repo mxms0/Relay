@@ -14,6 +14,8 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 	NSLog(@"CLEANUP CLEANUP EVERYBODY CLEANUP");
+	// will clear all private message whois infos
+	// if that still fails, will clear user lists. maybe.s
 }
 
 #pragma mark - VIEW SHIT

@@ -4,7 +4,7 @@
 //
 //  Created by Max Shavrick on 1/13/12.
 //	This code is based on apple's GenericKeychain example.
-//	i don't think above çovers me legally. :P
+//	i don't think above covers me legally. :P
 
 #import <UIKit/UIKit.h>
 

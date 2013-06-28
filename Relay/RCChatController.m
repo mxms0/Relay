@@ -98,12 +98,15 @@ static id _inst = nil;
 	currentPanel = nil;
 	rootView = rc;
 	canDragMainView = YES;
+	int offx = 0;
+	if (isiOS7)
+		offx = 20;
 	CGSize frame = [[UIScreen mainScreen] applicationFrame].size;
-	bottomView = [[RCChatsListViewCard alloc] initWithFrame:CGRectMake(0, 0, frame.width, frame.height)];
+	bottomView = [[RCChatsListViewCard alloc] initWithFrame:CGRectMake(0, offx, frame.width, frame.height)];
 	[rc.view insertSubview:bottomView atIndex:0];
-	chatView = [[RCViewCard alloc] initWithFrame:CGRectMake(0, 0, frame.width, frame.height)];
+	chatView = [[RCViewCard alloc] initWithFrame:CGRectMake(0, offx, frame.width, frame.height)];
 	[rc.view insertSubview:chatView atIndex:1];
-	infoView = [[RCTopViewCard alloc] initWithFrame:CGRectMake(frame.width, 0, frame.width, frame.height)];
+	infoView = [[RCTopViewCard alloc] initWithFrame:CGRectMake(frame.width, offx, frame.width, frame.height)];
 	[rc.view insertSubview:infoView atIndex:2];
 	UIPanGestureRecognizer *pg = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(userPanned:)];
 	[rc.view addGestureRecognizer:pg];

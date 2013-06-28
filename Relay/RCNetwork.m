@@ -46,7 +46,7 @@
 		_channels = [[NSMutableArray alloc] init];
 		_isDisconnecting = NO;
         _nicknames = [[NSMutableArray alloc] init];
-        if ([self useNick])
+        if ([self useNick] && ![_nicknames containsObject:[self useNick]])
             [_nicknames addObject:[self useNick]];
 	}
 	return self;

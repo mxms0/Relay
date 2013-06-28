@@ -460,7 +460,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
         [self performSelectorOnMainThread:@selector(setUserJoined:) withObject:_joined waitUntilDone:NO];
         return;
     }
-    @synchronized(self) {
+    @synchronized(fullUserList) {
         if (![_joined isEqualToString:@""] && ![_joined isEqualToString:@" "] && ![_joined isEqualToString:@"\r\n"] && ![self isUserInChannel:_joined] && _joined) {
 			[usersPanel reloadData];
             NSUInteger newIndex = [fullUserList indexOfObject:_joined inSortedRange:(NSRange){0, [fullUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^NSComparisonResult(id obj1, id obj2) {
@@ -476,11 +476,11 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 }
 - (void)setUserLeft:(NSString *)left {
     if (![NSThread isMainThread]) {
-        [self performSelectorOnMainThread:@selector(setUserLeft:) withObject:left waitUntilDone:YES];
+        [self performSelectorOnMainThread:@selector(setUserLeft:) withObject:left waitUntilDone:NO];
         return;
     }
     left = [self nickAndRankForNick:left];
-	@synchronized(self) {
+	@synchronized(fullUserList) {
 		if (![left isEqualToString:@""] && ![left isEqualToString:@" "] && ![left isEqualToString:@"\r\n"] && [self isUserInChannel:left] && left) {
 			NSInteger newIndex = [fullUserList indexOfObject:left];
 			if (newIndex != NSNotFound) {
