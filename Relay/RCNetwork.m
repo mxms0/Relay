@@ -12,6 +12,7 @@
 #import "RCChannelManager.h"
 #import "RCInviteRequestAlert.h"
 #import "RCPrettyAlertView.h"
+#import "RCServerChangeAlertView.h"
 #import "RCChatController.h"
 
 #define RECV_BUF_LEN 10240
@@ -777,6 +778,32 @@
 	}
 	[scanr release];*/
 	// Relay[2794:f803] MSG: :fr.ac3xx.com 005 _m WALLCHOPS WATCH=128 WATCHOPTS=A SILENCE=15 MODES=12 CHANTYPES=# PREFIX=(qaohv)~&@%+ CHANMODES=beI,kfL,lj,psmntirRcOAQKVCuzNSMTGZ NETWORK=ROXnet CASEMAPPING=ascii EXTBAN=~,qjncrR ELIST=MNUCT STATUSMSG=~&@%+ :are supported by this server
+}
+
+- (void)handle010:(NSString *)redirect {
+    // RPL_BOUNCE
+    NSScanner *scanner = [[NSScanner alloc] initWithString:redirect];
+    NSString *crap;
+    NSString *redirServer;
+    NSString *redirPort;
+    [scanner scanUpToString:@" " intoString:&crap];
+    [scanner scanUpToString:@" " intoString:&crap];
+    [scanner scanUpToString:@" " intoString:&crap];
+    [scanner scanUpToString:@" " intoString:&redirServer];
+    [scanner scanUpToString:@" " intoString:&redirPort];
+    [scanner release];
+    NSString *alertString;
+    if ([self port] == [redirPort integerValue]) {
+        alertString = [NSString stringWithFormat:@"Server %@ (%@) is redirecting to %@.\nChange server?", [self _description], server, redirServer];
+    } else {
+        alertString = [NSString stringWithFormat:@"Server %@ (%@) is redirecting to %@ on port %@.\nChange server?", [self _description], server, redirServer, redirPort];
+    }
+    RCServerChangeAlertView *ac = [[RCServerChangeAlertView alloc] initWithTitle:alertString message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Change", nil];
+    ac.server = redirServer;
+    ac.port = [redirPort integerValue];
+    [ac setTag:RCALERR_SERVCHNGE];
+    [ac show];
+    [ac release];
 }
 
 - (void)handle042:(NSString *)msg {
@@ -1916,6 +1943,17 @@ void RCParseUserMask(NSString *mask, NSString **_nick, NSString **user, NSString
 				}
 			}
 		}
+        case RCALERR_SERVCHNGE: {
+            if (buttonIndex == 0) {
+                if ([self isConnected]) {
+                    [self disconnect];
+                } else {
+                    // fudge fails every tiem
+                    //[self setServer:alertView.server];
+                    //[self setPort:alertView.port];
+                }
+            }
+        }
 	}
 }
 
