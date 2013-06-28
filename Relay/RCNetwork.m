@@ -1949,8 +1949,9 @@ void RCParseUserMask(NSString *mask, NSString **_nick, NSString **user, NSString
                     [self disconnect];
                 } else {
                     // fudge fails every tiem
-                    //[self setServer:alertView.server];
-                    //[self setPort:alertView.port];
+					RCServerChangeAlertView *acl = (RCServerChangeAlertView *)alertView;
+					[self setServer:[acl server]];
+					[self setPort:[acl port]];
                 }
             }
         }
