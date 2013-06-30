@@ -37,7 +37,7 @@ static id _eInstance = nil;
 
 - (void)handleCommand:(NSString *)command fromNetwork:(RCNetwork *)net forChannel:(RCChannel *)chan {
 	@synchronized(self) {
-		NSString *cmd_;
+		NSString *cmd_ = nil;
 		NSString *_crap;
 		NSScanner *scan = [[NSScanner alloc] initWithString:command];
 		[scan scanUpToString:@" " intoString:&cmd_];

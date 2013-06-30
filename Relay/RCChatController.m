@@ -100,8 +100,8 @@ static id _inst = nil;
 	rootView = rc;
 	canDragMainView = YES;
 	int offx = 0;
-	if (isiOS7)
-		offx = 20;
+	/*if (isiOS7)
+		offx = 20;*/
 	CGSize frame = [[UIScreen mainScreen] applicationFrame].size;
 	bottomView = [[RCChatsListViewCard alloc] initWithFrame:CGRectMake(0, offx, frame.width, frame.height)];
 	[rc.view insertSubview:bottomView atIndex:0];
@@ -639,14 +639,14 @@ static RCNetwork *currentNetwork = nil;
 		[anim setFillMode:kCAFillModeBoth];
 		anim.additive = NO;
 		CALayer *vs = nil;
-		for (CALayer *cs in [[[[vc subviews] objectAtIndex:0] layer] sublayers]) {
+		for (CALayer *cs in [[vc layer] sublayers]) {
 			if ([[cs name] isEqualToString:@"0_skc"]) {
 				vs = cs;
 				break;
 			}
 		}
-		[vs addAnimation:fade forKey:@"opacity"];
 		[[[[vc subviews] objectAtIndex:0] layer] addAnimation:anim forKey:@"position"];
+		[vs addAnimation:fade forKey:@"opacity"];
 		[CATransaction commit];
 	}
 	else {

@@ -7,8 +7,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface RCCuteView : UIView {
-	BOOL animating;
-}
+@interface RCCuteView : UIView 
 
 @end
