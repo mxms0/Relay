@@ -1141,7 +1141,7 @@
 	NSString *normalTime = [NSString stringWithCString:buffer encoding:NSUTF8StringEncoding];
 	RCParseUserMask(from, &from, nil, nil);
 	RCChannel *chan = [self channelWithChannelName:chan_];
-	[chan recievedMessage:[NSString stringWithFormat:@"Set by %@ on %@", from, normalTime] from:nil type:RCMessageTypeNormalE];
+	[chan recievedMessage:[NSString stringWithFormat:@"Set by %@ on %@", from, normalTime] from:nil type:RCMessageTypeNormalE2];
 	[scanr release];
 	// :irc.saurik.com 333 _m #bacon Bacon!~S_S@adsl-184-33-54-96.mia.bellsouth.net 1329680840
 }

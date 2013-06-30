@@ -353,6 +353,8 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 		case RCMessageTypeNormalE:
 			msg = [[NSString stringWithFormat:@"%@ %@", time, message] retain];
 			break;
+		case RCMessageTypeNormalE2:
+			msg = [[NSString stringWithFormat:@"%@ %@", time, message] retain];
         default:
             msg = @"unk_event";
             break;

@@ -119,7 +119,8 @@ static inline void NOLog(NSString* a, ...) {
 		RCMessageTypeMode,
 		RCMessageTypeError,
         RCMessageTypeEvent,
-		RCMessageTypeNormalE
+		RCMessageTypeNormalE,
+		RCMessageTypeNormalE2
 	} RCMessageType;
 
 	enum RCIRCAttribute {
