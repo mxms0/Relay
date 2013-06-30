@@ -14,10 +14,12 @@
 	BOOL isMain;
 	BOOL drawIndent;
 	BOOL superSpecialLikeAc3xx2;
+	CGFloat maxSize;
 }
 @property (nonatomic, retain) NSString *title;
 @property (nonatomic, retain) NSString *subtitle;
 @property (nonatomic, assign) BOOL isMain;
 @property (nonatomic, assign) BOOL drawIndent;
 @property (nonatomic, assign) BOOL superSpecialLikeAc3xx2;
+@property (nonatomic, assign) CGFloat maxSize;
 @end

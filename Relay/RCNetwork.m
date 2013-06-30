@@ -456,7 +456,10 @@
 		NSLog(@"Errorz. %@:%@", msg, server);
 		NSString *error = [msg substringWithRange:NSMakeRange(5, [msg length]-5)];
 		if ([error hasPrefix:@" :"]) error = [error substringFromIndex:2];
-		[self disconnectWithMessage:error];
+		[self disconnectCleanupWithMessage:error];
+		// need to clean this up
+		// postss to chat view as
+		// Disconnected: Closing Link (~iPhone@108.132.140.49) [Quit: Relay 1.0]
 		return;
 	}
 	else if ([msg hasPrefix:@"@"]) {
@@ -467,7 +470,9 @@
 		//	NSDateFormatter *df = [[NSDateFormatter alloc] init];
 		//[df setDateFormat:@"YYYY-MM-DDThh:mm:ss.sssZ"];
 		//	NSDate *aDate = [df dateFromString:nil];
+#if LOGALL
 		NSLog(@"IRV3 I C. %@:[%@]", msg, [msg dataUsingEncoding:NSUTF8StringEncoding]);
+#endif
 		return;
 	}
 	if (![msg hasPrefix:@":"]) {
@@ -547,6 +552,7 @@
 	if (status == RCSocketStatusClosed) return NO;
 	if ((status == RCSocketStatusConnected) || (status == RCSocketStatusConnecting)) {
 		[self sendMessage:[@"QUIT :" stringByAppendingString:([msg isEqualToString:@"Disconnected."] ? [self defaultQuitMessage] : msg)] canWait:NO];
+		/*
 		status = RCSocketStatusClosed;
 		close(sockfd);
 		[rcache release];
@@ -564,9 +570,28 @@
 		for (RCChannel *_chan in _channels) {
 			[_chan disconnected:msg];
 		}
+		 */
 	}
 	_isDisconnecting = NO;
 	return YES;
+}
+
+- (void)disconnectCleanupWithMessage:(NSString *)msg {
+	status = RCSocketStatusClosed;
+	close(sockfd);
+	[rcache release];
+	rcache = nil;
+	sockfd = -1;
+	[writebuf release];
+	if (useSSL)
+		SSL_CTX_free(ctx);
+	[[UIApplication sharedApplication] endBackgroundTask:task];
+	task = UIBackgroundTaskInvalid;
+	tryingToConnect = NO;
+	isRegistered = NO;
+	for	(RCChannel *_chan in _channels) {
+		[_chan disconnected:msg];
+	}
 }
 
 - (BOOL)disconnect {
@@ -783,30 +808,31 @@
 
 - (void)handle010:(NSString *)redirect {
     // RPL_BOUNCE
-    NSScanner *scanner = [[NSScanner alloc] initWithString:redirect];
-    NSString *crap;
-    NSString *redirServer;
-    NSString *redirPort;
-    [scanner scanUpToString:@" " intoString:&crap];
-    [scanner scanUpToString:@" " intoString:&crap];
-    [scanner scanUpToString:@" " intoString:&crap];
-    [scanner scanUpToString:@" " intoString:&redirServer];
-    [scanner scanUpToString:@" " intoString:&redirPort];
-    [scanner release];
-    NSString *alertString;
-    if ([redirPort integerValue] != 0) {
-        if ([self port] == [redirPort integerValue]) {
+	NSScanner *scanner = [[NSScanner alloc] initWithString:redirect];
+	NSString *crap;
+	NSString *redirServer;
+	NSString *redirPort;
+	[scanner scanUpToString:@" " intoString:&crap];
+	[scanner scanUpToString:@" " intoString:&crap];
+	[scanner scanUpToString:@" " intoString:&crap];
+	[scanner scanUpToString:@" " intoString:&redirServer];
+	[scanner scanUpToString:@" " intoString:&redirPort];
+	[scanner release];
+	NSString *alertString = nil;
+	if ([redirPort integerValue] != 0) {
+		if ([self port] == [redirPort integerValue]) {
             alertString = [NSString stringWithFormat:@"Server %@ (%@) is redirecting to %@.\nChange server?", [self _description], server, redirServer];
-        } else {
-            alertString = [NSString stringWithFormat:@"Server %@ (%@) is redirecting to %@ on port %@.\nChange server?", [self _description], server, redirServer, redirPort];
-        }
-        RCServerChangeAlertView *ac = [[RCServerChangeAlertView alloc] initWithTitle:alertString message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Change", nil];
-        ac.server = redirServer;
-        ac.port = [redirPort integerValue];
-        [ac setTag:RCALERR_SERVCHNGE];
-        [ac show];
-        [ac release];
-    }
+		}
+		else {
+			alertString = [NSString stringWithFormat:@"Server %@ (%@) is redirecting to %@ on port %@.\nChange server?", [self _description], server, redirServer, redirPort];
+		}
+		RCServerChangeAlertView *ac = [[RCServerChangeAlertView alloc] initWithTitle:nil message:alertString delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Change", nil];
+		[ac setServer:redirServer];
+		[ac setPort:[redirPort intValue]];
+		[ac setTag:RCALERR_SERVCHNGE];
+		[ac show];
+		[ac release];
+	}
 }
 
 - (void)handle042:(NSString *)msg {
@@ -1954,13 +1980,14 @@ void RCParseUserMask(NSString *mask, NSString **_nick, NSString **user, NSString
 				RCServerChangeAlertView *acl = (RCServerChangeAlertView *)alertView;
 				[self setServer:[acl server]];
 				[self setPort:[acl port]];
-                [[RCNetworkManager sharedNetworkManager] saveNetworks];
-                if ([self isConnected] == NO) {
-                    [self connect];
-                } else {
-                    [self disconnect];
-                    [self connect];
-                }
+				[[RCNetworkManager sharedNetworkManager] saveNetworks];
+				if ([self isConnected] == NO) {
+					[self connect];
+				}
+				else {
+					[self disconnect];
+					[self connect];
+				}
 			}
 		}
 	}

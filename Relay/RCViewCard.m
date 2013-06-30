@@ -9,6 +9,7 @@
 #import "RCChatsListViewCard.h"
 #import "RCTopViewCard.h"
 #import "RCChatController.h"
+#import "RCChannelListViewCard.h"
 
 @implementation RCViewCard
 @synthesize navigationBar;
@@ -41,7 +42,7 @@
 			[self.layer insertSublayer:bg atIndex:1];
 			[bg release];
 		}
-		if (![self isKindOfClass:[RCTopViewCard class]]) {
+		if (![self isKindOfClass:[RCTopViewCard class]] && ![self isKindOfClass:[RCChannelListViewCard class]]) {
 			
 			// no buttons shows up
 			// wat

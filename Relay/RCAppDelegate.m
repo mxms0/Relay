@@ -16,7 +16,6 @@
 #import "RCAddNetworkController.h"
 #include <pwd.h>
 
-
 @implementation RCAppDelegate
 
 @synthesize window = _window, navigationController = _navigationController;

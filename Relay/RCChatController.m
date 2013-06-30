@@ -45,6 +45,7 @@ static id _inst = nil;
 }
 
 - (void)userPanned:(UIPanGestureRecognizer *)pan {
+	if (isLISTViewPresented) return;
 	if (pan.state == UIGestureRecognizerStateChanged) {
 		CGPoint tr = [pan translationInView:[chatView superview]];
 		CGPoint centr = CGPointMake([chatView center].x +tr.x, [chatView center].y);
@@ -119,7 +120,6 @@ static id _inst = nil;
 	[[infoView navigationBar] setTitle:@"Memberlist"];
 	[[infoView navigationBar] setSuperSpecialLikeAc3xx2:YES];
 	_bar = [[RCTextFieldBackgroundView alloc] initWithFrame:CGRectMake(0, 800, 320, 40)];
-	//[_bar setOpaque:YES];
 	[_bar setOpaque:NO];
 	[_bar.layer setZPosition:1000];
 	field = [[RCTextField alloc] initWithFrame:CGRectMake(15, 8, 299, 31)];
@@ -442,6 +442,7 @@ static RCNetwork *currentNetwork = nil;
 }
 
 - (void)userSwiped_specialLikeAc3xx:(UIPanGestureRecognizer *)pan {
+	if (isLISTViewPresented) return;
 	if (pan.state == UIGestureRecognizerStateChanged) {
 		CGPoint tr = [pan translationInView:[chatView superview]];
 		CGPoint cr = CGPointMake([infoView center].x + tr.x, infoView.center.y);
@@ -500,47 +501,53 @@ static RCNetwork *currentNetwork = nil;
 }
 
 - (void)showMenuOptions:(id)unused {
-	if ([[currentPanel channel] isKindOfClass:[RCConsoleChannel class]]) return;
+	if (isLISTViewPresented) return;
+	BOOL isConsole =  ([[currentPanel channel] isKindOfClass:[RCConsoleChannel class]]);
 	RCChatNavigationBar *rc = (RCChatNavigationBar *)[chatView navigationBar];
 	NSMutableArray *buttons = [[NSMutableArray alloc] init];
-	UIButton *joinr = [[UIButton alloc] init];
-	SEL jsel = @selector(joinOrConnectDependingOnState);
-	if (![[currentPanel channel] joined]) {
-		[joinr setImage:[UIImage imageNamed:@"0_joinliv"] forState:UIControlStateNormal];
+	if (!isConsole) {
+		UIButton *joinr = [[UIButton alloc] init];
+		SEL jsel = @selector(joinOrConnectDependingOnState);
+		if (![[currentPanel channel] joined]) {
+			[joinr setImage:[UIImage imageNamed:@"0_joinliv"] forState:UIControlStateNormal];
+		}
+		else {
+			[joinr setImage:[UIImage imageNamed:@"0_cncl"] forState:UIControlStateNormal];
+			jsel = @selector(dismissMenuOptions);
+		}
+		[joinr addTarget:self action:jsel forControlEvents:UIControlEventTouchUpInside];
+		[buttons addObject:joinr];
+		[joinr release];
+		UIButton *trsh = [[UIButton alloc] init];
+		[trsh setImage:[UIImage imageNamed:@"0_trshdis"] forState:UIControlStateNormal];
+		[trsh addTarget:self action:@selector(deleteCurrentChannel) forControlEvents:UIControlEventTouchUpInside];
+		[buttons addObject:trsh];
+		[trsh release];
+		UIButton *lev = [[UIButton alloc] init];
+		UIImage *levi = nil;
+		SEL fsel = @selector(leaveCurrentChannel);
+		if ([[currentPanel channel] joined]) {
+			levi = [UIImage imageNamed:@"0_lev"];
+		}
+		else {
+			levi = [UIImage imageNamed:@"0_cncl"];
+			fsel = @selector(dismissMenuOptions);
+		}
+		[lev setImage:levi forState:UIControlStateNormal];
+		[lev addTarget:self action:fsel forControlEvents:UIControlEventTouchUpInside];
+		[buttons addObject:lev];
+		[lev release];
+		[rc setNeedsDisplay];
 	}
-	else {
-		[joinr setImage:[UIImage imageNamed:@"0_cncl"] forState:UIControlStateNormal];
-		jsel = @selector(dismissMenuOptions);
-	}
-	[joinr addTarget:self action:jsel forControlEvents:UIControlEventTouchUpInside];
-	[buttons addObject:joinr];
-	[joinr release];
-	UIButton *trsh = [[UIButton alloc] init];
-	[trsh setImage:[UIImage imageNamed:@"0_trshdis"] forState:UIControlStateNormal];
-	[trsh addTarget:self action:@selector(deleteCurrentChannel) forControlEvents:UIControlEventTouchUpInside];
-	[buttons addObject:trsh];
-	[trsh release];
-	UIButton *meml = [[UIButton alloc] init];
-	[meml setImage:[UIImage imageNamed:@"0_meml"] forState:UIControlStateNormal];
-	[meml addTarget:self action:@selector(showMemberList) forControlEvents:UIControlEventTouchUpInside];
-	[buttons addObject:meml];
-	[meml release];
-	UIButton *lev = [[UIButton alloc] init];
-	UIImage *levi = nil;
-	SEL fsel = @selector(leaveCurrentChannel);
-	if ([[currentPanel channel] joined]) {
-		levi = [UIImage imageNamed:@"0_lev"];
-	}
-	else {
-		levi = [UIImage imageNamed:@"0_cncl"];
-		fsel = @selector(dismissMenuOptions);
-	}
-	[lev setImage:levi forState:UIControlStateNormal];
-	[lev addTarget:self action:fsel forControlEvents:UIControlEventTouchUpInside];
-	[buttons addObject:lev];
-	[lev release];
 	[rc setDrawIndent:YES];
 	[rc setNeedsDisplay];
+	UIButton *meml = [[UIButton alloc] init];
+	[meml setImage:[UIImage imageNamed:@"0_meml"] forState:UIControlStateNormal];
+	[meml addTarget:self action:@selector(animateChannelList) forControlEvents:UIControlEventTouchUpInside];
+	if ([buttons count] > 0)
+		[buttons insertObject:meml atIndex:3];
+	else [buttons addObject:meml];
+	[meml release];
 	for (int i = 0; i < [buttons count]; i++) {
 		CGRect frame = CGRectMake(65, 2, [rc frame].size.width-130, 43);
 		CGFloat indivSize = frame.size.width/[buttons count];
@@ -565,6 +572,87 @@ static RCNetwork *currentNetwork = nil;
 	}
 	[rc setDrawIndent:NO];
 	[rc setNeedsDisplay];
+}
+
+- (void)animateChannelList {
+	isLISTViewPresented = YES;
+	[self dismissMenuOptions];
+	RCCuteView *mv = [[RCCuteView alloc] initWithFrame:chatView.frame];
+	[mv setBackgroundColor:[UIColor clearColor]];
+	CALayer *sch = [[CALayer alloc] init];
+	[sch setBackgroundColor:[UIColor colorWithWhite:0.3 alpha:0.4].CGColor];
+	[sch setOpacity:0];
+	[sch setName:@"0_skc"];
+	[sch setFrame:mv.frame];
+	[mv.layer addSublayer:sch];
+	[sch release];
+
+	RCChannelListViewCard *vc = [[RCChannelListViewCard alloc] initWithFrame:CGRectMake(0, chatView.frame.size.height, chatView.frame.size.width, chatView.frame.size.height)];
+	[[vc navigationBar] setTitle:@"Channel List"];
+	[[vc navigationBar] setSubtitle:@"Loading..."];
+	[mv addSubview:vc];
+	[vc release];
+	
+	[rootView.view addSubview:mv];
+	[mv release];
+	CABasicAnimation *fade = [CABasicAnimation animationWithKeyPath:@"opacity"];
+	[fade setDuration:0.5];
+	fade.fromValue = [NSNumber numberWithFloat:0.0f];
+	fade.toValue = [NSNumber numberWithFloat:1.0f];
+	[fade setRemovedOnCompletion:NO];
+	[fade setFillMode:kCAFillModeBoth];
+	[fade setAdditive:NO];
+	[fade setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut]];
+	CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:@"position.y"];
+	[anim setDuration:0.4];
+	anim.fromValue = [NSNumber numberWithFloat:825];
+	anim.toValue = [NSNumber numberWithFloat:315];
+	[anim setRemovedOnCompletion:NO];
+	[anim setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut]];
+	[anim setFillMode:kCAFillModeBoth];
+	anim.additive = NO;
+	[sch addAnimation:fade forKey:@"opacity"];
+	[vc.layer addAnimation:anim forKey:@"position"];
+	// sorry
+}
+
+- (void)dismissChannelList:(UIView *)vc animated:(BOOL)sAnim {
+	if (sAnim) {
+		[CATransaction begin];
+		[CATransaction setCompletionBlock:^ {
+			[vc removeFromSuperview];
+		}];
+		CABasicAnimation *fade = [CABasicAnimation animationWithKeyPath:@"opacity"];
+		[fade setDuration:0.5];
+		fade.fromValue = [NSNumber numberWithFloat:1.0f];
+		fade.toValue = [NSNumber numberWithFloat:0.0f];
+		[fade setRemovedOnCompletion:NO];
+		[fade setFillMode:kCAFillModeBoth];
+		[fade setAdditive:NO];
+		[fade setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
+		CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:@"position.y"];
+		[anim setDuration:0.4];
+		anim.fromValue = [NSNumber numberWithFloat:315];
+		anim.toValue = [NSNumber numberWithFloat:825];
+		[anim setRemovedOnCompletion:NO];
+		[anim setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
+		[anim setFillMode:kCAFillModeBoth];
+		anim.additive = NO;
+		CALayer *vs = nil;
+		for (CALayer *cs in [[[[vc subviews] objectAtIndex:0] layer] sublayers]) {
+			if ([[cs name] isEqualToString:@"0_skc"]) {
+				vs = cs;
+				break;
+			}
+		}
+		[vs addAnimation:fade forKey:@"opacity"];
+		[[[[vc subviews] objectAtIndex:0] layer] addAnimation:anim forKey:@"position"];
+		[CATransaction commit];
+	}
+	else {
+		[vc removeFromSuperview];
+	}
+	isLISTViewPresented = NO;
 }
 
 - (void)deleteCurrentChannel {

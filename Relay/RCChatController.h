@@ -11,6 +11,8 @@
 #import "RCTopViewCard.h"
 #import "RCChatsListViewCard.h"
 #import "RCInitialSetupView.h"
+#import "RCChannelListViewCard.h"
+#import "RCCuteView.h"
 
 @class RCChatViewController, RCChatsListViewController, RCUserListViewController;
 @interface RCChatController : NSObject <UIAlertViewDelegate, UIActionSheetDelegate, UIGestureRecognizerDelegate, UITextFieldDelegate> {
@@ -26,6 +28,7 @@
 	BOOL draggingUserList;
 	BOOL nickSuggestionDisabled;
 	BOOL canDragMainView;
+	BOOL isLISTViewPresented;
 }
 @property (nonatomic, retain) RCChatPanel *currentPanel;
 @property (nonatomic, assign) BOOL canDragMainView;
@@ -45,4 +48,5 @@
 - (void)setDefaultTitleAndSubtitle;
 - (void)layoutWithRootViewController:(RCViewController *)rc;
 - (void)presentInitialSetupView;
+- (void)dismissChannelList:(UIView *)cl animated:(BOOL)anim;
 @end
