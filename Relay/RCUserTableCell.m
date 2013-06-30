@@ -40,6 +40,24 @@
 	[self setNeedsDisplay];
 }
 
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+	[super touchesBegan:touches withEvent:event];
+	contentView->fakeSelected = YES;
+	[contentView setNeedsDisplay];
+}
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+	[super touchesBegan:touches withEvent:event];
+	contentView->fakeSelected = NO;
+	[contentView setNeedsDisplay];
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+	[super touchesEnded:touches withEvent:event];
+	contentView->fakeSelected = NO;
+	[contentView setNeedsDisplay];
+}
+
 - (void)drawRect:(CGRect)rect {
 	[super drawRect:rect];
 	self.textLabel.hidden = isWhois;

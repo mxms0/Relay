@@ -27,10 +27,12 @@
 	BOOL joinOnConnect;
     BOOL shouldJoin;
 	BOOL temporaryJoinOnConnect;
+	BOOL holdUserListUpdates;
 	unsigned newMessageCount;
 	RCNetwork *delegate;
 	RCNetworkCell *cellRepresentation;
     NSMutableArray *fullUserList;
+	NSMutableArray *fakeUserList;
     NSMutableDictionary *userRanksAdv;
 }
 @property (nonatomic, retain) NSString *channelName;
@@ -64,6 +66,7 @@
 - (BOOL)isPrivate;
 - (void)clearAllMessages;
 - (void)setJoined:(BOOL)joind;
+- (void)setShouldHoldUserListUpdates:(BOOL)bn;
 NSString *RCUserRank(NSString *user, RCNetwork* network);
 UIImage *RCImageForRank(NSString *rank, RCNetwork* network);
 BOOL RCIsRankHigher(NSString *rank, NSString *rank2, RCNetwork* network);

@@ -1162,9 +1162,10 @@
 		users = [users substringFromIndex:1];
 		NSArray *_someUsers = [users componentsSeparatedByString:@" "];
 		RCChannel *chan = [self channelWithChannelName:room];
+		[chan setShouldHoldUserListUpdates:YES];
 		if (chan) {
 			for (NSString *user in _someUsers) {
-				[chan setUserJoined:user];
+				[chan setUserJoinedBatch:user cnt:0];
 			}
 		}
 	}
@@ -1172,7 +1173,17 @@
     //	add users to room listing..
 }
 - (void)handle366:(NSString *)end {
-	// end of /NAMES list
+	//:irc.saurik.com 366 __mxms #bacon :End of /NAMES list.
+	NSScanner *scn = [[NSScanner alloc] initWithString:end];
+	NSString *stuff = nil;
+	NSString *chan = nil;
+	[scn scanUpToString:@" " intoString:&stuff];
+	[scn scanUpToString:@" " intoString:&stuff];
+	[scn scanUpToString:@" " intoString:&stuff];
+	[scn scanUpToString:@" " intoString:&chan];
+	RCChannel *channel = [self channelWithChannelName:chan];
+	[channel setShouldHoldUserListUpdates:NO];
+	[scn release];
 }
 
 - (void)handle375:(NSString *)motd {

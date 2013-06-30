@@ -9,6 +9,7 @@
 #import "RCUserTableCell.h"
 
 @interface RCUserTableCellContentView : UIView {
+@public
 	BOOL fakeSelected;
 }
 

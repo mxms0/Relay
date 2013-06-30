@@ -127,6 +127,23 @@ UIImage *RCImageForRank(NSString *rank, RCNetwork* network) {
 	return self;
 }
 
+- (void)setShouldHoldUserListUpdates:(BOOL)hld {
+	NSLog(@"HFDFFDS %d", hld);
+	if (holdUserListUpdates == hld) return;
+	holdUserListUpdates = hld;
+	if (hld) {
+		fakeUserList = [[NSMutableArray alloc] init];
+	}
+	else {
+		[fullUserList addObjectsFromArray:fakeUserList];
+		[fakeUserList release];
+		fakeUserList = nil;
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[usersPanel reloadData];
+		});
+	}
+}
+
 - (RCNetwork *)delegate {
 	return delegate;
 }
@@ -293,7 +310,10 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 			}
 			break;
 		case RCMessageTypeJoin:
-            [self setUserJoined:from];
+			if (holdUserListUpdates) [self setUserJoined:from];
+			else [self setUserJoinedBatch:from cnt:0];
+			// this is a little broken. user isn't being inserted after join/part etc
+			// FIX MAX
 			msg = [[NSString stringWithFormat:@"%@ %c%@%c joined the channel.", time, RCIRCAttributeBold, from, RCIRCAttributeBold] retain];
 			break;
 		case RCMessageTypeEvent:
@@ -447,9 +467,39 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
     }
 }
 
+- (void)setUserJoinedBatch:(NSString *)_joined cnt:(int)cnt {
+    if (cnt > 10) {
+		if (![[self delegate] prefix])
+			[[self delegate] setPrefix:[NSDictionary new]];
+    }
+    if (![[self delegate] prefix]) {
+        double delayInSeconds = 0.1;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
+            [self setUserJoined:_joined cnt:cnt+1];
+        });
+        return;
+    }
+    @synchronized(fakeUserList) {
+        if (![_joined isEqualToString:@""] && ![_joined isEqualToString:@" "] && ![_joined isEqualToString:@"\r\n"] && ![self isUserInChannel:_joined] && _joined) {
+				@synchronized(fakeUserList) {
+					NSUInteger newIndex = [fakeUserList indexOfObject:_joined inSortedRange:(NSRange){0, [fakeUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^	NSComparisonResult(id obj1, id obj2) {
+						return sortRank(obj1, obj2, [self delegate]);
+					}];
+					[fakeUserList insertObject:_joined atIndex:newIndex];
+				}
+				// not sure if this BS is worth it. doesn't really fix the lag issue.
+				// it was worth a shot though.
+				// buuild up user list until you get 366, then just post it all to stupid table view.
+				// hm.
+        }
+    }
+}
+
 - (void)setUserJoined:(NSString *)_joined cnt:(int)cnt_ {
     if (cnt_ > 10) {
-        [[self delegate] setPrefix:[NSDictionary new]];
+		if (![[self delegate] prefix])
+			[[self delegate] setPrefix:[NSDictionary new]];
     }
     if (![[self delegate] prefix]) {
         double delayInSeconds = 0.1;
@@ -465,15 +515,16 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
     }
     @synchronized(fullUserList) {
         if (![_joined isEqualToString:@""] && ![_joined isEqualToString:@" "] && ![_joined isEqualToString:@"\r\n"] && ![self isUserInChannel:_joined] && _joined) {
-			[usersPanel reloadData];
-            NSUInteger newIndex = [fullUserList indexOfObject:_joined inSortedRange:(NSRange){0, [fullUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^NSComparisonResult(id obj1, id obj2) {
-                return sortRank(obj1, obj2, [self delegate]);
-            }];
-            [fullUserList insertObject:_joined atIndex:newIndex];
-			[[RCChatController sharedController] reloadUserCount];
-			[usersPanel reloadData];
-			return;
-            [usersPanel insertRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:newIndex+1 inSection:0], nil] withRowAnimation:UITableViewRowAnimationLeft];
+			if (!holdUserListUpdates) {
+				[usersPanel reloadData];
+				NSUInteger newIndex = [fullUserList indexOfObject:_joined inSortedRange:(NSRange){0, [fullUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^NSComparisonResult(id obj1, id obj2) {
+					return sortRank(obj1, obj2, [self delegate]);
+				}];
+				[fullUserList insertObject:_joined atIndex:newIndex];
+				[[RCChatController sharedController] reloadUserCount];
+				[usersPanel reloadData];
+			}
+			else NSLog(@"hi %@", _joined);
         }
     }
 }

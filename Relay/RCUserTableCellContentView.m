@@ -10,21 +10,21 @@
 @implementation RCUserTableCellContentView
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+	[super touchesBegan:touches withEvent:event];
 	fakeSelected = YES;
 	[self setNeedsDisplay];
-	[super touchesBegan:touches withEvent:event];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+	[super touchesMoved:touches withEvent:event];
 	fakeSelected = NO;
 	[self setNeedsDisplay];
-	[super touchesMoved:touches withEvent:event];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+	[super touchesEnded:touches withEvent:event];
 	fakeSelected = NO;
 	[self setNeedsDisplay];
-	[super touchesEnded:touches withEvent:event];
 }
 
 - (void)drawRect:(CGRect)rect {
