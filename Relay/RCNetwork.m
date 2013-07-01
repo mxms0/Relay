@@ -1823,6 +1823,7 @@
 - (void)handlePING:(NSString *)pong {
 	if ([pong hasPrefix:@"PING "]) {
 		[self sendMessage:[@"PONG " stringByAppendingString:[pong substringFromIndex:5]] canWait:NO];
+		NSLog(@"PINGING {{%@}}:[%@]", pong, [NSDate date]);
 	}
 	else {
 		NSScanner *scannr = [[NSScanner alloc] initWithString:pong];

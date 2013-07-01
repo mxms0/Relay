@@ -28,4 +28,5 @@
 - (void)postMessage:(NSString *)_message withType:(RCMessageType)tr highlight:(BOOL)high;
 - (void)postMessage:(NSString *)_message withType:(RCMessageType)rr highlight:(BOOL)high isMine:(BOOL)mine;
 - (void)scrollToBottom;
+- (void)setScrollingEnabled:(BOOL)en;
 @end

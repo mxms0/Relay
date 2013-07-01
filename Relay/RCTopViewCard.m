@@ -25,7 +25,6 @@
 		[tableView setShowsVerticalScrollIndicator:YES];
 		[tableView setDelegate:self];
 		[tableView setDataSource:self];
-		[tableView setScrollsToTop:YES];
 		[self addSubview:tableView];
 		[tableView release];
 		UIPanGestureRecognizer *panr = [[UIPanGestureRecognizer alloc] initWithTarget:[RCChatController sharedController] action:@selector(userSwiped_specialLikeAc3xx:)];

@@ -128,7 +128,6 @@ UIImage *RCImageForRank(NSString *rank, RCNetwork* network) {
 }
 
 - (void)setShouldHoldUserListUpdates:(BOOL)hld {
-	NSLog(@"HFDFFDS %d", hld);
 	if (holdUserListUpdates == hld) return;
 	holdUserListUpdates = hld;
 	if (hld) {

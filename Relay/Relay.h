@@ -51,10 +51,15 @@ static inline void NOLog(NSString* a, ...) {
 	#define LOGALL 0
 	#define isiOS7 !!(objc_getClass("UIAttachmentBehavior"))
 	#define READ_BUF_LEN 4096
+// alerts
 	#define RCALERR_INCNICK 666
 	#define RCALERR_INCUNAME 667
 	#define RCALERR_INCSPASS 668
     #define RCALERR_SERVCHNGE 669
+// actions sheets
+	#define	RCALERR_GLOPTIONS 200
+	#define RCALERR_INDVOPTIONS 201
+//
 	#define CMLog(format, ...) NSLog(@"(%s) in [%s:%d] ::: %@", __PRETTY_FUNCTION__, __FILE__, __LINE__, [NSString stringWithFormat:format, ## __VA_ARGS__])
 	#define MARK CMLog(@"%s", __PRETTY_FUNCTION__);
 

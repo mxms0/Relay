@@ -36,6 +36,7 @@
 		[datas release];
 		[self setOpaque:YES];
 		RCBarButtonItem *st = [[RCBarButtonItem alloc] initWithFrame:CGRectMake(1, 0, 50, 45)];
+		[st addTarget:[RCChatController sharedController] action:@selector(showNetworkListOptions) forControlEvents:UIControlEventTouchUpInside];
 		[st setImage:[UIImage imageNamed:@"0_stb"] forState:UIControlStateNormal];
 		[navigationBar addSubview:st];
 		[st release];

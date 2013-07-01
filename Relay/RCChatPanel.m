@@ -17,6 +17,7 @@ static NSString *template = nil;
 - (id)initWithChannel:(RCChannel *)chan {
 	if ((self = [super init])) {
 		[self setChannel:chan];
+		[[self scrollView] setScrollsToTop:YES];
 		[self setBackgroundColor:[UIColor clearColor]];
 		self.opaque = NO;
 		[self setHidden:YES];
@@ -144,6 +145,10 @@ static NSString *template = nil;
 		[message release];
 		[_message release];
 	});
+}
+
+- (void)setScrollingEnabled:(BOOL)en {
+	[[self scrollView] setScrollEnabled:en];
 }
 
 - (void)dealloc {

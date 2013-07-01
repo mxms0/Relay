@@ -92,7 +92,6 @@ static id _inst = nil;
 	else if (pan.state == UIGestureRecognizerStateCancelled || pan.state == UIGestureRecognizerStateFailed) {
 		[self cleanLayersAndMakeMainChatVisible];
 	}
-
 }
 
 - (void)layoutWithRootViewController:(RCViewController *)rc {
@@ -100,8 +99,8 @@ static id _inst = nil;
 	rootView = rc;
 	canDragMainView = YES;
 	int offx = 0;
-	/*if (isiOS7)
-		offx = 20;*/
+	/* if (isiOS7)
+		offx = 20; */
 	CGSize frame = [[UIScreen mainScreen] applicationFrame].size;
 	bottomView = [[RCChatsListViewCard alloc] initWithFrame:CGRectMake(0, offx, frame.width, frame.height)];
 	[rc.view insertSubview:bottomView atIndex:0];
@@ -153,6 +152,18 @@ static id _inst = nil;
 	} completion:^(BOOL fin) {
 		[infoView findShadowAndDoStuffToIt];
 	}];
+}
+
+- (void)showNetworkListOptions {
+	// clear all badges
+	// connect/disconnect all
+	// settings
+	RCPrettyActionSheet *sheet = [[RCPrettyActionSheet alloc] initWithTitle:@"Options" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Settings" otherButtonTitles:@"Connect All", @"Disconnect All", @"Clear Badges", nil];
+	[sheet setTag:RCALERR_GLOPTIONS];
+	[sheet setButtonCount:5];
+	[sheet showInView:[[((RCAppDelegate *)[UIApp delegate]) navigationController] view]];
+	[sheet release];
+
 }
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
@@ -289,6 +300,7 @@ static RCNetwork *currentNetwork = nil;
 	currentNetwork = [[arg1 superview] net];
 	RCPrettyActionSheet *sheet = [[RCPrettyActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"What do you want to do for %@?", [currentNetwork _description]] delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Delete" otherButtonTitles:@"Edit", ([currentNetwork isTryingToConnectOrConnected] ? @"Disconnect" : @"Connect"), nil];
 	[sheet setButtonCount:4];
+	[sheet setTag:RCALERR_INDVOPTIONS];
 	[sheet showInView:[[((RCAppDelegate *)[UIApp delegate]) navigationController] view]];
 	[sheet release];
 }
@@ -308,25 +320,55 @@ static RCNetwork *currentNetwork = nil;
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-	if (buttonIndex == 0) {
-		[actionSheet dismissWithClickedButtonIndex:buttonIndex animated:YES];
-		[self showDeleteConfirmationForNetwork];
-	}
-	else if (buttonIndex == 1) {
-		RCAddNetworkController *addNet = [[RCAddNetworkController alloc] initWithNetwork:currentNetwork];
-		[self presentViewControllerInMainViewController:addNet];
-		[addNet release];
-		currentNetwork = nil;
-		// edit.
-	}
-	else if (buttonIndex == 2) {
-		[currentNetwork connectOrDisconnectDependingOnCurrentStatus];
-		currentNetwork = nil;
-		//connect
-	}
-	else if (buttonIndex == 4) {
-		// cancel.
-		// kbye
+	switch ([actionSheet tag]) {
+		case RCALERR_GLOPTIONS: {
+			if (buttonIndex == 0) {
+				// settings
+			}
+			else if (buttonIndex == 1) {
+				// connect all
+				for (RCNetwork *net in [[RCNetworkManager sharedNetworkManager] networks]) {
+					[net connect];
+				}
+			}
+			else if (buttonIndex == 2) {
+				for (RCNetwork *net in [[RCNetworkManager sharedNetworkManager] networks]) {
+					[net disconnect];
+				}
+				// disconnect all
+			}
+			else if (buttonIndex == 3) {
+				// hm..
+				// clear badges
+			}
+			else if (buttonIndex == 4) {
+				// cancel
+			}
+			break;
+		}
+		case RCALERR_INDVOPTIONS: {
+			if (buttonIndex == 0) {
+				[actionSheet dismissWithClickedButtonIndex:buttonIndex animated:YES];
+				[self showDeleteConfirmationForNetwork];
+			}
+			else if (buttonIndex == 1) {
+				RCAddNetworkController *addNet = [[RCAddNetworkController alloc] initWithNetwork:currentNetwork];
+				[self presentViewControllerInMainViewController:addNet];
+				[addNet release];
+				currentNetwork = nil;
+				// edit.
+			}
+			else if (buttonIndex == 2) {
+				[currentNetwork connectOrDisconnectDependingOnCurrentStatus];
+				currentNetwork = nil;
+				//connect
+			}
+			else if (buttonIndex == 3) {
+				// cancel.
+				// kbye
+			}
+			break;
+		}
 	}
 }
 
