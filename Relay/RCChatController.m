@@ -632,6 +632,8 @@ static RCNetwork *currentNetwork = nil;
 	RCChannelListViewCard *vc = [[RCChannelListViewCard alloc] initWithFrame:CGRectMake(0, chatView.frame.size.height, chatView.frame.size.width, chatView.frame.size.height)];
 	[[vc navigationBar] setTitle:@"Channel List"];
 	[[vc navigationBar] setSubtitle:@"Loading..."];
+	[[[currentPanel channel] delegate] sendMessage:@"LIST"];
+	[[[currentPanel channel] delegate] setNamesCallback:vc];
 	[mv addSubview:vc];
 	[vc release];
 	
@@ -659,6 +661,7 @@ static RCNetwork *currentNetwork = nil;
 }
 
 - (void)dismissChannelList:(UIView *)vc animated:(BOOL)sAnim {
+	[[[currentPanel channel] delegate] setNamesCallback:nil];
 	if (sAnim) {
 		[CATransaction begin];
 		[CATransaction setCompletionBlock:^ {

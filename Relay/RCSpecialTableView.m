@@ -11,9 +11,9 @@
 
 - (id)initWithFrame:(CGRect)frame style:(UITableViewStyle)style {
 	if ((self = [super initWithFrame:frame style:style])) {
-		UIView *pureShit = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 100)];
-		[self setTableHeaderView:pureShit];
-		[pureShit release];
+		UIView *pure = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 100)];
+		[self setTableHeaderView:pure];
+		[pure release];
 		[self setContentInset:UIEdgeInsetsMake(-100, 0, 0, 0)];
 		// this is to stop floating header views.
 	}

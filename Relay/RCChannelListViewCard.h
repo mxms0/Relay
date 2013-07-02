@@ -6,7 +6,14 @@
 //
 
 #import "RCViewCard.h"
+#import "RCSuperSpecialTableView.h"
+#import "RCChannelInfo.h"
 
-@interface RCChannelListViewCard : RCViewCard
-
+@interface RCChannelListViewCard : RCViewCard <UITableViewDataSource, UITableViewDelegate> {
+	RCSuperSpecialTableView *channels;
+	NSMutableArray *channelDatas;
+	BOOL updating;
+}
+- (void)setUpdating:(BOOL)ud;
+- (void)recievedChannel:(NSString *)chan withCount:(int)cc andTopic:(NSString *)topics;
 @end

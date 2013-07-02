@@ -343,7 +343,6 @@
 				[rcache appendString:appenddee];
 				[appenddee release];
 				while (!!rcache && ([rcache rangeOfString:@"\r\n"].location != NSNotFound)) {
-					// should probably use NSCharacterSet, etc etc.
 					int loc = [rcache rangeOfString:@"\r\n"].location+2;
 					NSString *cbuf = [rcache substringToIndex:loc];
 					[self recievedMessage:cbuf];
@@ -357,16 +356,14 @@
 			if (![self isTryingToConnectOrConnected]) return NO;
 			NSString *appenddee = [[NSString alloc] initWithBytesNoCopy:buf length:rc encoding:NSUTF8StringEncoding freeWhenDone:NO];
 			if (appenddee) {
+				NSLog(@"\r\n{%@}\r\n{%@}", rcache,appenddee);
 				[rcache appendString:appenddee];
 				[appenddee release];
-				while (!!rcache && ([rcache rangeOfString:@"\r\n"].location != NSNotFound) && !!rcache) {
-					// should probably use NSCharacterSet, etc etc.
-					@synchronized(self) {
-						int loc = [rcache rangeOfString:@"\r\n"].location+2;
-						NSString *cbuf = [rcache substringToIndex:loc];
-						[self recievedMessage:cbuf];
-						[rcache deleteCharactersInRange:NSMakeRange(0, loc)];
-					}
+				while (!!rcache && ([rcache rangeOfString:@"\r\n"].location != NSNotFound)) {
+					int loc = [rcache rangeOfString:@"\r\n"].location+2;
+					NSString *cbuf = [rcache substringToIndex:loc];
+					[self recievedMessage:cbuf];
+					[rcache deleteCharactersInRange:NSMakeRange(0, loc)];
 				}
 			}
 		}
@@ -583,6 +580,7 @@
 	rcache = nil;
 	sockfd = -1;
 	[writebuf release];
+	writebuf = nil;
 	if (useSSL)
 		SSL_CTX_free(ctx);
 	[[UIApplication sharedApplication] endBackgroundTask:task];
@@ -1070,14 +1068,15 @@
 		topicModes = [topicModes substringFromIndex:1];
 	if ([topicModes isEqualToString:@" "]) topicModes = nil;
 	if ([topicModes hasPrefix:@" "]) topicModes = [topicModes recursivelyRemovePrefix:@" "];
-	//[namesCallback recievedChannel:chan withCount:[count intValue] andTopic:topicModes];
-	NSLog(@"eeee %@:%@:%@",chan,count,topicModes);
+	[namesCallback recievedChannel:chan withCount:[count intValue] andTopic:topicModes];
 	[hi release];
 	// :irc.saurik.com 322 mx_ #testing 1 :[+nt]
+	// :hitchcock.freenode.net 322 mxms_ #testchannelpleaseignore 3 :http://i.imgur.com/LbPvWUV.jpg
 }
 
 - (void)handle323:(NSString *)endofchannellistning {
-	[namesCallback removeStupidWarningView];
+	[namesCallback setUpdating:NO];
+	namesCallback = nil;
 }
 
 - (void)handle328:(NSString *)websiteinfo {
