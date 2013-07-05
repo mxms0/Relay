@@ -143,6 +143,10 @@
 	[super dealloc];
 }
 
+- (BOOL)isEqual:(id)obj {
+	return ([[self uUID] isEqualToString:[obj uUID]]);
+}
+
 - (NSString *)_description {
 	if (!sDescription || [sDescription isEqualToString:@""]) {
 		return server;
@@ -281,7 +285,7 @@
 
 - (void)connect {
 	if (shouldRequestNPass || shouldRequestSPass) {
-		RCPasswordRequestAlertType type;
+		RCPasswordRequestAlertType type = 0;
 		if (shouldRequestSPass) type = RCPasswordRequestAlertTypeServer;
 		else if (shouldRequestNPass) type = RCPasswordRequestAlertTypeNickServ;
 		RCPasswordRequestAlert *rs = [[RCPasswordRequestAlert alloc] initWithNetwork:self type:type];
@@ -292,7 +296,7 @@
 	[self performSelectorInBackground:@selector(_connect) withObject:nil];
 }
 
-- (void)_connect {	
+- (void)_connect {
     tryingToConnect = YES;
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	writebuf = [[NSMutableString alloc] init];
@@ -333,8 +337,8 @@
 	if (sockfd == -1) return NO;
 	if (isReading) return YES;
 	isReading = YES;
-	int rc = 0;
 	char buf[512];
+	int rc = 0;
 	if (useSSL) {
 		while ((rc = SSL_read(ssl, buf, 512)) > 0) {
 			if (![self isTryingToConnectOrConnected]) return NO;
@@ -356,7 +360,6 @@
 			if (![self isTryingToConnectOrConnected]) return NO;
 			NSString *appenddee = [[NSString alloc] initWithBytesNoCopy:buf length:rc encoding:NSUTF8StringEncoding freeWhenDone:NO];
 			if (appenddee) {
-				NSLog(@"\r\n{%@}\r\n{%@}", rcache,appenddee);
 				[rcache appendString:appenddee];
 				[appenddee release];
 				while (!!rcache && ([rcache rangeOfString:@"\r\n"].location != NSNotFound)) {
@@ -615,8 +618,8 @@
 			[joinList deleteCharactersInRange:NSMakeRange([joinList length]-1, 1)];
 		}
 		[self sendMessage:joinList];
-		[joinList release];
 	}
+	[joinList release];
 }
 
 - (BOOL)isConnected {
@@ -1299,10 +1302,9 @@
 	// considering this logical only in the case that there is an issue with network connectivity and the user
 	// is able to switch channels before getting a response from the network.
 	RCChannel *currentChannel_ = [[[RCChatController sharedController] currentPanel] channel];
-	RCChannel *target = [self consoleChannel];
 	// the check below fails. make better comparison method max.
-	if ([[currentChannel_ delegate] isEqual:self]) {
-		target = currentChannel_;
+	if (![[currentChannel_ delegate] isEqual:self]) {
+		currentChannel_ = [self consoleChannel];
 	}
 	[currentChannel_ recievedMessage:[NSString stringWithFormat:@"Error(421): %@ Unknown Command", [msg uppercaseString]] from:nil type:RCMessageTypeError];
 	[scan release];
@@ -1588,6 +1590,7 @@
 	RCInviteRequestAlert *alert = [[RCInviteRequestAlert alloc] initWithTitle:[NSString stringWithFormat:@"%@\r\n(%@)",chan, [self _description]] message:[NSString stringWithFormat:@"%@ has invited you to %@", from, chan] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Join", nil];
 	[alert show];
 	[alert release];
+	[_scanner release];
 }
 
 - (void)handleKICK:(NSString *)aKick {

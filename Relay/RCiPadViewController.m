@@ -18,9 +18,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-	UILabel *ffs = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, 300, 300)];
-	[ffs setText:@"hihi"];
-	[self.view addSubview:ffs];
 	// Do any additional setup after loading the view, typically from a nib.
 }
 

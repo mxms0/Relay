@@ -16,4 +16,5 @@
 }
 - (void)setUpdating:(BOOL)ud;
 - (void)recievedChannel:(NSString *)chan withCount:(int)cc andTopic:(NSString *)topics;
+- (void)presentErrorNotificationAndDismiss;
 @end

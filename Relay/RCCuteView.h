@@ -9,4 +9,6 @@
 
 @interface RCCuteView : UIView 
 
+- (void)dismiss;
+
 @end

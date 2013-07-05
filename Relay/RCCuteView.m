@@ -16,8 +16,12 @@
 	CGPoint pt = [tc locationInView:self];
 	if (CGRectIntersectsRect(CGRectMake(pt.x, pt.y, 13, 13), CGRectMake(0, 0, 320, 40))) {
 		// sorry.
-		[[RCChatController sharedController] dismissChannelList:self animated:YES];
+		[self dismiss];
 	}
+}
+
+- (void)dismiss {
+	[[RCChatController sharedController] dismissChannelList:self animated:YES];
 }
 
 @end

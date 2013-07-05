@@ -56,11 +56,23 @@
 	updating = ud;
 	dispatch_sync(dispatch_get_main_queue(), ^{
 		if (!updating) {
-			[channels reloadData];
-			[[self navigationBar] setSubtitle:[NSString stringWithFormat:@"%d Channels", [channelDatas count]]];
-			[[self navigationBar] setNeedsDisplay];
+			if ([channelDatas count] == 0) {
+				[self presentErrorNotificationAndDismiss];
+			}
+			else {
+				[channels reloadData];
+				[[self navigationBar] setSubtitle:[NSString stringWithFormat:@"%d Channels", [channelDatas count]]];
+				[[self navigationBar] setNeedsDisplay];
+			}
 		}
 	});
+}
+
+- (void)presentErrorNotificationAndDismiss {
+	RCPrettyAlertView *alrt = [[RCPrettyAlertView alloc] initWithTitle:@"Error" message:@"There was an issue getting the channel list. Please try again in a minute." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Dismiss", nil];
+	[alrt show];
+	[alrt release];
+	[(RCCuteView *)[self superview] dismiss];
 }
 
 - (void)recievedChannel:(NSString *)chan withCount:(int)cc andTopic:(NSString *)topics {
@@ -71,6 +83,10 @@
 	[ifs setTopic:topics];
 	[channelDatas addObject:ifs];
 	[ifs release];
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+	MARK;
 }
 
 - (void)dealloc {

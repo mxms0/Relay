@@ -88,11 +88,10 @@
 	NSString *text = [net _description];
 	NSString *detail = [net server];
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
-//	CGContextSetShadowWithColor(ctx, CGSizeMake(0, 1), 0, shadowColor.CGColor);
 	CGContextSetFillColorWithColor(ctx, textColor.CGColor);
 	CGContextScaleCTM(ctx, [[UIScreen mainScreen] scale], [[UIScreen mainScreen] scale]);
 	[text drawInRect:CGRectMake(5, 1, 200, 40) withFont:[UIFont boldSystemFontOfSize:9] lineBreakMode:UILineBreakModeCharacterWrap alignment:UITextAlignmentLeft];
-	CGContextSetFillColorWithColor(ctx, textColor.CGColor);
+	CGContextSetFillColorWithColor(ctx, subTextColor.CGColor);
 	[detail drawInRect:CGRectMake(5, 13, 200, 30) withFont:[UIFont systemFontOfSize:5.5]];
 }
 

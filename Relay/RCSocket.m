@@ -70,7 +70,6 @@ char *RCIPForURL(NSString *URL) {
 	}
 	NSString *spass = [net spass];
 	NSString *nick = [net nick];
-	NSString *useNick = nick;
 	NSString *realname = nick;
 	NSString *username = nick;
 	int sockfd = 0;
@@ -141,6 +140,7 @@ char *RCIPForURL(NSString *URL) {
 #if LOGALL
 		NSLog(@"System Proxy Settings: {{%@}};", CFNetworkCopySystemProxySettings());
 #endif
+	
 	int opts = fcntl(sockfd, F_GETFL);
 	opts = (opts | O_NONBLOCK);
 	if (fcntl(sockfd, F_SETFL, opts) < 0) {
@@ -152,8 +152,8 @@ char *RCIPForURL(NSString *URL) {
 		[net sendMessage:[@"PASS " stringByAppendingString:spass] canWait:NO];
 	}
 	if (!nick || [nick isEqualToString:@""]) {
-		nick = @"__GUEST";
-		useNick = @"__GUEST";
+		[net setNick:@"0__GUEST"];
+		[net setUseNick:@"__GUEST"]; 
 	}
 	[net sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
 	[net sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];

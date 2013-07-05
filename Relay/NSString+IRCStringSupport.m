@@ -461,7 +461,6 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
 - (NSString *)stringByStrippingIRCMetadata {
     unsigned int cpos = 0;
     unsigned int lpos = 0;
-    BOOL isNick = NO;
     NSString *istring = self;
     NSMutableString *ret = [NSMutableString stringWithCapacity:[self length]];
     while (cpos - [istring length]) {
@@ -501,7 +500,6 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
                 break;
             case RCIRCAttributeInternalNicknameEnd:;;
                 RENDER_WITH_OPTS;
-                isNick = NO;
                 lpos = cpos;
                 break;
             default:

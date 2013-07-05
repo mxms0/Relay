@@ -229,8 +229,6 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 		NSString *patternuno = [NSString stringWithFormat:@"(^|\\s)([^A-Za-z0-9#]*)(\\Q%@\\E)([^A-Za-z0-9]*)($|\\s)", nameOrRank];
 		NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:patternuno options:NSRegularExpressionCaseInsensitive error:nil];
 		NSString *val = [regex stringByReplacingMatchesInString:cmp options:0 range:NSMakeRange(0, [cmp length]) withTemplate:[NSString stringWithFormat:@"$1$2%c%02d$3%c$4$5", RCIRCAttributeInternalNickname, hhash, RCIRCAttributeInternalNicknameEnd]];
-		// for some reason, this expression returns null under certain circumstances i haven't read up on enough
-		// to understand. wow, wish someone would have thought of this check. *glares at qwerty.* :p
 		if (val) *message = val;
 		NSString *patterndos = [NSString stringWithFormat:@"(^|\\s)([^A-Za-z0-9]*)(\\Q%@\\E)([^A-Za-z0-9]*)($|\\s)", nameOrRank];
 		if ([[NSRegularExpression regularExpressionWithPattern:patterndos options:NSRegularExpressionCaseInsensitive error:nil] numberOfMatchesInString:cmp options:0 range:NSMakeRange(0, [cmp length])]) {
@@ -309,10 +307,13 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 			}
 			break;
 		case RCMessageTypeJoin:
-			if (holdUserListUpdates) [self setUserJoined:from];
-			else [self setUserJoinedBatch:from cnt:0];
+			if (![from isEqualToString:[delegate useNick]]) {
+				if (holdUserListUpdates) [self setUserJoinedBatch:from cnt:0];
+				else [self setUserJoined:from];
+			}
 			// this is a little broken. user isn't being inserted after join/part etc
 			// FIX MAX
+#warning this is slightly broken.
 			msg = [[NSString stringWithFormat:@"%@ %c%@%c joined the channel.", time, RCIRCAttributeBold, from, RCIRCAttributeBold] retain];
 			break;
 		case RCMessageTypeEvent:
@@ -363,7 +364,8 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 				isHighlight = RCHighlightCheck(self, &message);
                 msg = [[NSString stringWithFormat:@"%@ %c-%c%02d%@%c-%c %@", time, RCIRCAttributeBold, RCIRCAttributeInternalNickname, uhash, from, RCIRCAttributeInternalNicknameEnd, RCIRCAttributeBold, message] retain];
             } else {
-                [[[self delegate] consoleChannel] recievedMessage:[message retain] from:from type:RCMessageTypeNotice];
+                [[[self delegate] consoleChannel] recievedMessage:message from:from type:RCMessageTypeNotice];
+				// message maybe should be retained.
                 [msg release];
                 [p drain];
                 return;
@@ -475,22 +477,16 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
         double delayInSeconds = 0.1;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
-            [self setUserJoined:_joined cnt:cnt+1];
+            [self setUserJoinedBatch:_joined cnt:cnt+1];
         });
         return;
     }
     @synchronized(fakeUserList) {
         if (![_joined isEqualToString:@""] && ![_joined isEqualToString:@" "] && ![_joined isEqualToString:@"\r\n"] && ![self isUserInChannel:_joined] && _joined) {
-				@synchronized(fakeUserList) {
-					NSUInteger newIndex = [fakeUserList indexOfObject:_joined inSortedRange:(NSRange){0, [fakeUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^	NSComparisonResult(id obj1, id obj2) {
-						return sortRank(obj1, obj2, [self delegate]);
-					}];
-					[fakeUserList insertObject:_joined atIndex:newIndex];
-				}
-				// not sure if this BS is worth it. doesn't really fix the lag issue.
-				// it was worth a shot though.
-				// buuild up user list until you get 366, then just post it all to stupid table view.
-				// hm.
+			NSUInteger newIndex = [fakeUserList indexOfObject:_joined inSortedRange:(NSRange){0, [fakeUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^ NSComparisonResult(id obj1, id obj2) {
+					return sortRank(obj1, obj2, [self delegate]);
+			}];
+			[fakeUserList insertObject:_joined atIndex:newIndex];
         }
     }
 }
@@ -514,7 +510,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
     }
     @synchronized(fullUserList) {
         if (![_joined isEqualToString:@""] && ![_joined isEqualToString:@" "] && ![_joined isEqualToString:@"\r\n"] && ![self isUserInChannel:_joined] && _joined) {
-			if (!holdUserListUpdates) {
+				MARK;
 				[usersPanel reloadData];
 				NSUInteger newIndex = [fullUserList indexOfObject:_joined inSortedRange:(NSRange){0, [fullUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^NSComparisonResult(id obj1, id obj2) {
 					return sortRank(obj1, obj2, [self delegate]);
@@ -522,8 +518,6 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 				[fullUserList insertObject:_joined atIndex:newIndex];
 				[[RCChatController sharedController] reloadUserCount];
 				[usersPanel reloadData];
-			}
-			else NSLog(@"hi %@", _joined);
         }
     }
 }
@@ -540,8 +534,6 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 				[fullUserList removeObjectAtIndex:newIndex];
 				[[RCChatController sharedController] reloadUserCount];
 				[usersPanel reloadData];
-				return;
-				[usersPanel deleteRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:newIndex+1 inSection:0], nil] withRowAnimation:UITableViewRowAnimationRight];
 			}
 		}
 	}
@@ -683,7 +675,7 @@ for (int a = 0; a < [partialLen length]; a++) {\
 - (void)setSuccessfullyJoined:(BOOL)success {
 	@synchronized(self) {
 		joined = success;
-		dispatch_async(dispatch_get_main_queue(), ^(void){
+		dispatch_async(dispatch_get_main_queue(), ^(void) {
 			[self recievedMessage:nil from:[delegate useNick] type:RCMessageTypeJoin];
 		});
 	}

@@ -52,6 +52,7 @@
 - (RCNetwork *)delegate;
 - (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type;
 - (void)setUserJoined:(NSString *)joined;
+- (void)setUserJoinedBatch:(NSString *)join cnt:(int)ct;
 - (void)setSuccessfullyJoined:(BOOL)success;
 - (void)setUserLeft:(NSString *)left;
 - (void)setMode:(NSString *)modes forUser:(NSString *)user;
@@ -61,8 +62,7 @@
 - (NSMutableArray *)usersMatchingWord:(NSString *)word;
 - (void)parseAndHandleSlashCommand:(NSString *)cmd;
 - (void)setMyselfParted;
-- (BOOL)isUserInChannel:(NSString*)user;
-- (void)setSuccessfullyJoined:(BOOL)success;
+- (BOOL)isUserInChannel:(NSString *)user;
 - (BOOL)isPrivate;
 - (void)clearAllMessages;
 - (void)setJoined:(BOOL)joind;

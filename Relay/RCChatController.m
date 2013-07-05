@@ -28,6 +28,7 @@ static id _inst = nil;
 		if (![self isKindOfClass:[RCXLChatController class]]) {
 			CGFloat height = [[UIScreen mainScreen] applicationFrame].size.height;
 			if (height > 480) {
+				[self release];
 				self = [[RCXLChatController alloc] initWithRootViewController:rc];
 				return self;
 			}
@@ -98,9 +99,10 @@ static id _inst = nil;
 	currentPanel = nil;
 	rootView = rc;
 	canDragMainView = YES;
+#warning THIS IS NECESSARY IN XCODE DP5
 	int offx = 0;
-	/* if (isiOS7)
-		offx = 20; */
+	if (isiOS7)
+		offx = 20; 
 	CGSize frame = [[UIScreen mainScreen] applicationFrame].size;
 	bottomView = [[RCChatsListViewCard alloc] initWithFrame:CGRectMake(0, offx, frame.width, frame.height)];
 	[rc.view insertSubview:bottomView atIndex:0];
@@ -601,6 +603,7 @@ static RCNetwork *currentNetwork = nil;
 		[b setAlpha:1];
 		[UIView commitAnimations];
 	}
+	[buttons release];
 }
 
 - (void)dismissMenuOptions {

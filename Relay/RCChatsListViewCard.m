@@ -82,7 +82,7 @@
 	static NSString *ident = @"0_fcell";
 	RCNetworkCell *cell = (RCNetworkCell *)[tableView dequeueReusableCellWithIdentifier:ident];
 	if (!cell) {
-		cell = [[RCNetworkCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:ident];
+		cell = [[[RCNetworkCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:ident] autorelease];
 	}
 	if ([[[RCNetworkManager sharedNetworkManager] networks] count] == 0) {
 		[tableView reloadData];

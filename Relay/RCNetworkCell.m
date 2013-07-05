@@ -44,7 +44,6 @@
 		[bubl drawInRect:CGRectMake(4, 4, 12, 12)];
 	}
 	if (newMessageCount > 0) {
-		int len = 0;
 		NSString *rendr = @"";
 		if (newMessageCount > 99) {
 			rendr = @"99+";
@@ -52,7 +51,7 @@
 		else {
 			rendr = [NSString stringWithFormat:@"%d", newMessageCount];
 		}
-		len = [rendr sizeWithFont:[UIFont boldSystemFontOfSize:7.5]].width;
+		//len = [rendr sizeWithFont:[UIFont boldSystemFontOfSize:7.5]].width;
 		// sorry. :s
 		// it's not my fault! i promise. surenix did it!
 		BOOL longerThanNormal = ([rendr isEqualToString:@"99+"]);

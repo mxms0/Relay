@@ -157,6 +157,7 @@
 	if (![[[[RCChatController sharedController] currentPanel] channel] isEqual:chan_]) {
 		[[RCChatController sharedController] selectChannel:usrchanetc fromNetwork:net];	
 	}
+	[scanr release];
 }
 
 - (NSString *)nowPlayingInfo {
@@ -239,6 +240,7 @@
 			[scanr release];
 			return;
 		}
+		[scanr release];
 	}
 }
 

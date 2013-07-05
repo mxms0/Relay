@@ -72,7 +72,7 @@
 
 - (void)setupDoneButton {
 	UIBarButtonItem *doneBtn = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(edit)];
-	[doneBtn setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:UIColorFromRGB(0xf7f7f7), UITextAttributeTextColor, [UIFont boldSystemFontOfSize:11],UITextAttributeFont, (CGSize){0,1},UITextAttributeTextShadowOffset, nil] forState:UIControlStateNormal];	
+	[doneBtn setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:UIColorFromRGB(0xf7f7f7), UITextAttributeTextColor, [UIFont boldSystemFontOfSize:11],UITextAttributeFont, [NSValue valueWithCGSize:(CGSize){0,1}], UITextAttributeTextShadowOffset, nil] forState:UIControlStateNormal];
 	[doneBtn setTitlePositionAdjustment:UIOffsetMake(0, 0.5) forBarMetrics:UIBarMetricsDefault];
 	
 	[doneBtn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_d"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
