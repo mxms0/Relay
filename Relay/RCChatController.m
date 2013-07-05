@@ -620,6 +620,7 @@ static RCNetwork *currentNetwork = nil;
 }
 
 - (void)animateChannelList {
+	[field resignFirstResponder];
 	isLISTViewPresented = YES;
 	[self dismissMenuOptions];
 	RCCuteView *mv = [[RCCuteView alloc] initWithFrame:chatView.frame];

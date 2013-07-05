@@ -19,7 +19,7 @@
 		int px = [name rangeOfString:@" "].location;
 		if (px != NSNotFound)
 			ix = px;
-		[name substringToIndex:ix];
+		name = [name substringToIndex:ix];
 		if (!net) {
 			network = [[RCNetwork alloc] init];
 			isNew = YES;

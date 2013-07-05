@@ -216,7 +216,7 @@ char user_hash(NSString *from) {
 BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 	BOOL is_highlight = NO;
 	NSMutableArray *fullUserList = self->fullUserList;
-	for (NSString *uname in [fullUserList sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+	for (NSString *uname in [fullUserList sortedArrayUsingComparator:^ NSComparisonResult(id obj1, id obj2) {
 		if ([obj1 length] > [obj2 length]) return NSOrderedAscending;
 		else if ([obj1 length] < [obj2 length]) return NSOrderedDescending;
 		return NSOrderedSame;
@@ -311,9 +311,6 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 				if (holdUserListUpdates) [self setUserJoinedBatch:from cnt:0];
 				else [self setUserJoined:from];
 			}
-			// this is a little broken. user isn't being inserted after join/part etc
-			// FIX MAX
-#warning this is slightly broken.
 			msg = [[NSString stringWithFormat:@"%@ %c%@%c joined the channel.", time, RCIRCAttributeBold, from, RCIRCAttributeBold] retain];
 			break;
 		case RCMessageTypeEvent:
@@ -364,7 +361,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 				isHighlight = RCHighlightCheck(self, &message);
                 msg = [[NSString stringWithFormat:@"%@ %c-%c%02d%@%c-%c %@", time, RCIRCAttributeBold, RCIRCAttributeInternalNickname, uhash, from, RCIRCAttributeInternalNicknameEnd, RCIRCAttributeBold, message] retain];
             } else {
-                [[[self delegate] consoleChannel] recievedMessage:message from:from type:RCMessageTypeNotice];
+                [[[self delegate] consoleChannel] recievedMessage:[message retain] from:from type:RCMessageTypeNotice];
 				// message maybe should be retained.
                 [msg release];
                 [p drain];
@@ -510,7 +507,6 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
     }
     @synchronized(fullUserList) {
         if (![_joined isEqualToString:@""] && ![_joined isEqualToString:@" "] && ![_joined isEqualToString:@"\r\n"] && ![self isUserInChannel:_joined] && _joined) {
-				MARK;
 				[usersPanel reloadData];
 				NSUInteger newIndex = [fullUserList indexOfObject:_joined inSortedRange:(NSRange){0, [fullUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^NSComparisonResult(id obj1, id obj2) {
 					return sortRank(obj1, obj2, [self delegate]);

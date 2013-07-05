@@ -192,7 +192,7 @@
 		50E77A9D1505A30400E75C64 /* RCChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A7B1505A21500E75C64 /* RCChannel.m */; };
 		50E77A9E1505A30400E75C64 /* RCConsoleChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A7D1505A21500E75C64 /* RCConsoleChannel.m */; };
 		50E77A9F1505A30400E75C64 /* RCMessageFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A7F1505A21500E75C64 /* RCMessageFormatter.m */; };
-		50E77AA01505A30400E75C64 /* RCNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A811505A21500E75C64 /* RCNetwork.m */; };
+		50E77AA01505A30400E75C64 /* RCNetwork.mm in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A811505A21500E75C64 /* RCNetwork.mm */; };
 		50E77AA11505A30400E75C64 /* RCNetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E77A831505A21500E75C64 /* RCNetworkManager.m */; };
 		50E9BEC215A13C9900121507 /* RCBasicViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E9BEC115A13C9900121507 /* RCBasicViewController.m */; };
 		50EC2D2115D4BEA100EC4A37 /* 0_removebtn.png in Resources */ = {isa = PBXBuildFile; fileRef = 50EC2D1915D4BEA100EC4A37 /* 0_removebtn.png */; };
@@ -461,7 +461,7 @@
 		50E77A7E1505A21500E75C64 /* RCMessageFormatter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCMessageFormatter.h; sourceTree = "<group>"; };
 		50E77A7F1505A21500E75C64 /* RCMessageFormatter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCMessageFormatter.m; sourceTree = "<group>"; };
 		50E77A801505A21500E75C64 /* RCNetwork.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCNetwork.h; sourceTree = "<group>"; };
-		50E77A811505A21500E75C64 /* RCNetwork.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCNetwork.m; sourceTree = "<group>"; };
+		50E77A811505A21500E75C64 /* RCNetwork.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RCNetwork.mm; sourceTree = "<group>"; };
 		50E77A821505A21500E75C64 /* RCNetworkManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCNetworkManager.h; sourceTree = "<group>"; };
 		50E77A831505A21500E75C64 /* RCNetworkManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCNetworkManager.m; sourceTree = "<group>"; };
 		50E77A8B1505A27800E75C64 /* Relay.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Relay.h; sourceTree = "<group>"; };
@@ -828,7 +828,7 @@
 				50E77A7E1505A21500E75C64 /* RCMessageFormatter.h */,
 				50E77A7F1505A21500E75C64 /* RCMessageFormatter.m */,
 				50E77A801505A21500E75C64 /* RCNetwork.h */,
-				50E77A811505A21500E75C64 /* RCNetwork.m */,
+				50E77A811505A21500E75C64 /* RCNetwork.mm */,
 				509F2DCF1734671900867412 /* RCSocket.h */,
 				509F2DD01734671900867412 /* RCSocket.m */,
 				50F0BFCC15DF73DC001B3F50 /* RCChannelInfo.h */,
@@ -1248,7 +1248,7 @@
 				50E77A9D1505A30400E75C64 /* RCChannel.m in Sources */,
 				50E77A9E1505A30400E75C64 /* RCConsoleChannel.m in Sources */,
 				50E77A9F1505A30400E75C64 /* RCMessageFormatter.m in Sources */,
-				50E77AA01505A30400E75C64 /* RCNetwork.m in Sources */,
+				50E77AA01505A30400E75C64 /* RCNetwork.mm in Sources */,
 				50E77AA11505A30400E75C64 /* RCNetworkManager.m in Sources */,
 				50E77A8F1505A29100E75C64 /* main.m in Sources */,
 				501F2B3D150995DE0099C9C3 /* RCTableView.m in Sources */,
@@ -1401,6 +1401,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				OTHER_CFLAGS = "";
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";

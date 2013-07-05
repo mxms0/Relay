@@ -285,7 +285,7 @@
 
 - (void)connect {
 	if (shouldRequestNPass || shouldRequestSPass) {
-		RCPasswordRequestAlertType type = 0;
+		RCPasswordRequestAlertType type;
 		if (shouldRequestSPass) type = RCPasswordRequestAlertTypeServer;
 		else if (shouldRequestNPass) type = RCPasswordRequestAlertTypeNickServ;
 		RCPasswordRequestAlert *rs = [[RCPasswordRequestAlert alloc] initWithNetwork:self type:type];
@@ -298,6 +298,8 @@
 
 - (void)_connect {
     tryingToConnect = YES;
+	readbuf = new char[READ_BUF_LEN];
+	nbytes_read = 0;
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	writebuf = [[NSMutableString alloc] init];
 	rcache = [[NSMutableString alloc] init];
@@ -337,11 +339,56 @@
 	if (sockfd == -1) return NO;
 	if (isReading) return YES;
 	isReading = YES;
-	char buf[512];
+	
+	static char irc_msg[514]; // RFC spec - messages are only 512 characters, and \0.
+	int readcount = 0;
+	
+	if (nbytes_read < READ_BUF_LEN)
+		readcount = read(sockfd, readbuf + nbytes_read, READ_BUF_LEN-nbytes_read);
+	
+	if(readcount > 0) {
+		/*
+		 21:52 < DHowett> theiostream: if you add the \0 thing, throw in an additional comment about potentially
+		 tweaking the buffer size, because the trailing \0 will cost a character
+		 */
+		
+		nbytes_read += readcount;
+		readbuf[nbytes_read] = '\0';
+	}
+	char *nl_ptr;
+	while ((nl_ptr = strstr(readbuf, "\r\n")) != NULL) {
+		int nl = nl_ptr - readbuf;
+		if(nl > 0) {
+			strncpy(irc_msg, readbuf, nl);
+			irc_msg[nl] = '\0';
+		}
+		
+		int consume = nl;
+		while(readbuf[consume] == '\n' || readbuf[consume] == '\r') ++consume;
+		
+		memmove(readbuf, readbuf+consume, READ_BUF_LEN-consume);
+		if (nbytes_read >= consume)
+			nbytes_read -= consume;
+		else {
+			NSLog(@"%llu:%d", nbytes_read, consume);
+			isReading = NO;
+			return NO;
+		}
+
+		if(nl > 0) {
+		//	NSLog(@"Meh %s", irc_msg);
+			[self recievedMessage:[NSString stringWithFormat:@"%s", irc_msg]];
+		}
+	}
+
+	isReading = NO;
+	return NO;
+	char buf[513];
 	int rc = 0;
 	if (useSSL) {
 		while ((rc = SSL_read(ssl, buf, 512)) > 0) {
 			if (![self isTryingToConnectOrConnected]) return NO;
+			buf[rc] = '\0';
 			NSString *appenddee = [[NSString alloc] initWithBytesNoCopy:buf length:rc encoding:NSUTF8StringEncoding freeWhenDone:NO];
 			if (appenddee) {
 				[rcache appendString:appenddee];
@@ -357,7 +404,23 @@
 	}
 	else {
 		while ((rc = read(sockfd, buf, 512)) > 0) {
+			NSLog(@"READ %d BYTES", rc);
 			if (![self isTryingToConnectOrConnected]) return NO;
+			buf[rc] = '\0';
+			char *ic = (char *)buf;
+			char *sbf;
+			while ((sbf = strsep(&ic, "\r\n"))) {
+				ic = ic + strlen(sbf);
+				NSLog(@"hi %s", sbf);
+			}
+			NSLog(@"hi %s", sbf);
+			NSString *str = [[NSString alloc] initWithBytesNoCopy:sbf length:strlen(sbf) encoding:NSUTF8StringEncoding freeWhenDone:NO];
+			[self recievedMessage:str];
+			[str autorelease];
+							 
+			
+			/*
+			// can't assume this encoding.
 			NSString *appenddee = [[NSString alloc] initWithBytesNoCopy:buf length:rc encoding:NSUTF8StringEncoding freeWhenDone:NO];
 			if (appenddee) {
 				[rcache appendString:appenddee];
@@ -369,6 +432,7 @@
 					[rcache deleteCharactersInRange:NSMakeRange(0, loc)];
 				}
 			}
+			 */
 		}
 	}
 	// i know this makes me a bad person.
@@ -1537,7 +1601,8 @@
 		else if ([msg hasPrefix:@"TIME"] 
 				 || [msg hasPrefix:@"VERSION"] 
 				 || [msg hasPrefix:@"USERINFO"] 
-				 || [msg hasPrefix:@"CLIENTINFO"]) {
+				 || [msg hasPrefix:@"CLIENTINFO"]
+				|| [msg hasPrefix:@"IRCCAT"]) {
 			[self handleCTCPRequest:privmsg];
 		}
 		else if ([msg hasPrefix:@"ACTION"]) {
@@ -1697,8 +1762,10 @@
     }
     NSString *command = [request substringToIndex:vdx];
 #if LOGALL
-	NSLog(@"Meh. %@", command);
+	NSLog(@"CTCP COMMAND:[%@]", command);
 #endif
+	command = [command uppercaseString];
+	// probbably add UPTIME. k
 	if ([command isEqualToString:@"TIME"])
 		extra = [NSString stringWithFormat:@"%@", [NSDate date]];
 	else if ([command isEqualToString:@"VERSION"]) 
@@ -1707,6 +1774,10 @@
 		extra = @"";
 	else if ([command isEqualToString:@"CLIENTINFO"]) 
 		extra = @"CLIENTINFO VERSION CLIENTINFO USERINFO PING TIME UPTIME";
+	else if ([command isEqualToString:@"IRCCAT"]) {
+		NSArray *ary = @[@"irccat best op evar", @"irccat #1", @"irccat master op 2013", @"irccat ftw", @"irccat > longcat", @"no support without irccat"];
+		extra = ary[arc4random() % [ary count]];
+	}
 	else 
 		NSLog(@"WTF?!?!! %@", command);
 	[self sendMessage:[@"NOTICE " stringByAppendingFormat:@"%@ :\x01%@ %@\x01", _from, command, extra]];
@@ -1825,7 +1896,6 @@
 - (void)handlePING:(NSString *)pong {
 	if ([pong hasPrefix:@"PING "]) {
 		[self sendMessage:[@"PONG " stringByAppendingString:[pong substringFromIndex:5]] canWait:NO];
-		NSLog(@"PINGING {{%@}}:[%@]", pong, [NSDate date]);
 	}
 	else {
 		NSScanner *scannr = [[NSScanner alloc] initWithString:pong];

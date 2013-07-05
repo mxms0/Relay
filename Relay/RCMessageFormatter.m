@@ -69,7 +69,7 @@ NSString *colorForIRCColor(char irccolor) {
 	int len = [string length];
 	NSMutableString *final = [[NSMutableString alloc] init];
 	if (self.highlight)
-		[final appendString:@"<font color=\"#5b2e2e\">"];
+		[final appendString:@"<font color=\"#852d32\">"];
 	while (cpos < len) {
 		switch ([string characterAtIndex:cpos]) {
 			case RCIRCAttributeBold:
