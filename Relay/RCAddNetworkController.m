@@ -14,18 +14,19 @@
 	if ((self = [super initWithStyle:UITableViewStylePlain])) {
 		isNew = NO;
 		datas = nil;
-		name = [[[UIDevice currentDevice] name] retain];
-		int ix = [name length];
-		int px = [name rangeOfString:@" "].location;
-		if (px != NSNotFound)
-			ix = px;
-		name = [name substringToIndex:ix];
 		if (!net) {
+			name = [[[UIDevice currentDevice] name] retain];
+			int ix = [name length];
+			int px = [name rangeOfString:@" "].location;
+			if (px != NSNotFound)
+				ix = px;
+			name = [[name substringToIndex:ix] retain];
 			network = [[RCNetwork alloc] init];
 			isNew = YES;
 			datas = [[NSMutableDictionary alloc] init];
 		}
 		else {
+			name = [[net nick] retain];
 			network = [net retain];
 			datas = [[[network infoDictionary] mutableCopy] retain];
 		}

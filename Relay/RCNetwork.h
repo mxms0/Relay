@@ -45,8 +45,7 @@ typedef enum RCSocketStatus {
 	int task;
 	int port;
 	int sockfd;
-	char *readbuf;
-	unsigned long long int nbytes_read;
+	int dcCount;
 	BOOL isRegistered;
 	BOOL useSSL;
 	BOOL COL;

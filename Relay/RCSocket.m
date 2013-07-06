@@ -119,37 +119,7 @@ char *RCIPForURL(NSString *URL) {
 		}
 	}
 	else {
-		sockfd = socket(PF_INET, SOCK_STREAM, 0);
-		if (sockfd < 0) {
-			MARK;
-			return -1;
-		}
-		struct sockaddr_in serv_addr;
-		memset(&serv_addr, 0, sizeof(struct sockaddr_in));
-		serv_addr.sin_family = AF_INET;
-		serv_addr.sin_port = htons(port);
-		if ((serv_addr.sin_addr.s_addr = inet_addr([server UTF8String])) == INADDR_NONE) {
-			struct addrinfo hint;
-			memset(&hint, 0, sizeof(hint));
-			hint.ai_family = AF_INET;
-			hint.ai_socktype = SOCK_STREAM;
-			
-			struct addrinfo *res = NULL;
-			int got = getaddrinfo([server UTF8String], NULL, &hint, &res);
-			if (got != 0) {
-				MARK;
-				return -1;
-			}
-			serv_addr.sin_addr.s_addr = ((struct sockaddr_in *)(res[0].ai_addr))->sin_addr.s_addr;
-			
-		}
-		int ret = connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
-		if (ret < 0) {
-			MARK;
-			return -1;
-		}
-		
-		/*
+
 		struct sockaddr_in serv_addr;
 		sockfd = socket(AF_INET, SOCK_STREAM, 0);
 		if (sockfd < 0) {
@@ -173,18 +143,18 @@ char *RCIPForURL(NSString *URL) {
 		if (connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
 			MARK;
 			return -1;
-		}*/
+		}
 	}
 #if LOGALL
 		NSLog(@"System Proxy Settings: {{%@}};", CFNetworkCopySystemProxySettings());
 #endif
-	/*
+	
 	int opts = fcntl(sockfd, F_GETFL);
 	opts = (opts | O_NONBLOCK);
 	if (fcntl(sockfd, F_SETFL, opts) < 0) {
 		MARK;
 		return -1;
-	}*/
+	}
 	[net sendMessage:@"CAP LS" canWait:NO];
 	if ([spass length] > 0) {
 		[net sendMessage:[@"PASS " stringByAppendingString:spass] canWait:NO];

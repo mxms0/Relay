@@ -285,7 +285,7 @@
 
 - (void)connect {
 	if (shouldRequestNPass || shouldRequestSPass) {
-		RCPasswordRequestAlertType type;
+		RCPasswordRequestAlertType type = 0;
 		if (shouldRequestSPass) type = RCPasswordRequestAlertTypeServer;
 		else if (shouldRequestNPass) type = RCPasswordRequestAlertTypeNickServ;
 		RCPasswordRequestAlert *rs = [[RCPasswordRequestAlert alloc] initWithNetwork:self type:type];
@@ -298,14 +298,13 @@
 
 - (void)_connect {
     tryingToConnect = YES;
-	readbuf = new char[READ_BUF_LEN];
-	nbytes_read = 0;
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	writebuf = [[NSMutableString alloc] init];
 	rcache = [[NSMutableString alloc] init];
     canSend = YES;
 	cache = [[NSMutableString alloc] init];
     isRegistered = NO;
+	dcCount = 0;
     if (status == RCSocketStatusConnecting) {
 		[p drain];
 		return;
@@ -339,56 +338,12 @@
 	if (sockfd == -1) return NO;
 	if (isReading) return YES;
 	isReading = YES;
-	
-	static char irc_msg[514]; // RFC spec - messages are only 512 characters, and \0.
-	int readcount = 0;
-	
-	if (nbytes_read < READ_BUF_LEN)
-		readcount = read(sockfd, readbuf + nbytes_read, READ_BUF_LEN-nbytes_read);
-	
-	if(readcount > 0) {
-		/*
-		 21:52 < DHowett> theiostream: if you add the \0 thing, throw in an additional comment about potentially
-		 tweaking the buffer size, because the trailing \0 will cost a character
-		 */
-		
-		nbytes_read += readcount;
-		readbuf[nbytes_read] = '\0';
-	}
-	char *nl_ptr;
-	while ((nl_ptr = strstr(readbuf, "\r\n")) != NULL) {
-		int nl = nl_ptr - readbuf;
-		if(nl > 0) {
-			strncpy(irc_msg, readbuf, nl);
-			irc_msg[nl] = '\0';
-		}
-		
-		int consume = nl;
-		while(readbuf[consume] == '\n' || readbuf[consume] == '\r') ++consume;
-		
-		memmove(readbuf, readbuf+consume, READ_BUF_LEN-consume);
-		if (nbytes_read >= consume)
-			nbytes_read -= consume;
-		else {
-			NSLog(@"%llu:%d", nbytes_read, consume);
-			isReading = NO;
-			return NO;
-		}
-
-		if(nl > 0) {
-		//	NSLog(@"Meh %s", irc_msg);
-			[self recievedMessage:[NSString stringWithFormat:@"%s", irc_msg]];
-		}
-	}
-
-	isReading = NO;
-	return NO;
 	char buf[513];
 	int rc = 0;
 	if (useSSL) {
 		while ((rc = SSL_read(ssl, buf, 512)) > 0) {
-			if (![self isTryingToConnectOrConnected]) return NO;
 			buf[rc] = '\0';
+			if (![self isTryingToConnectOrConnected]) return NO;
 			NSString *appenddee = [[NSString alloc] initWithBytesNoCopy:buf length:rc encoding:NSUTF8StringEncoding freeWhenDone:NO];
 			if (appenddee) {
 				[rcache appendString:appenddee];
@@ -404,23 +359,8 @@
 	}
 	else {
 		while ((rc = read(sockfd, buf, 512)) > 0) {
-			NSLog(@"READ %d BYTES", rc);
 			if (![self isTryingToConnectOrConnected]) return NO;
-			buf[rc] = '\0';
-			char *ic = (char *)buf;
-			char *sbf;
-			while ((sbf = strsep(&ic, "\r\n"))) {
-				ic = ic + strlen(sbf);
-				NSLog(@"hi %s", sbf);
-			}
-			NSLog(@"hi %s", sbf);
-			NSString *str = [[NSString alloc] initWithBytesNoCopy:sbf length:strlen(sbf) encoding:NSUTF8StringEncoding freeWhenDone:NO];
-			[self recievedMessage:str];
-			[str autorelease];
-							 
-			
-			/*
-			// can't assume this encoding.
+
 			NSString *appenddee = [[NSString alloc] initWithBytesNoCopy:buf length:rc encoding:NSUTF8StringEncoding freeWhenDone:NO];
 			if (appenddee) {
 				[rcache appendString:appenddee];
@@ -432,7 +372,6 @@
 					[rcache deleteCharactersInRange:NSMakeRange(0, loc)];
 				}
 			}
-			 */
 		}
 	}
 	// i know this makes me a bad person.
@@ -611,36 +550,25 @@
 }
 
 - (BOOL)disconnectWithMessage:(NSString *)msg {
-    if (_isDisconnecting) return NO;
+	if (_isDisconnecting) {
+		dcCount++;
+		if (dcCount == 1) {
+			_isDisconnecting = NO;
+			// two tries. force this.
+			[self disconnectCleanupWithMessage:msg];
+		}
+		return NO;
+	}
 	_isDisconnecting = YES;
 	if (status == RCSocketStatusClosed) return NO;
 	if ((status == RCSocketStatusConnected) || (status == RCSocketStatusConnecting)) {
 		[self sendMessage:[@"QUIT :" stringByAppendingString:([msg isEqualToString:@"Disconnected."] ? [self defaultQuitMessage] : msg)] canWait:NO];
-		/*
-		status = RCSocketStatusClosed;
-		close(sockfd);
-		[rcache release];
-		rcache = nil;
-		sockfd = -1;
-		[cache release];
-		[writebuf release];
-		if (useSSL)
-			SSL_CTX_free(ctx);
-		[[UIApplication sharedApplication] endBackgroundTask:task];
-		task = UIBackgroundTaskInvalid;
-		tryingToConnect = NO;
-		status = RCSocketStatusClosed;
-		isRegistered = NO;
-		for (RCChannel *_chan in _channels) {
-			[_chan disconnected:msg];
-		}
-		 */
 	}
-	_isDisconnecting = NO;
 	return YES;
 }
 
 - (void)disconnectCleanupWithMessage:(NSString *)msg {
+	_isDisconnecting = NO;
 	status = RCSocketStatusClosed;
 	close(sockfd);
 	[rcache release];
