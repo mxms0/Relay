@@ -3,6 +3,7 @@
 //  Relay
 //
 //  Created by David Murray on 12-07-10.
+//	lol, David. ;P
 //
 
 #import "RCAlternateNicknamesManager.h"
@@ -14,6 +15,8 @@
         network = net;
         titleView.text = @"Nicknames";
 		nicknames = [[NSMutableArray alloc] init];
+		self.tableView.allowsSelectionDuringEditing = YES;
+		self.tableView.separatorColor = UIColorFromRGB(0x141925);
         if ([network _nicknames]) {
 			if ([[network _nicknames] count] > 1) {
 				[nicknames addObject:[network _nicknames]];
@@ -44,7 +47,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-	return 10;
+	return 0;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -79,7 +82,7 @@
         cell = [[[RCAddCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
 		cell.selectionStyle = UITableViewCellSelectionStyleNone;
 		cell.textLabel.font = [UIFont boldSystemFontOfSize:14];
-		cell.textLabel.textColor = UIColorFromRGB(0x545758);
+		cell.textLabel.textColor = [UIColor whiteColor];
 	}
 	if (indexPath.row == [nicknames count]) {
 		cell.textLabel.text = @"Add Nick";
@@ -100,13 +103,17 @@
 }
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if ([nicknames count] == indexPath.row) {
-        return UITableViewCellEditingStyleInsert;
-    }
+	if ([nicknames count] == indexPath.row) {
+		return UITableViewCellEditingStyleInsert;
+	}
 	return UITableViewCellEditingStyleDelete;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	if (indexPath.row == [nicknames count]) {
+		// need to present some new stupid view controller..hm
+		// OR MAYBE WE COULD ADD A NEW CELL WITH TEXT FIELDS
+	}
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 

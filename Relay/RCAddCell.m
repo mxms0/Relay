@@ -18,4 +18,9 @@
 	return self;
 }
 
+- (void)drawRect:(CGRect)rect {
+	[UIColorFromRGB(0x393d4a) set];
+	UIRectFill(rect);
+}
+
 @end

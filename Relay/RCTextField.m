@@ -54,7 +54,22 @@
 
 - (void)drawPlaceholderInRect:(CGRect)rect {
 	[UIColorFromRGB(0x71737a) setFill];
-	[[self placeholder] drawInRect:rect withFont:[UIFont systemFontOfSize:13]];
+	CGFloat sv = [[self placeholder] sizeWithFont:[UIFont systemFontOfSize:13]].width;
+	
+	switch (self.textAlignment) {
+		case NSTextAlignmentRight:
+			sv = (rect.size.width - sv);
+			if (!self.isFirstResponder) {
+				sv -= 20;
+			}
+			break;
+		case NSTextAlignmentLeft:
+			sv = 0;
+			break;
+		default:
+			break;
+	}
+	[[self placeholder] drawInRect:CGRectMake(sv, 0, rect.size.width, rect.size.height) withFont:[UIFont systemFontOfSize:13]];
 }
 
 @end

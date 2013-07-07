@@ -14,6 +14,7 @@
 	if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
 		textField = [[RCTextField alloc] initWithFrame:CGRectMake(0, 2, 170, 16)];
         // Initialization code
+		[textField setTextAlignment:NSTextAlignmentRight];
 		[self setAccessoryView:textField];
 		[textField release];
     }

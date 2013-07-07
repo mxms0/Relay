@@ -21,7 +21,7 @@
 		[self setOpaque:YES];
 		self.selectionStyle = UITableViewCellSelectionStyleNone;
 		self.textLabel.font = [UIFont boldSystemFontOfSize:14];
-		self.textLabel.textColor = UIColorFromRGB(0x545758);
+		self.textLabel.textColor = [UIColor whiteColor];
         transform = 0;
         // Initialization code
     }

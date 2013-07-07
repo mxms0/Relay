@@ -14,6 +14,7 @@
 - (id)initWithStyle:(UITableViewStyle)style network:(RCNetwork *)_net channel:(NSString *)_chan {
 	if ((self = [super initWithStyle:style])) {
 		net = _net;
+		self.tableView.separatorColor = UIColorFromRGB(0x141925);
 		[self setOriginalChannel:_chan];
 		[self setChannel:_chan]; // botched.
 		jOC = YES; // should be default ;P

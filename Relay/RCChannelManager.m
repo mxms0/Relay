@@ -14,6 +14,7 @@
 		network = net;
 		_rEditing = NO;
 		self.tableView.allowsSelectionDuringEditing = YES;
+		self.tableView.separatorColor = UIColorFromRGB(0x393d4a);
 		[self reloadData];
 		if ([[net _channels] count] == 0)
 			[self edit];
@@ -21,26 +22,11 @@
 	}
     return self;
 }
-/*
-- (void)recievedChannel:(NSString *)chanf withCount:(int)count andTopic:(NSString *)topicPlusModes {
-	if (!listing) {
-		listing = YES;
-		[self.tableView reloadData];
-	}
-	if (!listChannels) listChannels = [[NSMutableArray alloc] init];
-	RCChannelInfo *info = [[RCChannelInfo alloc] init];
-	[info setTopic:topicPlusModes];
-	[info setUserCount:count];
-	[info setChannel:chanf];
-	[listChannels addObject:info];
-	[info release];
-	[self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:[listChannels count]-1 inSection:0]] withRowAnimation:UITableViewRowAnimationLeft];
-}*/
 
 - (void)reloadData {
 	if (channels) [channels release];
 	channels = [[NSMutableArray alloc] init];
-    for (RCChannel* chn in [network _channels]) {
+    for (RCChannel *chn in [network _channels]) {
         [channels addObject:[chn channelName]];
     }
 	[channels removeObject:@"\x01IRC"];
@@ -55,7 +41,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-	return 10;
+	return 0;
 }
 
 - (void)dealloc {
@@ -70,14 +56,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-	/*
-	if ([network isConnected]) {
-		[network sendMessage:@"LIST"];
-		[self addStupidWarningView];
-	}*/
-	UIView *base = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320,44)];
+
+	UIView *base = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320,60)];
 	RCPrettyButton *td = [[RCPrettyButton alloc] initWithFrame:CGRectMake(10, 0, 300, 44)];
-	[td setFrame:CGRectMake(10, 0, 300, 44)];
+	[td setFrame:CGRectMake(10, 5, 300, 44)];
 	[base addSubview:td];
 	[self.tableView setTableFooterView:base];
 	[base release];
@@ -111,30 +93,6 @@
 	}
 	[bt setTag:(allCOL)];
 	
-}
-
-- (void)addStupidWarningView {
-	UIView *back = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 40)];
-	UILabel *warning = [[UILabel alloc] initWithFrame:CGRectMake(47, 5, 280, 40)];
-	[warning setShadowColor:[UIColor blackColor]];
-	[warning setShadowOffset:CGSizeMake(0, 1)];
-	[warning setFont:[UIFont systemFontOfSize:14]];
-	[warning setNumberOfLines:0];
-	[warning setTextColor:[UIColor whiteColor]];
-	[warning setBackgroundColor:[UIColor clearColor]];
-	[warning setText:@"Requesting channel list from the server..."];
-	UIActivityIndicatorView *vv = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
-	[vv startAnimating];
-	[back addSubview:vv];
-	[vv release];
-	[back addSubview:warning];
-	[warning release];
-	[self.tableView setTableHeaderView:back];
-	[back release];
-}
-
-- (void)removeStupidWarningView {
-	[self.tableView setTableHeaderView:nil];
 }
 
 - (void)edit {
@@ -189,7 +147,7 @@
         cell = [[[RCAddCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
 		cell.selectionStyle = UITableViewCellSelectionStyleBlue;
 		cell.textLabel.font = [UIFont boldSystemFontOfSize:14];
-		cell.textLabel.textColor = UIColorFromRGB(0x545758);
+		cell.textLabel.textColor = [UIColor whiteColor];
 		[cell setOpaque:YES];
 	}
 	if ([channels count] == indexPath.row) {
