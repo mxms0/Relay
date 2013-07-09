@@ -53,6 +53,8 @@
 }
 
 - (void)drawPlaceholderInRect:(CGRect)rect {
+	[super drawPlaceholderInRect:rect];
+	CGContextClearRect(UIGraphicsGetCurrentContext(), rect);
 	[UIColorFromRGB(0x71737a) setFill];
 	CGFloat sv = [[self placeholder] sizeWithFont:[UIFont systemFontOfSize:13]].width;
 	

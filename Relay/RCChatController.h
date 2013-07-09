@@ -49,4 +49,11 @@
 - (void)layoutWithRootViewController:(RCViewController *)rc;
 - (void)presentInitialSetupView;
 - (void)dismissChannelList:(UIView *)cl animated:(BOOL)anim;
+- (void)nickSuggestionCancelled;
+- (void)showNetworkListOptions;
+- (void)showNetworkAddViewController;
+- (void)showNetworkOptions:(id)ob;
+- (void)menuButtonPressed:(id)obj;
+- (void)popUserListWithDefaultDuration;
+- (void)userSwiped_specialLikeAc3xx:(id)gest;
 @end

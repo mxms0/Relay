@@ -17,8 +17,6 @@
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)ident {
 	if ((self = [super initWithStyle:style reuseIdentifier:ident])) {
-		self.textLabel.backgroundColor = [UIColor clearColor];
-		[self setOpaque:YES];
 		self.selectionStyle = UITableViewCellSelectionStyleNone;
 		self.textLabel.font = [UIFont boldSystemFontOfSize:14];
 		self.textLabel.textColor = [UIColor whiteColor];

@@ -55,14 +55,14 @@
 
 - (void)drawRect:(CGRect)rect {
 	UIColor *textColor = [UIColor colorWithRed:0.409 green:0.434 blue:0.523 alpha:1.000];
-	UIColor *subTextColor = UIColorFromRGB(0x3C4559);
+	UIColor *subTextColor = UIColorFromRGB(0x556280);
 	if ([net expanded] || _pSelected) {
 		if ([net isConnected]) {
 			subTextColor = UIColorFromRGB(0xb5bbcc);
 			textColor = UIColorFromRGB(0xEdeff5);
 		}
 		else {
-			subTextColor = UIColorFromRGB(0x8c92a3);
+			subTextColor = UIColorFromRGB(0xaaabb0);
 			textColor = UIColorFromRGB(0xd5d7dd);
 		}
 		UIImage *bg = [UIImage imageNamed:@"0_selch"];
@@ -90,7 +90,7 @@
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	CGContextSetFillColorWithColor(ctx, textColor.CGColor);
 	CGContextScaleCTM(ctx, [[UIScreen mainScreen] scale], [[UIScreen mainScreen] scale]);
-	[text drawInRect:CGRectMake(5, 1, 200, 40) withFont:[UIFont boldSystemFontOfSize:9] lineBreakMode:UILineBreakModeCharacterWrap alignment:UITextAlignmentLeft];
+	[text drawInRect:CGRectMake(5, 1, 200, 40) withFont:[UIFont boldSystemFontOfSize:9] lineBreakMode:NSLineBreakByCharWrapping alignment:NSTextAlignmentLeft];
 	CGContextSetFillColorWithColor(ctx, subTextColor.CGColor);
 	[detail drawInRect:CGRectMake(5, 13, 200, 30) withFont:[UIFont systemFontOfSize:5.5]];
 }

@@ -463,6 +463,10 @@ _end:
     return cell;
 }
 
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+	NSLog(@"hi %@", [cell recursiveDescription]);
+}
+
 - (void)sslSwitched:(UISwitch *)s {
 	[datas setObject:(s.on ? (id)kCFBooleanTrue : (id)kCFBooleanFalse) forKey:SSL_KEY];
 }

@@ -38,7 +38,7 @@
 	CGContextSetFillColorWithColor(ctx, def.CGColor);
 	CGContextScaleCTM(ctx, [[UIScreen mainScreen] scale], [[UIScreen mainScreen] scale]);
 
-	[channel drawAtPoint:CGPointMake((isPM ? 18 : 5), (isPM ? 4 : 5)) forWidth:(newMessageCount > 0 ? (newMessageCount > 99 ? 90 : 95) : 110) withFont:[UIFont boldSystemFontOfSize:9] minFontSize:5 actualFontSize:NULL lineBreakMode:UILineBreakModeCharacterWrap baselineAdjustment:UIBaselineAdjustmentAlignCenters];
+	[channel drawAtPoint:CGPointMake((isPM ? 18 : 5), (isPM ? 4 : 5)) forWidth:(newMessageCount > 0 ? (newMessageCount > 99 ? 90 : 95) : 110) withFont:[UIFont boldSystemFontOfSize:9] minFontSize:5 actualFontSize:NULL lineBreakMode:NSLineBreakByCharWrapping baselineAdjustment:UIBaselineAdjustmentAlignCenters];
 	if (isPM) {
 		UIImage *bubl = [UIImage imageNamed:@"0_pbubl"];
 		[bubl drawInRect:CGRectMake(4, 4, 12, 12)];
@@ -71,7 +71,7 @@
 		CGContextFillPath(context);
 		CGContextSetFillColorWithColor(context, UIColorFromRGB(0x191A26).CGColor);
 		CGContextSetShadowWithColor(context, CGSizeMake(0, 1), 0.5, [UIColor colorWithWhite:1 alpha:0.2].CGColor);
-		[rendr drawAtPoint:CGPointMake((longerThanNormal ? 97 : (newMessageCount <= 9 ? 103 : 101)), 5) forWidth:50 withFont:[UIFont boldSystemFontOfSize:7.5] fontSize:7.5 lineBreakMode:UILineBreakModeClip baselineAdjustment:UIBaselineAdjustmentAlignCenters];
+		[rendr drawAtPoint:CGPointMake((longerThanNormal ? 97 : (newMessageCount <= 9 ? 103 : 101)), 5) forWidth:50 withFont:[UIFont boldSystemFontOfSize:7.5] fontSize:7.5 lineBreakMode:NSLineBreakByClipping baselineAdjustment:UIBaselineAdjustmentAlignCenters];
 	}
 }
 

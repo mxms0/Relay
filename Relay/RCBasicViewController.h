@@ -18,4 +18,5 @@
 - (NSString *)titleText;
 - (void)setupDoneButton;
 - (void)setupEditButton;
+- (void)edit;
 @end

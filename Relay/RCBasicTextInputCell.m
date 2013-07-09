@@ -17,11 +17,13 @@
 		[textField setTextAlignment:NSTextAlignmentRight];
 		[self setAccessoryView:textField];
 		[textField release];
+		[self setBackgroundColor:UIColorFromRGB(0x393d4a)];
     }
     return self;
 }
 
 - (void)drawRect:(CGRect)rect {
+	[super drawRect:rect];
 	[UIColorFromRGB(0x393d4a) set];
 	UIRectFill(rect);
 }
