@@ -12,7 +12,6 @@
 #import "RCSocket.h"
 #import "TestFlight.h"
 #import "ISO8601DateFormatter.h"
-#define READ_BUF_LEN 4096
 
 @class RCChannelManager;
 typedef enum RCSocketStatus {
@@ -38,7 +37,7 @@ typedef enum RCSocketStatus {
 	NSString *uUID;
 	NSMutableString *cache;
 	NSMutableString *writebuf;
-	NSMutableString *rcache;
+	NSMutableData *rcache;
 	SSL_CTX *ctx;
 	SSL *ssl;
 	RCSocketStatus status;

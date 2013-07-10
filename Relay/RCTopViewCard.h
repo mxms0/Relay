@@ -15,7 +15,7 @@
 	BOOL showingUserInfo;
 	RCChannel *currentChan;
 }
-@property (nonatomic, assign) RCChannel *currentChan;
+@property (nonatomic, retain) RCChannel *currentChan;
 - (void)setChannel:(RCChannel *)chan;
 - (void)reloadData;
 @end

@@ -1,4 +1,3 @@
-
 //
 //  RCNetwork.m
 //  Relay
@@ -14,8 +13,7 @@
 #import "RCPrettyAlertView.h"
 #import "RCServerChangeAlertView.h"
 #import "RCChatController.h"
-
-#define RECV_BUF_LEN 10240
+#import "NSData+Instance.h"
 
 @implementation RCNetwork
 
@@ -300,7 +298,7 @@
     tryingToConnect = YES;
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	writebuf = [[NSMutableString alloc] init];
-	rcache = [[NSMutableString alloc] init];
+	rcache = [[NSMutableData alloc] init];
     canSend = YES;
 	cache = [[NSMutableString alloc] init];
     isRegistered = NO;
@@ -342,39 +340,48 @@
 	int rc = 0;
 	if (useSSL) {
 		while ((rc = SSL_read(ssl, buf, 512)) > 0) {
-			buf[rc] = '\0';
 			if (![self isTryingToConnectOrConnected]) return NO;
-			NSString *appenddee = [[NSString alloc] initWithBytesNoCopy:buf length:rc encoding:NSUTF8StringEncoding freeWhenDone:NO];
-			if (appenddee) {
-				[rcache appendString:appenddee];
-				[appenddee release];
-				while (!!rcache && ([rcache rangeOfString:@"\r\n"].location != NSNotFound)) {
-					int loc = [rcache rangeOfString:@"\r\n"].location+2;
-					NSString *cbuf = [rcache substringToIndex:loc];
-					[self recievedMessage:cbuf];
-					[rcache deleteCharactersInRange:NSMakeRange(0, loc)];
+			[rcache appendBytes:buf length:rc];
+			NSRange rr = [rcache rangeOfData:[NSData nlCharacterDataSet] options:(NSDataSearchOptions)nil range:NSMakeRange(0, [rcache length])];
+			while (rr.location != NSNotFound) {
+				NSData *str = [rcache subdataWithRange:NSMakeRange(0, rr.location+2)];
+				NSString *send = [[NSString alloc] initWithData:str encoding:NSUTF8StringEncoding];
+				if (send) {
+					[self recievedMessage:send];
 				}
+				else {
+					send = [[NSString alloc] initWithData:str encoding:NSISOLatin1StringEncoding];
+					[self recievedMessage:send];
+				}
+				// :)
+				[send autorelease];
+				[rcache replaceBytesInRange:NSMakeRange(0, rr.location+2) withBytes:NULL length:0];
+				rr = [rcache rangeOfData:[NSData nlCharacterDataSet] options:(NSDataSearchOptions)nil range:NSMakeRange(0, [rcache length])];
 			}
 		}
 	}
 	else {
 		while ((rc = read(sockfd, buf, 512)) > 0) {
 			if (![self isTryingToConnectOrConnected]) return NO;
-
-			NSString *appenddee = [[NSString alloc] initWithBytesNoCopy:buf length:rc encoding:NSUTF8StringEncoding freeWhenDone:NO];
-			if (appenddee) {
-				[rcache appendString:appenddee];
-				[appenddee release];
-				while (!!rcache && ([rcache rangeOfString:@"\r\n"].location != NSNotFound)) {
-					int loc = [rcache rangeOfString:@"\r\n"].location+2;
-					NSString *cbuf = [rcache substringToIndex:loc];
-					[self recievedMessage:cbuf];
-					[rcache deleteCharactersInRange:NSMakeRange(0, loc)];
+			[rcache appendBytes:buf length:rc];
+			NSRange rr = [rcache rangeOfData:[NSData nlCharacterDataSet] options:(NSDataSearchOptions)nil range:NSMakeRange(0, [rcache length])];
+			while (rr.location != NSNotFound) {
+				NSData *str = [rcache subdataWithRange:NSMakeRange(0, rr.location+2)];
+				NSString *send = [[NSString alloc] initWithData:str encoding:NSUTF8StringEncoding];
+				if (send) {
+					[self recievedMessage:send];
 				}
+				else {
+					send = [[NSString alloc] initWithData:str encoding:NSISOLatin1StringEncoding];
+					[self recievedMessage:send];
+				}
+				// :)
+				[send autorelease];
+				[rcache replaceBytesInRange:NSMakeRange(0, rr.location+2) withBytes:NULL length:0];
+				rr = [rcache rangeOfData:[NSData nlCharacterDataSet] options:(NSDataSearchOptions)nil range:NSMakeRange(0, [rcache length])];
 			}
 		}
 	}
-	// i know this makes me a bad person.
 	isReading = NO;
 	return NO;
 }
@@ -467,12 +474,6 @@
 	}
 	else if ([msg hasPrefix:@"@"]) {
 		[self parseIRCV3MessageTagAndContinue:[msg substringFromIndex:1]];
-		// sending these messages somewhere else.
-		// not handling them here.
-		//msg = [msg substringFromIndex:1];
-		//	NSDateFormatter *df = [[NSDateFormatter alloc] init];
-		//[df setDateFormat:@"YYYY-MM-DDThh:mm:ss.sssZ"];
-		//	NSDate *aDate = [df dateFromString:nil];
 #if LOGALL
 		NSLog(@"IRV3 I C. %@:[%@]", msg, [msg dataUsingEncoding:NSUTF8StringEncoding]);
 #endif
@@ -491,6 +492,8 @@
 	[scanner scanUpToString:@" " intoString:&crap];
 	[scanner scanUpToString:@" " intoString:&cmd];
 	[scanner scanUpToString:@"\r\n" intoString:&rest];
+	// maybe later on, setup the format to be handle:(for|from):rest:
+	// instead of just parsing each case indivdiaully. hm.
 	NSString *selName = [NSString stringWithFormat:@"handle%@:", cmd];
 	SEL pSEL = NSSelectorFromString(selName);
 	if ([self respondsToSelector:pSEL]) [self performSelector:pSEL withObject:msg];
@@ -526,6 +529,9 @@
 					NSString *propr = [[RCDateManager sharedInstance] properlyFormattedTimeFromISO8601DateString:[shits objectAtIndex:1]];
 					superImportantMsg = [superImportantMsg stringByAppendingString:@"\x12\x13"];
 					superImportantMsg = [superImportantMsg stringByAppendingString:propr];
+					// This appends \x12\x13TIME STRING to the current message, because well..
+					// this is a bad idea really, but refactoring a hundred lines of code is not worth it for a temporary fix.
+					// although a poor assumption, i think it is safe to say this won't break.
 					continue;
 				}
 #if LOGALL

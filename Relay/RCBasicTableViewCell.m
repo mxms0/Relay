@@ -20,6 +20,7 @@
 		self.selectionStyle = UITableViewCellSelectionStyleNone;
 		self.textLabel.font = [UIFont boldSystemFontOfSize:14];
 		self.textLabel.textColor = [UIColor whiteColor];
+		self.textLabel.backgroundColor = [UIColor clearColor];
         transform = 0;
         // Initialization code
     }

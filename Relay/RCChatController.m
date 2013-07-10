@@ -101,8 +101,9 @@ static id _inst = nil;
 	canDragMainView = YES;
 #warning THIS IS NECESSARY IN XCODE DP5
 	int offx = 0;
+	/*
 	if (isiOS7)
-		offx = 20; 
+		offx = 20; */
 	CGSize frame = [[UIScreen mainScreen] applicationFrame].size;
 	bottomView = [[RCChatsListViewCard alloc] initWithFrame:CGRectMake(0, offx, frame.width, frame.height)];
 	[rc.view insertSubview:bottomView atIndex:0];

@@ -141,6 +141,7 @@
 		50AAE7EE151ADDAB00E631FD /* 0_r_shadow.png in Resources */ = {isa = PBXBuildFile; fileRef = 50AAE7EC151ADDAB00E631FD /* 0_r_shadow.png */; };
 		50B659B216A39F3F00D2CF03 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50B659B116A39F3F00D2CF03 /* Twitter.framework */; };
 		50B7413C17651DAA003FD20A /* ISO8601DateFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 50B7413B17651DAA003FD20A /* ISO8601DateFormatter.m */; };
+		50C1C0EC178D2D8D00834AEA /* NSData+Instance.m in Sources */ = {isa = PBXBuildFile; fileRef = 50C1C0EB178D2A2700834AEA /* NSData+Instance.m */; };
 		50C4523E177536EF00AC843D /* RCInitialSetupView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50C4523D177536EF00AC843D /* RCInitialSetupView.m */; };
 		50C45241177538F700AC843D /* UIImage+Filters.m in Sources */ = {isa = PBXBuildFile; fileRef = 50C45240177538F700AC843D /* UIImage+Filters.m */; };
 		50C46498177FA0150025ED54 /* RCChannelListViewCard.m in Sources */ = {isa = PBXBuildFile; fileRef = 50C46497177FA0140025ED54 /* RCChannelListViewCard.m */; };
@@ -394,6 +395,8 @@
 		50B659B116A39F3F00D2CF03 /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
 		50B7413A17651DAA003FD20A /* ISO8601DateFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISO8601DateFormatter.h; sourceTree = "<group>"; };
 		50B7413B17651DAA003FD20A /* ISO8601DateFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISO8601DateFormatter.m; sourceTree = "<group>"; };
+		50C1C0EA178D2A2700834AEA /* NSData+Instance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSData+Instance.h"; sourceTree = "<group>"; };
+		50C1C0EB178D2A2700834AEA /* NSData+Instance.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSData+Instance.m"; sourceTree = "<group>"; };
 		50C4523C177536EF00AC843D /* RCInitialSetupView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCInitialSetupView.h; sourceTree = "<group>"; };
 		50C4523D177536EF00AC843D /* RCInitialSetupView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCInitialSetupView.m; sourceTree = "<group>"; };
 		50C4523F177538F700AC843D /* UIImage+Filters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Filters.h"; sourceTree = "<group>"; };
@@ -655,6 +658,8 @@
 				50E77A771505A21500E75C64 /* NSString+Utils.m */,
 				50C4523F177538F700AC843D /* UIImage+Filters.h */,
 				50C45240177538F700AC843D /* UIImage+Filters.m */,
+				50C1C0EA178D2A2700834AEA /* NSData+Instance.h */,
+				50C1C0EB178D2A2700834AEA /* NSData+Instance.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -1236,6 +1241,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50C1C0EC178D2D8D00834AEA /* NSData+Instance.m in Sources */,
 				A3764E64177E166F00C1615F /* RCServerChangeAlertView.m in Sources */,
 				50D089271774E97B00F36141 /* RCUserTableCellContentView.m in Sources */,
 				50FC091E1583BA610019DB14 /* RCChannelManager.m in Sources */,
@@ -1316,6 +1322,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -1340,6 +1347,7 @@
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
+				VALID_ARCHS = "armv7 armv7s";
 			};
 			name = "Release copy";
 		};
@@ -1372,7 +1380,6 @@
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "04AFBFFD-4D0A-4E8A-B685-7D9FE7226C8E";
 				SHARED_PRECOMPS_DIR = "";
 				STRIP_INSTALLED_PRODUCT = YES;
-				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = app;
 			};
 			name = "Release copy";
@@ -1381,6 +1388,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -1412,6 +1420,7 @@
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "armv7 armv7s";
 			};
 			name = Debug;
 		};
@@ -1419,6 +1428,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -1443,6 +1453,7 @@
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
+				VALID_ARCHS = "armv7 armv7s";
 			};
 			name = Release;
 		};
@@ -1474,7 +1485,6 @@
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "04AFBFFD-4D0A-4E8A-B685-7D9FE7226C8E";
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				SHARED_PRECOMPS_DIR = "";
-				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1508,7 +1518,6 @@
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "04AFBFFD-4D0A-4E8A-B685-7D9FE7226C8E";
 				SHARED_PRECOMPS_DIR = "";
 				STRIP_INSTALLED_PRODUCT = YES;
-				VALID_ARCHS = armv7;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
