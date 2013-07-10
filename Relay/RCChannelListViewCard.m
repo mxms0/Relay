@@ -33,6 +33,16 @@
 	return self;
 }
 
+- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {
+	if (flag) {
+		[self.layer removeAllAnimations];
+	}
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+	MARK;
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 	return 1;
 }
@@ -83,10 +93,6 @@
 	[ifs setTopic:topics];
 	[channelDatas addObject:ifs];
 	[ifs release];
-}
-
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-	MARK;
 }
 
 - (void)dealloc {

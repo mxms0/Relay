@@ -166,7 +166,6 @@ static id _inst = nil;
 	[sheet setButtonCount:5];
 	[sheet showInView:[[((RCAppDelegate *)[UIApp delegate]) navigationController] view]];
 	[sheet release];
-
 }
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {

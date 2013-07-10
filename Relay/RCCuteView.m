@@ -20,6 +20,13 @@
 	}
 }
 
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+	[super touchesBegan:touches withEvent:event];
+	[[[self subviews] objectAtIndex:0] touchesBegan:touches withEvent:event];
+	[[[self subviews] objectAtIndex:0] hitTest:[[touches anyObject] locationInView:nil] withEvent:event];
+	MARK;
+}
+
 - (void)dismiss {
 	[[RCChatController sharedController] dismissChannelList:self animated:YES];
 }

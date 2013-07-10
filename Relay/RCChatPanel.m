@@ -100,7 +100,6 @@ static NSString *template = nil;
 		if (preloadPool) {
 			NSLog(@"GOING SWIMMMING");
 			[preloadPool addObject:ms];
-			[ms release];
 			return;
 		}
 	}
