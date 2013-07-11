@@ -1364,6 +1364,7 @@
 }
 
 - (void)handle464:(NSString *)foursixtyfour {
+	NSLog(@"hi %@", foursixtyfour);
 	dispatch_async(dispatch_get_main_queue(), ^{
 		RCPrettyAlertView *ac = [[RCPrettyAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Invalid Server Password (%@)", [self _description]] message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Change", nil];
 		[ac setTag:RCALERR_INCSPASS];
@@ -1958,6 +1959,7 @@ void RCParseUserMask(NSString *mask, NSString **_nick, NSString **user, NSString
 					[self connect];
 				}
 			}
+			break;
 		}
 		case RCALERR_INCUNAME: {
 			if (buttonIndex == 0) {
@@ -1974,6 +1976,7 @@ void RCParseUserMask(NSString *mask, NSString **_nick, NSString **user, NSString
 					[self connect];
 				}
 			}
+			break;
 		}
 		case RCALERR_INCSPASS: {
 			if (buttonIndex == 0) {
@@ -1983,12 +1986,13 @@ void RCParseUserMask(NSString *mask, NSString **_nick, NSString **user, NSString
 				[self setSpass:[alertView textFieldAtIndex:0].text];
 				[self savePasswords];
 				if ([self isTryingToConnectOrConnected]) {
-					[self sendMessage:[NSString stringWithFormat:@"PASS %@", spass]];
+					[self sendMessage:[NSString stringWithFormat:@"PASS %@", spass] canWait:NO];
 				}
 				else {
 					[self connect];
 				}
 			}
+			break;
 		}
 		case RCALERR_SERVCHNGE: {
 			if (buttonIndex == 0) {
@@ -2007,6 +2011,7 @@ void RCParseUserMask(NSString *mask, NSString **_nick, NSString **user, NSString
 					[self connect];
 				}
 			}
+			break;
 		}
 	}
 }

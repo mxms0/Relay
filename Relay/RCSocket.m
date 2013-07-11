@@ -77,8 +77,8 @@ char *RCIPForURL(NSString *URL) {
 	}
 	NSString *spass = [net spass];
 	NSString *nick = [net nick];
-	NSString *realname = nick;
-	NSString *username = nick;
+	NSString *realname = [net realname];
+	NSString *username = [net username];
 	int sockfd = 0;
 	if (_ssl) {
 		SSL_library_init();
