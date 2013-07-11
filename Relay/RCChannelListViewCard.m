@@ -80,7 +80,10 @@
 }
 
 - (void)recievedChannel:(NSString *)chan withCount:(int)cc andTopic:(NSString *)topics {
-	if (!updating) updating = YES;
+	if (!updating) {
+		updating = YES;
+		[self refreshSubtitleLabel];
+	}
 	RCChannelInfo *ifs = [[RCChannelInfo alloc] init];
 	[ifs setChannel:chan];
 	[ifs setUserCount:cc];
@@ -105,6 +108,20 @@
 	[str release];
 	[channelDatas addObject:ifs];
 	[ifs release];
+}
+
+- (void)refreshSubtitleLabel {
+	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC/12);;
+	dispatch_after(popTime, dispatch_get_main_queue(), ^{
+		if (updating) {
+			[self.navigationBar setSubtitle:[NSString stringWithFormat:@"Loading... %d channels", [channelDatas count]]];
+			[self refreshSubtitleLabel];
+		}
+		else {
+			[self.navigationBar setSubtitle:[NSString stringWithFormat:@"%d Channels", [channelDatas count]]];
+		}
+		[self.navigationBar setNeedsDisplay];
+	});
 }
 
 - (void)dealloc {
