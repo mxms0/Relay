@@ -2,7 +2,7 @@
 //  RCChannelListViewCard.m
 //  Relay
 //
-//  Created by Siberia on 6/29/13.
+//  Created by Max Shavrick on 6/29/13.
 //
 
 #import "RCChannelListViewCard.h"
@@ -19,8 +19,8 @@
 		[cv setContents:(id)[UIImage imageNamed:@"0_nvs"].CGImage];
 		[cv setFrame:CGRectMake(0, -46, 320, 46)];
 		[self.layer addSublayer:cv];
-		[cv release];
-		channels = [[RCSuperSpecialTableView alloc] initWithFrame:CGRectMake(0, 44, frame.size.width, frame.size.height-44)];
+		[cv release]; 
+		channels = [[UITableView alloc] initWithFrame:CGRectMake(0, 44, frame.size.width, frame.size.height-44)];
 		[channels setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 		[channels setBackgroundColor:UIColorFromRGB(0xDDE0E5)];
 		[channels setShowsVerticalScrollIndicator:YES];
@@ -33,16 +33,6 @@
 	return self;
 }
 
-- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {
-	if (flag) {
-		[self.layer removeAllAnimations];
-	}
-}
-
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-	MARK;
-}
-
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 	return 1;
 }
@@ -53,13 +43,17 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-	UITableViewCell *cc = [tableView dequeueReusableCellWithIdentifier:@"0_CSL"];
+	RCChannelInfoTableViewCell *cc = (RCChannelInfoTableViewCell *)[tableView dequeueReusableCellWithIdentifier:@"0_CSL"];
 	if (!cc) {
-		cc = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"0_CSL"] autorelease];
+		cc = [[[RCChannelInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"0_CSL"] autorelease];
 	}
+	[cc setChannelInfo:[channelDatas objectAtIndex:indexPath.row]];
 	[cc setBackgroundColor:[UIColor blackColor]];
-	[[cc textLabel] setText:@"HELLO"];
 	return cc;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+	return 50;
 }
 
 - (void)setUpdating:(BOOL)ud {
@@ -90,7 +84,25 @@
 	RCChannelInfo *ifs = [[RCChannelInfo alloc] init];
 	[ifs setChannel:chan];
 	[ifs setUserCount:cc];
-	[ifs setTopic:topics];
+	if (![topics isEqualToString:@":"])
+		[ifs setTopic:topics];
+	else
+		[ifs setTopic:@"No topic set."];
+	NSString *lcnt = [NSString stringWithFormat:@"%d Users", cc];
+	CGFloat rsz = 0;
+	CGSize szf = [lcnt sizeWithFont:[UIFont systemFontOfSize:12] minFontSize:10 actualFontSize:&rsz forWidth:84 lineBreakMode:NSLineBreakByClipping];
+	NSString *nam = chan;
+	CGFloat azf = 0;
+	[nam sizeWithFont:[UIFont boldSystemFontOfSize:16] minFontSize:8 actualFontSize:&azf forWidth:(320 - (szf.width + 21)) lineBreakMode:NSLineBreakByClipping];
+	NSString *set = [NSString stringWithFormat:@"%@ %d Users", chan, cc];
+	int lfr = [chan length];
+	NSMutableAttributedString *str = [[NSMutableAttributedString alloc] initWithString:set];
+	UIFont *ft = [UIFont boldSystemFontOfSize:azf];
+	[str addAttributes:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:ft, UIColorFromRGB(0x444647), nil] forKeys:[NSArray arrayWithObjects:NSFontAttributeName, NSForegroundColorAttributeName, nil]] range:NSMakeRange(0, lfr)];
+	UIFont *sft = [UIFont systemFontOfSize:rsz];
+	[str addAttributes:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:sft, UIColorFromRGB(0x797c7e), nil] forKeys:[NSArray arrayWithObjects:NSFontAttributeName, NSForegroundColorAttributeName, nil]] range:NSMakeRange(lfr, [set length] - lfr)];
+	[ifs setAttributedString:str];
+	[str release];
 	[channelDatas addObject:ifs];
 	[ifs release];
 }

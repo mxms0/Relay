@@ -15,5 +15,6 @@
 @property (nonatomic, assign) int userCount;
 @property (nonatomic, retain) NSString *topic;
 @property (nonatomic, retain) NSString *channel;
+@property (nonatomic, retain) NSAttributedString *attributedString;
 
 @end

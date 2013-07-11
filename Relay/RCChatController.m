@@ -633,7 +633,7 @@ static RCNetwork *currentNetwork = nil;
 	[mv.layer addSublayer:sch];
 	[sch release];
 
-	RCChannelListViewCard *vc = [[RCChannelListViewCard alloc] initWithFrame:CGRectMake(0, chatView.frame.size.height, chatView.frame.size.width, chatView.frame.size.height)];
+	RCChannelListViewCard *vc = [[RCChannelListViewCard alloc] initWithFrame:CGRectMake(0, 43, chatView.frame.size.width, chatView.frame.size.height-43)];
 	[[vc navigationBar] setTitle:@"Channel List"];
 	[[vc navigationBar] setSubtitle:@"Loading..."];
 	[[[currentPanel channel] delegate] sendMessage:@"LIST"];
@@ -643,6 +643,7 @@ static RCNetwork *currentNetwork = nil;
 	
 	[rootView.view addSubview:mv];
 	[mv release];
+	
 	CABasicAnimation *fade = [CABasicAnimation animationWithKeyPath:@"opacity"];
 	[fade setDuration:0.5];
 	fade.fromValue = [NSNumber numberWithFloat:0.0f];
@@ -654,13 +655,14 @@ static RCNetwork *currentNetwork = nil;
 	CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:@"position.y"];
 	[anim setDuration:0.4];
 	anim.fromValue = [NSNumber numberWithFloat:825];
-	anim.toValue = [NSNumber numberWithFloat:315];
+	anim.toValue = [NSNumber numberWithFloat:295];
 	[anim setRemovedOnCompletion:NO];
 	[anim setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut]];
 	[anim setFillMode:kCAFillModeBoth];
 	anim.additive = NO;
 	[sch addAnimation:fade forKey:@"opacity"];
 	[vc.layer addAnimation:anim forKey:@"position"];
+	 
 	// sorry
 }
 

@@ -29,6 +29,7 @@
 		50151F69164DD7AA00248AB7 /* RCXLChatController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50151F68164DD7AA00248AB7 /* RCXLChatController.m */; };
 		501524EA169A02B000F4B4EF /* RCNickSuggestionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 501524E9169A02B000F4B4EF /* RCNickSuggestionView.m */; };
 		501F2B3D150995DE0099C9C3 /* RCTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 501F2B3C150995DE0099C9C3 /* RCTableView.m */; };
+		50204EDB178E887C00631D85 /* RCChannelInfoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 50204EDA178E887C00631D85 /* RCChannelInfoTableViewCell.m */; };
 		50221BA414EF6CB800C7AF58 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50221BA314EF6CB800C7AF58 /* CoreText.framework */; };
 		502A66D215BCC3C30009C890 /* 0_alertview.png in Resources */ = {isa = PBXBuildFile; fileRef = 502A66CE15BCC3C30009C890 /* 0_alertview.png */; };
 		502A66D315BCC3C30009C890 /* 0_alertview@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 502A66CF15BCC3C30009C890 /* 0_alertview@2x.png */; };
@@ -255,6 +256,8 @@
 		501524E9169A02B000F4B4EF /* RCNickSuggestionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCNickSuggestionView.m; sourceTree = "<group>"; };
 		501F2B3B150995DE0099C9C3 /* RCTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTableView.h; sourceTree = "<group>"; };
 		501F2B3C150995DE0099C9C3 /* RCTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTableView.m; sourceTree = "<group>"; };
+		50204ED9178E887C00631D85 /* RCChannelInfoTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCChannelInfoTableViewCell.h; sourceTree = "<group>"; };
+		50204EDA178E887C00631D85 /* RCChannelInfoTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCChannelInfoTableViewCell.m; sourceTree = "<group>"; };
 		50221BA314EF6CB800C7AF58 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		502A66CE15BCC3C30009C890 /* 0_alertview.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_alertview.png; sourceTree = "<group>"; };
 		502A66CF15BCC3C30009C890 /* 0_alertview@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_alertview@2x.png"; sourceTree = "<group>"; };
@@ -614,6 +617,8 @@
 				505BF85F1634C563002BBED5 /* RCNetworkHeaderButton.m */,
 				50A3222916607C3C00F86E03 /* RCSuperSpecialTableView.h */,
 				50A3222A16607C3E00F86E03 /* RCSuperSpecialTableView.m */,
+				50204ED9178E887C00631D85 /* RCChannelInfoTableViewCell.h */,
+				50204EDA178E887C00631D85 /* RCChannelInfoTableViewCell.m */,
 			);
 			name = "Table View Crap";
 			sourceTree = "<group>";
@@ -1301,6 +1306,7 @@
 				50C45241177538F700AC843D /* UIImage+Filters.m in Sources */,
 				50C46498177FA0150025ED54 /* RCChannelListViewCard.m in Sources */,
 				50C4649F177FB3B10025ED54 /* RCCuteView.m in Sources */,
+				50204EDB178E887C00631D85 /* RCChannelInfoTableViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1376,8 +1382,8 @@
 				);
 				OTHER_LDFLAGS = "-Wl,-no_implicit_dylibs";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "04AFBFFD-4D0A-4E8A-B685-7D9FE7226C8E";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "04AFBFFD-4D0A-4E8A-B685-7D9FE7226C8E";
+				PROVISIONING_PROFILE = "D9C43943-099E-4175-A375-9AE102BDDCE8";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "D9C43943-099E-4175-A375-9AE102BDDCE8";
 				SHARED_PRECOMPS_DIR = "";
 				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
@@ -1481,8 +1487,8 @@
 				);
 				OTHER_LDFLAGS = "-Wl,-no_implicit_dylibs";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "04AFBFFD-4D0A-4E8A-B685-7D9FE7226C8E";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "04AFBFFD-4D0A-4E8A-B685-7D9FE7226C8E";
+				PROVISIONING_PROFILE = "D9C43943-099E-4175-A375-9AE102BDDCE8";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "D9C43943-099E-4175-A375-9AE102BDDCE8";
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				SHARED_PRECOMPS_DIR = "";
 				WRAPPER_EXTENSION = app;
@@ -1514,8 +1520,8 @@
 				);
 				OTHER_LDFLAGS = "-Wl,-no_implicit_dylibs";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "04AFBFFD-4D0A-4E8A-B685-7D9FE7226C8E";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "04AFBFFD-4D0A-4E8A-B685-7D9FE7226C8E";
+				PROVISIONING_PROFILE = "D9C43943-099E-4175-A375-9AE102BDDCE8";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "D9C43943-099E-4175-A375-9AE102BDDCE8";
 				SHARED_PRECOMPS_DIR = "";
 				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;

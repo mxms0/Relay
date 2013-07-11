@@ -2,15 +2,16 @@
 //  RCChannelListViewCard.h
 //  Relay
 //
-//  Created by Siberia on 6/29/13.
+//  Created by Max Shavrick on 6/29/13.
 //
 
 #import "RCViewCard.h"
 #import "RCSuperSpecialTableView.h"
 #import "RCChannelInfo.h"
+#import "RCChannelInfoTableViewCell.h"
 
 @interface RCChannelListViewCard : RCViewCard <UITableViewDataSource, UITableViewDelegate> {
-	RCSuperSpecialTableView *channels;
+	UITableView *channels;
 	NSMutableArray *channelDatas;
 	BOOL updating;
 }
