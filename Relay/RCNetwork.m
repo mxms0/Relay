@@ -1364,7 +1364,6 @@
 }
 
 - (void)handle464:(NSString *)foursixtyfour {
-	NSLog(@"hi %@", foursixtyfour);
 	dispatch_async(dispatch_get_main_queue(), ^{
 		RCPrettyAlertView *ac = [[RCPrettyAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Invalid Server Password (%@)", [self _description]] message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Change", nil];
 		[ac setTag:RCALERR_INCSPASS];
