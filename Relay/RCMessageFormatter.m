@@ -121,7 +121,7 @@ NSString *colorForIRCColor(char irccolor) {
 					didColor = NO;
 					continue;
 				}
-				if (num1 == -1 && num2 == -2) {
+				if (num1 == -1 || num2 == -2) {
 					continue;
 				}
 				[final appendFormat:@"<font color=\"%@\" style=\"background:%@\">", fgcolor, bgcolor];
