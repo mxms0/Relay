@@ -153,6 +153,7 @@
 		50C464A3177FBF3F0025ED54 /* 0_indents@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50C464A1177FBF3B0025ED54 /* 0_indents@2x.png */; };
 		50C464A6177FBFC30025ED54 /* 0_meml.png in Resources */ = {isa = PBXBuildFile; fileRef = 50C464A4177FBFBD0025ED54 /* 0_meml.png */; };
 		50C464A7177FBFC30025ED54 /* 0_meml@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50C464A5177FBFC00025ED54 /* 0_meml@2x.png */; };
+		50C7EB79178FE794001C07C7 /* RCSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50C7EB78178FE794001C07C7 /* RCSettingsViewController.m */; };
 		50C84A541633B26D003BFFE3 /* 0_as_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 50C84A521633B26D003BFFE3 /* 0_as_bg.png */; };
 		50C84A551633B26D003BFFE3 /* 0_as_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50C84A531633B26D003BFFE3 /* 0_as_bg@2x.png */; };
 		50C84A7A1633BC7F003BFFE3 /* 0_as_cancel.png in Resources */ = {isa = PBXBuildFile; fileRef = 50C84A6E1633BC7F003BFFE3 /* 0_as_cancel.png */; };
@@ -414,6 +415,8 @@
 		50C464A1177FBF3B0025ED54 /* 0_indents@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_indents@2x.png"; sourceTree = "<group>"; };
 		50C464A4177FBFBD0025ED54 /* 0_meml.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_meml.png; sourceTree = "<group>"; };
 		50C464A5177FBFC00025ED54 /* 0_meml@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_meml@2x.png"; sourceTree = "<group>"; };
+		50C7EB77178FE794001C07C7 /* RCSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCSettingsViewController.h; sourceTree = "<group>"; };
+		50C7EB78178FE794001C07C7 /* RCSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCSettingsViewController.m; sourceTree = "<group>"; };
 		50C84A521633B26D003BFFE3 /* 0_as_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_as_bg.png; sourceTree = "<group>"; };
 		50C84A531633B26D003BFFE3 /* 0_as_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_as_bg@2x.png"; sourceTree = "<group>"; };
 		50C84A6E1633BC7F003BFFE3 /* 0_as_cancel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_as_cancel.png; sourceTree = "<group>"; };
@@ -567,6 +570,8 @@
 				50E3694015D0E4DD005DD077 /* RCChannelManagementViewController.m */,
 				50150FB3163DBB3400B78D62 /* RCBaseNavigationViewController.h */,
 				50150FB4163DBB3400B78D62 /* RCBaseNavigationViewController.m */,
+				50C7EB77178FE794001C07C7 /* RCSettingsViewController.h */,
+				50C7EB78178FE794001C07C7 /* RCSettingsViewController.m */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -1307,6 +1312,7 @@
 				50C46498177FA0150025ED54 /* RCChannelListViewCard.m in Sources */,
 				50C4649F177FB3B10025ED54 /* RCCuteView.m in Sources */,
 				50204EDB178E887C00631D85 /* RCChannelInfoTableViewCell.m in Sources */,
+				50C7EB79178FE794001C07C7 /* RCSettingsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

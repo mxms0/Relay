@@ -10,6 +10,10 @@
 @implementation RCChannelInfo
 @synthesize userCount, topic, channel, attributedString;
 
+- (id)description {
+	return [NSString stringWithFormat:@"<RCChannelInfo %p; channel = %@;>", self, channel];
+}
+
 - (void)dealloc {
 	[topic release];
 	[channel release];

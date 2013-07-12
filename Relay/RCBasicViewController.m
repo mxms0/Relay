@@ -63,6 +63,7 @@
 	self.view.backgroundColor = UIColorFromRGB(0x141925);
 	self.tableView.backgroundView.backgroundColor = UIColorFromRGB(0x141925);
 	self.tableView.backgroundColor = UIColorFromRGB(0x141925);
+	self.tableView.separatorColor = UIColorFromRGB(0x141925);
 	titleView.text = [self titleText];
 }
 

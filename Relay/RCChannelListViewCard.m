@@ -29,6 +29,18 @@
 		[channels setScrollEnabled:YES];
 		[self addSubview:channels];
 		[channels release];
+		UISearchBar *sb = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+		[sb setDelegate:self];
+		[sb setShowsCancelButton:YES];
+		for (UIView *sv in [sb subviews]) {
+			if ([sv isKindOfClass:NSClassFromString(@"UISearchBarBackground")]) {
+				[sv removeFromSuperview];
+				break;
+			}
+		}
+		// can probably use UIAppearence to do this.. :/
+		[channels setTableHeaderView:sb];
+		[sb release];
 	}
 	return self;
 }
@@ -39,6 +51,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 	if (updating) return 0;
+	if (isSearching) return [searchArray count];
 	return [channelDatas count];
 }
 
@@ -47,13 +60,53 @@
 	if (!cc) {
 		cc = [[[RCChannelInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"0_CSL"] autorelease];
 	}
-	[cc setChannelInfo:[channelDatas objectAtIndex:indexPath.row]];
+	NSArray *use = channelDatas;
+	if (isSearching) use = searchArray;
+	if ([use count] <= indexPath.row) {
+		[tableView reloadData];
+		return cc;
+	}
+	[cc setChannelInfo:[use objectAtIndex:indexPath.row]];
 	[cc setBackgroundColor:[UIColor blackColor]];
+	[cc setNeedsDisplay];
 	return cc;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 	return 50;
+}
+
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
+	searchArray = [[NSMutableArray alloc] init];
+	[channels setFrame:CGRectMake(0, channels.frame.origin.y, 320, self.frame.size.height - (44 + 215))];
+	isSearching = YES;
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+	[searchBar resignFirstResponder];
+	[channels setFrame:CGRectMake(0, 44, self.frame.size.width, self.frame.size.height-44)];
+	[searchArray release];
+	searchArray = nil;
+	isSearching = NO;
+	[channels reloadData];
+}
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+	if ([[searchBar text] isEqualToString:@""]) {
+		// do something.
+		isSearching = NO;
+		[channels reloadData];
+		return;
+	}
+	isSearching = YES;
+	[searchArray removeAllObjects];
+	for (RCChannelInfo *ifs in channelDatas) {
+		if ([[ifs channel] rangeOfString:[searchBar text] options:NSCaseInsensitiveSearch].location != NSNotFound) {
+			[searchArray addObject:ifs];
+			[channels reloadData];
+		}
+	}
+	// this isn't very fast. max fix this.
 }
 
 - (void)setUpdating:(BOOL)ud {
@@ -88,7 +141,7 @@
 	[ifs setChannel:chan];
 	[ifs setUserCount:cc];
 	if (![topics isEqualToString:@":"])
-		[ifs setTopic:topics];
+		[ifs setTopic:[topics stringByStrippingIRCMetadata]];
 	else
 		[ifs setTopic:@"No topic set."];
 	NSString *lcnt = [NSString stringWithFormat:@"%d Users", cc];

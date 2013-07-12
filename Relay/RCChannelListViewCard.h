@@ -9,10 +9,13 @@
 #import "RCSuperSpecialTableView.h"
 #import "RCChannelInfo.h"
 #import "RCChannelInfoTableViewCell.h"
+#import "NSString+IRCStringSupport.h"
 
-@interface RCChannelListViewCard : RCViewCard <UITableViewDataSource, UITableViewDelegate> {
+@interface RCChannelListViewCard : RCViewCard <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate> {
 	UITableView *channels;
 	NSMutableArray *channelDatas;
+	NSMutableArray *searchArray;
+	BOOL isSearching;
 	BOOL updating;
 }
 - (void)setUpdating:(BOOL)ud;

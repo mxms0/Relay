@@ -69,6 +69,10 @@
 			sv = 0;
 			break;
 		default:
+			sv = (rect.size.width - sv);
+			if (!self.isFirstResponder) {
+				sv -= 20;
+			}
 			break;
 	}
 	[[self placeholder] drawInRect:CGRectMake(sv, 0, rect.size.width, rect.size.height) withFont:[UIFont systemFontOfSize:13]];

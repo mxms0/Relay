@@ -325,6 +325,9 @@ static RCNetwork *currentNetwork = nil;
 	switch ([actionSheet tag]) {
 		case RCALERR_GLOPTIONS: {
 			if (buttonIndex == 0) {
+				RCSettingsViewController *vc = [[RCSettingsViewController alloc] initWithStyle:0];
+				[self presentViewControllerInMainViewController:vc];
+				[vc release];
 				// settings
 			}
 			else if (buttonIndex == 1) {
@@ -592,8 +595,16 @@ static RCNetwork *currentNetwork = nil;
 		[buttons insertObject:meml atIndex:3];
 	else [buttons addObject:meml];
 	[meml release];
+	CGRect frame = CGRectMake(65, 2, [rc frame].size.width-130, 43);
+	if (isConsole) {
+		UIButton *cnc = [[UIButton alloc] init];
+		[cnc setImage:[UIImage imageNamed:@"0_cncl"] forState:UIControlStateNormal];
+		[cnc addTarget:self action:@selector(dismissMenuOptions) forControlEvents:UIControlEventTouchUpInside];
+		[buttons addObject:cnc];
+		[cnc release];
+		frame = CGRectMake(100, 2, [rc frame].size.width - 200, 43);
+	}
 	for (int i = 0; i < [buttons count]; i++) {
-		CGRect frame = CGRectMake(65, 2, [rc frame].size.width-130, 43);
 		CGFloat indivSize = frame.size.width/[buttons count];
 		UIButton *b = (UIButton *)[buttons objectAtIndex:i];
 		[b setFrame:CGRectMake(i*indivSize+(frame.origin.x), 1, indivSize, frame.size.height)];
@@ -655,7 +666,7 @@ static RCNetwork *currentNetwork = nil;
 	CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:@"position.y"];
 	[anim setDuration:0.4];
 	anim.fromValue = [NSNumber numberWithFloat:825];
-	anim.toValue = [NSNumber numberWithFloat:295];
+	anim.toValue = [NSNumber numberWithFloat:(rootView.view.frame.size.height > 480 ? 295 : 250)];
 	[anim setRemovedOnCompletion:NO];
 	[anim setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut]];
 	[anim setFillMode:kCAFillModeBoth];
@@ -683,7 +694,7 @@ static RCNetwork *currentNetwork = nil;
 		[fade setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
 		CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:@"position.y"];
 		[anim setDuration:0.4];
-		anim.fromValue = [NSNumber numberWithFloat:315];
+		anim.fromValue = [NSNumber numberWithFloat:(rootView.view.frame.size.height > 480 ? 295 : 250)];
 		anim.toValue = [NSNumber numberWithFloat:825];
 		[anim setRemovedOnCompletion:NO];
 		[anim setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];

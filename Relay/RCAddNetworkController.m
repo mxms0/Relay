@@ -30,7 +30,6 @@
 			network = [net retain];
 			datas = [[[network infoDictionary] mutableCopy] retain];
 		}
-		self.tableView.separatorColor = UIColorFromRGB(0x141925);
 	}
 	return self;
 }

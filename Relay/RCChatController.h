@@ -13,6 +13,7 @@
 #import "RCInitialSetupView.h"
 #import "RCChannelListViewCard.h"
 #import "RCCuteView.h"
+#import "RCSettingsViewController.h"
 
 @class RCChatViewController, RCChatsListViewController, RCUserListViewController;
 @interface RCChatController : NSObject <UIAlertViewDelegate, UIActionSheetDelegate, UIGestureRecognizerDelegate, UITextFieldDelegate> {
