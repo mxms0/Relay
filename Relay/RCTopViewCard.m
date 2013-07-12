@@ -118,4 +118,19 @@
 	[_tableView deselectRowAtIndexPath:indexPath animated:NO];
 }
 
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+	switch (buttonIndex) {
+		case 1:
+			break;
+		case 2:
+			break;
+		case 3:
+			break;
+		case 4:
+			break;
+		default:
+			break;
+	}
+}
+
 @end

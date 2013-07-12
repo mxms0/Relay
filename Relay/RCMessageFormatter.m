@@ -119,9 +119,11 @@ NSString *colorForIRCColor(char irccolor) {
 				if (didColor) {
 					[final appendString:@"</font>"];
 					didColor = NO;
-					continue;
+				//	continue;
+				//	there is an issue with colors and formatting in this.
+				//	pls review <3
 				}
-				if (num1 == -1 || num2 == -2) {
+				if (num1 == -1 && num2 == -2) {
 					continue;
 				}
 				[final appendFormat:@"<font color=\"%@\" style=\"background:%@\">", fgcolor, bgcolor];
