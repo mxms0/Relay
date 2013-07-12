@@ -112,7 +112,7 @@ static NSString *template = nil;
 		else {
 			name = [self stringByEvaluatingJavaScriptFromString:@"createMessage(false);"];
 		}
-		NSString *res = [self stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"postMessage('%@', '%@', %@)", name, ms.string, (self.scrollView.tracking ? @"false" : @"true")]];
+		NSString *res = [self stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"postMessage('%@', '%@', %@)", name, ms.string, ((self.scrollView.tracking || self.scrollView.dragging )? @"false" : @"true")]];
 		if ([res isEqualToString:@"nop"]) {
 			//hi
 		}

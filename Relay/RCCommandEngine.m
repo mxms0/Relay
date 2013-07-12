@@ -63,6 +63,7 @@ static id _eInstance = nil;
 				NSLog(@"RELAY::ERROR SELECTOR [%@] CLASS: [%@] EXC: [%@]", NSStringFromSelector(call), NSStringFromClass(target), e);
 			}
 			[obj release]; // still not sure wether or not this is a good idea. hm
+			[scan release];
 		}
 		else {
 			// command not found.

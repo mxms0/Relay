@@ -26,6 +26,7 @@ SSL_CTX *RCInitContext(void) {
 	SSL_load_error_strings();
 	meth = (SSL_METHOD *)SSLv23_client_method();
 	_ctx = SSL_CTX_new(meth);
+
 	if (_ctx == NULL) {
 		// fuck.
 		MARK;
