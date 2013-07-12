@@ -75,7 +75,12 @@
 			}
 			break;
 	}
+	NSLog(@"hi %f", sv);
 	[[self placeholder] drawInRect:CGRectMake(sv, 0, rect.size.width, rect.size.height) withFont:[UIFont systemFontOfSize:13]];
+}
+
+- (void)drawTextInRect:(CGRect)rect {
+	[super drawTextInRect:CGRectMake(0, 0, rect.size.width-20, rect.size.height)];
 }
 
 @end

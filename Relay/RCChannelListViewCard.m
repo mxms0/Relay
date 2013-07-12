@@ -31,7 +31,7 @@
 		[channels release];
 		UISearchBar *sb = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
 		[sb setDelegate:self];
-		[sb setShowsCancelButton:YES];
+		[sb setShowsCancelButton:NO];
 		for (UIView *sv in [sb subviews]) {
 			if ([sv isKindOfClass:NSClassFromString(@"UISearchBarBackground")]) {
 				[sv removeFromSuperview];
@@ -41,6 +41,7 @@
 		// can probably use UIAppearence to do this.. :/
 		[channels setTableHeaderView:sb];
 		[sb release];
+		[channels setContentOffset:CGPointMake(0, 44)];
 	}
 	return self;
 }
@@ -77,13 +78,16 @@
 }
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
+	[searchBar setShowsCancelButton:YES animated:YES];
 	searchArray = [[NSMutableArray alloc] init];
 	[channels setFrame:CGRectMake(0, channels.frame.origin.y, 320, self.frame.size.height - (44 + 215))];
 	isSearching = YES;
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+	[searchBar setShowsCancelButton:NO animated:YES];
 	[searchBar resignFirstResponder];
+	[searchBar setText:@""];
 	[channels setFrame:CGRectMake(0, 44, self.frame.size.width, self.frame.size.height-44)];
 	[searchArray release];
 	searchArray = nil;
