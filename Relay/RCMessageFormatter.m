@@ -119,6 +119,7 @@ NSString *colorForIRCColor(char irccolor) {
 				if (didColor) {
 					[final appendString:@"</font>"];
 					didColor = NO;
+					continue;
 				}
 				if (num1 == -1 && num2 == -2) {
 					continue;
