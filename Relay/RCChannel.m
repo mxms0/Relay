@@ -352,7 +352,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 				msg = [[NSString stringWithFormat:@"%@ %c%c%02d%@:%c%c %@", time, RCIRCAttributeBold, RCIRCAttributeInternalNickname, uhash, from, RCIRCAttributeInternalNicknameEnd, RCIRCAttributeBold, message] retain];
 			}
 			else {
-				msg = @"";
+				msg = [@"" retain];
 				type = RCMessageTypeNormalE;
 			}
 			break;
@@ -448,65 +448,65 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 }
 
 - (NSString *)nickAndRankForNick:(NSString *)nick {
-    for (NSString *nickrank in fullUserList) {
-        if (nick && [nickrank hasSuffix:nick]) {
-            NSInteger ln = [RCUserRank(nickrank, [self delegate]) length];
-            if ([[nickrank substringFromIndex:ln] isEqualToString:nick]) {
-                return nickrank;
-            }
-        }
-    }
+	for (NSString *nickrank in fullUserList) {
+		if (nick && [nickrank hasSuffix:nick]) {
+			NSInteger ln = [RCUserRank(nickrank, [self delegate]) length];
+			if ([[nickrank substringFromIndex:ln] isEqualToString:nick]) {
+				return nickrank;
+			}
+		}
+	}
     return nick;
 }
 
 - (void)setUserJoined:(NSString *)_joined {
-    if (_joined && ![_joined isEqualToString:@""]) {
-        [self setUserJoined:_joined cnt:0];
-    }
+	if (_joined && ![_joined isEqualToString:@""]) {
+		[self setUserJoined:_joined cnt:0];
+	}
 }
 
 - (void)setUserJoinedBatch:(NSString *)_joined cnt:(int)cnt {
-    if (cnt > 10) {
+	if (cnt > 10) {
 		if (![[self delegate] prefix])
 			[[self delegate] setPrefix:[NSDictionary new]];
-    }
-    if (![[self delegate] prefix]) {
-        double delayInSeconds = 0.1;
-        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-        dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
-            [self setUserJoinedBatch:_joined cnt:cnt+1];
-        });
-        return;
-    }
-    @synchronized(fakeUserList) {
-        if (![_joined isEqualToString:@""] && ![_joined isEqualToString:@" "] && ![_joined isEqualToString:@"\r\n"] && ![self isUserInChannel:_joined] && _joined) {
+	}
+	if (![[self delegate] prefix]) {
+		double delayInSeconds = 0.1;
+		dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+		dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
+			[self setUserJoinedBatch:_joined cnt:cnt+1];
+		});
+		return;
+	}
+	@synchronized(fakeUserList) {
+		if (![_joined isEqualToString:@""] && ![_joined isEqualToString:@" "] && ![_joined isEqualToString:@"\r\n"] && ![self isUserInChannel:_joined] && _joined) {
 			NSUInteger newIndex = [fakeUserList indexOfObject:_joined inSortedRange:(NSRange){0, [fakeUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^ NSComparisonResult(id obj1, id obj2) {
 					return sortRank(obj1, obj2, [self delegate]);
 			}];
 			[fakeUserList insertObject:_joined atIndex:newIndex];
-        }
-    }
+		}
+	}
 }
 
 - (void)setUserJoined:(NSString *)_joined cnt:(int)cnt_ {
-    if (cnt_ > 10) {
+	if (cnt_ > 10) {
 		if (![[self delegate] prefix])
 			[[self delegate] setPrefix:[NSDictionary new]];
-    }
-    if (![[self delegate] prefix]) {
-        double delayInSeconds = 0.1;
-        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-        dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
-            [self setUserJoined:_joined cnt:cnt_+1];
-        });
-        return;
-    }
-    if (![NSThread isMainThread]) {
-        [self performSelectorOnMainThread:@selector(setUserJoined:) withObject:_joined waitUntilDone:NO];
-        return;
-    }
-    @synchronized(fullUserList) {
-        if (![_joined isEqualToString:@""] && ![_joined isEqualToString:@" "] && ![_joined isEqualToString:@"\r\n"] && ![self isUserInChannel:_joined] && _joined) {
+	}
+	if (![[self delegate] prefix]) {
+		double delayInSeconds = 0.1;
+		dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+		dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
+			[self setUserJoined:_joined cnt:cnt_+1];
+		});
+		return;
+	}
+	if (![NSThread isMainThread]) {
+		[self performSelectorOnMainThread:@selector(setUserJoined:) withObject:_joined waitUntilDone:NO];
+		return;
+	}
+	@synchronized(fullUserList) {
+		if (![_joined isEqualToString:@""] && ![_joined isEqualToString:@" "] && ![_joined isEqualToString:@"\r\n"] && ![self isUserInChannel:_joined] && _joined) {
 				[usersPanel reloadData];
 				NSUInteger newIndex = [fullUserList indexOfObject:_joined inSortedRange:(NSRange){0, [fullUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^NSComparisonResult(id obj1, id obj2) {
 					return sortRank(obj1, obj2, [self delegate]);
@@ -514,8 +514,8 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 				[fullUserList insertObject:_joined atIndex:newIndex];
 				[[RCChatController sharedController] reloadUserCount];
 				[usersPanel reloadData];
-        }
-    }
+		}
+	}
 }
 - (void)setUserLeft:(NSString *)left {
     if (![NSThread isMainThread]) {
@@ -547,12 +547,12 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 
 - (void)disconnected:(NSString *)msg {
 	[fullUserList removeAllObjects];
-    if ([msg isEqualToString:@"Disconnected."]) {
-        [self recievedMessage:@"Disconnected." from:@"" type:RCMessageTypeEvent];
-    }
+	if ([msg isEqualToString:@"Disconnected."]) {
+		[self recievedMessage:@"Disconnected." from:@"" type:RCMessageTypeEvent];
+	}
 	else {
-        [self recievedMessage:[@"Disconnected: " stringByAppendingString:msg] from:@"" type:RCMessageTypeEvent];
-    }
+		[self recievedMessage:[@"Disconnected: " stringByAppendingString:msg] from:@"" type:RCMessageTypeEvent];
+	}
 	joined = NO;
 }
 
@@ -603,42 +603,42 @@ for (int a = 0; a < [partialLen length]; a++) {\
 // i promise i'll get rid of this one day.
 
 - (void)setMode:(NSString *)modes forUser:(NSString *)user {
-    @synchronized(userRanksAdv) {
-        @try {
-            NSArray *users = [user componentsSeparatedByString:@" "];
-            BOOL adding = NO;
-            BOOL subtracting = NO;
-            int stptr = 0;
-            int endptr = 0;
-            int modecnt = 0;
-            NSString *partialLen = nil;
-            for (int i = 0; i < [modes length]; i++) {
-                switch ([modes characterAtIndex:i]) {
-                    case '+':
-                        SET_MODE;;
-                        adding = YES;
-                        subtracting = NO;
-                        stptr = i + 1;
-                        endptr = stptr;
-                        break;                                            
-                    case '-':
-                        SET_MODE;
-                        adding = NO;
-                        subtracting = YES;
-                        stptr = i + 1;
-                        endptr = stptr;
-                        break;
-                    default:
-                        endptr ++;
-                        break;
-                }
-            }
-            SET_MODE;
-        }
-        @catch (NSException *exception) {
-            NSLog(@"exc %@", exception);
-        }
-    }
+	@synchronized(userRanksAdv) {
+		@try {
+			NSArray *users = [user componentsSeparatedByString:@" "];
+			BOOL adding = NO;
+			BOOL subtracting = NO;
+			int stptr = 0;
+			int endptr = 0;
+			int modecnt = 0;
+			NSString *partialLen = nil;
+			for (int i = 0; i < [modes length]; i++) {
+				switch ([modes characterAtIndex:i]) {
+					case '+':
+						SET_MODE;;
+						adding = YES;
+						subtracting = NO;
+						stptr = i + 1;
+						endptr = stptr;
+						break;
+					case '-':
+						SET_MODE;
+						adding = NO;
+						subtracting = YES;
+						stptr = i + 1;
+						endptr = stptr;
+						break;
+					default:
+						endptr++;
+						break;
+				}
+			}
+			SET_MODE;
+		}
+		@catch (NSException *exception) {
+			NSLog(@"exc %@", exception);
+		}
+	}
 }
 
 - (void)setJoined:(BOOL)joind {
@@ -646,8 +646,8 @@ for (int a = 0; a < [partialLen length]; a++) {\
 		NSLog(@"State the same. Canceling request..");
 		return;
 	}
-    if (!joind) joined = joind;
-    else [self setJoined:joind withArgument:@""];
+	if (!joind) joined = joind;
+	else [self setJoined:joind withArgument:@""];
 }
 
 - (void)setJoined:(BOOL)joind withArgument:(NSString *)arg1 {
@@ -717,7 +717,7 @@ for (int a = 0; a < [partialLen length]; a++) {\
 							// fuck me.
 							continue;
 						}
-						if ([delegate sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@",channelName, msg]]) {
+						if ([delegate sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", channelName, msg]]) {
 							[self recievedMessage:msg from:[delegate useNick] type:RCMessageTypeNormal];
 						}
 					}

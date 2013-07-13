@@ -157,6 +157,19 @@ NSString *colorForIRCColor(char irccolor) {
 	}
 	if (self.highlight)
 		[final appendString:@"</font>"];
+	// RCMessageTypeTopic doesn't have timestamp
+	if (!needsCenter) {
+		NSRange rangeOfFontTag = [final rangeOfString:@"</font>"];
+		if (rangeOfFontTag.location != NSNotFound) {
+			[final insertString:@"<div class=\"ts\">" atIndex:0];
+			[final insertString:@"</div>" atIndex:rangeOfFontTag.location+16];
+			[final insertString:@"<div class=\"msg\">" atIndex:rangeOfFontTag.location+29];
+			[final appendString:@"</div>"];
+			// necessary fix.
+			// variables named appropriately.
+			// how's this, Cykey?
+		}
+	}
 	[self setString:(NSString *)final];
 	[final release];
 }

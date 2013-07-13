@@ -94,12 +94,7 @@ static NSString *template = nil;
 
 - (void)layoutMessage:(RCMessageFormatter *)ms {
     /* hi max please refactor this <3 */
-    NSString *ts = [NSString stringWithFormat:@"<div class=\"ts\">%@</font></div>", [[ms.string componentsSeparatedByString:@"</font>"] firstObject]];
-    NSMutableArray *splitMsg = [[ms.string componentsSeparatedByString:@"</font>"] mutableCopy];
-    [splitMsg removeObjectAtIndex:0];
-    NSString *msg = [splitMsg componentsJoinedByString:@"</font>"];
-    ms.string = [NSString stringWithFormat:@"%@</font><div class=\"msg\">%@</div>", ts, msg];
-    NSLog(ms.string);
+	// leaving this for historical purposes.
 	if (self.hidden) {
 		self.hidden = NO;
 	}
@@ -145,7 +140,7 @@ static NSString *template = nil;
 - (void)postMessage:(NSString *)_message withType:(RCMessageType)type highlight:(BOOL)high isMine:(BOOL)mine {
     [_message retain];
 	RCMessageFormatter *message = [[RCMessageFormatter alloc] initWithMessage:_message isOld:NO isMine:mine isHighlight:high type:type];
-	dispatch_async(dispatch_get_main_queue(), ^ {
+	dispatch_async(dispatch_get_main_queue(), ^{
 		[message format];
 		[self layoutMessage:message];
 		[self setNeedsDisplay];
