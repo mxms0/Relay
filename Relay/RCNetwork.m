@@ -841,6 +841,23 @@
 	
 }
 
+- (void)handle520:(NSString *)cantJoin {
+    NSLog(cantJoin);
+    NSScanner *scanner = [[NSScanner alloc] initWithString:cantJoin];
+    NSString *crap;
+    NSString *channel;
+    NSString *reason;
+    [scanner scanUpToString:@" " intoString:&crap];
+    [scanner scanUpToString:@" " intoString:&crap];
+    [scanner scanUpToString:@" " intoString:&crap];
+    [scanner scanUpToString:@" " intoString:&channel];
+    [scanner scanUpToString:@"" intoString:&reason];
+    [scanner release];
+    if ([reason hasPrefix:@":"])
+        reason = [reason substringFromIndex:1];
+    [[[[RCChatController sharedController] currentPanel] channel] recievedMessage:[NSString stringWithFormat:@"%@: %@", channel, reason] from:@"" type:RCMessageTypeError];
+}
+
 - (void)handle252:(NSString *)opsOnline {
 	NSScanner *scanner = [[NSScanner alloc] initWithString:opsOnline];
 	NSString *crap;
@@ -1448,6 +1465,22 @@
 	if (kchan) [kchan recievedMessage:mesg from:@"" type:RCMessageTypeError];
     else [[self consoleChannel] recievedMessage:[args substringFromIndex:[[args substringFromIndex:[args rangeOfString:@" "].location+1] rangeOfString:@" "].location+1] from:@"" type:RCMessageTypeNormal];
     NSLog(@"kay %@ %@ %@", raw, chan, mesg);
+}
+
+- (void)handle482:(NSString *)isntOp {
+    NSScanner *scanner = [[NSScanner alloc] initWithString:isntOp];
+    NSString *crap;
+    NSString *channel;
+    NSString *reason;
+    [scanner scanUpToString:@" " intoString:&crap];
+    [scanner scanUpToString:@" " intoString:&crap];
+    [scanner scanUpToString:@" " intoString:&crap];
+    [scanner scanUpToString:@" " intoString:&channel];
+    [scanner scanUpToString:@"" intoString:&reason];
+    [scanner release];
+    if ([reason hasPrefix:@":"])
+        reason = [reason substringFromIndex:1];
+    [[self channelWithChannelName:channel] recievedMessage:[NSString stringWithFormat:@"%@: %@", channel, reason] from:@"" type:RCMessageTypeError];
 }
 
 - (void)handle903:(NSString *)saslsuc {
