@@ -28,6 +28,24 @@
 	[e registerSelector:@selector(handleCLEAR:net:channel:) forCommands:@"clear" usingClass:self];
     [e registerSelector:@selector(handleCLEARALL:net:) forCommands:@"clearall" usingClass:self];
 	[e registerSelector:@selector(handleTOPIC:net:channel:) forCommands:@"topic" usingClass:self];
+    [e registerSelector:@selector(handleBRAG:net:channel:) forCommands:@"brag" usingClass:self];
+}
+
+- (void)handleBRAG:(NSString *)args net:(RCNetwork *)net channel:(RCChannel *)chan {
+    int netCount = [[[RCNetworkManager sharedNetworkManager] networks] count];
+    int chanCount = 0;
+    int olineCount = 0;
+    for (id network in [[RCNetworkManager sharedNetworkManager] networks]) {
+        for (id channel in [network _channels]) {
+            if ([channel joined] && ![channel respondsToSelector:@selector(ipInfo)]) chanCount += 1;
+        }
+        chanCount -= 1;
+        if([network isOper])
+            olineCount++;
+    }
+    NSString *message = [NSString stringWithFormat:@"I am in %d channels while connected to %d networks. I have %d o:lines.", chanCount, netCount, olineCount];
+    [net sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", [chan channelName], message]];
+    [chan recievedMessage:message from:[net useNick] type:RCMessageTypeNormal];
 }
 
 - (void)handleTOPIC:(NSString *)tp net:(RCNetwork *)net channel:(RCChannel *)chan {
@@ -142,22 +160,22 @@
 }
 
 - (void)handlePRIVMSG:(NSString *)msg net:(RCNetwork *)net channel:(RCChannel *)chan {
-	NSString *usrchanetc = nil;
-	NSString *rmsg = nil;
-	NSScanner *scanr = [[NSScanner alloc] initWithString:msg];
-	[scanr scanUpToString:@" " intoString:&usrchanetc];
-	[scanr scanUpToString:@"" intoString:&rmsg];
-	RCChannel *chan_ = [net channelWithChannelName:usrchanetc];
-	if (!chan_) {
-		chan_ = [net addChannel:usrchanetc join:NO];
-	}
-	if (!!rmsg && [net sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", usrchanetc, rmsg]]) {
-		[chan_ recievedMessage:rmsg from:[net useNick] type:RCMessageTypeNormal];
-	}
-	if (![[[[RCChatController sharedController] currentPanel] channel] isEqual:chan_]) {
-		[[RCChatController sharedController] selectChannel:usrchanetc fromNetwork:net];	
-	}
-	[scanr release];
+    NSString *usrchanetc = nil;
+    NSString *rmsg = nil;
+    NSScanner *scanr = [[NSScanner alloc] initWithString:msg];
+    [scanr scanUpToString:@" " intoString:&usrchanetc];
+    [scanr scanUpToString:@"" intoString:&rmsg];
+    RCChannel *chan_ = [net channelWithChannelName:usrchanetc];
+    if (!chan_) {
+        chan_ = [net addChannel:usrchanetc join:NO];
+    }
+    if (!!rmsg && [net sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", usrchanetc, rmsg]]) {
+        [chan_ recievedMessage:rmsg from:[net useNick] type:RCMessageTypeNormal];
+    }
+    if (![[[[RCChatController sharedController] currentPanel] channel] isEqual:chan_]) {
+        [[RCChatController sharedController] selectChannel:usrchanetc fromNetwork:net];
+    }
+    [scanr release];
 }
 
 - (NSString *)nowPlayingInfo {

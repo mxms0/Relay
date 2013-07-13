@@ -35,6 +35,7 @@
 		status = RCSocketStatusClosed;
 		shouldSave = NO;
 		isRegistered = NO;
+        isOper = NO;
 		canSend = YES;
 		sockfd = -1;
 		ctx = NULL;
@@ -1251,8 +1252,8 @@
 	// :irc.saurik.com 376 _m :End of message of the day.
 }
 
-- (void)handle381:(NSString *)oofancyOper {
-	MARK;
+- (void)handle381:(NSString *)ircopFlag {
+	self.isOper = YES;
 }
 
 - (void)handle401:(NSString *)blasphemey {
