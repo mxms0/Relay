@@ -295,7 +295,8 @@
 }
 
 - (void)_connect {
-    tryingToConnect = YES;
+	if (status == RCSocketStatusConnecting || status == RCSocketStatusConnected) return;
+	status = RCSocketStatusConnecting;
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	writebuf = [[NSMutableString alloc] init];
 	rcache = [[NSMutableData alloc] init];
@@ -303,14 +304,6 @@
 	cache = [[NSMutableString alloc] init];
     isRegistered = NO;
 	dcCount = 0;
-    if (status == RCSocketStatusConnecting) {
-		[p drain];
-		return;
-	}
-    if (status == RCSocketStatusConnected) {
-		[p drain];
-		return;	
-	}
     self.useNick = nick;
     self.userModes = @"~&@%+";
     if (kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iPhoneOS_4_0) {
@@ -321,7 +314,6 @@
     }
     RCChannel *chan = [self consoleChannel];
     if (chan) [chan recievedMessage:[NSString stringWithFormat:@"Connecting to %@ on port %d", server, port] from:@"" type:RCMessageTypeNormal];
-    status = RCSocketStatusConnecting;
 	sockfd = [[RCSocket sharedSocket] connectToAddr:server withSSL:useSSL andPort:port fromNetwork:self];
 	[p drain];
 }
@@ -344,6 +336,7 @@
 			[rcache appendBytes:buf length:rc];
 			NSRange rr = [rcache rangeOfData:[NSData nlCharacterDataSet] options:(NSDataSearchOptions)nil range:NSMakeRange(0, [rcache length])];
 			while (rr.location != NSNotFound) {
+				if (rr.location == 0) break;
 				NSData *str = [rcache subdataWithRange:NSMakeRange(0, rr.location+2)];
 				NSString *send = [[NSString alloc] initWithData:str encoding:NSUTF8StringEncoding];
 				if (send) {
@@ -366,6 +359,7 @@
 			[rcache appendBytes:buf length:rc];
 			NSRange rr = [rcache rangeOfData:[NSData nlCharacterDataSet] options:(NSDataSearchOptions)nil range:NSMakeRange(0, [rcache length])];
 			while (rr.location != NSNotFound) {
+				if (rr.location == 0) break;
 				NSData *str = [rcache subdataWithRange:NSMakeRange(0, rr.location+2)];
 				NSString *send = [[NSString alloc] initWithData:str encoding:NSUTF8StringEncoding];
 				if (send) {
@@ -548,7 +542,7 @@
 }
 
 - (BOOL)isTryingToConnectOrConnected {
-    return ([self isConnected] || tryingToConnect);
+    return ([self isConnected] || status == RCSocketStatusConnecting);
 }
 
 - (NSString *)defaultQuitMessage {
@@ -556,20 +550,27 @@
 }
 
 - (BOOL)disconnectWithMessage:(NSString *)msg {
-	if (_isDisconnecting) {
-		dcCount++;
-		if (dcCount == 1) {
-			_isDisconnecting = NO;
-			// two tries. force this.
-			[self disconnectCleanupWithMessage:msg];
+	if (status == RCSocketStatusConnecting) {
+		status = RCSocketStatusClosed;
+		close(sockfd);
+		[rcache release];
+		rcache = nil;
+		sockfd = -1;
+		[writebuf release];
+		writebuf = nil;
+		if (useSSL)
+			SSL_CTX_free(ctx);
+		[[UIApplication sharedApplication] endBackgroundTask:task];
+		task = UIBackgroundTaskInvalid;
+		isRegistered = NO;
+		for	(RCChannel *_chan in _channels) {
+			[_chan disconnected:msg];
 		}
-		return NO;
 	}
-	_isDisconnecting = YES;
-	if (status == RCSocketStatusClosed) return NO;
-	if ((status == RCSocketStatusConnected) || (status == RCSocketStatusConnecting)) {
+	else if (status == RCSocketStatusConnected) {
 		[self sendMessage:[@"QUIT :" stringByAppendingString:([msg isEqualToString:@"Disconnected."] ? [self defaultQuitMessage] : msg)] canWait:NO];
 	}
+	
 	return YES;
 }
 
@@ -586,10 +587,11 @@
 		SSL_CTX_free(ctx);
 	[[UIApplication sharedApplication] endBackgroundTask:task];
 	task = UIBackgroundTaskInvalid;
-	tryingToConnect = NO;
 	isRegistered = NO;
+	[[self consoleChannel] disconnected:msg];
 	for	(RCChannel *_chan in _channels) {
-		[_chan disconnected:msg];
+		if (![_chan isKindOfClass:[RCConsoleChannel class]])
+			[_chan disconnected:@"Disconnected."];
 	}
 }
 

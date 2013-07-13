@@ -8,7 +8,7 @@
 #import "RCNetworkCell.h"
 
 @implementation RCNetworkCell
-@synthesize channel, white, newMessageCount, joined;
+@synthesize channel, white, newMessageCount, joined, hasHighlights;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
@@ -69,7 +69,7 @@
 		CGContextAddLineToPoint(context, ovalThing.origin.x + radius, ovalThing.origin.y);
 		CGContextAddArc(context, ovalThing.origin.x + radius, ovalThing.origin.y + radius, radius, -M_PI / 2, M_PI, 1);
 		CGContextFillPath(context);
-		CGContextSetFillColorWithColor(context, UIColorFromRGB(0x191A26).CGColor);
+		CGContextSetFillColorWithColor(context, (hasHighlights ? [UIColor redColor].CGColor : UIColorFromRGB(0x191A26).CGColor));
 		CGContextSetShadowWithColor(context, CGSizeMake(0, 1), 0.5, [UIColor colorWithWhite:1 alpha:0.2].CGColor);
 		[rendr drawAtPoint:CGPointMake((longerThanNormal ? 97 : (newMessageCount <= 9 ? 103 : 101)), 5) forWidth:50 withFont:[UIFont boldSystemFontOfSize:7.5] fontSize:7.5 lineBreakMode:NSLineBreakByClipping baselineAdjustment:UIBaselineAdjustmentAlignCenters];
 	}

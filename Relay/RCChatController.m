@@ -345,6 +345,17 @@ static RCNetwork *currentNetwork = nil;
 			else if (buttonIndex == 3) {
 				// hm..
 				// clear badges
+				for (RCNetwork *net in [[RCNetworkManager sharedNetworkManager] networks]) {
+					if ([net isConnected]) {
+						for (RCChannel *chan in [net _channels]) {
+							[chan setNewMessageCount:0];
+							[[chan cellRepresentation] setNewMessageCount:0];
+							[[chan cellRepresentation] setNeedsDisplay];
+						}
+					}
+				}
+				// this may be slow in the future.
+				// find a better way to do this.
 			}
 			else if (buttonIndex == 4) {
 				// cancel
@@ -779,6 +790,7 @@ static RCNetwork *currentNetwork = nil;
 	if (!_net) net = [[currentPanel channel] delegate];
 	RCChannel *chan = [net channelWithChannelName:channel];
 	[chan setNewMessageCount:0];
+	[chan setHasHighlights:NO];
 	[((RCChatNavigationBar *)[chatView navigationBar]) setNeedsDisplay];
 	if (!chan) {
 		NSLog(@"AN ERROR OCCURED. THIS CHANNEL DOES NOT EXIST BUT IS IN THE TABLE VIEW ANYWAYS.");

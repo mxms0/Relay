@@ -58,7 +58,6 @@ typedef enum RCSocketStatus {
 	BOOL shouldRequestNPass;
 	BOOL isWriting;
 	id namesCallback;
-	BOOL tryingToConnect;
 	NSDictionary *prefix;
 }
 @property (nonatomic, retain) NSDictionary *prefix;

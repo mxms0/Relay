@@ -28,6 +28,7 @@
     BOOL shouldJoin;
 	BOOL temporaryJoinOnConnect;
 	BOOL holdUserListUpdates;
+	BOOL hasHighlights;
 	unsigned newMessageCount;
 	RCNetwork *delegate;
 	RCNetworkCell *cellRepresentation;
@@ -38,6 +39,7 @@
 @property (nonatomic, retain) NSString *channelName;
 @property (nonatomic, assign) BOOL joinOnConnect;
 @property (nonatomic, assign) BOOL temporaryJoinOnConnect;
+@property (nonatomic, assign) BOOL hasHighlights;
 @property (nonatomic, assign) RCChatPanel *panel;
 @property (nonatomic, retain) NSString *topic;
 @property (nonatomic, retain) NSString *password;

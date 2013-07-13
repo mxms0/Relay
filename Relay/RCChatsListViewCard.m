@@ -94,6 +94,7 @@
 	[cell setChannel:[indexChannel channelName]];
 	[cell setWhite:NO];
 	[cell setNewMessageCount:[indexChannel newMessageCount]];
+	[cell setHasHighlights:[indexChannel hasHighlights]];
 	RCChannel *chan = [[[RCChatController sharedController] currentPanel] channel];
 	if ([[net uUID] isEqual:[[chan delegate] uUID]]) {
 		if ([cell.channel isEqualToString:[chan channelName]]) {

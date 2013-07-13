@@ -16,7 +16,7 @@
 #define M_COLOR 32
 @implementation RCChannel
 
-@synthesize channelName, joinOnConnect, panel, topic, usersPanel, password, temporaryJoinOnConnect, fullUserList, newMessageCount, cellRepresentation;
+@synthesize channelName, joinOnConnect, panel, topic, usersPanel, password, temporaryJoinOnConnect, fullUserList, newMessageCount, cellRepresentation, hasHighlights;
 
 NSString *RCUserRank(NSString *user, RCNetwork *network) {
 	if (![network prefix]) {
@@ -427,6 +427,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 	}
 	if (![[[[RCChatController sharedController] currentPanel] channel] isEqual:self]) {
 		newMessageCount++;
+		if (isHighlight) hasHighlights = YES;
 		if ([[RCChatController sharedController] isShowingChatListView]) {
 			if (newMessageCount > 101) return;
 			// if it's at 100, it will stop drawing anything new anyways. since the 99+ thing. so k

@@ -100,9 +100,11 @@
 		[c setIsLast:YES];
 	}
 	else {
-		c.textLabel.text = [[currentChan fullUserList] objectAtIndex:indexPath.row];
-		if (indexPath.row == [[currentChan fullUserList] count]-1)
-			[c setIsLast:YES];
+		if ([[currentChan fullUserList] count] > 0) {
+			c.textLabel.text = [[currentChan fullUserList] objectAtIndex:indexPath.row];
+			if (indexPath.row == [[currentChan fullUserList] count]-1)
+				[c setIsLast:YES];
+		}
 	}
 	[c setNeedsDisplay];
 	return c;
