@@ -93,7 +93,7 @@
 - (void)_wut:(NSString *)wut net:(RCNetwork *)net channel:(RCChannel *)chan {
 	NSString *str = [NSString stringWithFormat:@"PRIVMSG %@ :\u0CA0_\u0CA0", [chan channelName]];
 	[net sendMessage:str];
-	[chan recievedMessage:str from:[net useNick] type:RCMessageTypeNormal];
+	[chan recievedMessage:@"\u0CA0_\u0CA0" from:[net useNick] type:RCMessageTypeNormal];
 }
 
 - (void)handleREVS:(NSString *)rev net:(RCNetwork *)net channel:(RCChannel *)chan {
