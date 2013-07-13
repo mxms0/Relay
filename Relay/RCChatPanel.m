@@ -93,6 +93,13 @@ static NSString *template = nil;
 }
 
 - (void)layoutMessage:(RCMessageFormatter *)ms {
+    /* hi max please refactor this <3 */
+    NSString *ts = [NSString stringWithFormat:@"<div class=\"ts\">%@</font></div>", [[ms.string componentsSeparatedByString:@"</font>"] firstObject]];
+    NSMutableArray *splitMsg = [[ms.string componentsSeparatedByString:@"</font>"] mutableCopy];
+    [splitMsg removeObjectAtIndex:0];
+    NSString *msg = [splitMsg componentsJoinedByString:@"</font>"];
+    ms.string = [NSString stringWithFormat:@"%@</font><div class=\"msg\">%@</div>", ts, msg];
+    NSLog(ms.string);
 	if (self.hidden) {
 		self.hidden = NO;
 	}
