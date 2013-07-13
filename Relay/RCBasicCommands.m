@@ -32,20 +32,51 @@
 }
 
 - (void)handleBRAG:(NSString *)args net:(RCNetwork *)net channel:(RCChannel *)chan {
-    int netCount = [[[RCNetworkManager sharedNetworkManager] networks] count];
-    int chanCount = 0;
-    int olineCount = 0;
+    int netCount = 0, chanCount = 0, olineCount = 0, opsCount = 0, hopsCount = 0, voiceCount = 0, powerCount = 0;
+    int oppedUsers = 0, hoppedUsers = 0, voicedUsers = 0, normalUsers = 0;
+    BOOL isHopped = NO;
     for (id network in [[RCNetworkManager sharedNetworkManager] networks]) {
+        if ([network isConnected]) netCount++;
         for (id channel in [network _channels]) {
-            if ([channel joined] && ![channel respondsToSelector:@selector(ipInfo)]) chanCount += 1;
+            if ([channel joined] && ![channel respondsToSelector:@selector(ipInfo)]) {
+                chanCount += 1;
+            }
+            for (NSString *user in [channel fullUserList]) {
+                if ([user hasPrefix:@"@"]) {
+                    if ([user isEqualToString:[NSString stringWithFormat:@"@%@", [net useNick]]]) {
+                        powerCount += (unsigned int)[[channel fullUserList] count];
+                        opsCount++;
+                    } else {
+                        oppedUsers++;
+                    }
+                } else if ([user hasPrefix:@"%"]) {
+                    if ([user isEqualToString:[NSString stringWithFormat:@"%%%@", [net useNick]]]) {
+                        isHopped = YES;
+                        hopsCount++;
+                    } else {
+                        hoppedUsers++;
+                    }
+                } else if ([user hasPrefix:@"+"]) {
+                    if ([user isEqualToString:[NSString stringWithFormat:@"+%@", [net useNick]]]) {
+                        voiceCount++;
+                    } else {
+                        voicedUsers++;
+                    }
+                } else {
+                    normalUsers++;
+                }
+            }
+        }
+        if (isHopped) {
+            powerCount += voicedUsers;
+            powerCount += normalUsers;
         }
         chanCount -= 1;
-        if([network isOper])
-            olineCount++;
+        if([network isOper]) olineCount++;
     }
-    NSString *message = [NSString stringWithFormat:@"I am in %d channels while connected to %d networks. I have %d o:lines.", chanCount, netCount, olineCount];
-    [net sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", [chan channelName], message]];
+    NSString *message = [NSString stringWithFormat:@"I am in %d channels while connected to %d networks. I have %d o:lines, %d ops, %d halfops, and %d voices with power over %d individual users.", chanCount, netCount, olineCount, opsCount, hopsCount, voiceCount, powerCount];
     [chan recievedMessage:message from:[net useNick] type:RCMessageTypeNormal];
+	[net sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", [chan channelName], message]];
 }
 
 - (void)handleTOPIC:(NSString *)tp net:(RCNetwork *)net channel:(RCChannel *)chan {
