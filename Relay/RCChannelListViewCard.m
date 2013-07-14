@@ -170,13 +170,15 @@
 - (void)refreshSubtitleLabel {
 	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC/12);;
 	dispatch_after(popTime, dispatch_get_main_queue(), ^{
+		NSString *subtitle = nil;
 		if (updating) {
-			[self.navigationBar setSubtitle:[NSString stringWithFormat:@"Loading... %d public channels", [channelDatas count]]];
+			subtitle = [NSString stringWithFormat:@"Loading... %d public channels", [channelDatas count]];
 			[self refreshSubtitleLabel];
 		}
 		else {
-			[self.navigationBar setSubtitle:[NSString stringWithFormat:@"%d Public Channels", [channelDatas count]]];
+			subtitle = [NSString stringWithFormat:@"%d Public Channels", [channelDatas count]];
 		}
+		[self.navigationBar setSubtitle:subtitle];
 		[self.navigationBar setNeedsDisplay];
 	});
 }

@@ -56,7 +56,9 @@ static id _inst = nil;
 #if LOGALL
 		NSLog(@"HI I AM @ %f", centr.x);
 #endif
-		if (centr.x < 157 || draggingUserList) {
+		if (centr.x < 160 || draggingUserList) {
+			MARK;
+			
 			draggingUserList = YES;
 			[infoView setCenter:CGPointMake([infoView center].x+tr.x, [infoView center].y)];
 			[pan setTranslation:CGPointZero inView:[chatView superview]];

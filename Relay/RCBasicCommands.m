@@ -26,66 +26,81 @@
 	[e registerSelector:@selector(handleSLAP:net:channel:) forCommands:@"slap" usingClass:self];
 	[e registerSelector:@selector(handleMYVERSION:net:channel:) forCommands:@"myversion" usingClass:self];
 	[e registerSelector:@selector(handleCLEAR:net:channel:) forCommands:@"clear" usingClass:self];
-    [e registerSelector:@selector(handleCLEARALL:net:) forCommands:@"clearall" usingClass:self];
+	[e registerSelector:@selector(handleCLEARALL:net:) forCommands:@"clearall" usingClass:self];
 	[e registerSelector:@selector(handleTOPIC:net:channel:) forCommands:@"topic" usingClass:self];
-    [e registerSelector:@selector(handleBRAG:net:channel:) forCommands:@"brag" usingClass:self];
-    [e registerSelector:@selector(handleMODE:net:channel:) forCommands:@"mode" usingClass:self];
-    [e registerSelector:@selector(handleOP:net:channel:) forCommands:[NSArray arrayWithObjects:@"op", @"o", nil] usingClass:self];
-    [e registerSelector:@selector(handleDEOP:net:channel:) forCommands:@"deop" usingClass:self];
-    [e registerSelector:@selector(handleHALFOP:net:channel:) forCommands:[NSArray arrayWithObjects:@"halfop", @"h", nil] usingClass:self];
-    [e registerSelector:@selector(handleDEHALFOP:net:channel:) forCommands:@"dehalfop" usingClass:self];
-    [e registerSelector:@selector(handleVOICE:net:channel:) forCommands:[NSArray arrayWithObjects:@"voice", @"v", nil] usingClass:self];
-    [e registerSelector:@selector(handleDEVOICE:net:channel:) forCommands:@"devoice" usingClass:self];
-    [e registerSelector:@selector(handleQUIET:net:channel:) forCommands:[NSArray arrayWithObjects:@"quiet", @"q", nil] usingClass:self];
-    [e registerSelector:@selector(handleUNQUIET:net:channel:) forCommands:@"unquiet" usingClass:self];
+	[e registerSelector:@selector(handleBRAG:net:channel:) forCommands:@"brag" usingClass:self];
+	[e registerSelector:@selector(handleMODE:net:channel:) forCommands:@"mode" usingClass:self];
+	[e registerSelector:@selector(handleOP:net:channel:) forCommands:[NSArray arrayWithObjects:@"op", @"o", nil] usingClass:self];
+	[e registerSelector:@selector(handleDEOP:net:channel:) forCommands:@"deop" usingClass:self];
+	[e registerSelector:@selector(handleHALFOP:net:channel:) forCommands:[NSArray arrayWithObjects:@"halfop", @"h", nil] usingClass:self];
+	[e registerSelector:@selector(handleDEHALFOP:net:channel:) forCommands:@"dehalfop" usingClass:self];
+	[e registerSelector:@selector(handleVOICE:net:channel:) forCommands:[NSArray arrayWithObjects:@"voice", @"v", nil] usingClass:self];
+	[e registerSelector:@selector(handleDEVOICE:net:channel:) forCommands:@"devoice" usingClass:self];
+	[e registerSelector:@selector(handleQUIET:net:channel:) forCommands:[NSArray arrayWithObjects:@"quiet", @"q", nil] usingClass:self];
+	[e registerSelector:@selector(handleUNQUIET:net:channel:) forCommands:@"unquiet" usingClass:self];
 }
 
 - (void)handleUNQUIET:(NSString *)args net:(RCNetwork *)net channel:(RCChannel *)chan {
-    [self handleMODE:[NSString stringWithFormat:@"-q %@", args] net:net channel:chan];
+	[self handleMODE:[NSString stringWithFormat:@"-q %@", args] net:net channel:chan];
 }
 
 - (void)handleQUIET:(NSString *)args net:(RCNetwork *)net channel:(RCChannel *)chan {
-    [self handleMODE:[NSString stringWithFormat:@"+q %@", args] net:net channel:chan];
+	[self handleMODE:[NSString stringWithFormat:@"+q %@", args] net:net channel:chan];
 }
 
 - (void)handleDEVOICE:(NSString *)args net:(RCNetwork *)net channel:(RCChannel *)chan {
-    [self handleMODE:[NSString stringWithFormat:@"-v %@", args] net:net channel:chan];
+	[self handleMODE:[NSString stringWithFormat:@"-v %@", args] net:net channel:chan];
 }
 
 - (void)handleVOICE:(NSString *)args net:(RCNetwork *)net channel:(RCChannel *)chan {
-    [self handleMODE:[NSString stringWithFormat:@"+v %@", args] net:net channel:chan];
+	[self handleMODE:[NSString stringWithFormat:@"+v %@", args] net:net channel:chan];
 }
 
 - (void)handleDEHALFOP:(NSString *)args net:(RCNetwork *)net channel:(RCChannel *)chan {
-    [self handleMODE:[NSString stringWithFormat:@"-h %@", args] net:net channel:chan];
+	[self handleMODE:[NSString stringWithFormat:@"-h %@", args] net:net channel:chan];
 }
 
 - (void)handleHALFOP:(NSString *)args net:(RCNetwork *)net channel:(RCChannel *)chan {
-    [self handleMODE:[NSString stringWithFormat:@"+h %@", args] net:net channel:chan];
+	[self handleMODE:[NSString stringWithFormat:@"+h %@", args] net:net channel:chan];
 }
 
 - (void)handleDEOP:(NSString *)args net:(RCNetwork *)net channel:(RCChannel *)chan {
-    [self handleMODE:[NSString stringWithFormat:@"-o %@", args] net:net channel:chan];
+	[self handleMODE:[NSString stringWithFormat:@"-o %@", args] net:net channel:chan];
 }
 
 - (void)handleOP:(NSString *)args net:(RCNetwork *)net channel:(RCChannel *)chan {
-    [self handleMODE:[NSString stringWithFormat:@"+o %@", args] net:net channel:chan];
+	[self handleMODE:[NSString stringWithFormat:@"+o %@", args] net:net channel:chan];
 }
 
 - (void)handleMODE:(NSString *)args net:(RCNetwork *)net channel:(RCChannel *)chan {
-    if (![args hasPrefix:@"#"]) {
-        [net sendMessage:[NSString stringWithFormat:@"MODE %@ %@", [chan channelName], args]];
-    } else {
-        [net sendMessage:[NSString stringWithFormat:@"MODE %@", args]];
-    }
+	if (![args hasPrefix:@"#"]) {
+		[net sendMessage:[NSString stringWithFormat:@"MODE %@ %@", [chan channelName], args]];
+	}
+	else {
+		[net sendMessage:[NSString stringWithFormat:@"MODE %@", args]];
+	}
 }
 
 - (void)handleBRAG:(NSString *)args net:(RCNetwork *)net channel:(RCChannel *)chan {
+	return;
     int netCount = 0, chanCount = 0, olineCount = 0, opsCount = 0, hopsCount = 0, voiceCount = 0, powerCount = 0;
     int oppedUsers = 0, hoppedUsers = 0, voicedUsers = 0, normalUsers = 0;
     BOOL isHopped = NO;
     for (id network in [[RCNetworkManager sharedNetworkManager] networks]) {
         if ([network isConnected]) netCount++;
+		for (RCChannel *chan in [network _channels]) {
+			if (![chan isKindOfClass:[RCPMChannel class]] && ![chan isKindOfClass:[RCConsoleChannel class]]) {
+				chanCount++;
+			}
+			for (int loc = 0; loc < [[chan fullUserList] count]; loc++) {
+				NSString *rank = RCUserRank([[chan fullUserList] objectAtIndex:loc], net);
+				if (!rank || ![rank isEqualToString:@""])
+					continue;
+				// this needs to be dynamic.
+				// since channels could technically have 8 different user modes, etc.
+				// please refer to prefix dictionary. I will rewrite this entirely later.
+			}
+		}
         for (id channel in [network _channels]) {
             if ([channel joined] && ![channel respondsToSelector:@selector(ipInfo)]) {
                 chanCount += 1;

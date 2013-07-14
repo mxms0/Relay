@@ -57,7 +57,7 @@ typedef enum RCSocketStatus {
 	BOOL shouldRequestSPass;
 	BOOL shouldRequestNPass;
 	BOOL isWriting;
-    BOOL isOper;
+	BOOL isOper;
 	id namesCallback;
 	NSDictionary *prefix;
 }
@@ -115,7 +115,3 @@ typedef enum RCSocketStatus {
 SSL_CTX *RCInitContext(void);
 char *RCIPForURL(NSString *URL);
 void RCParseUserMask(NSString *mask, NSString **nick, NSString **user, NSString **hostmask);
-@interface CALayer (Haxx)
-- (id)_nq:(id)arg1;
-@end
-
