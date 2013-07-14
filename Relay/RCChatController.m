@@ -659,12 +659,20 @@ static RCNetwork *currentNetwork = nil;
 	for (UIButton *subv in [rc subviews]) {
 		if (![subv isKindOfClass:[RCBarButtonItem class]]) {
 			if ([subv tag] != 1132) {
-				[subv removeFromSuperview];
+				[UIView animateWithDuration:0.1 animations:^ {
+					[subv setAlpha:0];
+				} completion:^(BOOL fin) {
+					[subv removeFromSuperview];
+				}];
 			}
 		}
 	}
-	[rc setDrawIndent:NO];
-	[rc setNeedsDisplay];
+	double delayInSeconds = 0.175;
+	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+	dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+		[rc setDrawIndent:NO];
+		[rc setNeedsDisplay];
+	});
 }
 
 - (void)animateChannelList {
@@ -686,6 +694,7 @@ static RCNetwork *currentNetwork = nil;
 	[[channelList navigationBar] setSubtitle:@"Loading..."];
 	[[[currentPanel channel] delegate] sendMessage:@"LIST"];
 	[[[currentPanel channel] delegate] setListCallback:channelList];
+	[channelList setCurrentNetwork:[[currentPanel channel] delegate]];
 	[mv addSubview:channelList];
 	[channelList release];
 	

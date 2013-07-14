@@ -21,6 +21,8 @@
 			if (px != NSNotFound)
 				ix = px;
 			name = [[name substringToIndex:ix] retain];
+			if ([name hasSuffix:@"'s"])
+				name = [name substringWithRange:NSMakeRange(0, [name length]-2)];
 			network = [[RCNetwork alloc] init];
 			isNew = YES;
 			datas = [[NSMutableDictionary alloc] init];

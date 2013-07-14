@@ -23,6 +23,11 @@
 	[str drawAtPoint:CGPointMake(8, 3)];
 	NSString *tlt = [channelInfo topic];
 	[tlt drawInRect:CGRectMake(8, 23, 304, 38) withFont:[UIFont systemFontOfSize:11] lineBreakMode:UILineBreakModeWordWrap];
+	if ([channelInfo isAlreadyInChannel]) {
+		MARK;
+		UIImage *check = [UIImage imageNamed:@"0_checkr"];
+		[check drawInRect:CGRectMake(rect.size.width - 24, 2, check.size.width, check.size.height)];
+	}
 }
 
 @end

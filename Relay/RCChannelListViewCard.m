@@ -9,6 +9,7 @@
 #import "RCChatController.h"
 
 @implementation RCChannelListViewCard
+@synthesize currentNetwork;
 
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
@@ -127,6 +128,8 @@
 				[self presentErrorNotificationAndDismiss];
 			}
 			else {
+				[currentChannels release];
+				currentChannels = nil;
 				[channels reloadData];
 				[[self navigationBar] setSubtitle:[NSString stringWithFormat:@"%d Channels", [channelDatas count]]];
 				[[self navigationBar] setNeedsDisplay];
@@ -147,10 +150,30 @@
 - (void)recievedChannel:(NSString *)chan withCount:(int)cc andTopic:(NSString *)topics {
 	if (!updating) {
 		updating = YES;
+		currentChannels = [[NSMutableArray alloc] init];
+		for (RCChannel *chan in [currentNetwork _channels]) {
+			[currentChannels addObject:[chan channelName]];
+		}
+		NSLog(@"hi %@", currentChannels);
 		[self refreshSubtitleLabel];
 	}
 	RCChannelInfo *ifs = [[RCChannelInfo alloc] init];
 	[ifs setChannel:chan];
+	BOOL containsChannel = NO;
+	for (NSString *channel in currentChannels) {
+		if ([chan isEqualToStringNoCase:channel]) {
+			containsChannel = YES;
+			break;
+		}
+	}
+	NSLog(@"hi %d", containsChannel);
+	if (containsChannel) {
+		[ifs setIsAlreadyInChannel:YES];
+		[currentChannels removeObject:chan];
+	}
+	else {
+		[ifs setIsAlreadyInChannel:NO];
+	}
 	[ifs setUserCount:cc];
 	if (![topics isEqualToString:@":"])
 		[ifs setTopic:[topics stringByStrippingIRCMetadata]];
@@ -161,7 +184,7 @@
 	CGSize szf = [lcnt sizeWithFont:[UIFont systemFontOfSize:12] minFontSize:10 actualFontSize:&rsz forWidth:84 lineBreakMode:NSLineBreakByClipping];
 	NSString *nam = chan;
 	CGFloat azf = 0;
-	[nam sizeWithFont:[UIFont boldSystemFontOfSize:16] minFontSize:8 actualFontSize:&azf forWidth:(320 - (szf.width + 21)) lineBreakMode:NSLineBreakByClipping];
+	[nam sizeWithFont:[UIFont boldSystemFontOfSize:16] minFontSize:8 actualFontSize:&azf forWidth:(320 - (szf.width + 40)) lineBreakMode:NSLineBreakByClipping];
 	NSString *set = [NSString stringWithFormat:@"%@ %d Users", chan, cc];
 	int lfr = [chan length];
 	NSMutableAttributedString *str = [[NSMutableAttributedString alloc] initWithString:set];

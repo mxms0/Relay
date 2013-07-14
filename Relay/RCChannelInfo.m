@@ -8,7 +8,7 @@
 #import "RCChannelInfo.h"
 
 @implementation RCChannelInfo
-@synthesize userCount, topic, channel, attributedString;
+@synthesize userCount, topic, channel, attributedString, isAlreadyInChannel;
 
 - (id)description {
 	return [NSString stringWithFormat:@"<RCChannelInfo %p; channel = %@;>", self, channel];

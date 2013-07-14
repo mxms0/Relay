@@ -245,7 +245,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 		if (old && full_old) {
 			if (!old_rank) old_rank = @"";
 			[self setUserLeft:old];
-			[self recievedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" type:RCMessageTypeNormalE];
+			[self recievedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" type:RCMessageTypeNormalE2];
 			[self setUserJoined:[old_rank stringByAppendingString:new_]];
 		}
 	}
