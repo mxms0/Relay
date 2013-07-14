@@ -46,7 +46,7 @@
 
 - (void)dealloc {
 	[channels release];
-	[network setNamesCallback:nil];
+	[network setListCallback:nil];
 	[super dealloc];
 }
 

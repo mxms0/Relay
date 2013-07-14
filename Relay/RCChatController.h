@@ -24,6 +24,7 @@
 	RCChatPanel *currentPanel;
 	RCTextFieldBackgroundView *_bar;
 	RCTextField *field;
+	RCChannelListViewCard *channelList;
 	CGFloat chatViewHeights[2];
 	CGFloat suggestLocation;
 	BOOL draggingUserList;

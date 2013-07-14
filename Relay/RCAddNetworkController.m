@@ -498,7 +498,7 @@ _end:
 				[roomsController release];
 			}
 			else if (indexPath.row == 2) {
-				RCACMViewController *acm = [[RCACMViewController alloc] initWithStyle:UITableViewStyleGrouped];
+				RCACMViewController *acm = [[RCACMViewController alloc] init];
 				[self.navigationController pushViewController:acm animated:YES];
 				[acm release];
 			}

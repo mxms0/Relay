@@ -27,6 +27,7 @@
 @class RCNetwork;
 @interface RCSocket : NSObject {
 	int task;
+	float interval;
 	NSTimer *tv;
 	BOOL _isReading;
 	BOOL isPolling;

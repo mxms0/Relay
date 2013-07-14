@@ -13,5 +13,5 @@
 	RCSpecialTableView *datas;
 	BOOL _reloading;
 }
-
+- (void)scrollToTop;
 @end

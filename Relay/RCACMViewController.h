@@ -8,6 +8,7 @@
 #import <UIKit/UIKit.h>
 #import "RCBasicViewController.h"
 
-@interface RCACMViewController : RCBasicViewController
-
+@interface RCACMViewController : RCBasicViewController {
+	UITextView *textField;
+}
 @end

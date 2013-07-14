@@ -18,4 +18,5 @@
 @property (nonatomic, retain) RCChannel *currentChan;
 - (void)setChannel:(RCChannel *)chan;
 - (void)reloadData;
+- (void)scrollToTop;
 @end

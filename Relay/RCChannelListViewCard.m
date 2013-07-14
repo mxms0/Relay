@@ -46,6 +46,10 @@
 	return self;
 }
 
+- (void)scrollToTop {
+	[channels setContentOffset:CGPointMake(0, 44) animated:YES];
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 	return 1;
 }

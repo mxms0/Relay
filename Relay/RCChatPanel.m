@@ -39,6 +39,10 @@ static NSString *template = nil;
 	return self;
 }
 
+- (void)scrollToTop {
+    [self stringByEvaluatingJavaScriptFromString:@"scrollToTop();"];
+}
+
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
 	if ([textField.text isEqualToString:@""] || textField.text == nil) return NO;
 	NSString *appstore_txt = [textField.text retain];

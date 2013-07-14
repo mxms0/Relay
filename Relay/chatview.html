@@ -134,9 +134,23 @@
 				return "SUCCESS";
 			}
 			
+			function animateScrollTo(to, duration) {
+				var difference = to - document.body.scrollTop;
+				var perTick = difference/duration * 10;
+				
+				setTimeout(function() {
+						   document.body.scrollTop = document.body.scrollTop + perTick;
+						   animateScrollTo(to, duration - 10);
+						   }, 10);
+			}
+			
 			function clearMessages() {
 				nx = document.getElementById('dx').src;
 				document.body.innerHTML = "<div id='chat'></div><img class='padd' src='" + nx + "'/>";
+			}
+			
+			function scrollToTop() {
+				animateScrollTo(0, 250);
 			}
 			
             function scrollToBottom() {

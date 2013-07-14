@@ -34,6 +34,10 @@
 	return self;
 }
 
+- (void)scrollToTop {
+	[tableView setContentOffset:CGPointZero animated:YES];
+}
+
 - (void)showUserInfoPanel {
 	showingUserInfo = YES;
 	[tableView reloadData];

@@ -58,7 +58,7 @@ typedef enum RCSocketStatus {
 	BOOL shouldRequestNPass;
 	BOOL isWriting;
 	BOOL isOper;
-	id namesCallback;
+	id listCallback;
 	NSDictionary *prefix;
 }
 @property (nonatomic, retain) NSDictionary *prefix;
@@ -82,7 +82,7 @@ typedef enum RCSocketStatus {
 @property (nonatomic, assign) BOOL SASL;
 @property (nonatomic, assign) BOOL shouldRequestSPass;
 @property (nonatomic, assign) BOOL shouldRequestNPass;
-@property (nonatomic, assign) id namesCallback;
+@property (nonatomic, assign) id listCallback;
 @property (nonatomic, assign) BOOL _selected;
 @property (nonatomic, assign) BOOL expanded;
 @property (nonatomic, assign) BOOL isOper;

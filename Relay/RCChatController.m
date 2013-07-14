@@ -101,6 +101,14 @@ static id _inst = nil;
 	currentPanel = nil;
 	rootView = rc;
 	canDragMainView = YES;
+	UIWindow *wv = [[UIWindow alloc] initWithFrame:CGRectMake(0, 0, rc.view.frame.size.width, 20)];
+	[wv setWindowLevel:1000000];
+	[wv setHidden:NO];
+	[wv setBackgroundColor:[UIColor clearColor]];
+	UITapGestureRecognizer *tp = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(statusWindowTapped:)];
+	[wv addGestureRecognizer:tp];
+	[tp release];
+	
 #warning THIS IS NECESSARY IN XCODE DP5
 	int offx = 0;
 	/*
@@ -140,6 +148,23 @@ static id _inst = nil;
 	[_bar addSubview:field];
 	[field release];
 	suggestLocation = [self suggestionLocation];;
+}
+
+- (void)statusWindowTapped:(UITapGestureRecognizer *)tp {
+	id targetView = nil;
+	if (!!channelList) {
+		targetView = channelList;
+	}
+	else if ((chatView.frame.origin.x == 0) && (infoView.frame.origin.x == infoView.frame.size.width)) {
+		targetView = currentPanel;
+	}
+	else if (chatView.frame.origin.x > 0) {
+		targetView = bottomView;
+	}
+	else {
+		targetView = infoView;
+	}
+	[targetView scrollToTop];
 }
 
 - (void)correctSubviewFrames {
@@ -657,13 +682,13 @@ static RCNetwork *currentNetwork = nil;
 	[mv.layer addSublayer:sch];
 	[sch release];
 
-	RCChannelListViewCard *vc = [[RCChannelListViewCard alloc] initWithFrame:CGRectMake(0, 43, chatView.frame.size.width, chatView.frame.size.height-43)];
-	[[vc navigationBar] setTitle:@"Channel List"];
-	[[vc navigationBar] setSubtitle:@"Loading..."];
+	channelList = [[RCChannelListViewCard alloc] initWithFrame:CGRectMake(0, 43, chatView.frame.size.width, chatView.frame.size.height-43)];
+	[[channelList navigationBar] setTitle:@"Channel List"];
+	[[channelList navigationBar] setSubtitle:@"Loading..."];
 	[[[currentPanel channel] delegate] sendMessage:@"LIST"];
-	[[[currentPanel channel] delegate] setNamesCallback:vc];
-	[mv addSubview:vc];
-	[vc release];
+	[[[currentPanel channel] delegate] setListCallback:channelList];
+	[mv addSubview:channelList];
+	[channelList release];
 	
 	[rootView.view addSubview:mv];
 	[mv release];
@@ -685,13 +710,13 @@ static RCNetwork *currentNetwork = nil;
 	[anim setFillMode:kCAFillModeBoth];
 	anim.additive = NO;
 	[sch addAnimation:fade forKey:@"opacity"];
-	[vc.layer addAnimation:anim forKey:@"position"];
+	[channelList.layer addAnimation:anim forKey:@"position"];
 	 
 	// sorry
 }
 
 - (void)dismissChannelList:(UIView *)vc animated:(BOOL)sAnim {
-	[[[currentPanel channel] delegate] setNamesCallback:nil];
+	[[[currentPanel channel] delegate] setListCallback:nil];
 	if (sAnim) {
 		[CATransaction begin];
 		[CATransaction setCompletionBlock:^ {
@@ -727,6 +752,7 @@ static RCNetwork *currentNetwork = nil;
 	else {
 		[vc removeFromSuperview];
 	}
+	channelList = nil;
 	isLISTViewPresented = NO;
 }
 

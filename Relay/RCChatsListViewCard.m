@@ -46,6 +46,10 @@
     return self;
 }
 
+- (void)scrollToTop {
+	[datas setContentOffset:CGPointMake(0, 100) animated:YES];
+}
+
 - (void)drawRect:(CGRect)rect {
 	[UIColorFromRGB(0x29324A) set];
 	UIRectFill(rect);

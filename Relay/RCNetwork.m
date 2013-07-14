@@ -17,7 +17,7 @@
 
 @implementation RCNetwork
 
-@synthesize prefix, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _nicknames, shouldRequestSPass, shouldRequestNPass, namesCallback, expanded, _selected, SASL, cache, uUID, isOper;
+@synthesize prefix, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _nicknames, shouldRequestSPass, shouldRequestNPass, listCallback, expanded, _selected, SASL, cache, uUID, isOper;
 
 - (RCChannel *)consoleChannel {
     @synchronized(_channels) {
@@ -1048,8 +1048,12 @@
 	[scanr release];
 }
 
+- (void)handle321:(NSString *)formatIdontUse {
+	// :hubbard.freenode.net 321 Siberia_ Channel :Users  Name
+}
+
 - (void)handle322:(NSString *)threetwotwo {
-	if (!namesCallback) return;
+	if (!listCallback) return;
 	NSScanner *hi = [[NSScanner alloc] initWithString:threetwotwo];
 	NSString *crap = NULL;
 	NSString *chan = NULL;
@@ -1066,15 +1070,15 @@
 		topicModes = [topicModes substringFromIndex:1];
 	if ([topicModes isEqualToString:@" "]) topicModes = nil;
 	if ([topicModes hasPrefix:@" "]) topicModes = [topicModes recursivelyRemovePrefix:@" "];
-	[namesCallback recievedChannel:chan withCount:[count intValue] andTopic:topicModes];
+	[listCallback recievedChannel:chan withCount:[count intValue] andTopic:topicModes];
 	[hi release];
 	// :irc.saurik.com 322 mx_ #testing 1 :[+nt]
 	// :hitchcock.freenode.net 322 mxms_ #testchannelpleaseignore 3 :http://i.imgur.com/LbPvWUV.jpg
 }
 
 - (void)handle323:(NSString *)endofchannellistning {
-	[namesCallback setUpdating:NO];
-	namesCallback = nil;
+	[listCallback setUpdating:NO];
+	listCallback = nil;
 }
 
 - (void)handle328:(NSString *)websiteinfo {
@@ -1640,7 +1644,7 @@
 	}
 	msg = [msg stringByReplacingOccurrencesOfString:@"\r\n" withString:@""];
 	RCParseUserMask(user, &_nick, nil, nil);
-    [[self channelWithChannelName:room] recievedMessage:(NSString*)[NSArray arrayWithObjects:usr,msg,nil] from:_nick type:RCMessageTypeKick];
+    [[self channelWithChannelName:room] recievedMessage:(NSString *)[NSArray arrayWithObjects:usr, msg, nil] from:_nick type:RCMessageTypeKick];
 	if ([usr isEqualToString:useNick]) {
         [[self channelWithChannelName:room] setJoined:NO];
 	}

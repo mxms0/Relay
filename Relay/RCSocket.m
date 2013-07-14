@@ -64,6 +64,9 @@ char *RCIPForURL(NSString *URL) {
 	if ((self = [super init])) {
 		_isReading = NO;
 		isPolling = NO;
+		interval = 0.8;
+		[[UIDevice currentDevice] setBatteryMonitoringEnabled:YES];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(batteryStateDidChange:) name:UIDeviceBatteryStateDidChangeNotification object:[UIDevice currentDevice]];
 	}
 	return self;
 }
@@ -175,9 +178,26 @@ char *RCIPForURL(NSString *URL) {
 }
 
 - (void)configureSocketPoll {
-	tv = [NSTimer timerWithTimeInterval:0.5 target:self selector:@selector(pollSockets) userInfo:nil repeats:YES];
+#if TARGET_IPHONE_SIMULATOR
+	interval = 0.1;
+#endif
+	tv = [NSTimer timerWithTimeInterval:interval target:self selector:@selector(pollSockets) userInfo:nil repeats:YES];
 	[[NSRunLoop currentRunLoop] addTimer:tv forMode:NSDefaultRunLoopMode];
 	[[NSRunLoop currentRunLoop] run];
+}
+
+- (void)batteryStateDidChange:(NSNotification *)noti {
+	UIDevice *device = [UIDevice currentDevice];
+	if ([device batteryState] == UIDeviceBatteryStateCharging) {
+		interval = 0.2;
+	}
+	else if ([device batteryState] == UIDeviceBatteryStateUnplugged) {
+		interval = 0.8;
+	}
+	[tv invalidate];
+	tv = nil;
+	[self configureSocketPoll];
+	NSLog(@"CHanging poll speed.. %f",interval);
 }
 
 - (void)pollSockets {
