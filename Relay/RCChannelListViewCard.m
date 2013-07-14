@@ -29,18 +29,20 @@
 		[channels setScrollEnabled:YES];
 		[self addSubview:channels];
 		[channels release];
-		UISearchBar *sb = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-		[sb setDelegate:self];
-		[sb setShowsCancelButton:NO];
-		for (UIView *sv in [sb subviews]) {
+		UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+		[searchBar setDelegate:self];
+		[searchBar setShowsCancelButton:NO];
+		[searchBar setUserInteractionEnabled:NO];
+		[searchBar setAlpha:0.5];
+		for (UIView *sv in [searchBar subviews]) {
 			if ([sv isKindOfClass:NSClassFromString(@"UISearchBarBackground")]) {
 				[sv removeFromSuperview];
 				break;
 			}
 		}
 		// can probably use UIAppearence to do this.. :/
-		[channels setTableHeaderView:sb];
-		[sb release];
+		[channels setTableHeaderView:searchBar];
+		[searchBar release];
 		[channels setContentOffset:CGPointMake(0, 44)];
 	}
 	return self;
@@ -128,6 +130,8 @@
 				[channels reloadData];
 				[[self navigationBar] setSubtitle:[NSString stringWithFormat:@"%d Channels", [channelDatas count]]];
 				[[self navigationBar] setNeedsDisplay];
+				[[channels tableHeaderView] setUserInteractionEnabled:YES];
+				[[channels tableHeaderView] setAlpha:1];
 			}
 		}
 	});

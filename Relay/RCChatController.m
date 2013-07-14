@@ -57,7 +57,6 @@ static id _inst = nil;
 		NSLog(@"HI I AM @ %f", centr.x);
 #endif
 		if (centr.x < 160 || draggingUserList) {
-			MARK;
 			
 			draggingUserList = YES;
 			[infoView setCenter:CGPointMake([infoView center].x+tr.x, [infoView center].y)];
