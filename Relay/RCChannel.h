@@ -16,16 +16,14 @@
 #import "RCCommandEngine.h"
 
 @class RCNetwork, RCNetworkCell;
-@interface RCChannel : NSObject <UITableViewDelegate, UITableViewDataSource> {
+@interface RCChannel : NSObject {
 @public
 	NSString *channelName;
-	NSString *topic;
 	NSString *password;
 	RCChatPanel *panel;
 	RCUserListPanel *usersPanel;
 	BOOL joined;
 	BOOL joinOnConnect;
-    BOOL shouldJoin;
 	BOOL temporaryJoinOnConnect;
 	BOOL holdUserListUpdates;
 	BOOL hasHighlights;
@@ -41,7 +39,6 @@
 @property (nonatomic, assign) BOOL temporaryJoinOnConnect;
 @property (nonatomic, assign) BOOL hasHighlights;
 @property (nonatomic, assign) RCChatPanel *panel;
-@property (nonatomic, retain) NSString *topic;
 @property (nonatomic, retain) NSString *password;
 @property (nonatomic, assign) RCUserListPanel *usersPanel;
 @property (nonatomic, readonly) NSMutableArray *fullUserList;

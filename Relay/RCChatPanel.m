@@ -10,7 +10,7 @@
 #import "RCChatController.h"
 
 @implementation RCChatPanel
-@synthesize messages, channel;
+@synthesize channel;
 
 static NSString *template = nil;
 

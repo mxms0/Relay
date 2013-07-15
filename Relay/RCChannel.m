@@ -16,7 +16,7 @@
 #define M_COLOR 32
 @implementation RCChannel
 
-@synthesize channelName, joinOnConnect, panel, topic, usersPanel, password, temporaryJoinOnConnect, fullUserList, newMessageCount, cellRepresentation, hasHighlights;
+@synthesize channelName, joinOnConnect, panel, usersPanel, password, temporaryJoinOnConnect, fullUserList, newMessageCount, cellRepresentation, hasHighlights;
 
 NSString *RCUserRank(NSString *user, RCNetwork *network) {
 	if (![network prefix]) {
@@ -240,7 +240,6 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 			msg = [[NSString stringWithFormat:@"%@%c%@%c %@", time, RCIRCAttributeBold, from, RCIRCAttributeBold, message] retain];
 			break;
 		case RCMessageTypeTopic:
-            self.topic = message;
 			if (from) msg = [[NSString stringWithFormat:@"%c%@%c changed the topic to: %@", RCIRCAttributeBold, from, RCIRCAttributeBold, message] retain];
 			else msg = [message retain];
 			break;

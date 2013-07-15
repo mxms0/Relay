@@ -11,13 +11,6 @@
 
 @implementation RCAddCell
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
-	if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
-		
-	}
-	return self;
-}
-
 - (void)drawRect:(CGRect)rect {
 	[UIColorFromRGB(0x393d4a) set];
 	UIRectFill(rect);

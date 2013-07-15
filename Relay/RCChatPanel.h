@@ -15,14 +15,11 @@
 @class RCChannel;
 @interface RCChatPanel : UIWebView <UITextFieldDelegate> {
 	RCChannel *channel;
-	UITextField *field;
 	NSMutableArray *preloadPool;
-	RCTextFieldBackgroundView *_bar;
 	CGFloat chatViewHeights[2];
 	CGFloat suggestionLocation;
 }
 @property (nonatomic, assign) RCChannel *channel;
-@property (nonatomic, readonly) NSMutableArray *messages;
 
 - (id)initWithChannel:(RCChannel *)chan;
 - (void)postMessage:(NSString *)_message withType:(RCMessageType)tr highlight:(BOOL)high;

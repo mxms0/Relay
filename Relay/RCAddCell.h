@@ -9,4 +9,5 @@
 #import "RCBasicTableViewCell.h"
 
 @interface RCAddCell : RCBasicTableViewCell
+
 @end

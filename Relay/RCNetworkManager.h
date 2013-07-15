@@ -13,11 +13,9 @@
 @interface RCNetworkManager : NSObject {
 	BOOL isBG;
 	BOOL saving;
-	BOOL _printMotd;
 	BOOL isSetup;
 }
 @property (nonatomic, assign) BOOL isBG;
-@property (nonatomic, readonly) BOOL _printMotd;
 + (RCNetworkManager *)sharedNetworkManager;
 - (RCNetwork *)networkWithDescription:(NSString *)_desc;
 - (void)ircNetworkWithInfo:(NSDictionary *)info isNew:(BOOL)n;

@@ -591,6 +591,7 @@
 	sockfd = -1;
 	[writebuf release];
 	writebuf = nil;
+	isAway = NO;
 	if (useSSL)
 		SSL_CTX_free(ctx);
 	[[UIApplication sharedApplication] endBackgroundTask:task];
@@ -1125,7 +1126,6 @@
 }
 
 - (void)handle375:(NSString *)motd {
-	if (![[RCNetworkManager sharedNetworkManager] _printMotd]) return;
 	NSScanner *scanner = [[NSScanner alloc] initWithString:motd];
 	NSString *crap;
 	@try {
@@ -1145,7 +1145,6 @@
 }
 
 - (void)handle372:(NSString *)noMotd {
-	if (![[RCNetworkManager sharedNetworkManager] _printMotd]) return;
 	NSScanner *scanner = [[NSScanner alloc] initWithString:noMotd];
 	NSString *crap;
 	@try {

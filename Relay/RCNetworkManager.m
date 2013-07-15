@@ -9,7 +9,7 @@
 #import "RCChatController.h"
 
 @implementation RCNetworkManager
-@synthesize isBG, _printMotd;
+@synthesize isBG;
 static id snManager = nil;
 static NSMutableArray *networks = nil;
 
@@ -72,7 +72,6 @@ static NSMutableArray *networks = nil;
 
 - (void)unpack {
 	isSetup = YES;
-	_printMotd = YES;
 	@autoreleasepool {
 		NSMutableDictionary *dict = [[[NSMutableDictionary alloc] initWithContentsOfFile:[self networkPreferencesPath]] autorelease];
 		if (!dict) {
