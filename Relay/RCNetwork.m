@@ -1207,7 +1207,7 @@
 		[scanner scanUpToString:@"" intoString:&crap];
         if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
         RCChannel *chan = [self consoleChannel];
-        if (chan) [chan recievedMessage:crap from:@" MOTD" type:RCMessageTypeNormal];
+        if (chan) [chan recievedMessage:crap from:@"MOTD " type:RCMessageTypeNormal];
 	}
 	@catch (NSException *exception) {
 		MARK;
@@ -1232,7 +1232,7 @@
 	}
 	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
 	RCChannel *chan = [self consoleChannel];
-	if (chan) [chan recievedMessage:crap from:@" MOTD" type:RCMessageTypeNormal];
+	if (chan) [chan recievedMessage:crap from:@"MOTD " type:RCMessageTypeNormal];
 	[scanner release];
 	// :irc.saurik.com 372 _m :- Please edit /etc/inspircd/motd
 }

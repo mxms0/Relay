@@ -72,7 +72,6 @@ NSString *colorForIRCColor(char irccolor) {
 	if (self.highlight)
 		[final appendString:@"<font color=\"#852d32\">"];
 	
-	NSLog(@"meh %@",self.string);
 	while (cpos < len) {
 		switch ([string characterAtIndex:cpos]) {
 			case RCIRCAttributeBold:
@@ -166,7 +165,7 @@ NSString *colorForIRCColor(char irccolor) {
 		if (rangeOfFontTag.location != NSNotFound) {
 			[final insertString:@"<div class=\"ts\">" atIndex:0];
 			[final insertString:@"</div>" atIndex:rangeOfFontTag.location+16];
-			[final insertString:@"<div class=\"msg\">" atIndex:rangeOfFontTag.location+29];
+			[final insertString:@"<div></div><div class=\"msg\">" atIndex:rangeOfFontTag.location+29];
 			[final appendString:@"</div>"];
 			// necessary fix.
 			// variables named appropriately.
@@ -174,7 +173,6 @@ NSString *colorForIRCColor(char irccolor) {
 		}
 	}
 	[self setString:(NSString *)final];
-	NSLog(@"fds %@", self.string);
 	[final release];
 }
 

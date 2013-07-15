@@ -46,11 +46,11 @@
 		time = [time substringToIndex:time.length-1];
 			//msg = [[NSString stringWithFormat:@"%c[%@]%c %@ sets mode +b %@",RCIRCAttributeBold, time, RCIRCAttributeBold, from, message] retain];
 	if (type == RCMessageTypeAction) {
-		msg = [[NSString stringWithFormat:@"%@ %c\u2022 %@%c %@", time,RCIRCAttributeBold, from, RCIRCAttributeBold, message] retain];
+		msg = [[NSString stringWithFormat:@"%@%c\u2022 %@%c%@", time,RCIRCAttributeBold, from, RCIRCAttributeBold, message] retain];
 	}
 	else if (type == RCMessageTypeNormal) {
 		if (from) {
-			msg = [[NSString stringWithFormat:@"%@%c%@%c %@", time, RCIRCAttributeBold, from, RCIRCAttributeBold, message] retain];
+			msg = [[NSString stringWithFormat:@"%@%c%@%c%@", time, RCIRCAttributeBold, from, RCIRCAttributeBold, message] retain];
 		}
 		else {
 			msg = [[NSString stringWithFormat:@"%@ %@", time, message] retain];
@@ -58,7 +58,7 @@
 		type = RCMessageTypeNormalE;
 	}
 	else if (type == RCMessageTypeNotice) {
-        msg = [[NSString stringWithFormat:@"%@ %c-%@-%c %@", time, RCIRCAttributeBold, from, RCIRCAttributeBold, message] retain];
+        msg = [[NSString stringWithFormat:@"%@%c-%@-%c %@", time, RCIRCAttributeBold, from, RCIRCAttributeBold, message] retain];
 	}
 	else if (type == RCMessageTypeJoin) {
 		//	msg = [@"iPhone joined the channel." retain];
