@@ -709,106 +709,46 @@
 	// Relay[2626:f803] MSG: :fr.ac3xx.com 004 _m fr.ac3xx.com Unreal3.2.9 iowghraAsORTVSxNCWqBzvdHtGp 
 }
 
-- (void)handle005:(NSString *)useInfo {
-	@synchronized(self) {
-		NSArray *args = [useInfo componentsSeparatedByString:@" "];
-		args = [args subarrayWithRange:NSMakeRange(3, [args count]-3)];
-		for (NSString* arg in args) {
-			if ([arg hasSuffixNoCase:@":are supported by this server"]) {
-				break;
-			}
-#if LOGALL
-			NSLog(@"> %@", arg);
-#endif
-			NSArray *values = [arg componentsSeparatedByString:@"="];
-			@try {
-                if ([values count]) {
-                    if ([[values objectAtIndex:0] isEqualToString:@"PREFIX"]) {
-                        if ([values count] - 1) {
-#if LOGALL
-                            NSLog(@"prefix is %@", [values objectAtIndex:1]);
-#endif
-                            NSString *lprefix = [values objectAtIndex:1];
-                            if ([lprefix hasPrefix:@"("]) {
-                                lprefix = [lprefix substringFromIndex:1];
-                                int prefixes = [lprefix rangeOfString:@")"].location;
-                                NSString* values = [lprefix substringFromIndex:prefixes+1];
-                                NSString* modes  = [lprefix substringToIndex:prefixes];
-                                NSMutableDictionary* lprefix = [NSMutableDictionary new];
-								for (int i = 0; i < [values length]; i++) {
-									unichar chr = [values characterAtIndex:i];
-									NSString *string = [[[NSString alloc] initWithCharacters:&chr length:1] autorelease];
-									unichar chra = [modes characterAtIndex:i];
-									NSString *stringa = [[[NSString alloc] initWithCharacters:&chra length:1] autorelease];
-									[lprefix setObject:[NSArray arrayWithObjects:[NSNumber numberWithInt:i], string, nil] forKey:stringa];
-                                    // Do stuff...
-                                }
-								self.prefix = [[lprefix copy] autorelease];
-								[lprefix release];
-#if LOGALL
-								NSLog(@"prefix: %@", prefix);
-#endif
-							}
-						}
-					}
-				}
-			}
-			@catch (NSException *exception) {
-				NSLog(@"exc %@", exception);
-			}
-		}
-	}
-    /*
-	NSScanner *scanr = [[NSScanner alloc] initWithString:useInfo];
-	NSString *crap;
-	NSString *args;
-	[scanr scanUpToString:@" " intoString:&crap];
-	[scanr scanUpToString:@" " intoString:&crap];
-	[scanr scanUpToString:@" " intoString:&crap];
-	[scanr scanUpToString:@" " intoString:&args];
-	NSArray *argsArray = [args componentsSeparatedByString:@" "];
-	NSLog(@"Meh. %@", argsArray);
-	for (NSString *arg in argsArray) {
-		if ([arg hasPrefix:@"TOPICLEN"]) {
-		}
-		else if ([arg hasPrefix:@"STATUSMSG"]) {
-			maxStatusLength = [[arg substringFromIndex:[@"STATUSMSG" length]] intValue];
-		}
-		else if ([arg hasPrefix:@"CHANTYPES"]) {
-			
-		}
-		else if ([arg hasPrefix:@"PREFIX"]) {
-            @try {
-                arg = [arg substringFromIndex:6];
-                NSLog(@">>>>> OMFG <<<<< >>>>> %@", arg);
-                if ([arg hasPrefix:@"="]) {
-                    arg = [arg substringFromIndex:1];
-                    if ([arg hasPrefix:@"("]) {
-                        NSString* modes = [arg substringWithRange:NSMakeRange(1, [arg rangeOfString:@")"].location)];
-                        NSString* prefixes = [arg substringWithRange:NSMakeRange(1, [arg rangeOfString:@")"].location)];
-                        NSLog(@"[%@] | [%@]", modes, prefixes);
-                        
+- (void)handle005:(NSString *)supported {
+    @synchronized(self) {
+        NSScanner *scanner = [[NSScanner alloc] initWithString:supported];
+        NSString *crap;
+        NSString *capsString;
+        [scanner scanUpToString:@" " intoString:&crap];
+        [scanner scanUpToString:@" " intoString:&crap];
+        [scanner scanUpToString:@" " intoString:&crap];
+        [scanner scanUpToString:@"" intoString:&capsString];
+        [scanner release];
+        NSArray *arr = [capsString componentsSeparatedByString:@" "];
+        NSMutableString *message = [NSMutableString stringWithString:@""];
+        for (NSString *str in arr) {
+            // this is logical because the describing string comes after the capabilties.
+            if ([str hasPrefix:@":"]) {
+                [message appendString:[capsString substringFromIndex:[capsString rangeOfString:@":" options:NSBackwardsSearch].location + 1]];
+                break;
+            } else if ([str rangeOfString:@"="].location != NSNotFound) {
+                NSArray *capabArr = [str componentsSeparatedByString:@"="];
+                if ([@"PREFIX" isEqualToString:[capabArr objectAtIndex:0]]) {
+                    NSString *info = [capabArr objectAtIndex:1];
+                    NSArray *split = [info componentsSeparatedByString:@")"];
+                    NSString *modes = [[split objectAtIndex:0] substringFromIndex:1];
+                    NSString *prefixes = [split objectAtIndex:1];
+                    NSMutableDictionary *prefixDict = [[NSMutableDictionary alloc] init];
+                    for (int i = 0; i < [modes length]; i++) {
+                        NSString *thePrefix = [prefixes substringWithRange:NSMakeRange(i, 1)];
+                        NSString *theMode = [modes substringWithRange:NSMakeRange(i, 1)];
+                        [prefixDict setObject:[NSArray arrayWithObjects:[NSNumber numberWithInt:i], thePrefix, nil] forKey:theMode];
                     }
+                    self.prefix = [[prefixDict copy] autorelease];
+                    [prefixDict release];
                 }
+                [message appendString:[NSString stringWithFormat:@"\x02%@\x02=%@ ", [capabArr objectAtIndex:0], [capabArr objectAtIndex:1]]];
+            } else {
+                [message appendString:[NSString stringWithFormat:@"\x02%@\x02 ", str]];
             }
-            @catch (NSException *exception) {
-                NSLog(@"%@", exception);
-            }
-
-			NSScanner *scanr = [[NSScanner alloc] initWithString:arg];
-			NSString *crap;
-			NSString *mds;
-			[scanr scanUpToString:@")" intoString:&crap];
-			[scanr scanUpToString:@"" intoString:&mds];
-			[scanr release];
-			self.userModes = mds;
-		}
-		else {
-			NSLog(@"NO SUPPORT FOR %@ YET. :/", arg);
-		}	
-	}
-	[scanr release];*/
-	// Relay[2794:f803] MSG: :fr.ac3xx.com 005 _m WALLCHOPS WATCH=128 WATCHOPTS=A SILENCE=15 MODES=12 CHANTYPES=# PREFIX=(qaohv)~&@%+ CHANMODES=beI,kfL,lj,psmntirRcOAQKVCuzNSMTGZ NETWORK=ROXnet CASEMAPPING=ascii EXTBAN=~,qjncrR ELIST=MNUCT STATUSMSG=~&@%+ :are supported by this server
+        }
+        [[self consoleChannel] recievedMessage:message from:@"" type:RCMessageTypeNormal];
+    }
 }
 
 - (void)handle010:(NSString *)redirect {
