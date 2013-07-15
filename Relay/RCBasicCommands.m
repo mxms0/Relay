@@ -38,6 +38,20 @@
 	[e registerSelector:@selector(handleDEVOICE:net:channel:) forCommands:@"devoice" usingClass:self];
 	[e registerSelector:@selector(handleQUIET:net:channel:) forCommands:[NSArray arrayWithObjects:@"quiet", @"q", nil] usingClass:self];
 	[e registerSelector:@selector(handleUNQUIET:net:channel:) forCommands:@"unquiet" usingClass:self];
+    [e registerSelector:@selector(handleAWAY:net:channel:) forCommands:@"away" usingClass:self];
+}
+
+- (void)handleAWAY:(NSString *)args net:(RCNetwork *)net channel:(RCChannel *)chan {
+    if (!args) {
+        if ([net isAway]) {
+            [net sendMessage:@"AWAY"];
+        } else {
+            // perhaps make this configurable in the future(?)
+            [net sendMessage:@"AWAY :Be back later."];
+        }
+    } else {
+        [net sendMessage:[NSString stringWithFormat:@"AWAY :%@", args]];
+    }
 }
 
 - (void)handleUNQUIET:(NSString *)args net:(RCNetwork *)net channel:(RCChannel *)chan {

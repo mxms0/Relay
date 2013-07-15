@@ -89,6 +89,11 @@ static BOOL isSetup = NO;
 		ttime -= 60.00;
 	[self performSelector:@selector(showExpirationWarning) withObject:nil afterDelay:ttime];
 	[[RCNetworkManager sharedNetworkManager] setIsBG:YES];
+    for (RCNetwork *network in [[RCNetworkManager sharedNetworkManager] networks]) {
+        if (!network.isAway) {
+            [network sendMessage:@"AWAY :Be back later."];
+        }
+    }
 	/*
 	 Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
 	 If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
@@ -127,6 +132,9 @@ static BOOL isSetup = NO;
 	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(showExpirationWarning) object:nil];
 	[[RCNetworkManager sharedNetworkManager] setIsBG:NO];
 	[[UIApplication sharedApplication] cancelAllLocalNotifications];
+    for (RCNetwork *network in [[RCNetworkManager sharedNetworkManager] networks]) {
+        [network sendMessage:@"AWAY"];
+    }
 	/*
 	 Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 	 */

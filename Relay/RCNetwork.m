@@ -567,6 +567,8 @@
 		}
 	}
 	else if (status == RCSocketStatusConnected) {
+        // also unset away (znc)
+        [self sendMessage:@"AWAY" canWait:NO];
 		[self sendMessage:[@"QUIT :" stringByAppendingString:([msg isEqualToString:@"Disconnected."] ? [self defaultQuitMessage] : msg)] canWait:NO];
 	}
 	disconnectTimer = [NSTimer scheduledTimerWithTimeInterval:2.5 target:self selector:@selector(forceDisconnect) userInfo:nil repeats:NO];
@@ -859,28 +861,12 @@
 	// not really sure what to do here. kind of stupid actually. hm :/
 }
 
-- (void)handle305:(NSString *)athreeo_five {
-	NSLog(@"Implying this is a znc.");
-	NSLog(@"YAY I'M NO LONGER AWAY.");
-	//	if ([[[[[RCNavigator sharedNavigator] currentPanel] channel] delegate] isEqual:self]) {
-	//	[[[RCNavigator sharedNavigator] currentPanel] postMessage:@"You are no longer being marked as away" withType:RCMessageTypeEvent	highlight:NO];
-	//}
+- (void)handle305:(NSString *)notAway {
+	self.isAway = NO;
 }
 
-- (void)handle306:(NSString *)znc {
-	NSLog(@"Implying this is a znc.");
-	NSScanner *scanner = [[NSScanner alloc] initWithString:znc];
-	NSString *crap;
-	NSString *cmd;
-	NSString *me;
-	[scanner scanUpToString:@" " intoString:&crap];
-	[scanner scanUpToString:@" " intoString:&cmd];
-	[scanner scanUpToString:@" " intoString:&me];
-	@synchronized(useNick) {
-		self.useNick = me;
-	}
-	[scanner release];
-	// :fr.ac3xx.com 305 MaxZNC :You are no longer marked as being away
+- (void)handle306:(NSString *)nowAway {
+	self.isAway = YES;
 }
 
 - (void)handle311:(NSString *)hiwhois {
