@@ -168,7 +168,8 @@ static id _inst = nil;
 	UITapGestureRecognizer *tp = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(statusWindowTapped:)];
 	[wv addGestureRecognizer:tp];
 	[tp release];
-	
+	// This doesn't work for views inside the RCAddNetworkController...
+	// fix it max
 #warning THIS IS NECESSARY IN XCODE DP5
 	int offx = 0;
 	/*

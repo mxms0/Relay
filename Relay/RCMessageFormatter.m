@@ -25,6 +25,7 @@ static NSString *str2col[] = {
 	@"fuchsia", // pink
 	@"grey", // grey
 	@"silver", // light grey
+	@"#FF1493",
 	nil
 };
 
@@ -36,7 +37,7 @@ NSString *colorForIRCColor(char irccolor) {
 	if (irccolor == -2) {
 		return @"default-background";
 	}
-	if (irccolor >= 16) {
+	if (irccolor >= 17) {
 		return @"invalid";
 	}
 	return str2col[irccolor];
@@ -70,6 +71,8 @@ NSString *colorForIRCColor(char irccolor) {
 	NSMutableString *final = [[NSMutableString alloc] init];
 	if (self.highlight)
 		[final appendString:@"<font color=\"#852d32\">"];
+	
+	NSLog(@"meh %@",self.string);
 	while (cpos < len) {
 		switch ([string characterAtIndex:cpos]) {
 			case RCIRCAttributeBold:
@@ -171,6 +174,7 @@ NSString *colorForIRCColor(char irccolor) {
 		}
 	}
 	[self setString:(NSString *)final];
+	NSLog(@"fds %@", self.string);
 	[final release];
 }
 
