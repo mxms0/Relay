@@ -19,7 +19,7 @@
 	if ((self = [super initWithFrame:frame])) {
 		[self setOpaque:YES];
 		if (![self isKindOfClass:[RCChatsListViewCard class]]) {
-			navigationBar = [[RCChatNavigationBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+			navigationBar = [[RCChatNavigationBar alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, 44)];
 			[self addSubview:navigationBar];
 			navigationBar.layer.zPosition = 100000;
 			[navigationBar release];
@@ -38,7 +38,7 @@
 			CALayer *bg = [[CALayer alloc] init];
 			[bg setBackgroundColor:UIColorFromRGB(0xDFE2E7).CGColor];
 			[bg setShouldRasterize:YES];
-			[bg setFrame:CGRectMake(0, 10, frame.size.width, frame.size.height)];
+			[bg setFrame:CGRectMake(0, 10, frame.size.height+44, frame.size.height)];
 			[self.layer insertSublayer:bg atIndex:1];
 			[bg release];
 		}
@@ -68,6 +68,8 @@
 
 - (void)setFrame:(CGRect)frame {
 	[super setFrame:frame];
+	navigationBar.frame = CGRectMake(navigationBar.frame.origin.x,navigationBar.frame.origin.y, frame.size.width, navigationBar.frame.size.height);
+	[navigationBar setNeedsDisplay];
 }
 
 - (void)findShadowAndDoStuffToIt {

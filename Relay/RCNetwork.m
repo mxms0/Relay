@@ -290,6 +290,8 @@
 }
 
 - (void)_connect {
+	[disconnectTimer invalidate];
+	disconnectTimer = nil;
 	if (status == RCSocketStatusConnecting || status == RCSocketStatusConnected) return;
 	status = RCSocketStatusConnecting;
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
@@ -565,8 +567,15 @@
 	else if (status == RCSocketStatusConnected) {
 		[self sendMessage:[@"QUIT :" stringByAppendingString:([msg isEqualToString:@"Disconnected."] ? [self defaultQuitMessage] : msg)] canWait:NO];
 	}
-	
+	disconnectTimer = [NSTimer scheduledTimerWithTimeInterval:2.5 target:self selector:@selector(forceDisconnect) userInfo:nil repeats:NO];
 	return YES;
+}
+
+- (void)forceDisconnect {
+	disconnectTimer = nil;
+	if ([self isConnected]) {
+		[self disconnectCleanupWithMessage:@"Disconnected."];
+	}
 }
 
 - (void)disconnectCleanupWithMessage:(NSString *)msg {

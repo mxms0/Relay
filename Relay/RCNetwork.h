@@ -41,6 +41,7 @@ typedef enum RCSocketStatus {
 	SSL_CTX *ctx;
 	SSL *ssl;
 	RCSocketStatus status;
+	NSTimer *disconnectTimer;
 	int task;
 	int port;
 	int sockfd;

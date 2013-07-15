@@ -66,42 +66,6 @@ NSInteger sortRank(id u1, id u2, RCNetwork* network) {
     }
 }
 
-UIImage *RCImageForRank(NSString *rank, RCNetwork* network) {
-    NSString *realRank = RCUserRank(rank, network);
-    NSInteger rankPosi = rankToNumber([realRank characterAtIndex:0], network);
-    switch (rankPosi) {
-        case 0:
-            rank = @"~";
-            break;
-        case 1:
-            rank = @"&";
-            break;
-        case 2:
-            rank = @"@";
-            break;
-        case 3:
-            rank = @"%";
-            break;
-        case 4:
-            rank = @"+";
-            break;
-        default:
-            rank = @"";
-            break;
-    }
-    /*
-     Uses numerical value for rank positions etc. => basically, works relying on PREFIX
-     */
-	if (rank == nil || [rank isEqualToString:@""]) return [UIImage imageNamed:@"0_regulares"];
-	if ([rank isEqualToString:@"@"] 
-		|| [rank isEqualToString:@"~"] 
-		|| [rank isEqualToString:@"&"] 
-		|| [rank isEqualToString:@"%"]
-		|| [rank isEqualToString:@"+"])
-		return [UIImage imageNamed:[NSString stringWithFormat:@"0_%@_user", rank]];
-	return nil;
-}
-
 - (void)initialize_me:(NSString *)chan {
     channelName = [chan retain];
     joinOnConnect = YES;
@@ -149,47 +113,6 @@ UIImage *RCImageForRank(NSString *rank, RCNetwork* network) {
 
 - (void)setDelegate:(RCNetwork *)_delegate {
 	delegate = _delegate;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	return [fullUserList count]+1;
-}
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-	return 1;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-	UITableViewCell *c = (RCUserTableCell *)[tableView dequeueReusableCellWithIdentifier:@"0_usercell"];
-	if (!c) {
-		c = [[[RCUserTableCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"0_usercell"] autorelease];
-	}
-	if (indexPath.row == 0) {
-		c.textLabel.text = @"Nickname List";
-		c.imageView.image = [UIImage imageNamed:@"0_mListr"];
-		c.detailTextLabel.text = [NSString stringWithFormat:@" - %d users online", [fullUserList count]];
-	}
-	else {
-		c.detailTextLabel.text = @"";
-        NSString *el = [fullUserList objectAtIndex:indexPath.row-1];
-        NSString *rank = RCUserRank(el, [self delegate]);
-		c.textLabel.text = [el substringFromIndex:[rank length]];
-		c.imageView.image = RCImageForRank(rank, delegate);
-	}
-	return c;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-	return 22.0;
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	UITableViewCell *c = [tableView cellForRowAtIndexPath:indexPath];
-	if (indexPath.row == 0) return;
-	else {
-		[delegate addChannel:c.textLabel.text join:NO];
-		//	[[RCChatController sharedController] channelSelected:[[delegate channelWithChannelName:c.textLabel.text] bubble]];
-	}
 }
 
 - (void)dealloc {

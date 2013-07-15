@@ -28,7 +28,7 @@
 		[self.layer setMasksToBounds:NO];
 		[self.layer addSublayer:hshdw];
 		[hshdw release];
-		UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0, 0, 320, 48) byRoundingCorners:UIRectCornerTopLeft| UIRectCornerTopRight cornerRadii:CGSizeMake(3, 3)];
+		UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0, 0, frame.size.width, 48) byRoundingCorners:UIRectCornerTopLeft| UIRectCornerTopRight cornerRadii:CGSizeMake(3, 3)];
 		CAShapeLayer *maskLayer = [CAShapeLayer layer];
 		maskLayer.frame = CGRectMake(0, 0, 320, 48);
 		maskLayer.path = maskPath.CGPath;
@@ -40,10 +40,23 @@
     return self;
 }
 
+- (void)layoutSubviews {
+	int loc = 0;
+	for (UIButton *btn in self.subviews) {
+		if (loc == 0) {
+			// do nothing..
+		}
+		if (loc == 1) {
+			[btn setFrame:CGRectMake(self.frame.size.width - btn.frame.size.width - 4, btn.frame.origin.y, btn.frame.size.width, btn.frame.size.height)];
+		}
+		loc++;
+	}
+}
+
 - (void)setFrame:(CGRect)frame {
 	[super setFrame:frame];
 	self.layer.mask.frame = CGRectMake(0, 0, frame.size.width, frame.size.height+4);
-	UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:self.layer.mask.frame byRoundingCorners:UIRectCornerTopLeft| UIRectCornerTopRight cornerRadii:CGSizeMake(5, 5)];
+	UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:self.layer.mask.frame byRoundingCorners:UIRectCornerTopLeft| UIRectCornerTopRight cornerRadii:CGSizeMake(3, 3)];
 	CAShapeLayer *shp = (CAShapeLayer *)self.layer.mask;
 	shp.path = maskPath.CGPath;
 }

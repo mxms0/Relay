@@ -31,6 +31,7 @@
 	BOOL nickSuggestionDisabled;
 	BOOL canDragMainView;
 	BOOL isLISTViewPresented;
+	BOOL isLandscape;
 }
 @property (nonatomic, retain) RCChatPanel *currentPanel;
 @property (nonatomic, assign) BOOL canDragMainView;
@@ -58,4 +59,5 @@
 - (void)menuButtonPressed:(id)obj;
 - (void)popUserListWithDefaultDuration;
 - (void)userSwiped_specialLikeAc3xx:(id)gest;
+- (void)userPanned_special:(UIPanGestureRecognizer *)pan;
 @end

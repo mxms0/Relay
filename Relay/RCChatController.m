@@ -45,8 +45,69 @@ static id _inst = nil;
 	[[chatView navigationBar] setNeedsDisplay];
 }
 
+- (void)userPanned_special:(UIPanGestureRecognizer *)pan {
+	if (isLISTViewPresented) return;
+	if (pan.state == UIGestureRecognizerStateChanged) {
+		CGPoint tr = [pan translationInView:[chatView superview]];
+		CGPoint centr = CGPointMake([chatView center].x +tr.x, [chatView center].y);
+		if (draggingUserList && [infoView frame].origin.x > [chatView frame].size.width) {
+			draggingUserList = NO;
+		}
+#if LOGALL
+		NSLog(@"HI I AM @ %f [LANDSCAPE]", centr.x);
+#endif
+		if (centr.x < 240 || draggingUserList) {
+			
+			draggingUserList = YES;
+			if (infoView.frame.origin.x > 240) {
+				[infoView setCenter:CGPointMake([infoView center].x+tr.x, [infoView center].y)];
+			}
+			else {
+				
+			}
+			[pan setTranslation:CGPointZero inView:[chatView superview]];
+			return;
+		}
+		if (!draggingUserList) {
+			if (canDragMainView) {
+				//	if (centr.x <= 595 && centr.x > 285) {
+				if (centr.x < 510) {
+					[chatView setCenter:centr];
+					[pan setTranslation:CGPointZero inView:[chatView superview]];
+				}
+			}
+		}
+	}
+	else if (pan.state == UIGestureRecognizerStateEnded) {
+		if (draggingUserList) {
+			if ([pan velocityInView:[chatView superview]].x > 0) {
+				[self popUserListWithDuration:0.30];
+			}
+			else {
+				[self pushUserListWithDuration:0.30];
+			}
+		}
+		else {
+			if (!canDragMainView) return;
+			if ([pan velocityInView:chatView.superview].x > 0) {
+				[self openWithDuration:0.30];
+			}
+			else
+				[self closeWithDuration:0.30];
+		}
+		draggingUserList = NO;
+	}
+	else if (pan.state == UIGestureRecognizerStateCancelled || pan.state == UIGestureRecognizerStateFailed) {
+		[self cleanLayersAndMakeMainChatVisible];
+	}
+}
+
 - (void)userPanned:(UIPanGestureRecognizer *)pan {
 	if (isLISTViewPresented) return;
+	if (isLandscape) {
+		[self userPanned_special:pan];
+		return;
+	}
 	if (pan.state == UIGestureRecognizerStateChanged) {
 		CGPoint tr = [pan translationInView:[chatView superview]];
 		CGPoint centr = CGPointMake([chatView center].x +tr.x, [chatView center].y);
@@ -167,6 +228,7 @@ static id _inst = nil;
 }
 
 - (void)correctSubviewFrames {
+	return;
 	CGSize fsize = [[UIScreen mainScreen] applicationFrame].size;
 	[bottomView setFrame:CGRectMake(0, bottomView.frame.origin.y, fsize.width, fsize.height)];
 	[chatView setFrame:CGRectMake(0, chatView.frame.origin.y, fsize.width, fsize.height)];
@@ -190,7 +252,7 @@ static id _inst = nil;
 	RCPrettyActionSheet *sheet = [[RCPrettyActionSheet alloc] initWithTitle:@"Options" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Settings" otherButtonTitles:@"Connect All", @"Disconnect All", @"Clear Badges", nil];
 	[sheet setTag:RCALERR_GLOPTIONS];
 	[sheet setButtonCount:5];
-	[sheet showInView:[[((RCAppDelegate *)[UIApp delegate]) navigationController] view]];
+	[sheet showInView:rootView.view];
 	[sheet release];
 }
 
@@ -491,7 +553,7 @@ static RCNetwork *currentNetwork = nil;
 	//[[[[navigationController topViewController] navigationItem] leftBarButtonItem] setEnabled:NO];
 	[UIView beginAnimations:nil context:nil];
 	[UIView setAnimationDuration:dr];
-	[infoView setFrame:CGRectMake(52, infoView.frame.origin.y, infoView.frame.size.width, infoView.frame.size.height)];
+	[infoView setFrame:CGRectMake((isLandscape ? 200 : 52), infoView.frame.origin.y, infoView.frame.size.width, infoView.frame.size.height)];
 	[infoView findShadowAndDoStuffToIt];
 	[UIView commitAnimations];
 	[currentPanel resignFirstResponder];
@@ -504,7 +566,7 @@ static RCNetwork *currentNetwork = nil;
 	[self setEntryFieldEnabled:YES];
 	//[[[[navigationController topViewController] navigationItem] leftBarButtonItem] setEnabled:YES];
 	[UIView animateWithDuration:dr animations:^ {
-		[infoView setFrame:CGRectMake(infoView.frame.size.width, infoView.frame.origin.y, infoView.frame.size.width, infoView.frame.size.height)];
+		[infoView setFrame:CGRectMake(chatView.frame.size.width, infoView.frame.origin.y, infoView.frame.size.width, infoView.frame.size.height)];
 	} completion:^(BOOL fin) {
 		[infoView findShadowAndDoStuffToIt];
 	}];
@@ -798,8 +860,19 @@ static RCNetwork *currentNetwork = nil;
 }
 
 - (void)rotateToInterfaceOrientation:(UIInterfaceOrientation)oi {
-	[UIViewController attemptRotationToDeviceOrientation];
-	[self correctSubviewFrames];
+	if (UIInterfaceOrientationIsLandscape(oi)) {
+		isLandscape = YES;
+		chatView.frame = CGRectMake(chatView.frame.origin.x, chatView.frame.origin.y, rootView.view.frame.size.width, rootView.view.frame.size.height);
+		currentPanel.frame = CGRectMake(currentPanel.frame.origin.x, currentPanel.frame.origin.y, chatView.frame.size.width, chatView.frame.size.height);
+		infoView.frame = CGRectMake(rootView.view.frame.size.width, infoView.frame.origin.y, infoView.frame.size.width, rootView.view.frame.size.height);
+		bottomView.frame = CGRectMake(bottomView.frame.origin.x, bottomView.frame.origin.y, bottomView.frame.size.width, rootView.view.frame.size.height);
+		[_bar setFrame:CGRectMake(0, chatView.frame.size.height - _bar.frame.size.height, chatView.frame.size.width, _bar
+								  .frame.size.height)];
+	}
+	else {
+		isLandscape = NO;
+		chatView.frame = CGRectMake(chatView.frame.origin.x, chatView.frame.origin.y, rootView.view.frame.size.width, rootView.view.frame.size.height - 64);
+	}
 	// hi.
 }
 

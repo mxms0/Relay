@@ -34,6 +34,19 @@
 	return self;
 }
 
+- (void)findShadowAndDoStuffToIt {
+	CGSize width = [UIApp statusBarFrame].size;
+	CGFloat swidth = (width.width == 20.00 ? width.height : width.width);
+	BOOL shouldBeVisible = (self.frame.origin.x >= swidth);
+	for (CALayer *sub in [self.layer sublayers]) {
+		if ([[sub name] isEqualToString:@"0_fuckingshadow"]) {
+			[sub setFrame:CGRectMake(sub.frame.origin.x, sub.frame.origin.y, sub.frame.size.width, self.frame.size.height)];
+			[sub setHidden:shouldBeVisible];
+			break;
+		}
+	}
+}
+
 - (void)scrollToTop {
 	[tableView setContentOffset:CGPointZero animated:YES];
 }
