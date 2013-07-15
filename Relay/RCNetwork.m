@@ -325,6 +325,7 @@
 	if (sockfd == -1) return NO;
 	if (isReading) return YES;
 	isReading = YES;
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	char buf[513];
 	int rc = 0;
 	if (useSSL) {
@@ -373,6 +374,7 @@
 			}
 		}
 	}
+	[pool release];
 	isReading = NO;
 	return NO;
 }
