@@ -6,6 +6,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "RCBarButtonItem.h"
+
 @interface UIView (FindAndResignFirstResponder)
 - (BOOL)findAndResignFirstResponder;
 @end

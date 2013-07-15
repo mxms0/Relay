@@ -74,21 +74,6 @@ static BOOL isSetup = NO;
 - (void)configureUI {
 	UINavigationBar *nb = [UINavigationBar appearance];
 	[nb setBackgroundImage:[UIImage imageNamed:@"0_headr"] forBarMetrics:UIBarMetricsDefault];
-	NSDictionary *formatting = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont boldSystemFontOfSize:11], UITextAttributeFont, UIColorFromRGB(0x454646), UITextAttributeTextColor,
-								[NSValue valueWithUIOffset:UIOffsetMake(0, 1)], UITextAttributeTextShadowOffset,
-								[UIColor whiteColor], UITextAttributeTextShadowColor, nil];
-	NSDictionary *dFormatting = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont boldSystemFontOfSize:11], UITextAttributeFont, UIColorFromRGB(0x929292), UITextAttributeTextColor,
-								 [NSValue valueWithUIOffset:UIOffsetMake(0, 1)], UITextAttributeTextShadowOffset,
-								 [UIColor whiteColor], UITextAttributeTextShadowColor, nil];
-	UIBarButtonItem *btn = [UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], nil];
-	[btn setTitleTextAttributes:formatting forState:UIControlStateNormal];
-	[btn setTitleTextAttributes:dFormatting forState:UIControlStateDisabled];
-	[btn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
-	[btn setBackgroundImage:[[UIImage imageNamed:@"0_navbtn_p"] stretchableImageWithLeftCapWidth:5 topCapHeight:0] forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
-	[btn setTitlePositionAdjustment:UIOffsetMake(0, 1) forBarMetrics:UIBarMetricsDefault];
-	[btn setBackButtonBackgroundImage:[[UIImage imageNamed:@"0_navback"] stretchableImageWithLeftCapWidth:15 topCapHeight:15] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
-	[btn setBackButtonBackgroundImage:[[UIImage imageNamed:@"0_navback_pressed"] stretchableImageWithLeftCapWidth:15 topCapHeight:15] forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
-	[btn setBackButtonTitlePositionAdjustment:UIOffsetMake(-1, 1) forBarMetrics:UIBarMetricsDefault];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

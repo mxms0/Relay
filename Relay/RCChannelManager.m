@@ -16,8 +16,10 @@
 		self.tableView.allowsSelectionDuringEditing = YES;
 		self.tableView.separatorColor = UIColorFromRGB(0x393d4a);
 		[self reloadData];
-		if ([[net _channels] count] == 0)
+		if ([[net _channels] count] == 0) {
 			[self edit];
+			[self setupDoneButton];
+		}
 		else [self setupEditButton];
 	}
     return self;
@@ -54,15 +56,51 @@
 	return @"Channels";
 }
 
+- (void)setupEditButton {
+	RCBarButtonItem *base = [[RCBarButtonItem alloc] initWithFrame:CGRectMake(0, 0, 50, 44)];
+	[base setImage:[UIImage imageNamed:@"0_editr"] forState:UIControlStateNormal];
+	[base addTarget:self action:@selector(edit) forControlEvents:UIControlEventTouchUpInside];
+	UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithCustomView:base];
+	[base release];
+	[self.navigationItem setRightBarButtonItem:backButton];
+	[backButton release];
+}
+
+- (void)setupDoneButton {
+	RCBarButtonItem *base = [[RCBarButtonItem alloc] initWithFrame:CGRectMake(0, 0, 50, 44)];
+	[base setImage:[UIImage imageNamed:@"0_checkr"] forState:UIControlStateNormal];
+	[base addTarget:self action:@selector(edit) forControlEvents:UIControlEventTouchUpInside];
+	UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithCustomView:base];
+	[base release];
+	[self.navigationItem setRightBarButtonItem:backButton];
+	[backButton release];
+}
+
+- (void)beginEditing:(id)btn {
+	[self setupEditButton];
+	[self.tableView setEditing:YES];
+}
+
+- (void)doneEditing:(id)btn {
+	[self setupDoneButton];
+	[self.tableView setEditing:NO];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-	UIView *base = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320,60)];
+	RCBarButtonItem *base = [[RCBarButtonItem alloc] initWithFrame:CGRectMake(0, 0, 50, 44)];
+	[base setImage:[UIImage imageNamed:@"0_backd"] forState:UIControlStateNormal];
+	[base addTarget:self action:@selector(goBack:) forControlEvents:UIControlEventTouchUpInside];
+	UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithCustomView:base];
+	[base release];
+	[self.navigationItem setLeftBarButtonItem:backButton];
+	[backButton release];
+	UIView *footerBase = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320,60)];
 	RCPrettyButton *td = [[RCPrettyButton alloc] initWithFrame:CGRectMake(10, 0, 300, 44)];
 	[td setFrame:CGRectMake(10, 5, 300, 44)];
-	[base addSubview:td];
-	[self.tableView setTableFooterView:base];
-	[base release];
+	[footerBase addSubview:td];
+	[self.tableView setTableFooterView:footerBase];
+	[footerBase release];
 	BOOL allCOL = YES;
 	for (RCChannel *chan in [network _channels]) {
 		if (![chan joinOnConnect]) {
@@ -78,6 +116,10 @@
 	}
 	[td setTag:(int)allCOL];
 	[td addTarget:self action:@selector(toggleJoinOnConnectForAllChannels:) forControlEvents:UIControlEventTouchUpInside];
+}
+
+- (void)goBack:(id)btn {
+	[[self navigationController] popViewControllerAnimated:YES];
 }
 
 - (void)toggleJoinOnConnectForAllChannels:(RCPrettyButton *)bt {

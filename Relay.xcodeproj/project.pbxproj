@@ -206,6 +206,10 @@
 		50EC2D2615D4BEA100EC4A37 /* 0_tminusbtn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50EC2D1E15D4BEA100EC4A37 /* 0_tminusbtn@2x.png */; };
 		50EC2D2715D4BEA100EC4A37 /* 0_tplusbtn.png in Resources */ = {isa = PBXBuildFile; fileRef = 50EC2D1F15D4BEA100EC4A37 /* 0_tplusbtn.png */; };
 		50EC2D2815D4BEA100EC4A37 /* 0_tplusbtn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50EC2D2015D4BEA100EC4A37 /* 0_tplusbtn@2x.png */; };
+		50ED81B01793CD9D00642421 /* 0_backd@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50ED81AE1793CD9100642421 /* 0_backd@2x.png */; };
+		50ED81B11793CD9D00642421 /* 0_backd.png in Resources */ = {isa = PBXBuildFile; fileRef = 50ED81AF1793CD9700642421 /* 0_backd.png */; };
+		50ED81B41793D5CC00642421 /* 0_editr.png in Resources */ = {isa = PBXBuildFile; fileRef = 50ED81B21793D5C400642421 /* 0_editr.png */; };
+		50ED81B51793D5CC00642421 /* 0_editr@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50ED81B31793D5C700642421 /* 0_editr@2x.png */; };
 		50EEDA241512C6150011618C /* 0_regulares.png in Resources */ = {isa = PBXBuildFile; fileRef = 50EEDA221512C6150011618C /* 0_regulares.png */; };
 		50EEDA251512C6150011618C /* 0_regulares@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50EEDA231512C6150011618C /* 0_regulares@2x.png */; };
 		50EF9310162CD54C00DE3443 /* RCBasicCommands.m in Sources */ = {isa = PBXBuildFile; fileRef = 50EF930F162CD54C00DE3443 /* RCBasicCommands.m */; };
@@ -487,6 +491,10 @@
 		50EC2D1E15D4BEA100EC4A37 /* 0_tminusbtn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_tminusbtn@2x.png"; sourceTree = "<group>"; };
 		50EC2D1F15D4BEA100EC4A37 /* 0_tplusbtn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_tplusbtn.png; sourceTree = "<group>"; };
 		50EC2D2015D4BEA100EC4A37 /* 0_tplusbtn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_tplusbtn@2x.png"; sourceTree = "<group>"; };
+		50ED81AE1793CD9100642421 /* 0_backd@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_backd@2x.png"; sourceTree = "<group>"; };
+		50ED81AF1793CD9700642421 /* 0_backd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_backd.png; sourceTree = "<group>"; };
+		50ED81B21793D5C400642421 /* 0_editr.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_editr.png; sourceTree = "<group>"; };
+		50ED81B31793D5C700642421 /* 0_editr@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_editr@2x.png"; sourceTree = "<group>"; };
 		50EEDA221512C6150011618C /* 0_regulares.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_regulares.png; sourceTree = "<group>"; };
 		50EEDA231512C6150011618C /* 0_regulares@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_regulares@2x.png"; sourceTree = "<group>"; };
 		50EF930E162CD54C00DE3443 /* RCBasicCommands.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCBasicCommands.h; sourceTree = "<group>"; };
@@ -878,8 +886,12 @@
 		50C464A9177FC0900025ED54 /* Buttons */ = {
 			isa = PBXGroup;
 			children = (
+				50ED81B21793D5C400642421 /* 0_editr.png */,
+				50ED81B31793D5C700642421 /* 0_editr@2x.png */,
 				50D5B53617801D1C00F2A39E /* 0_stb@2x.png */,
 				50D5B53717801D1D00F2A39E /* 0_stb.png */,
+				50ED81AE1793CD9100642421 /* 0_backd@2x.png */,
+				50ED81AF1793CD9700642421 /* 0_backd.png */,
 				50D5B52617801B8900F2A39E /* 0_backa@2x.png */,
 				50D5B52717801B8900F2A39E /* 0_backa.png */,
 				502F30A71777007E00A6E73E /* 0_adn_pres.png */,
@@ -1225,6 +1237,10 @@
 				50D5B53517801C2800F2A39E /* 0_lev.png in Resources */,
 				50D5B53817801D1E00F2A39E /* 0_stb@2x.png in Resources */,
 				50D5B53917801D1E00F2A39E /* 0_stb.png in Resources */,
+				50ED81B01793CD9D00642421 /* 0_backd@2x.png in Resources */,
+				50ED81B11793CD9D00642421 /* 0_backd.png in Resources */,
+				50ED81B41793D5CC00642421 /* 0_editr.png in Resources */,
+				50ED81B51793D5CC00642421 /* 0_editr@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
