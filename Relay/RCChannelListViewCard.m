@@ -154,7 +154,6 @@
 		for (RCChannel *chan in [currentNetwork _channels]) {
 			[currentChannels addObject:[chan channelName]];
 		}
-		NSLog(@"hi %@", currentChannels);
 		[self refreshSubtitleLabel];
 	}
 	RCChannelInfo *ifs = [[RCChannelInfo alloc] init];
@@ -166,7 +165,6 @@
 			break;
 		}
 	}
-	NSLog(@"hi %d", containsChannel);
 	if (containsChannel) {
 		[ifs setIsAlreadyInChannel:YES];
 		[currentChannels removeObject:chan];
