@@ -17,7 +17,7 @@
 
 @implementation RCNetwork
 
-@synthesize prefix, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _nicknames, shouldRequestSPass, shouldRequestNPass, listCallback, expanded, _selected, SASL, cache, uUID, isOper;
+@synthesize prefix, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _nicknames, shouldRequestSPass, shouldRequestNPass, listCallback, expanded, _selected, SASL, cache, uUID, isOper, isAway;
 
 - (RCChannel *)consoleChannel {
     @synchronized(_channels) {
@@ -862,11 +862,11 @@
 }
 
 - (void)handle305:(NSString *)notAway {
-	self.isAway = NO;
+	isAway = NO;
 }
 
 - (void)handle306:(NSString *)nowAway {
-	self.isAway = YES;
+	isAway = YES;
 }
 
 - (void)handle311:(NSString *)hiwhois {

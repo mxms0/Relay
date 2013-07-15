@@ -90,7 +90,7 @@ static BOOL isSetup = NO;
 	[self performSelector:@selector(showExpirationWarning) withObject:nil afterDelay:ttime];
 	[[RCNetworkManager sharedNetworkManager] setIsBG:YES];
     for (RCNetwork *network in [[RCNetworkManager sharedNetworkManager] networks]) {
-        if (!network.isAway) {
+        if ([network isConnected] && !network.isAway) {
             [network sendMessage:@"AWAY :Be back later."];
         }
     }
@@ -133,7 +133,8 @@ static BOOL isSetup = NO;
 	[[RCNetworkManager sharedNetworkManager] setIsBG:NO];
 	[[UIApplication sharedApplication] cancelAllLocalNotifications];
     for (RCNetwork *network in [[RCNetworkManager sharedNetworkManager] networks]) {
-        [network sendMessage:@"AWAY"];
+		if ([network isConnected])
+			[network sendMessage:@"AWAY"];
     }
 	/*
 	 Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
