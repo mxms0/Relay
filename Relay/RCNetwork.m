@@ -40,8 +40,6 @@
         prefix = nil;
 		_channels = [[NSMutableArray alloc] init];
         _nicknames = [[NSMutableArray alloc] init];
-        if ([self useNick] && ![_nicknames containsObject:[self useNick]])
-            [_nicknames addObject:[self useNick]];
 	}
 	return self;
 }

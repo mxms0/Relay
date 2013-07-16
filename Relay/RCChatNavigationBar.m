@@ -79,7 +79,7 @@
 	[bg drawInRect:rect];
 	if (drawIndent) {
 		UIImage *indent = [UIImage imageNamed:@"0_indents"];
-		[indent drawAtPoint:CGPointMake(0, 0)];
+		[indent drawAtPoint:CGPointMake(rect.size.width/2 - indent.size.width/2, 0)];
 		return;
 	}
 	CGContextSetFillColorWithColor(ctx, UIColorFromRGB(0x282C40).CGColor);
