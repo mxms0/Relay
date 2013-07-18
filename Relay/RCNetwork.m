@@ -600,48 +600,44 @@
 }
 
 - (void)handleNotHandledMessage:(RCMessage *)message {
-	// pls fix maximoo
-	return;
 	RCChannel *chan = [self consoleChannel];
-	[chan recievedMessage:[message parameterAtIndex:0] from:@"" type:RCMessageTypeNormal];
+	[chan recievedMessage:message->message from:@"" type:RCMessageTypeNormal];
 	NSLog(@"PLZ IMPLEMENT handle%@:%@", [message numeric], [message description]);
 }
 
-- (void)handle001:(RCMessage *)welcome {
+- (void)handle001:(RCMessage *)message {
+    // RPL_WELCOME
 	status = RCSocketStatusConnected;
 	[self networkDidRegister:YES];
-
-	useNick = [[welcome sender] retain];
-	//:Welcome to the IRCNode Internet Relay Chat Network Maximus|ZNC
-#if LOGALL
-	NSLog(@"WAT IS HAPPENING %@ %@", useNick, welcome);
-#endif
+    
+	useNick = [[message sender] retain];
 	RCChannel *chan = [self consoleChannel];
-	[chan recievedMessage:[welcome parameterAtIndex:1] from:@"" type:RCMessageTypeNormal];
+	[chan recievedMessage:[message parameterAtIndex:1] from:@"" type:RCMessageTypeNormal];
 	reloadNetworks();
 }
 
-- (void)handle002:(RCMessage *)infos {
+- (void)handle002:(RCMessage *)message {
+    // RPL_YOURHOST
 	RCChannel *chan = [self consoleChannel];
-	[chan recievedMessage:[infos parameterAtIndex:1] from:@"" type:RCMessageTypeNormal];
-	// Relay[2626:f803] MSG: :fr.ac3xx.com 002 _m :Your host is fr.ac3xx.com, running version Unreal3.2.9
+	[chan recievedMessage:[message parameterAtIndex:1] from:@"" type:RCMessageTypeNormal];
 }
 
-- (void)handle003:(RCMessage *)servInfos {
+- (void)handle003:(RCMessage *)message {
+    // RPL_CREATED
 	RCChannel *chan = [self consoleChannel];
-	[chan recievedMessage:[servInfos parameterAtIndex:1] from:@"" type:RCMessageTypeNormal];
-	// Relay[2626:f803] MSG: :fr.ac3xx.com 003 _m :This server was created Fri Dec 23 2011 at 01:21:01 CET
+	[chan recievedMessage:[message parameterAtIndex:1] from:@"" type:RCMessageTypeNormal];
 }
 
-- (void)handle004:(RCMessage *)othrInfo {
+- (void)handle004:(RCMessage *)message {
+    // RPL_MYINFO
 	RCChannel *chan = [self consoleChannel];
-	[chan recievedMessage:othrInfo->message from:@"" type:RCMessageTypeNormal];
-	// Relay[2626:f803] MSG: :fr.ac3xx.com 004 _m fr.ac3xx.com Unreal3.2.9 iowghraAsORTVSxNCWqBzvdHtGp 
+	[chan recievedMessage:message->message from:@"" type:RCMessageTypeNormal];
 }
 
-- (void)handle005:(RCMessage *)supported {
+- (void)handle005:(RCMessage *)message {
+    // RPL_ISUPPORT
     @synchronized(self) {
-		NSString *capsString = supported->message;
+		NSString *capsString = message->message;
         NSArray *arr = [capsString componentsSeparatedByString:@" "];
         NSMutableString *message = [NSMutableString stringWithString:@""];
         for (NSString *str in arr) {
@@ -674,20 +670,10 @@
     }
 }
 
-- (void)handle010:(RCMessage *)redirect {
+- (void)handle010:(RCMessage *)message {
     // RPL_BOUNCE
-	NSLog(@"fds %@:%@", [redirect parameterAtIndex:0], [redirect parameterAtIndex:1]);
-	return;
-	NSScanner *scanner = [[NSScanner alloc] initWithString:redirect];
-	NSString *crap;
-	NSString *redirServer;
-	NSString *redirPort;
-	[scanner scanUpToString:@" " intoString:&crap];
-	[scanner scanUpToString:@" " intoString:&crap];
-	[scanner scanUpToString:@" " intoString:&crap];
-	[scanner scanUpToString:@" " intoString:&redirServer];
-	[scanner scanUpToString:@" " intoString:&redirPort];
-	[scanner release];
+	NSString *redirServer = [message parameterAtIndex:1];
+	NSString *redirPort = [message parameterAtIndex:2];
 	NSString *alertString = nil;
 	if ([redirPort integerValue] != 0) {
 		if ([self port] == [redirPort integerValue]) {
@@ -705,179 +691,88 @@
 	}
 }
 
-- (void)handle042:(RCMessage *)msg {
+- (void)handle042:(RCMessage *)message {
 	
 }
 
-- (void)handle250:(RCMessage *)countr {
-	// :hubbard.freenode.net 250 Guest01 :Highest connection count: 3549 (3548 clients) (177981 connections received)	
+- (void)handle250:(RCMessage *)message {
+	// RPL_STATSCONN
 }
 
-- (void)handle251:(RCMessage *)infos {
-	RCChannel *chan = [self consoleChannel];
-	[chan recievedMessage:[infos parameterAtIndex:0] from:@"" type:RCMessageTypeNormal];
-	// Relay[3067:f803] MSG: :fr.ac3xx.com 251 _m :There are 1 users and 4 invisible on 1 servers
+- (void)handle251:(RCMessage *)message {
+    // RPL_LUSERCLIENT
 }
 
-- (void)handle252:(RCMessage *)opsOnline {
-	RCChannel *chan = [self consoleChannel];
-	[chan recievedMessage:[NSString stringWithFormat:@"%@ %@", [opsOnline parameterAtIndex:0], [opsOnline parameterAtIndex:1]] from:@"" type:RCMessageTypeNormal];
-	// :irc.saurik.com 252 _m 2 :operator(s) online
+- (void)handle252:(RCMessage *)message {
+    // RPL_LUSEROP
 }
 
-- (void)handle253:(NSString *)unknown {
-	//:hubbard.freenode.net 253 Guest01 3 :unknown connection(s)	
+- (void)handle253:(RCMessage *)message {
+	// RPL_LUSERUNKNOWN
 }
 
-- (void)handle254:(NSString *)rooms {
-	// number of channels active
+- (void)handle254:(RCMessage *)message {
+	// RPL_LUSERCHANNELS
 }
 
-- (void)handle255:(NSString *)clients {
-	// number of clients. 
+- (void)handle255:(RCMessage *)message {
+	// RPL_LUSERME
 }
 
-- (void)handle265:(NSString *)local {
-	// Relay[2794:f803] MSG: :fr.ac3xx.com 265 _m :Current Local Users: 5  Max: 7
+- (void)handle265:(RCMessage *)message {
+	// RPL_LOCALUSERS
 }
 
-- (void)handle266:(NSString *)global {
-	// Relay[2794:f803] MSG: :fr.ac3xx.com 266 _m :Current Global Users: 5  Max: 6
+- (void)handle266:(RCMessage *)message {
+	// RPL_GLOBALUSERS
 }
 
-- (void)handle301:(NSString *)nickIsAway {
-	NSLog(@"HI %@", nickIsAway);
+- (void)handle301:(RCMessage *)message {
+	// RPL_AWAY
 }
 
-- (void)handle303:(NSString *)threeohthree {
-	// not really sure what to do here. kind of stupid actually. hm :/
+- (void)handle303:(RCMessage *)message {
+	// RPL_ISON
 }
 
-- (void)handle305:(NSString *)notAway {
+- (void)handle305:(RCMessage *)message {
+    // RPL_UNAWAY
 	isAway = NO;
 }
 
-- (void)handle306:(NSString *)nowAway {
+- (void)handle306:(RCMessage *)message {
+    // RPL_NOWAWAY
 	isAway = YES;
 }
 
-- (void)handle311:(NSString *)hiwhois {
-	return;
-	NSScanner *scanr = [[NSScanner alloc] initWithString:hiwhois];
-	NSString *crap = nil;
-	NSString *nick_ = nil;
-	NSString *infos = nil;
-	[scanr scanUpToString:@" " intoString:&crap];
-	[scanr scanUpToString:@" " intoString:&crap];
-	[scanr scanUpToString:@" " intoString:&crap];
-	[scanr scanUpToString:@" " intoString:&nick_];
-	[scanr scanUpToString:@"" intoString:&infos];
-	[scanr release];
-	NSString *username_ = nil;
-	scanr = [[NSScanner alloc] initWithString:infos];
-	[scanr scanUpToString:@":" intoString:&username_];
-	[scanr scanUpToString:@"" intoString:&crap]; // crap = realname
-	username_ = [username_ stringByReplacingOccurrencesOfString:@"*" withString:@""];
-	username_ = [username_ recursivelyRemoveSuffix:@" "];
-	username_ = [username_ stringByReplacingOccurrencesOfString:@" " withString:@"@"];
-	if ([crap hasPrefix:@":"])
-		crap = [crap substringFromIndex:1];
-	RCPMChannel *chan = (RCPMChannel *)[self channelWithChannelName:[nick_ stringByReplacingOccurrencesOfString:@" " withString:@""]];
-	if (!chan) {
-		RCChannel *_chan = [[[RCChatController sharedController] currentPanel] channel];
-		if (![[_chan delegate] isEqual:self])
-			_chan = [self consoleChannel];
-		[_chan recievedMessage:[NSString stringWithFormat:@"has user host %@ and real name \"%@\"", username_, crap] from:nick_ type:RCMessageTypeEvent];
-		[scanr release];
-		return;
-	}
-	if ([chan isKindOfClass:[RCPMChannel class]]) {
-		[chan setIpInfo:infos];
-	}
-	[scanr release];
+- (void)handle311:(RCMessage *)message {
+    // RPL_WHOISUSER
 }
 
-- (void)handle312:(RCMessage *)threetwelve {
-	
-	return;
-	NSScanner *scanr = [[NSScanner alloc] initWithString:threetwelve];
-	NSString *crap = nil;
-	NSString *nick_ = nil;
-	NSString *infos = nil;
-	[scanr scanUpToString:@" " intoString:&crap];
-	[scanr scanUpToString:@" " intoString:&crap];
-	[scanr scanUpToString:@" " intoString:&crap];
-	[scanr scanUpToString:@" " intoString:&nick_];
-	[scanr scanUpToString:@"" intoString:&infos];
-	//infos = [infos substringWithRange:NSMakeRange(0, ([infos rangeOfString:@":"].location))];
-	infos = [infos stringByReplacingOccurrencesOfString:@":" withString:@"("];
-	infos = [infos stringByAppendingString:@")"];
-	RCPMChannel *chan = (RCPMChannel *)[self channelWithChannelName:[nick_ stringByReplacingOccurrencesOfString:@" " withString:@""]];
-	if (!chan) {
-		RCChannel *_chan = [[[RCChatController sharedController] currentPanel] channel];
-		if (![[_chan delegate] isEqual:self])
-			_chan = [self consoleChannel];
-		[_chan recievedMessage:[NSString stringWithFormat:@"is connected to %@", infos] from:nick_ type:RCMessageTypeEvent];
-		[scanr release];
-		return;
-	}
-	if ([chan isKindOfClass:[RCPMChannel class]]) {
-		[chan setConnectAddr:infos];
-	}
-	[scanr release];
+- (void)handle312:(RCMessage *)message {
+	// RPL_WHOISSERVER
 }
 
-- (void)handle313:(NSString *)badassIRCOP {
-	MARK;
+- (void)handle313:(RCMessage *)message {
+    // RPL_WHOISOPERATOR
 }
 
-- (void)handle318:(RCMessage *)threeeighteen {
-	NSString *sender = [threeeighteen sender];
-	RCParseUserMask(sender, &sender, nil, nil);
-	RCPMChannel *chan = (RCPMChannel *)[self channelWithChannelName:[sender stringByReplacingOccurrencesOfString:@" " withString:@""]];
-	if ([chan isKindOfClass:[RCPMChannel class]]) {
-		if ([[[[RCChatController sharedController] currentPanel] channel] isEqual:chan]) {
-			[[RCChatController sharedController] performSelectorOnMainThread:@selector(pushUserListWithDefaultDuration) withObject:nil waitUntilDone:NO];
-		}
-	}
+- (void)handle318:(RCMessage *)message {
+    // RPL_ENDOFWHOIS
 }
 
-- (void)handle319:(NSString *)threenineteen {
-	return;
-	// :irc.saurik.com 319 Snowman theiostream :#substrate #iOSOpenDev # @#spotlightplus #TweakIdeas #teambacon @#op #geordi #relay @#math @#ll #oligos
-	NSScanner *scanr = [[NSScanner alloc] initWithString:threenineteen];
-	NSString *crap = nil;
-	NSString *nick_ = nil;
-	NSString *infos = nil;
-	[scanr scanUpToString:@" " intoString:&crap];
-	[scanr scanUpToString:@" " intoString:&crap];
-	[scanr scanUpToString:@" " intoString:&crap];
-	[scanr scanUpToString:@" " intoString:&nick_];
-	[scanr scanUpToString:@"" intoString:&infos];
-	if ([infos hasPrefix:@":"])
-		infos = [infos substringFromIndex:1];
-	RCPMChannel *chan = (RCPMChannel *)[self channelWithChannelName:[nick_ stringByReplacingOccurrencesOfString:@" " withString:@""]];
-	if (!chan) {
-		RCChannel *_chan = [[[RCChatController sharedController] currentPanel] channel];
-		if (![[_chan delegate] isEqual:self])
-			_chan = [self consoleChannel];
-		[_chan recievedMessage:[NSString stringWithFormat:@"is in %@", infos] from:nick_ type:RCMessageTypeEvent];
-		[scanr release];
-		return;
-	}
-	if ([chan isKindOfClass:[RCPMChannel class]]) {
-		if ([infos hasPrefix:@":"])
-			infos = [infos substringFromIndex:1];
-		[chan setChanInfos:infos];
-	}
-	[scanr release];
+- (void)handle319:(RCMessage *)message {
+    // RPL_WHOISCHANNELS
 }
 
-- (void)handle321:(NSString *)formatIdontUse {
-	// :hubbard.freenode.net 321 Siberia_ Channel :Users  Name
+- (void)handle321:(RCMessage *)message {
+	// RPL_LISTSTART
 }
 
-- (void)handle322:(NSString *)threetwotwo {
+- (void)handle322:(RCMessage *)message {
+    // RPL_LIST
+    NSLog(message->message);
+    /*
 	if (!listCallback) return;
 	NSScanner *hi = [[NSScanner alloc] initWithString:threetwotwo];
 	NSString *crap = NULL;
@@ -899,96 +794,51 @@
 	[hi release];
 	// :irc.saurik.com 322 mx_ #testing 1 :[+nt]
 	// :hitchcock.freenode.net 322 mxms_ #testchannelpleaseignore 3 :http://i.imgur.com/LbPvWUV.jpg
+    */
 }
 
-- (void)handle323:(NSString *)endofchannellistning {
+- (void)handle323:(RCMessage *)message {
+    // RPL_LISTEND
 	[listCallback setUpdating:NO];
 	listCallback = nil;
 }
 
-- (void)handle328:(NSString *)websiteinfo {
-	return;
-    NSScanner *scanner = [[NSScanner alloc] initWithString:websiteinfo];
-    NSString *crap;
-    NSString *channel;
-    NSString *website;
-    [scanner scanUpToString:@" " intoString:&crap];
-    [scanner scanUpToString:@" " intoString:&crap];
-    [scanner scanUpToString:@" " intoString:&crap];
-    [scanner scanUpToString:@" " intoString:&channel];
-    [scanner scanUpToString:@" " intoString:&website];
-    if ([website hasPrefix:@":"]) {
-        website = [website substringFromIndex:1];
-    }
+- (void)handle328:(RCMessage *)message {
+    // RPL_CHANNEL_URL
+    NSString *channel = [message parameterAtIndex:1];
+    NSString *website = [message parameterAtIndex:2];
 	[[self channelWithChannelName:channel] recievedMessage:[NSString stringWithFormat:@"Website is %@", website] from:@"" type:RCMessageTypeEvent];
-    [scanner release];
 }
 
-- (void)handle331:(NSString *)noTopic {
-	return;
-    [self handle332:noTopic];
-	// Relay[18195:707] MSG: :irc.saurik.com 331 _m #kk :No topic is set.
+- (void)handle331:(RCMessage *)message {
+    // RPL_NOTOPIC
+    NSString *channel = [message parameterAtIndex:1];
+	[[self channelWithChannelName:channel ifNilCreate:YES] recievedMessage:@"No topic set." from:@"" type:RCMessageTypeTopic];
 }
 
-- (void)handle332:(NSString *)topic {
-	return;
-	NSScanner *_scanner = [[NSScanner alloc] initWithString:topic];
-	NSString *crap = @"_";
-	NSString *to = crap;
-	NSString *room = to;
-	NSString *_topic = room;
-	[_scanner scanUpToString:@" " intoString:&crap];
-	[_scanner scanUpToString:@" " intoString:&crap];
-	[_scanner scanUpToString:@" " intoString:&to];
-	[_scanner scanUpToString:@" " intoString:&room];
-	[_scanner scanUpToString:@"" intoString:&_topic];
-    if ([_topic hasPrefix:@":"]) {
-        _topic = [_topic substringFromIndex:1];
-    }
-	[[self channelWithChannelName:room ifNilCreate:YES] recievedMessage:_topic from:nil type:RCMessageTypeTopic];
-	// :irc.saurik.com 332 _m #bacon :Bacon | where2start? kitchen | Canadian Bacon? get out. | WE SPEAK: BACON, ENGLISH, PORTUGUESE, DEUTSCH. | http://blog.craftzine.com/bacon-starry-night.jpg THIS IS YOU ¬†
-	[_scanner release];
+- (void)handle332:(RCMessage *)message {
+    // RPL_TOPIC
+	NSString *channel = [message parameterAtIndex:1];
+	NSString *topic = [message parameterAtIndex:2];
+	[[self channelWithChannelName:channel ifNilCreate:YES] recievedMessage:topic from:nil type:RCMessageTypeTopic];
 }
 
-- (void)handle333:(NSString *)numbers {
-	return;
-	NSString *crap;
-	NSString *chan_ = nil;
-	NSString *from = nil;
-	NSString *time = nil;
-	NSScanner *scanr = [[NSScanner alloc] initWithString:numbers];
-	[scanr scanUpToString:@" " intoString:&crap];
-	[scanr scanUpToString:@" " intoString:&crap];
-	[scanr scanUpToString:@" " intoString:&crap];
-	[scanr scanUpToString:@" " intoString:&chan_];
-	[scanr scanUpToString:@" " intoString:&from];
-	[scanr scanUpToString:@" " intoString:&time];
-	time_t unixTime = [time intValue]; // seems to work just fine.
-	char buffer[128];
-	struct tm *info;
-	info = localtime(&unixTime);
-	strftime(buffer, 128, "%+", info);
-	NSString *normalTime = [NSString stringWithCString:buffer encoding:NSUTF8StringEncoding];
-	RCParseUserMask(from, &from, nil, nil);
-	RCChannel *chan = [self channelWithChannelName:chan_];
-	[chan recievedMessage:[NSString stringWithFormat:@"Set by %@ on %@", from, normalTime] from:nil type:RCMessageTypeNormalE2];
-	[scanr release];
-	// :irc.saurik.com 333 _m #bacon Bacon!~S_S@adsl-184-33-54-96.mia.bellsouth.net 1329680840
+- (void)handle333:(RCMessage *)message {
+    // RPL_TOPICWHOTIME(?)
+    NSString *channel = [message parameterAtIndex:1];
+    NSString *setter = [message parameterAtIndex:2];
+    int ts = [[message parameterAtIndex:3] intValue];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"dd MMMM yyyy, HH:mm:ss"];
+    NSString *time = [dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:ts]];
+    [dateFormatter release];
+    [[self channelWithChannelName:channel] recievedMessage:[NSString stringWithFormat:@"Set by %@ on %@", setter, time] from:@"" type:RCMessageTypeNormalE2];
 }
 
-- (void)handle353:(NSString *)_users {
-	return;
-	NSScanner *scanner = [[NSScanner alloc] initWithString:_users];
-	NSString *crap;
-	NSString *me;
-	NSString *room;
-	NSString *users;
-	[scanner scanUpToString:@" " intoString:&crap];
-	[scanner scanUpToString:@" " intoString:&crap];
-	[scanner scanUpToString:@" " intoString:&me];
-	[scanner scanUpToString:@" " intoString:&crap];
-	[scanner scanUpToString:@" " intoString:&room];
-	[scanner scanUpToString:@"" intoString:&users];
+- (void)handle353:(RCMessage *)message {
+    // RPL_NAMREPLY
+	NSString *room = [message parameterAtIndex:2];
+	NSString *users = [message parameterAtIndex:3];
 	if ([users length] > 1) {
 		users = [users substringFromIndex:1];
 		NSArray *_someUsers = [users componentsSeparatedByString:@" "];
@@ -1000,154 +850,79 @@
 			}
 		}
 	}
-	[scanner release];
-    //	add users to room listing..
 }
-- (void)handle366:(NSString *)end {
-	return;
-	//:irc.saurik.com 366 __mxms #bacon :End of /NAMES list.
-	NSScanner *scn = [[NSScanner alloc] initWithString:end];
-	NSString *stuff = nil;
-	NSString *chan = nil;
-	[scn scanUpToString:@" " intoString:&stuff];
-	[scn scanUpToString:@" " intoString:&stuff];
-	[scn scanUpToString:@" " intoString:&stuff];
-	[scn scanUpToString:@" " intoString:&chan];
+- (void)handle366:(RCMessage *)message {
+	// RPL_ENDOFNAMES
+	NSString *chan = [message parameterAtIndex:1];
 	RCChannel *channel = [self channelWithChannelName:chan];
 	[channel setShouldHoldUserListUpdates:NO];
-	[scn release];
 }
 
-- (void)handle375:(NSString *)motd {
-	return;
-	NSScanner *scanner = [[NSScanner alloc] initWithString:motd];
-	NSString *crap;
-	@try {
-		[scanner scanUpToString:@" " intoString:&crap];
-		[scanner scanUpToString:@" " intoString:&crap];
-		[scanner scanUpToString:@" " intoString:&crap];
-		[scanner scanUpToString:@"" intoString:&crap];
-        if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
-        RCChannel *chan = [self consoleChannel];
-        if (chan) [chan recievedMessage:crap from:@"MOTD " type:RCMessageTypeNormal];
-	}
-	@catch (NSException *exception) {
-		MARK;
-	}
-	[scanner release];
-	// :irc.saurik.com 375 _m :irc.saurik.com message of the day
+- (void)handle375:(RCMessage *)message {
+    // RPL_ENDOFMOTD
+	NSString *string = [message parameterAtIndex:1];
+    RCChannel *chan = [self consoleChannel];
+    [chan recievedMessage:string from:@"MOTD " type:RCMessageTypeNormal];
 }
 
-- (void)handle372:(NSString *)noMotd {
-	return;
-	NSScanner *scanner = [[NSScanner alloc] initWithString:noMotd];
-	NSString *crap;
-	@try {
-		[scanner scanUpToString:@" " intoString:&crap];
-		[scanner scanUpToString:@" " intoString:&crap];
-		[scanner scanUpToString:@" " intoString:&crap];
-		[scanner setScanLocation:[scanner scanLocation]+1];
-		[scanner scanUpToString:@"" intoString:&crap];
-	}
-	@catch (NSException *exception) {
-		MARK;
-	}
-	if ([crap hasPrefix:@":"]) crap = [crap substringFromIndex:1];
+- (void)handle372:(RCMessage *)message {
+    // RPL_MOTD
+	NSString *line = [message parameterAtIndex:1];
 	RCChannel *chan = [self consoleChannel];
-	if (chan) [chan recievedMessage:crap from:@"MOTD " type:RCMessageTypeNormal];
-	[scanner release];
-	// :irc.saurik.com 372 _m :- Please edit /etc/inspircd/motd
+	[chan recievedMessage:line from:@"MOTD " type:RCMessageTypeNormal];
 }
 
-- (void)handle376:(NSString *)endOfMotd {
+- (void)handle376:(RCMessage *)message {
 	// :irc.saurik.com 376 _m :End of message of the day.
 }
 
-- (void)handle381:(NSString *)ircopFlag {
+- (void)handle381:(RCMessage *)message {
 	isOper = YES;
 }
 
-- (void)handle396:(NSString *)hiddenhost {
-    return;
-	NSScanner *scanner = [[NSScanner alloc] initWithString:hiddenhost];
-    NSString *crap;
-    NSString *host;
-    NSString *infoString;
-    [scanner scanUpToString:@" " intoString:&crap];
-    [scanner scanUpToString:@" " intoString:&crap];
-    [scanner scanUpToString:@" " intoString:&crap];
-    [scanner scanUpToString:@" " intoString:&host];
-    [scanner scanUpToString:@"" intoString:&infoString];
-    infoString = [infoString substringFromIndex:1];
-    if (![infoString isEqualToString:@""]) {
-        RCChannel *chan = [self consoleChannel];
-        [chan recievedMessage:[NSString stringWithFormat:@"%@ %@", host, infoString] from:@"" type:RCMessageTypeEvent];
-    }
-    [scanner release];
+- (void)handle396:(RCMessage *)message {
+    // RPL_HOSTHIDDEN
+    NSString *host = [message parameterAtIndex:1];
+    NSString *info = [message parameterAtIndex:2];
+    RCChannel *chan = [self consoleChannel];
+    [chan recievedMessage:[NSString stringWithFormat:@"%@ %@", host, info] from:@"" type:RCMessageTypeEvent];
+
 }
 
-- (void)handle401:(NSString *)blasphemey {
+- (void)handle401:(RCMessage *)message {
 	// no such nick/channel
 }
 
-- (void)handle403:(NSString *)blasphemey {
+- (void)handle403:(RCMessage *)message {
 	// no such channel
 }
 
-- (void)handle404:(NSString *)args {
-	return;;
-    if ([args hasPrefix:@":"]) {
-        args = [args substringFromIndex:[args rangeOfString:@" "].location+1];
-    }
-    NSScanner *scanner = [NSScanner scannerWithString:args];
-    NSString* raw = @"";
-    NSString* mnick = @"";
-    NSString* chan = @"";
-    NSString* mesg = @"";
-    [scanner scanUpToString:@" " intoString:&raw];
-    if (![raw isEqualToString:@"404"]) {
-        return;
-    }
-    [scanner scanUpToString:@" " intoString:&mnick];
-    [scanner scanUpToString:@" " intoString:&chan];
-    [scanner scanUpToString:@"" intoString:&mesg];
-    if ([mesg hasPrefix:@":"]) {
-        mesg = [mesg substringFromIndex:1];
-    }
-    RCChannel *kchan = [self channelWithChannelName:chan];
-	if (kchan) [kchan recievedMessage:mesg from:@"" type:RCMessageTypeError];
+- (void)handle404:(RCMessage *)message {
+    // ERR_CANNOTSENDTOCHAN
+    NSString *channel = [message parameterAtIndex:1];
+    NSString *reason = [message parameterAtIndex:2];
+    [[self channelWithChannelName:channel ifNilCreate:YES] recievedMessage:reason from:@"" type:RCMessageTypeError];
 }
 
-- (void)handle420:(NSString *)blunt {
-	NSLog(@"DAFUQ %@", blunt);
+- (void)handle420:(RCMessage *)message {
+	//NSLog(@"DAFUQ %@", blunt);
 }
 
-- (void)handle421:(NSString *)unknown {
-	return;
-	// means we sent a message that is so illogical, fuck you
-	NSString *crap = NULL;
-	NSString *msg = nil;
-	NSScanner *scan = [[NSScanner alloc] initWithString:unknown];
-	[scan scanUpToString:@"421" intoString:&crap];
-	[scan scanUpToString:@" " intoString:&crap];
-	[scan scanUpToString:@" " intoString:&crap];
-	[scan scanUpToString:@":" intoString:&msg];
-	// considering this logical only in the case that there is an issue with network connectivity and the user
-	// is able to switch channels before getting a response from the network.
-	RCChannel *currentChannel_ = [[[RCChatController sharedController] currentPanel] channel];
-	// the check below fails. make better comparison method max.
-	if (![[currentChannel_ delegate] isEqual:self]) {
-		currentChannel_ = [self consoleChannel];
-	}
-	[currentChannel_ recievedMessage:[NSString stringWithFormat:@"Error(421): %@ Unknown Command", [msg uppercaseString]] from:nil type:RCMessageTypeError];
-	[scan release];
+- (void)handle421:(RCMessage *)message {
+	// ERR_UNKNOWNCOMMAND
+    NSString *command = [message parameterAtIndex:1];
+    NSString *reason = [message parameterAtIndex:2];
+    NSString *string = [NSString stringWithFormat:@"Error(421): %@ %@", command, reason];
+    [[[[RCChatController sharedController] currentPanel] channel] recievedMessage:string from:@"" type:RCMessageTypeError];
 }
 
-- (void)handle422:(NSString *)motd {
-	NSLog(@"Ohai. %@", motd);
+- (void)handle422:(RCMessage *)message {
+    // ERR_NOMOTD
+	//NSLog(@"Ohai. %@", motd);
 }
 
-- (void)handle432:(NSString *)fourthirtytwo {
+- (void)handle432:(RCMessage *)message {
+    // ERR_ERRONEUSNICKNAME
 	dispatch_async(dispatch_get_main_queue(), ^{ 
 		RCPrettyAlertView *ac = [[RCPrettyAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Invalid Nickname (%@)", [self _description]] message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Change", nil];
 		[ac setTag:RCALERR_INCNICK];
@@ -1157,39 +932,20 @@
 	});
 }
 
-- (void)handle433:(NSString *)use {
-	// nick is in use.
+- (void)handle433:(RCMessage *)message {
+	// nERR_NICKNAMEINUSE
     self.useNick = [useNick stringByAppendingString:@"_"];
 	[self sendMessage:[@"NICK " stringByAppendingString:useNick] canWait:NO];
 }
 
-- (void)handle437:(NSString *)args {
-	return;
-    if ([args hasPrefix:@":"]) {
-        args = [args substringFromIndex:[args rangeOfString:@" "].location+1];
-    }
-    NSScanner *scanner = [NSScanner scannerWithString:args];
-    NSString* raw = @"";
-    NSString* mnick = @"";
-    NSString* chan = @"";
-    NSString* mesg = @"";
-    [scanner scanUpToString:@" " intoString:&raw];
-    if (![raw isEqualToString:@"437"]) {
-        return;
-    }
-    [scanner scanUpToString:@" " intoString:&mnick];
-    [scanner scanUpToString:@" " intoString:&chan];
-    [scanner scanUpToString:@"" intoString:&mesg];
-    if ([mesg hasPrefix:@":"]) {
-        mesg = [mesg substringFromIndex:1];
-    }
-    RCChannel *kchan = [self channelWithChannelName:chan];
-	if (kchan) [kchan recievedMessage:mesg from:@"" type:RCMessageTypeError];
-    [[self consoleChannel] recievedMessage:mesg from:chan type:RCMessageTypeNormal];
-    NSLog(@"kay %@ %@ %@", raw, chan, mesg);
+- (void)handle437:(RCMessage *)message {
+    // ERR_UNAVAILRESOURCE
+#if LOGALL
+    NSLog(@"ERR_UNAVAILRESOURCE: %@", message->message);
+#endif
 }
 
-- (void)handle461:(NSString *)fsixtyone {
+- (void)handle461:(RCMessage *)message {
 	dispatch_async(dispatch_get_main_queue(), ^{
 		RCPrettyAlertView *ac = [[RCPrettyAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Invalid Username (%@)", [self _description]] message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Change", nil];
 		[ac setTag:RCALERR_INCUNAME];
@@ -1197,9 +953,10 @@
 		[ac show];
 		[ac release];
 	});
+    
 }
 
-- (void)handle464:(NSString *)foursixtyfour {
+- (void)handle464:(RCMessage *)message {
 	dispatch_async(dispatch_get_main_queue(), ^{
 		RCPrettyAlertView *ac = [[RCPrettyAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Invalid Server Password (%@)", [self _description]] message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Change", nil];
 		[ac setTag:RCALERR_INCSPASS];
@@ -1209,165 +966,80 @@
 	});
 }
 
-- (void)handle473:(NSString *)args {
-	return;
-	if ([args hasPrefix:@":"]) {
-		args = [args substringFromIndex:[args rangeOfString:@" "].location+1];
-	}
-	NSScanner *scanner = [NSScanner scannerWithString:args];
-	NSString* raw = @"";
-	NSString* mnick = @"";
-	NSString* chan = @"";
-	NSString* mesg = @"";
-	[scanner scanUpToString:@" " intoString:&raw];
-	if (![raw isEqualToString:@"473"]) {
-		return;
-	} // really not necessary.
-	[scanner scanUpToString:@" " intoString:&mnick];
-	[scanner scanUpToString:@" " intoString:&chan];
-	[scanner scanUpToString:@"" intoString:&mesg];
-	if ([mesg hasPrefix:@":"]) {
-		mesg = [mesg substringFromIndex:1];
-	}
-	RCChannel *kchan = [self channelWithChannelName:chan];
-	if (kchan) [kchan recievedMessage:mesg from:@"" type:RCMessageTypeError];
-	else [[self consoleChannel] recievedMessage:[args substringFromIndex:[[args substringFromIndex:[args rangeOfString:@" "].location+1] rangeOfString:@" "].location+1] from:@"" type:RCMessageTypeNormal];
-    NSLog(@"kay %@ %@ %@", raw, chan, mesg);
+- (void)handle473:(RCMessage *)message {
+    // ERR_INVITEONLYCHAN
+	NSString *channel = [message parameterAtIndex:1];
+    NSString *reason = [message parameterAtIndex:2];
+	// perhaps implement a KNOCK prompt here sometime
+    [[[[RCChatController sharedController] currentPanel] channel] recievedMessage:[NSString stringWithFormat:@"\x02%@\x02: %@", channel, reason] from:@"" type:RCMessageTypeError];
 }
 
-- (void)handle474:(NSString *)args {
-	return;
-    if ([args hasPrefix:@":"]) {
-        args = [args substringFromIndex:[args rangeOfString:@" "].location+1];
-    }
-    NSScanner *scanner = [NSScanner scannerWithString:args];
-    NSString* raw = @"";
-    NSString* mnick = @"";
-    NSString* chan = @"";
-    NSString* mesg = @"";
-    [scanner scanUpToString:@" " intoString:&raw];
-    if (![raw isEqualToString:@"474"]) {
-        return;
-    }
-    [scanner scanUpToString:@" " intoString:&mnick];
-    [scanner scanUpToString:@" " intoString:&chan];
-    [scanner scanUpToString:@"" intoString:&mesg];
-    if ([mesg hasPrefix:@":"]) {
-        mesg = [mesg substringFromIndex:1];
-    }
-    RCChannel *kchan = [self channelWithChannelName:chan];
-	if (kchan) [kchan recievedMessage:mesg from:@"" type:RCMessageTypeError];
-    else [[self consoleChannel] recievedMessage:[args substringFromIndex:[[args substringFromIndex:[args rangeOfString:@" "].location+1] rangeOfString:@" "].location+1] from:@"" type:RCMessageTypeNormal];
+- (void)handle474:(RCMessage *)message {
+    // ERR_BANNEDFROMCHANNEL
+    NSString *channel = [message parameterAtIndex:1];
+    NSString *reason = [message parameterAtIndex:2];
+    [[[[RCChatController sharedController] currentPanel] channel] recievedMessage:[NSString stringWithFormat:@"\x02%@\x02: %@", channel, reason] from:@"" type:RCMessageTypeError];
 }
 
-- (void)handle475:(NSString *)args {
-	return;
-    if ([args hasPrefix:@":"]) {
-        args = [args substringFromIndex:[args rangeOfString:@" "].location+1];
-    }
-    NSScanner *scanner = [NSScanner scannerWithString:args];
-    NSString* raw = @"";
-    NSString* mnick = @"";
-    NSString* chan = @"";
-    NSString* mesg = @"";
-    [scanner scanUpToString:@" " intoString:&raw];
-    if (![raw isEqualToString:@"475"]) {
-        return;
-    }
-    [scanner scanUpToString:@" " intoString:&mnick];
-    [scanner scanUpToString:@" " intoString:&chan];
-    [scanner scanUpToString:@"" intoString:&mesg];
-    if ([mesg hasPrefix:@":"]) {
-        mesg = [mesg substringFromIndex:1];
-    }
-    RCChannel *kchan = [self channelWithChannelName:chan];
-	if (kchan) [kchan recievedMessage:mesg from:@"" type:RCMessageTypeError];
-    else [[self consoleChannel] recievedMessage:[args substringFromIndex:[[args substringFromIndex:[args rangeOfString:@" "].location+1] rangeOfString:@" "].location+1] from:@"" type:RCMessageTypeNormal];
-    NSLog(@"kay %@ %@ %@", raw, chan, mesg);
+- (void)handle475:(RCMessage *)message {
+	// ERR_BANNEDFROMCHANNEL
+    NSString *channel = [message parameterAtIndex:1];
+    NSString *reason = [message parameterAtIndex:2];
+    [[[[RCChatController sharedController] currentPanel] channel] recievedMessage:[NSString stringWithFormat:@"\x02%@\x02: %@", channel, reason] from:@"" type:RCMessageTypeError];
 }
 
-- (void)handle482:(NSString *)isntOp {
-	return;
-    NSScanner *scanner = [[NSScanner alloc] initWithString:isntOp];
-    NSString *crap;
-    NSString *channel;
-    NSString *reason;
-    [scanner scanUpToString:@" " intoString:&crap];
-    [scanner scanUpToString:@" " intoString:&crap];
-    [scanner scanUpToString:@" " intoString:&crap];
-    [scanner scanUpToString:@" " intoString:&channel];
-    [scanner scanUpToString:@"" intoString:&reason];
-    [scanner release];
-    if ([reason hasPrefix:@":"])
-        reason = [reason substringFromIndex:1];
-    [[self channelWithChannelName:channel] recievedMessage:[NSString stringWithFormat:@"%@: %@", channel, reason] from:@"" type:RCMessageTypeError];
+- (void)handle482:(RCMessage *)message {
+	// ERR_BANNEDFROMCHANNEL
+    NSString *channel = [message parameterAtIndex:1];
+    NSString *reason = [message parameterAtIndex:2];
+    [[[[RCChatController sharedController] currentPanel] channel] recievedMessage:[NSString stringWithFormat:@"\x02%@\x02: %@", channel, reason] from:@"" type:RCMessageTypeError];
 }
 
-- (void)handle520:(NSString *)cantJoin {
+- (void)handle520:(RCMessage *)message {
 	return;
-    NSScanner *scanner = [[NSScanner alloc] initWithString:cantJoin];
-    NSString *crap;
-    NSString *channel;
-    NSString *reason;
-    [scanner scanUpToString:@" " intoString:&crap];
-    [scanner scanUpToString:@" " intoString:&crap];
-    [scanner scanUpToString:@" " intoString:&crap];
-    [scanner scanUpToString:@" " intoString:&channel];
-    [scanner scanUpToString:@"" intoString:&reason];
-    [scanner release];
-    if ([reason hasPrefix:@":"])
-        reason = [reason substringFromIndex:1];
-    [[[[RCChatController sharedController] currentPanel] channel] recievedMessage:[NSString stringWithFormat:@"%@: %@", channel, reason] from:@"" type:RCMessageTypeError];
+    // what is this numeric even
 }
 
-- (void)handle903:(NSString *)saslsuc {
+- (void)handle903:(RCMessage *)message {
 	[self sendMessage:@"CAP END"];
 }
 
-- (void)handle904:(NSString *)saslsucks {
+- (void)handle904:(RCMessage *)message {
 	[[self consoleChannel] recievedMessage:@"SASL Authentication failed." from:nil type:RCMessageTypeNormal];
 }
 
-- (void)handle998:(NSString *)fuckyouumich {
-	if (!fuckyouumich) return; //there's never a time where fuck umich is not true. FUCK YOU UMICH.
-	NSLog(@"FUCK. YOU. UMICH:%@",fuckyouumich);
-	@synchronized(self) {
-
-		NSString *asciiz;
-		NSString *crap;
-		NSScanner *scanr = [[NSScanner alloc] initWithString:fuckyouumich];
-		[scanr scanUpToString:@" " intoString:&crap];
-		[scanr scanUpToString:@":" intoString:&crap];
-		[scanr setScanLocation:[scanr scanLocation]+1];
-		[scanr scanUpToString:@"" intoString:&asciiz];
-		if (asciiz) {
-			RCChannel *chan = [self consoleChannel];
-			[chan recievedMessage:asciiz from:@"" type:RCMessageTypeNormalE];
-		}
-		[scanr release];
-	}
+- (void)handle998:(RCMessage *)message {
+	// RPL_FUCKYOUUMICH
 }
 
-- (void)handleCAP:(NSString *)cap {
-	return;
-	if ([cap rangeOfString:@"CAP * LS"].location != NSNotFound) {
-		NSString *reqs = @"CAP REQ :";
-		if ([cap rangeOfString:@"server-time"].location != NSNotFound)
-			reqs = [reqs stringByAppendingString:@" server-time"];
-		if ([cap rangeOfString:@"znc.in/server-time-iso"].location != NSNotFound)
-			reqs = [reqs stringByAppendingString:@" znc.in/server-time-iso"];
-		if (SASL)
-			if ([cap rangeOfString:@"sasl"].location != NSNotFound)
-				reqs = [reqs stringByAppendingString:@" sasl"];
-		if (![reqs isEqualToString:@"CAP REQ :"])
-			[self sendMessage:reqs canWait:NO];
-	}
-	[self sendMessage:@"CAP END" canWait:NO];
-	//	:hitchcock.freenode.net CAP mxms__ LS :account-notify extended-join identify-msg multi-prefix sasl
+- (void)handleCAP:(RCMessage *)message {
+    if ([[message parameterAtIndex:1] isEqualToString:@"LS"]) {
+        NSArray *capabilities = [[message parameterAtIndex:2] componentsSeparatedByString:@" "];
+        NSMutableArray *supported = [[NSMutableArray alloc] init];
+        // We support the current (as of this writing) server-time spec.
+        if ([capabilities containsObject:@"server-time"]) {
+            [supported addObject:@"server-time"];
+        }
+        // Support ZNC namespaced server-time.
+        if ([capabilities containsObject:@"znc.in/server-time-iso"]) {
+            [supported addObject:@"server-time-iso"];
+        }
+        // Support SASL.
+        if ([capabilities containsObject:@"sasl"] && SASL) {
+            [supported addObject:@"sasl"];
+        }
+        if ([supported count] != 0) {
+            [self sendMessage:[NSString stringWithFormat:@"CAP REQ :%@", [supported componentsJoinedByString:@" "]]];
+        }
+        [supported release];
+    }
+    [self sendMessage:@"CAP END" canWait:NO];
 }
 
-- (void)handleCTCPRequest:(NSString *)_request {
+- (void)handleCTCPRequest:(RCMessage *)message {
+    NSLog([message parameterAtIndex:2]);
 	return;
+    /*
 	NSScanner *_sc = [[[NSScanner alloc] initWithString:_request] autorelease];
 	NSString *_from = @"_";
 	NSString *cmd = _from;
@@ -1415,10 +1087,11 @@
 	}
 	else
 		NSLog(@"WTF?!?!! %@", command);
-	[self sendMessage:[@"NOTICE " stringByAppendingFormat:@"%@ :\x01%@ %@\x01", _from, command, extra]];
+	[self sendMessage:[@"NOTICE " stringByAppendingFormat:@"%@ :\x01%@ %@\x01", _from, command, extra]];*/
 }
 
-- (void)handleINVITE:(NSString *)invite {
+- (void)handleINVITE:(RCMessage *)message {
+    /*
     NSScanner *_scanner = [[NSScanner alloc] initWithString:invite];
 	NSString *from = @"";
     NSString *chan = @"";
@@ -1437,9 +1110,11 @@
 		[alert release];
 	});
 	[_scanner release];
+    */
 }
 
-- (void)handleJOIN:(NSString *)join {
+- (void)handleJOIN:(RCMessage *)message {
+    /*
 	// add user unless self
 	return;
 	NSScanner *_scanner = [[NSScanner alloc] initWithString:join];
@@ -1462,10 +1137,11 @@
 		[[self channelWithChannelName:room] recievedMessage:nil from:_nick type:RCMessageTypeJoin];
 	}
 	[_scanner release];
+     */
 }
 
-- (void)handleKICK:(NSString *)aKick {
-
+- (void)handleKICK:(RCMessage *)message {
+/*
     NSLog(@"%@", aKick);
 	NSScanner *_scanner = [[NSScanner alloc] initWithString:aKick];
 	NSString *user = @"_";
@@ -1493,9 +1169,11 @@
         [[self channelWithChannelName:room] setJoined:NO];
 	}
 	[_scanner release];
+*/
 }
 
-- (void)handleMODE:(NSString *)_modes {
+- (void)handleMODE:(RCMessage *)message {
+    /*
 	return;
 	_modes = [_modes substringFromIndex:1];
 	NSScanner *scanr = [[NSScanner alloc] initWithString:_modes];
@@ -1526,11 +1204,12 @@
 		
 	}
 	[scanr release];
-	// Relay[2626:f803] MSG: :ac3xx!ac3xx@rox-103C7229.ac3xx.com MODE #chat +o _m
+	// Relay[2626:f803] MSG: :ac3xx!ac3xx@rox-103C7229.ac3xx.com MODE #chat +o _m*/
 }
 
-- (void)handleNICK:(NSString *)nickChange {
+- (void)handleNICK:(RCMessage *)message {
 	return;
+    /*
 	NSScanner *scanner = [[NSScanner alloc] initWithString:nickChange];
 	NSString *usermask = @"";
 	NSString *oldnick = @"";
@@ -1573,9 +1252,11 @@
 	for (RCChannel *chan in chanarr) {
 		[chan changeNick:(([oldnick isEqualToString:@""] || oldnick == nil) ? @"(self)" : oldnick) toNick:newnick];
 	}
+     */
 }
 
-- (void)handleNOTICE:(NSString *)notice {
+- (void)handleNOTICE:(RCMessage *)message {
+    /*
 	return;
 	NSScanner *_scans = [[NSScanner alloc] initWithString:notice];
 	NSString *from = @"_";
@@ -1611,10 +1292,11 @@
 	}
 	
 	[_scans release];
-	//:Hackintech!Hackintech@2FD03E27.3D6CB32E.E0E5D6BD.IP NOTICE __m__ :HI
+	//:Hackintech!Hackintech@2FD03E27.3D6CB32E.E0E5D6BD.IP NOTICE __m__ :HI*/
 }
 
-- (void)handlePART:(NSString *)parted {
+- (void)handlePART:(RCMessage *)message {
+    /*
 	NSScanner *_scanner = [[NSScanner alloc] initWithString:parted];
 	NSString *user = @"_";
 	NSString *cmd = user;
@@ -1645,9 +1327,10 @@
 		[[self channelWithChannelName:room] recievedMessage:msg from:_nick type:RCMessageTypePart];
 	}
 	[_scanner release];
+     */
 }
 
-- (void)handlePING:(id)pong {
+- (void)handlePING:(NSString *)pong {
 	if ([pong hasPrefix:@"PING "]) {
 		// NSString here.
 		[self sendMessage:[@"PONG " stringByAppendingString:[pong substringFromIndex:5]] canWait:NO];
@@ -1662,8 +1345,9 @@
 	}
 }
 
-- (void)handlePRIVMSG:(NSString *)privmsg {
+- (void)handlePRIVMSG:(RCMessage *)message {
 	return;
+    /*
 	NSScanner *_scanner = [[NSScanner alloc] initWithString:privmsg];
 	NSString *from = @"";
 	NSString *cmd = from; // will be unused.
@@ -1716,10 +1400,11 @@
 		[((RCChannel *)[self channelWithChannelName:room]) recievedMessage:msg from:from type:RCMessageTypeNormal];
 		// tell the channel a message was recieved. P:
 	}
-	[_scanner release];
+	[_scanner release];*/
 }
 
-- (void)handleQUIT:(NSString *)quitter {
+- (void)handleQUIT:(RCMessage *)message {
+    /*
 	NSScanner *scannr = [[NSScanner alloc] initWithString:quitter];
 	NSString *fullHost;
 	NSString *user;
@@ -1737,9 +1422,11 @@
 		[chan recievedMessage:msg from:user type:RCMessageTypeQuit];
 	}
 	[scannr release];
+     */
 }
 
-- (void)handleTOPIC:(NSString *)topic {
+- (void)handleTOPIC:(RCMessage *)message {
+    /*
 	NSScanner *_scan = [[NSScanner alloc] initWithString:topic];
 	NSString *from = @"_";
 	NSString *cmd = from;
@@ -1754,6 +1441,7 @@
 	RCParseUserMask(from, &from, nil, nil);
 	[[self channelWithChannelName:room] recievedMessage:newTopic from:from type:RCMessageTypeTopic];
 	[_scan release];
+    */
 }
 
 void RCParseUserMask(NSString *mask, NSString **_nick, NSString **user, NSString **hostmask) {
