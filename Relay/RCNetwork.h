@@ -9,6 +9,7 @@
 #import "RCChannel.h"
 #import "RCConsoleChannel.h"
 #import "RCPMChannel.h"
+#import "RCMessage.h"
 #import "RCSocket.h"
 #import "TestFlight.h"
 #import "ISO8601DateFormatter.h"

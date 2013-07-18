@@ -173,8 +173,8 @@ static id _inst = nil;
 #warning THIS IS NECESSARY IN XCODE DP5
 	int offx = 0;
 	/*
-	if (isiOS7)
-		offx = 20; */
+	 if (isiOS7)
+	 offx = 20; */
 	CGSize frame = [[UIScreen mainScreen] applicationFrame].size;
 	bottomView = [[RCChatsListViewCard alloc] initWithFrame:CGRectMake(0, offx, frame.width, frame.height)];
 	[rc.view insertSubview:bottomView atIndex:0];
@@ -237,7 +237,7 @@ static id _inst = nil;
 	[self setEntryFieldEnabled:YES];
 	[currentPanel setFrame:CGRectMake(currentPanel.frame.origin.x, currentPanel.frame.origin.y, fsize.width, fsize.height)];
 	/*
-	[[[[navigationController topViewController] navigationItem] leftBarButtonItem] setEnabled:YES];
+	 [[[[navigationController topViewController] navigationItem] leftBarButtonItem] setEnabled:YES];
 	 */
 	[UIView animateWithDuration:0.25 animations:^ {
 		[infoView setFrame:CGRectMake(infoView.frame.size.width, infoView.frame.origin.y, infoView.frame.size.width, infoView.frame.size.height)];
@@ -535,16 +535,16 @@ static RCNetwork *currentNetwork = nil;
 - (void)pushUserListWithDuration:(NSTimeInterval)dr {
 	RCChannel *channel = [currentPanel channel];
 	if ([channel isKindOfClass:[RCPMChannel class]]) {
-	//	[topView showUserInfoPanel];
+		//	[topView showUserInfoPanel];
 		[((RCChatNavigationBar *)[infoView navigationBar]) setSubtitle:nil];
 	}
 	else if ([channel isKindOfClass:[RCConsoleChannel class]]) {
 		[((RCChatNavigationBar *)[infoView navigationBar]) setSubtitle:nil];
-	//	[topView showUserListPanel];
+		//	[topView showUserListPanel];
 	}
 	else if ([channel isKindOfClass:[RCChannel class]]) {
 		[[infoView navigationBar] setSubtitle:[NSString stringWithFormat:@"%d users in %@", [[channel fullUserList] count], [channel channelName]]];
-	//	[topView showUserListPanel];
+		//	[topView showUserListPanel];
 	}
 	[[infoView navigationBar] setNeedsDisplay];
 	[infoView reloadData];
@@ -751,7 +751,7 @@ static RCNetwork *currentNetwork = nil;
 	[sch setFrame:mv.frame];
 	[mv.layer addSublayer:sch];
 	[sch release];
-
+	
 	channelList = [[RCChannelListViewCard alloc] initWithFrame:CGRectMake(0, 43, chatView.frame.size.width, chatView.frame.size.height-43)];
 	[[channelList navigationBar] setTitle:@"Channel List"];
 	[[channelList navigationBar] setSubtitle:@"Loading..."];
@@ -782,7 +782,7 @@ static RCNetwork *currentNetwork = nil;
 	anim.additive = NO;
 	[sch addAnimation:fade forKey:@"opacity"];
 	[channelList.layer addAnimation:anim forKey:@"position"];
-	 
+	
 	// sorry
 }
 

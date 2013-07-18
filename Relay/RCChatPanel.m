@@ -50,7 +50,7 @@ static NSString *template = nil;
 	dispatch_async(queue, ^ {
 		dispatch_sync(dispatch_get_main_queue(), ^ {
 			[channel userWouldLikeToPartakeInThisConversation:appstore_txt];
-			[appstore_txt release];			
+			[appstore_txt release];
 		});
 	});
 	[textField setText:@""];

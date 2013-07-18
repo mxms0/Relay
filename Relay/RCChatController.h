@@ -27,6 +27,7 @@
 	RCChannelListViewCard *channelList;
 	CGFloat chatViewHeights[2];
 	CGFloat suggestLocation;
+	CGFloat currentPanelWidth;
 	BOOL draggingUserList;
 	BOOL nickSuggestionDisabled;
 	BOOL canDragMainView;

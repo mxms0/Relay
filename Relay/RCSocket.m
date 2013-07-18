@@ -79,10 +79,6 @@ char *RCIPForURL(NSString *URL) {
 			task = UIBackgroundTaskInvalid;
 		}];
 	}
-	NSString *spass = [net spass];
-	NSString *nick = [net nick];
-	NSString *realname = [net realname];
-	NSString *username = [net username];
 	int sockfd = 0;
 	if (_ssl) {
 		SSL_library_init();
@@ -159,16 +155,6 @@ char *RCIPForURL(NSString *URL) {
 		MARK;
 		return -1;
 	}
-	[net sendMessage:@"CAP LS" canWait:NO];
-	if ([spass length] > 0) {
-		[net sendMessage:[@"PASS " stringByAppendingString:spass] canWait:NO];
-	}
-	if (!nick || [nick isEqualToString:@""]) {
-		[net setNick:@"0__GUEST"];
-		[net setUseNick:@"__GUEST"]; 
-	}
-	[net sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
-	[net sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
 	[p drain];
 	if (!isPolling) {
 		[NSThread detachNewThreadSelector:@selector(configureSocketPoll) toTarget:self withObject:nil];

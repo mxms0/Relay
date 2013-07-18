@@ -16,7 +16,6 @@
 @interface RCChatPanel : UIWebView <UITextFieldDelegate> {
 	RCChannel *channel;
 	NSMutableArray *preloadPool;
-	CGFloat chatViewHeights[2];
 	CGFloat suggestionLocation;
 }
 @property (nonatomic, assign) RCChannel *channel;
