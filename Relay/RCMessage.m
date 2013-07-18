@@ -8,7 +8,7 @@
 #import "RCMessage.h"
 
 @implementation RCMessage
-@synthesize tags, sender, target, numeric;
+@synthesize tags, sender, numeric;
 - (id)initWithString:(NSString *)string {
 	if ((self = [super init])) {
 		message = [string retain];
@@ -24,10 +24,8 @@
 	NSString *message_ = nil;
 	NSString *sender_ = nil;
 	NSString *numeric_ = nil;
-	NSString *target_ = nil;
 	[scanner scanUpToString:@" " intoString:&sender_];
 	[scanner scanUpToString:@" " intoString:&numeric_];
-	[scanner scanUpToString:@" " intoString:&target_];
 	[scanner scanUpToString:@"" intoString:&message_];
 	if ([message_ hasPrefix:@":"]) {
 		message_ = [message_ substringFromIndex:1];
@@ -50,7 +48,6 @@
 		messageParameters = [properComponents retain];
 		[properComponents release];
 	}
-	self.target = target_;
 	self.sender = sender_;
 	self.numeric = numeric_;
 	message = [message_ retain];
@@ -114,7 +111,6 @@
 	[message release];
 	[numeric release];
 	[sender release];
-	[target release];
 	[super dealloc];
 }
 

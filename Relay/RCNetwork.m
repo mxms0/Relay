@@ -617,19 +617,19 @@
 	NSLog(@"WAT IS HAPPENING %@ %@", useNick, welcome);
 #endif
 	RCChannel *chan = [self consoleChannel];
-	if (chan) [chan recievedMessage:[welcome parameterAtIndex:0] from:@"" type:RCMessageTypeNormal];
+	[chan recievedMessage:[welcome parameterAtIndex:1] from:@"" type:RCMessageTypeNormal];
 	reloadNetworks();
 }
 
 - (void)handle002:(RCMessage *)infos {
 	RCChannel *chan = [self consoleChannel];
-	if (chan) [chan recievedMessage:[infos parameterAtIndex:0] from:@"" type:RCMessageTypeNormal];
+	[chan recievedMessage:[infos parameterAtIndex:1] from:@"" type:RCMessageTypeNormal];
 	// Relay[2626:f803] MSG: :fr.ac3xx.com 002 _m :Your host is fr.ac3xx.com, running version Unreal3.2.9
 }
 
 - (void)handle003:(RCMessage *)servInfos {
 	RCChannel *chan = [self consoleChannel];
-	[chan recievedMessage:[servInfos parameterAtIndex:0] from:@"" type:RCMessageTypeNormal];
+	[chan recievedMessage:[servInfos parameterAtIndex:1] from:@"" type:RCMessageTypeNormal];
 	// Relay[2626:f803] MSG: :fr.ac3xx.com 003 _m :This server was created Fri Dec 23 2011 at 01:21:01 CET
 }
 
