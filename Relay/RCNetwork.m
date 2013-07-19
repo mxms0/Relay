@@ -1022,7 +1022,7 @@
         }
         // Support ZNC namespaced server-time.
         if ([capabilities containsObject:@"znc.in/server-time-iso"]) {
-            [supported addObject:@"server-time-iso"];
+            [supported addObject:@"znc.in/server-time-iso"];
         }
         // Support SASL.
         if ([capabilities containsObject:@"sasl"] && SASL) {
