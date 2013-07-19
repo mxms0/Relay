@@ -145,6 +145,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 		return NSOrderedSame;
 	}]) {
 		NSString *cmp = *message;
+		if (!cmp) return NO;
 		NSString *rank = RCUserRank(uname, [self delegate]);
 		NSString *nameOrRank = [uname substringFromIndex:[rank length]];
 		int hhash = ([nameOrRank isEqualToString:[[self delegate] useNick]]) ? 1 : user_hash(nameOrRank);
@@ -272,7 +273,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 			if (![from isEqualToString:@""]) {
 				isHighlight = RCHighlightCheck(self, &message);
 				if ([from isEqualToStringNoCase:@"ifr0st"] || [from isEqualToStringNoCase:@"fr0st"]) {
-					msg = [[NSString stringWithFormat:@"%@%c%c%d%@:%c%c %@", time, RCIRCAttributeBold, RCIRCAttributeColor, 16, from, RCIRCAttributeColor, RCIRCAttributeBold, message] retain];
+					msg = [[NSString stringWithFormat:@"%@%c%c%d%c%c%@:%c%c%c%c %@", time, RCIRCAttributeBold, RCIRCAttributeColor, 16, RCIRCAttributeItalic, RCIRCAttributeUnderline, from, RCIRCAttributeUnderline, RCIRCAttributeItalic, RCIRCAttributeColor, RCIRCAttributeBold, message] retain];
 					// sorry guys. :P gotta do this.
 				}
 				else {

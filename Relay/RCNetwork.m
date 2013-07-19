@@ -128,9 +128,9 @@
 	[spass release];
 	[npass release];
 	[sDescription release];
-    [_nicknames release];
-    self.useNick = nil;
-    [self setPrefix:nil];
+	[_nicknames release];
+	self.useNick = nil;
+	[self setPrefix:nil];
 	// fix this. not everything is being removed here, like if the network is connected... lol
 	[super dealloc];
 }
@@ -608,7 +608,10 @@
 	status = RCSocketStatusConnected;
 	[self networkDidRegister:YES];
     
-	useNick = [[message sender] retain];
+	// useNick = [[message sender] retain];
+	// you are special. the sender is the server name here
+	// we want the first word after the numeric. whihc we TRASH THANKS TO YOU >:l
+	// ~Maximus
 	RCChannel *chan = [self consoleChannel];
 	[chan recievedMessage:[message parameterAtIndex:1] from:@"" type:RCMessageTypeNormal];
 	reloadNetworks();
@@ -835,6 +838,7 @@
 	[dateFormatter setDateFormat:@"dd MMMM yyyy, HH:mm:ss"];
 	NSString *time = [dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:ts]];
 	[dateFormatter release];
+	RCParseUserMask(setter, &setter, nil, nil);
 	[[self channelWithChannelName:channel] recievedMessage:[NSString stringWithFormat:@"Set by %@ on %@", setter, time] from:@"" type:RCMessageTypeNormalE2];
 }
 
@@ -1355,11 +1359,12 @@
 	if ([fullMessage hasPrefix:@"\x01"] && [fullMessage hasSuffix:@"\x01"]) {
 		// don't handle this yet. don't know how to. ;P
 		// typ = RCMessageTypeAction mayb.
+		return;
 	}
 	else {
 		userMessage = [message parameterAtIndex:1];
 	}
-	
+	NSLog(@"dfs %@:%@", message->message, message.sender);
 	RCChannel *channel = [self channelWithChannelName:[message parameterAtIndex:0] ifNilCreate:YES];
 	RCParseUserMask(message.sender, &from, nil, nil);
 	[channel recievedMessage:userMessage from:from type:typ];
