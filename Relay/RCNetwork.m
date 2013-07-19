@@ -637,7 +637,7 @@
 - (void)handle005:(RCMessage *)message {
     // RPL_ISUPPORT
     @synchronized(self) {
-		NSString *capsString = message->message;
+		NSString *capsString = [message->message substringFromIndex:[message->message rangeOfString:@" "].location + 1];
         NSArray *arr = [capsString componentsSeparatedByString:@" "];
         NSMutableString *message = [NSMutableString stringWithString:@""];
         for (NSString *str in arr) {
