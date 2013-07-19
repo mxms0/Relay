@@ -50,6 +50,8 @@
 		messageParameters = [properComponents retain];
 		[properComponents release];
 	}
+	if ([sender_ hasPrefix:@":"])
+		sender_ = [sender_ substringFromIndex:1];
 	self.sender = sender_;
 	self.numeric = numeric_;
 	message = [message_ retain];

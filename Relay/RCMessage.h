@@ -14,7 +14,6 @@
 	NSString *message;
 }
 @property (nonatomic, retain) NSString *numeric;
-@property (nonatomic, retain) NSString *target;
 @property (nonatomic, retain) NSString *sender;
 @property (nonatomic, retain) NSDictionary *tags;
 - (id)initWithString:(NSString *)string;
