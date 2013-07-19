@@ -224,7 +224,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 		case RCMessageTypePart:
             [self setUserLeft:from];
 			if (![message isEqualToString:@""]) {
-				msg = [[NSString stringWithFormat:@"%@%c%@ %c left the channel. (%@)", time, RCIRCAttributeBold, from, RCIRCAttributeBold, message] retain];
+				msg = [[NSString stringWithFormat:@"%@%c%@%c left the channel. (%@)", time, RCIRCAttributeBold, from, RCIRCAttributeBold, message] retain];
 			}
 			else {
 				msg = [[NSString stringWithFormat:@"%@%c%@%c left the channel.", time, RCIRCAttributeBold, from, RCIRCAttributeBold] retain];

@@ -173,7 +173,7 @@
 		[ifs setIsAlreadyInChannel:NO];
 	}
 	[ifs setUserCount:cc];
-	if (![topics isEqualToString:@":"])
+	if (![topics isEqualToString:@""])
 		[ifs setTopic:[topics stringByStrippingIRCMetadata]];
 	else
 		[ifs setTopic:@"No topic set."];

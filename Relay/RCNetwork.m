@@ -600,7 +600,7 @@
 - (void)handleNotHandledMessage:(RCMessage *)message {
 	RCChannel *chan = [self consoleChannel];
 	[chan recievedMessage:message->message from:@"" type:RCMessageTypeNormal];
-	NSLog(@"PLZ IMPLEMENT handle%@:%@", [message numeric], [message description]);
+	NSLog(@"PLZ IMPLEMENT handle%@:%@", [message numeric], message->message);
 }
 
 - (void)handle001:(RCMessage *)message {
@@ -776,31 +776,17 @@
 
 - (void)handle322:(RCMessage *)message {
 	// RPL_LIST
-	NSLog(@"322:%@", message->message);
-    
-	/*
 	if (!listCallback) return;
-	NSScanner *hi = [[NSScanner alloc] initWithString:threetwotwo];
-	NSString *crap = NULL;
-	NSString *chan = NULL;
-	NSString *count = NULL;
-	NSString *topicModes = NULL;
-	[hi scanUpToString:useNick intoString:&crap];
-	[hi scanUpToString:@" " intoString:&crap];
-	[hi scanUpToString:@" " intoString:&chan];
-	[hi scanUpToString:@" " intoString:&count];
-	[hi scanUpToString:@"\r\n" intoString:&topicModes];
+	NSString *chan = [message parameterAtIndex:1];
+	NSString *count = [message parameterAtIndex:2];
+	NSString *topicModes = [message parameterAtIndex:3];
 	chan = [chan stringByReplacingOccurrencesOfString:@" " withString:@""];
 	count = [count stringByReplacingOccurrencesOfString:@" " withString:@""];
-	if ([topicModes length] > 1)
-		topicModes = [topicModes substringFromIndex:1];
 	if ([topicModes isEqualToString:@" "]) topicModes = nil;
 	if ([topicModes hasPrefix:@" "]) topicModes = [topicModes recursivelyRemovePrefix:@" "];
 	[listCallback recievedChannel:chan withCount:[count intValue] andTopic:topicModes];
-	[hi release];
 	// :irc.saurik.com 322 mx_ #testing 1 :[+nt]
 	// :hitchcock.freenode.net 322 mxms_ #testchannelpleaseignore 3 :http://i.imgur.com/LbPvWUV.jpg
-	 */
 }
 
 - (void)handle323:(RCMessage *)message {
@@ -920,6 +906,8 @@
 	NSString *reason = [message parameterAtIndex:2];
 	NSString *string = [NSString stringWithFormat:@"Error(421): %@ %@", command, reason];
 	[[[[RCChatController sharedController] currentPanel] channel] recievedMessage:string from:@"" type:RCMessageTypeError];
+	// ddon't like this assumption.
+	// server response could be slow.
 }
 
 - (void)handle422:(RCMessage *)message {
@@ -1302,38 +1290,13 @@
 }
 
 - (void)handlePART:(RCMessage *)message {
-    /*
-	NSScanner *_scanner = [[NSScanner alloc] initWithString:parted];
-	NSString *user = @"_";
-	NSString *cmd = user;
-	NSString *room = cmd;
-	NSString *_nick = room;
-	NSString *msg = _nick;
-	[_scanner scanUpToString:@" " intoString:&user];
-	[_scanner scanUpToString:@" " intoString:&cmd];
-	[_scanner scanUpToString:@" " intoString:&room];
-	[_scanner scanUpToString:@"" intoString:&msg];
-	user = [user substringFromIndex:1];
-	if ([msg hasPrefix:@":"]) {
-		msg = [msg substringFromIndex:1];
+    NSString *from = message.sender;
+	RCParseUserMask(from, &from, nil, nil);
+	RCChannel *channel = [self channelWithChannelName:[message parameterAtIndex:0]];
+	if ([useNick isEqualToString:from]) {
+		[channel setJoined:NO];
 	}
-	if ([msg isEqualToString:@"_"]) {
-		msg = @"";
-	}
-	msg = [msg stringByReplacingOccurrencesOfString:@"\r\n" withString:@""];
-	RCParseUserMask(user, &_nick, nil, nil);
-	if ([_nick isEqualToString:useNick]) {
-		NSLog(@"I went byebye. Notify the police");
-        [[self channelWithChannelName:room] setJoined:NO];
-        [[self channelWithChannelName:room] recievedMessage:msg from:_nick type:RCMessageTypePart];
-		[_scanner release];
-		return;
-	}
-	else {
-		[[self channelWithChannelName:room] recievedMessage:msg from:_nick type:RCMessageTypePart];
-	}
-	[_scanner release];
-     */
+	[channel recievedMessage:[message parameterAtIndex:1] from:useNick type:RCMessageTypePart];
 }
 
 - (void)handlePING:(NSString *)pong {
@@ -1364,7 +1327,6 @@
 	else {
 		userMessage = [message parameterAtIndex:1];
 	}
-	NSLog(@"dfs %@:%@", message->message, message.sender);
 	RCChannel *channel = [self channelWithChannelName:[message parameterAtIndex:0] ifNilCreate:YES];
 	RCParseUserMask(message.sender, &from, nil, nil);
 	[channel recievedMessage:userMessage from:from type:typ];
