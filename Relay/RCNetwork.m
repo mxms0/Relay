@@ -19,17 +19,6 @@
 
 @synthesize prefix, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _nicknames, shouldRequestSPass, shouldRequestNPass, listCallback, expanded, _selected, SASL, cache, uUID, isOper, isAway;
 
-- (RCChannel *)consoleChannel {
-	@synchronized(_channels) {
-		for (RCChannel *chan in _channels) {
-			if ([[chan channelName] isEqualToString:@"\x01IRC"] && [chan isKindOfClass:[RCConsoleChannel class]]) {
-				return chan;
-			}
-		}
-		return nil;
-	}
-}
-
 - (id)init {
 	if ((self = [super init])) {
 		status = RCSocketStatusClosed;
@@ -77,7 +66,7 @@
 	if (!rooms) {
 		[network addChannel:@"\x01IRC" join:NO];
 	}
-	[network _setupRooms:rooms];
+	[network _setupChannels:rooms];
 	return [network autorelease];
 }
 
@@ -150,10 +139,7 @@
 	return [NSString stringWithFormat:@"<%@: %p; %@;>", NSStringFromClass([self class]), self, [self infoDictionary]];
 }
 
-- (void)_setupRooms:(NSArray *)rooms {
-	// rooms?
-	// wat
-	// dark days. the dark days. ~Maximus
+- (void)_setupChannels:(NSArray *)rooms {
 	[rooms retain];
 	for (NSDictionary *dict in rooms) {
 		NSString *chan = [dict objectForKey:CHANNAMEKEY];
@@ -176,6 +162,17 @@
 		[self addChannel:_chan join:NO];
 	}
 	[rooms release];
+}
+
+- (RCChannel *)consoleChannel {
+	@synchronized(_channels) {
+		for (RCChannel *chan in _channels) {
+			if ([[chan channelName] isEqualToString:@"\x01IRC"] && [chan isKindOfClass:[RCConsoleChannel class]]) {
+				return chan;
+			}
+		}
+		return nil;
+	}
 }
 
 - (void)connectOrDisconnectDependingOnCurrentStatus {
@@ -215,6 +212,7 @@
 		if (![self channelWithChannelName:_chan ifNilCreate:NO]) {
 			RCChannel *chan = nil;
 			if ([_chan isEqualToString:@"\x01IRC"]) chan = [[RCConsoleChannel alloc] initWithChannelName:_chan];
+			// maybe not add an exception for &
 			else if ([_chan hasPrefix:@"#"]) chan = [[RCChannel alloc] initWithChannelName:_chan];
 			else {
 				chan = [[RCPMChannel alloc] initWithChannelName:_chan];
@@ -559,6 +557,7 @@
 		if (![_chan isKindOfClass:[RCConsoleChannel class]])
 			[_chan disconnected:@"Disconnected."];
 	}
+	reloadNetworks();
 }
 
 - (BOOL)disconnect {

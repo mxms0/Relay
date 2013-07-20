@@ -9,13 +9,6 @@
 #import "RCNetwork.h"
 #import "RCNetworkManager.h"
 
-#define OLIGOS_MAX(a,b) \
-({ \
-__typeof__ (a) _a = (a); \
-__typeof__ (b) _b = (b); \
-_a > _b ? _a : _b; \
-})
-
 @implementation RCSocket
 static id _instance = nil;
 
@@ -72,7 +65,11 @@ char *RCIPForURL(NSString *URL) {
 }
 
 - (int)connectToAddr:(NSString *)server withSSL:(BOOL)_ssl andPort:(int)port fromNetwork:(RCNetwork *)net {
+	// heh. sorry this took so long to clean up. ;P
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+#if LOGALL
+	NSLog(@"System Proxy Settings: {{%@}};", CFNetworkCopySystemProxySettings());
+#endif
 	if (kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iPhoneOS_4_0) {
 		task = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
 			[[UIApplication sharedApplication] endBackgroundTask:task];
@@ -80,74 +77,49 @@ char *RCIPForURL(NSString *URL) {
 		}];
 	}
 	int sockfd = 0;
+	struct hostent *host;
+	struct sockaddr_in addr;
+	if ((host = gethostbyname([server UTF8String])) == NULL) {
+		[net disconnectCleanupWithMessage:@"Error obtaining host."];
+		// ERROR OBTAINING HOST
+		MARK;
+		[p drain];
+		return -1;
+	}
+	sockfd = socket(PF_INET, SOCK_STREAM, 0);
+	if (sockfd < 0) {
+		[net disconnectCleanupWithMessage:@"Error establishing socket."];
+		// ERROR ESTABLISHING SOCKET(?)
+		MARK;
+		[p drain];
+		return -1;
+	}
+	int set = 1;
+	setsockopt(sockfd, SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(int));
+	bzero(&addr, sizeof(addr));
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons(port);
+	addr.sin_addr.s_addr = *(long *)(host ->h_addr);
+	if (connect(sockfd, (struct sockaddr *)&addr, sizeof(addr)) != 0) {
+		MARK;
+		[net disconnectCleanupWithMessage:@"Error connecting."];
+		// ERROR CONNECTING
+		return -1;
+	}
 	if (_ssl) {
 		SSL_library_init();
 		SSL_CTX *ctx = RCInitContext();
 		net->ctx = ctx;
-		struct hostent *host;
-		struct sockaddr_in addr;
-		if ((host = gethostbyname([server UTF8String])) == NULL) {
-			MARK;
-			//[self disconnectWithMessage:@"Error obtaining host."];
-			[p drain];
-			return -1;
-		}
-		sockfd = socket(PF_INET, SOCK_STREAM, 0);
-		if (sockfd < 0) {
-			MARK;
-			return -1;
-		}
-		int set = 1;
-		setsockopt(sockfd, SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(int));
-		bzero(&addr, sizeof(addr));
-		addr.sin_family = AF_INET;
-		addr.sin_port = htons(port);
-		addr.sin_addr.s_addr = *(long *)(host->h_addr);
-		if (connect(sockfd, (struct sockaddr *)&addr, sizeof(addr)) != 0) {
-			MARK;
-			//[self disconnectWithMessage:@"Error connecting to host."];
-			[p drain];
-			return -1;
-		}
 		net->ssl = SSL_new(ctx);
 		SSL_set_fd(net->ssl, sockfd);
 		if (SSL_connect(net->ssl) == -1) {
+			// ERROR CONNECTING ..
+			[net disconnectCleanupWithMessage:@"Error connecting via SSL."];
 			MARK;
-			//[self disconnectWithMessage:@"Error connecting with SSL."];
 			[p drain];
-			return NO;
-		}
-	}
-	else {
-
-		struct sockaddr_in serv_addr;
-		sockfd = socket(AF_INET, SOCK_STREAM, 0);
-		if (sockfd < 0) {
-			MARK;
-			return -1;
-		}
-		int set = 1;
-		setsockopt(sockfd, SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(int));
-		memset(&serv_addr, 0, sizeof(serv_addr));
-		serv_addr.sin_family = AF_INET;
-		serv_addr.sin_port = htons(port);
-		char *ip = RCIPForURL(server);
-		if (ip == NULL) {
-			MARK;
-			return -2;
-		}
-		if (inet_pton(AF_INET, ip, &serv_addr.sin_addr) <= 0) {
-			MARK;
-			return -1;
-		}
-		if (connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
-			MARK;
 			return -1;
 		}
 	}
-#if LOGALL
-		NSLog(@"System Proxy Settings: {{%@}};", CFNetworkCopySystemProxySettings());
-#endif
 	
 	int opts = fcntl(sockfd, F_GETFL);
 	opts = (opts | O_NONBLOCK);
@@ -183,7 +155,7 @@ char *RCIPForURL(NSString *URL) {
 	[tv invalidate];
 	tv = nil;
 	[self configureSocketPoll];
-	NSLog(@"CHanging poll speed.. %f",interval);
+	NSLog(@"CHanging poll speed.. %f", interval);
 }
 
 - (void)pollSockets {

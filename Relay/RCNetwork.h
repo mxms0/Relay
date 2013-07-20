@@ -95,6 +95,7 @@ typedef enum RCSocketStatus {
 - (NSString *)_description;
 - (void)connect;
 - (BOOL)disconnect;
+- (void)disconnectCleanupWithMessage:(NSString *)msg;
 - (RCChannel *)consoleChannel;
 - (BOOL)isConnected;
 - (void)connectOrDisconnectDependingOnCurrentStatus;
@@ -102,7 +103,7 @@ typedef enum RCSocketStatus {
 - (BOOL)sendMessage:(NSString *)msg canWait:(BOOL)canWait;
 - (void)recievedMessage:(NSString *)msg;
 - (void)errorOccured:(NSError *)error;
-- (void)_setupRooms:(NSArray *)rooms;
+- (void)_setupChannels:(NSArray *)rooms;
 - (void)setupRooms:(NSArray *)rooms;
 - (RCChannel *)addChannel:(NSString *)_chan join:(BOOL)join;
 - (void)removeChannel:(RCChannel *)chan;
@@ -115,8 +116,8 @@ typedef enum RCSocketStatus {
 - (BOOL)hasPendingBites; //nom
 - (id)infoDictionary;
 - (void)savePasswords;
-
 @end
+
 SSL_CTX *RCInitContext(void);
 char *RCIPForURL(NSString *URL);
 void RCParseUserMask(NSString *mask, NSString **nick, NSString **user, NSString **hostmask);

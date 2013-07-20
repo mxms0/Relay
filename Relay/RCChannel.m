@@ -238,7 +238,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 			msg = [[NSString stringWithFormat:@"%@%c%@%c joined the channel.", time, RCIRCAttributeBold, from, RCIRCAttributeBold] retain];
 			break;
 		case RCMessageTypeEvent:
-			msg = [[NSString stringWithFormat:@"%@%c%@%c %@", time, RCIRCAttributeBold, from, RCIRCAttributeBold, message] retain];
+			msg = [[NSString stringWithFormat:@"%@%c%@%c%@", time, RCIRCAttributeBold, from, RCIRCAttributeBold, message] retain];
 			break;
 		case RCMessageTypeTopic:
 			if (from) msg = [[NSString stringWithFormat:@"%c%@%c changed the topic to: %@", RCIRCAttributeBold, from, RCIRCAttributeBold, message] retain];
