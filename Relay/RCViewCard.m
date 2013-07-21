@@ -43,7 +43,6 @@
 			[bg release];
 		}
 		if (![self isKindOfClass:[RCTopViewCard class]] && ![self isKindOfClass:[RCChannelListViewCard class]]) {
-			
 			RCBarButtonItem *bs = [[RCBarButtonItem alloc] init];
 			[bs setImage:[UIImage imageNamed:@"0_listbtn"] forState:UIControlStateNormal];
 			[bs setFrame:CGRectMake(1, 0, 50, 45)];

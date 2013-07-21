@@ -1084,6 +1084,14 @@
 }
 
 - (void)handleINVITE:(RCMessage *)message {
+	NSString *from = nil;
+	NSString *channel = [message parameterAtIndex:1];
+	RCParseUserMask(message.sender, &from, nil, nil);
+	RCInviteRequestAlert *alert = [[RCInviteRequestAlert alloc] initWithTitle:[NSString stringWithFormat:@"%@\r\n(%@)", channel, [self _description]] message:[NSString stringWithFormat:@"%@ has invited you to %@", from, channel] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Join", nil];
+	dispatch_sync(dispatch_get_main_queue(), ^ {
+		[alert show];
+		[alert release];
+	});
     /*
 	NSScanner *_scanner = [[NSScanner alloc] initWithString:invite];
 	NSString *from = @"";
@@ -1107,30 +1115,14 @@
 }
 
 - (void)handleJOIN:(RCMessage *)message {
-	/*
-	// add user unless self
-	return;
-	NSScanner *_scanner = [[NSScanner alloc] initWithString:join];
-	NSString *user = @"_";
-	NSString *cmd = user;
-	NSString *room = cmd;
-	NSString *_nick = room;
-	[_scanner scanUpToString:@" " intoString:&user];
-	[_scanner scanUpToString:@" " intoString:&cmd];
-	[_scanner scanUpToString:@" " intoString:&room];
-	user = [user substringFromIndex:1];
-	if ([room hasPrefix:@" "]) room = [room substringFromIndex:1];
-	if ([room hasPrefix:@":"]) room = [room substringFromIndex:1];
-	room = [room stringByReplacingOccurrencesOfString:@"\r\n" withString:@""];
-	RCParseUserMask(user, &_nick, nil, nil);
-	if ([_nick isEqualToString:useNick]) {
-		[[self addChannel:room join:NO] setSuccessfullyJoined:YES];
+	NSString *from = nil;
+	RCParseUserMask(message.sender, &from, nil, nil);
+	if ([from isEqualToString:useNick]) {
+		[[self addChannel:[message parameterAtIndex:0] join:NO] setSuccessfullyJoined:YES];
 	}
 	else {
-		[[self channelWithChannelName:room] recievedMessage:nil from:_nick type:RCMessageTypeJoin];
+		[[self channelWithChannelName:[message parameterAtIndex:0]] recievedMessage:nil from:from type:RCMessageTypeJoin];
 	}
-	[_scanner release];
-	*/
 }
 
 - (void)handleKICK:(RCMessage *)message {
@@ -1197,11 +1189,11 @@
 		
 	}
 	[scanr release];
-	// Relay[2626:f803] MSG: :ac3xx!ac3xx@rox-103C7229.ac3xx.com MODE #chat +o _m*/
+	// Relay[2626:f803] MSG: :ac3xx!ac3xx@rox-103C7229.ac3xx.com MODE #chat +o _m
+	 */
 }
 
 - (void)handleNICK:(RCMessage *)message {
-	return;
     /*
 	NSScanner *scanner = [[NSScanner alloc] initWithString:nickChange];
 	NSString *usermask = @"";
@@ -1249,43 +1241,17 @@
 }
 
 - (void)handleNOTICE:(RCMessage *)message {
-    /*
-	return;
-	NSScanner *_scans = [[NSScanner alloc] initWithString:notice];
-	NSString *from = @"_";
-	NSString *cmd = from;
-	NSString *to = cmd;
-	NSString *msg = to;
-	[_scans scanUpToString:@" " intoString:&from];
-	[_scans scanUpToString:@" " intoString:&cmd];
-	[_scans scanUpToString:@" " intoString:&to];
-	if ([to isEqualToStringNoCase:@"Auth"]) {
-		[_scans release];
+	if ([[message parameterAtIndex:0] isEqualToString:@"Auth"]) {
 		return;
 	}
-	RCParseUserMask(from, &from, nil, nil);
-	[_scans scanUpToString:@"" intoString:&msg];
-	if ([nick isEqualToString:useNick]) {
-		msg = [msg substringFromIndex:1];
-	}
-	from = [from substringFromIndex:1];
-	if ([[RCChatController sharedController] currentPanel]) {
-		if ([[[[[RCChatController sharedController] currentPanel] channel] delegate] isEqual:self]) {
-			[[[[RCChatController sharedController] currentPanel] channel] recievedMessage:msg from:from type:RCMessageTypeNotice];
-		}
-		else {
-			goto end;
-		}
+	NSString *from = nil;
+	RCParseUserMask(message.sender, &from, nil, nil);
+	if ([[[[[RCChatController sharedController] currentPanel] channel] delegate] isEqual:self]) {
+		[[[[RCChatController sharedController] currentPanel] channel] recievedMessage:[message parameterAtIndex:1] from:from type:RCMessageTypeNotice];
 	}
 	else {
-	end:{
-		RCChannel *chan = [self consoleChannel];
-		[chan recievedMessage:msg from:from type:RCMessageTypeNotice];
+		[[self consoleChannel] recievedMessage:[message parameterAtIndex:1] from:from type:RCMessageTypeNotice];
 	}
-	}
-	
-	[_scans release];
-	//:Hackintech!Hackintech@2FD03E27.3D6CB32E.E0E5D6BD.IP NOTICE __m__ :HI*/
 }
 
 - (void)handlePART:(RCMessage *)message {
@@ -1452,7 +1418,7 @@ void RCParseUserMask(NSString *mask, NSString **_nick, NSString **user, NSString
 	NSString *str = alertView.title;
 	NSRange rrs = [str rangeOfString:@"\r\n"];
 	str = [str substringToIndex:rrs.location];
-	if ([self channelWithChannelName:str]) {
+	if ([[self channelWithChannelName:str] joined]) {
 		[alertView dismissWithClickedButtonIndex:0 animated:NO];
 	}
 }
@@ -1466,7 +1432,8 @@ void RCParseUserMask(NSString *mask, NSString **_nick, NSString **user, NSString
 				NSString *str = alertView.title;
 				NSRange rrs = [str rangeOfString:@"\r\n"];
 				str = [str substringToIndex:rrs.location];
-				RCChannel *chan = [self addChannel:str join:YES];
+				RCChannel *chan = [self addChannel:str join:NO]; // in case it bails out first
+				[chan setJoined:YES];
 				reloadNetworks();
 				[[RCChatController sharedController] selectChannel:[chan channelName] fromNetwork:self];
 				// select network here

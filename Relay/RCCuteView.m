@@ -2,7 +2,7 @@
 //  RCCuteView.m
 //  Relay
 //
-//  Created by Siberia on 6/29/13.
+//  Created by Max Shavrick on 6/29/13.
 //
 
 #import "RCCuteView.h"
