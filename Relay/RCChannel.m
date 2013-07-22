@@ -48,7 +48,7 @@ NSInteger rankToNumber(unichar rank, RCNetwork *network) {
     return 999;
 }
 
-NSInteger sortRank(id u1, id u2, RCNetwork* network) {
+NSInteger sortRank(id u1, id u2, RCNetwork *network) {
     u1 = [u1 lowercaseString];
     u2 = [u2 lowercaseString];
     NSString *ra = RCUserRank(u1, network);
@@ -177,13 +177,15 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 
 - (void)recievedMessage:(NSString *)message from:(NSString *)from time:(NSString *)time type:(RCMessageType)type {
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
-	NSRange rhacksorry = [message rangeOfString:@"\x12\x13"];
-	if ([message rangeOfString:@"\x12\x13"].location != NSNotFound) {
-		time = [message substringWithRange:NSMakeRange(rhacksorry.location, message.length-rhacksorry.location)];
-		if ([time hasSuffix:@" "]) {
-			time = [time recursivelyRemoveSuffix:@" "];
+	if (type != RCMessageTypeKick) {
+		NSRange rhacksorry = [message rangeOfString:@"\x12\x13"];
+		if ([message rangeOfString:@"\x12\x13"].location != NSNotFound) {
+			time = [message substringWithRange:NSMakeRange(rhacksorry.location, message.length-rhacksorry.location)];
+			if ([time hasSuffix:@" "]) {
+				time = [time recursivelyRemoveSuffix:@" "];
+			}
+			message = [message substringWithRange:NSMakeRange(0, rhacksorry.location)];
 		}
-		message = [message substringWithRange:NSMakeRange(0, rhacksorry.location)];
 	}
 	if (!time) {
 		time = [[RCDateManager sharedInstance] currentDateAsString];
@@ -396,6 +398,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 }
 
 - (void)setUserJoinedBatch:(NSString *)_joined cnt:(int)cnt {
+	NSLog(@"432fds %@]%@", _joined, [NSThread callStackSymbols]);
 	if (cnt > 10) {
 		if (![[self delegate] prefix])
 			[[self delegate] setPrefix:[NSDictionary new]];
@@ -403,7 +406,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 	if (![[self delegate] prefix]) {
 		double delayInSeconds = 0.1;
 		dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-		dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
+		dispatch_after(popTime, dispatch_get_main_queue(), ^ {
 			[self setUserJoinedBatch:_joined cnt:cnt+1];
 		});
 		return;
@@ -413,12 +416,14 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 			NSUInteger newIndex = [fakeUserList indexOfObject:_joined inSortedRange:(NSRange){0, [fakeUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^ NSComparisonResult(id obj1, id obj2) {
 					return sortRank(obj1, obj2, [self delegate]);
 			}];
+			NSLog(@"fds %@", _joined);
 			[fakeUserList insertObject:_joined atIndex:newIndex];
 		}
 	}
 }
 
 - (void)setUserJoined:(NSString *)_joined cnt:(int)cnt_ {
+	NSLog(@"fds %@", _joined);
 	if (cnt_ > 10) {
 		if (![[self delegate] prefix])
 			[[self delegate] setPrefix:[NSDictionary new]];
@@ -437,13 +442,14 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 	}
 	@synchronized(fullUserList) {
 		if (![_joined isEqualToString:@""] && ![_joined isEqualToString:@" "] && ![_joined isEqualToString:@"\r\n"] && ![self isUserInChannel:_joined] && _joined) {
-				[usersPanel reloadData];
-				NSUInteger newIndex = [fullUserList indexOfObject:_joined inSortedRange:(NSRange){0, [fullUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^NSComparisonResult(id obj1, id obj2) {
-					return sortRank(obj1, obj2, [self delegate]);
-				}];
-				[fullUserList insertObject:_joined atIndex:newIndex];
-				[[RCChatController sharedController] reloadUserCount];
-				[usersPanel reloadData];
+			[usersPanel reloadData];
+			NSUInteger newIndex = [fullUserList indexOfObject:_joined inSortedRange:(NSRange){0, [fullUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^NSComparisonResult(id obj1, id obj2) {
+				return sortRank(obj1, obj2, [self delegate]);
+			}];
+			NSLog(@"FDS %@", _joined);
+			[fullUserList insertObject:_joined atIndex:newIndex];
+			[[RCChatController sharedController] reloadUserCount];
+			[usersPanel reloadData];
 		}
 	}
 }
