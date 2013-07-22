@@ -403,14 +403,9 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 - (NSString *)nickAndRankForNick:(NSString *)nick {
 	for (NSString *nickrank in fullUserList) {
 		if (nick && [nickrank hasSuffix:nick]) {
-			@try {
-				NSInteger ln = [RCUserRank(nickrank, [self delegate]) length];
-				if ([[nickrank substringFromIndex:ln] isEqualToString:nick]) {
-					return nickrank;
-				}
-			}
-			@catch (NSException *e) {
-				NSLog(@"ds %@", e);
+			NSInteger ln = [RCUserRank(nickrank, [self delegate]) length];
+			if ([[nickrank substringFromIndex:ln] isEqualToString:nick]) {
+				return nickrank;
 			}
 		}
 	}
