@@ -71,6 +71,7 @@ NSString *colorForIRCColor(char irccolor) {
 	NSMutableString *final = [[NSMutableString alloc] init];
 	if (self.highlight)
 		[final appendString:@"<font color=\"#852d32\">"];
+	
 	/*
 	while (cpos < len) {
 		switch ([string characterAtIndex:cpos]) {
