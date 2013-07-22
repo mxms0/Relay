@@ -1084,7 +1084,14 @@
 	RCParseUserMask(message.sender, &from, nil, nil);
 	NSArray *kickInfo = [NSArray arrayWithObjects:[message parameterAtIndex:1], [message parameterAtIndex:2], nil];
 	RCChannel *targetChannel = [self channelWithChannelName:[message parameterAtIndex:0]];
-	[targetChannel recievedMessage:(NSString *)kickInfo from:from type:RCMessageTypeKick];
+	NSRange rangeOfTime = [message->message rangeOfString:@"\x12\x13"];
+	if (rangeOfTime.location != NSNotFound) {
+		NSString *time = [message->message substringFromIndex:rangeOfTime.location];
+		[targetChannel recievedMessage:(NSString *)kickInfo from:from time:time type:RCMessageTypeKick];
+	}
+	else {
+		[targetChannel recievedMessage:(NSString *)kickInfo from:from type:RCMessageTypeKick];
+	}
 	if ([[message parameterAtIndex:1] isEqualToString:useNick]) {
 		[targetChannel setJoined:NO];
 		// check boolean

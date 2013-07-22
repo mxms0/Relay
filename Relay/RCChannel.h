@@ -50,6 +50,7 @@
 - (void)setDelegate:(RCNetwork *)delegate;
 - (RCNetwork *)delegate;
 - (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type;
+- (void)recievedMessage:(NSString *)message from:(NSString *)from time:(NSString *)time type:(RCMessageType)type;
 - (void)setUserJoined:(NSString *)joined;
 - (void)setUserJoinedBatch:(NSString *)join cnt:(int)ct;
 - (void)setSuccessfullyJoined:(BOOL)success;

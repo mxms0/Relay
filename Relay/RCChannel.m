@@ -13,7 +13,7 @@
 #import "RCChannelManager.h"
 #import "RCChatController.h"
 
-#define M_COLOR 32
+#define M_COLOR 20
 @implementation RCChannel
 
 @synthesize channelName, joinOnConnect, panel, usersPanel, password, temporaryJoinOnConnect, fullUserList, newMessageCount, cellRepresentation, hasHighlights;
