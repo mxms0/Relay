@@ -39,6 +39,45 @@
 	[e registerSelector:@selector(handleQUIET:net:channel:) forCommands:[NSArray arrayWithObjects:@"quiet", @"q", nil] usingClass:self];
 	[e registerSelector:@selector(handleUNQUIET:net:channel:) forCommands:@"unquiet" usingClass:self];
     [e registerSelector:@selector(handleAWAY:net:channel:) forCommands:@"away" usingClass:self];
+	[e registerSelector:@selector(handleUPTIME:net:channel:) forCommands:@"uptime" usingClass:self];
+}
+
+- (void)handleUPTIME:(NSString *)uptim net:(RCNetwork *)net channel:(RCChannel *)chan {
+	struct timeval boottime;
+	int meb[2] = {CTL_KERN, KERN_BOOTTIME};
+	size_t size = sizeof(boottime);
+	time_t now;
+	time_t uptime = -1;
+	time(&now);
+	if (sysctl(meb, 2, &boottime, &size, NULL, 0) != -1 && boottime.tv_sec != 0) {
+		uptime = now - boottime.tv_sec;
+	}
+	NSMutableString *uptimeString = [[NSMutableString alloc] init];
+	int weeks = 0;
+	int days = 0;
+	int hours = 0;
+	int minutes = 0;
+	int seconds = 0;
+	NSLog(@"fds %ld", uptime);
+	if (uptime > 604800) {
+		weeks = floor(uptime/604800);
+		uptime -= weeks * 604800;
+	}
+	if (uptime > 86400) {
+		days = floor(uptime/86400);
+		uptime -= days * 86400;
+	}
+	if (uptime > 3600) {
+		hours = floor(uptime/3600);
+		uptime -= hours * 3600;
+	}
+	if (uptime > 60) {
+		minutes = floor(uptime/60);
+		uptime -= minutes * 60;
+	}
+	seconds = (int)uptime;
+	NSLog(@"%d weeks, %d days, %d hours, %d minutes, %d seconds", (int)weeks, (int)days, (int)hours, (int) minutes, (int)seconds);
+	
 }
 
 - (void)handleAWAY:(NSString *)args net:(RCNetwork *)net channel:(RCChannel *)chan {

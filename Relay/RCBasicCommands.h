@@ -11,7 +11,11 @@
 #import "RCChatController.h"
 #import "RCNetwork.h"
 #import <Twitter/Twitter.h>
+#import <time.h>
+#import <sys/sysctl.h>
 
-@interface RCBasicCommands : NSObject
+@interface RCBasicCommands : NSObject {
+
+}
 
 @end
