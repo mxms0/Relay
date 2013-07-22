@@ -1224,7 +1224,6 @@
 	NSString *userMessage = nil;
 	NSString *from = nil;
 	if ([fullMessage hasPrefix:@"\x01"] && [fullMessage hasSuffix:@"\x01"]) {
-		NSLog(@"ACCTIOONSS %@[%@", message->message, [message parameterAtIndex:0]);
 		fullMessage = [fullMessage substringWithRange:NSMakeRange(1, [fullMessage length]-2)];
 		if ([fullMessage hasPrefix:@"ACTION"]) {
 			userMessage = [fullMessage substringFromIndex:7];

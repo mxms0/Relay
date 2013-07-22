@@ -398,7 +398,6 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 }
 
 - (void)setUserJoinedBatch:(NSString *)_joined cnt:(int)cnt {
-	NSLog(@"432fds %@]%@", _joined, [NSThread callStackSymbols]);
 	if (cnt > 10) {
 		if (![[self delegate] prefix])
 			[[self delegate] setPrefix:[NSDictionary new]];
@@ -416,14 +415,12 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 			NSUInteger newIndex = [fakeUserList indexOfObject:_joined inSortedRange:(NSRange){0, [fakeUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^ NSComparisonResult(id obj1, id obj2) {
 					return sortRank(obj1, obj2, [self delegate]);
 			}];
-			NSLog(@"fds %@", _joined);
 			[fakeUserList insertObject:_joined atIndex:newIndex];
 		}
 	}
 }
 
 - (void)setUserJoined:(NSString *)_joined cnt:(int)cnt_ {
-	NSLog(@"fds %@", _joined);
 	if (cnt_ > 10) {
 		if (![[self delegate] prefix])
 			[[self delegate] setPrefix:[NSDictionary new]];
@@ -446,7 +443,6 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 			NSUInteger newIndex = [fullUserList indexOfObject:_joined inSortedRange:(NSRange){0, [fullUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^NSComparisonResult(id obj1, id obj2) {
 				return sortRank(obj1, obj2, [self delegate]);
 			}];
-			NSLog(@"FDS %@", _joined);
 			[fullUserList insertObject:_joined atIndex:newIndex];
 			[[RCChatController sharedController] reloadUserCount];
 			[usersPanel reloadData];
