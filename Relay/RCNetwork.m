@@ -1097,6 +1097,7 @@
 	RCChannel *targetChannel = [self channelWithChannelName:[message parameterAtIndex:0]];
 	NSString *from = nil;
 	RCParseUserMask(message.sender, &from, nil, nil);
+	if ([[message parameterAtIndex:0] isEqualToString:useNick]) return;
 	[targetChannel recievedMessage:[NSString stringWithFormat:@"%@ %@", [message parameterAtIndex:1], [message parameterAtIndex:2]] from:from type:RCMessageTypeMode];
 	[targetChannel setMode:[message parameterAtIndex:1] forUser:[message parameterAtIndex:2]];
 	// this is probably bugged.
@@ -1119,9 +1120,7 @@
 }
 
 - (void)handleNOTICE:(RCMessage *)message {
-	if ([[message parameterAtIndex:0] isEqualToString:@"Auth"]) {
-		return;
-	}
+	if (!isRegistered) return;
 	NSString *from = nil;
 	RCParseUserMask(message.sender, &from, nil, nil);
 	if ([[[[[RCChatController sharedController] currentPanel] channel] delegate] isEqual:self]) {
