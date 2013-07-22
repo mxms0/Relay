@@ -74,7 +74,9 @@ static id _eInstance = nil;
 }
 
 - (void)errorHandlingCommand:(NSString *)cmd forNetwork:(RCNetwork *)net {
-	[net sendMessage:[cmd uppercaseString]];
+	[net sendMessage:cmd];
+	// no.
+	// for example, /nick.
 }
 
 @end

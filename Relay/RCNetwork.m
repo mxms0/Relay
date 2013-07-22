@@ -1080,7 +1080,6 @@
 }
 
 - (void)handleKICK:(RCMessage *)message {
-	NSLog(@"fd %@[%@]", message->message, [message parameterAtIndex:0]);
 	NSString *from = nil;
 	RCParseUserMask(message.sender, &from, nil, nil);
 	NSArray *kickInfo = [NSArray arrayWithObjects:[message parameterAtIndex:1], [message parameterAtIndex:2], nil];
@@ -1095,86 +1094,27 @@
 }
 
 - (void)handleMODE:(RCMessage *)message {
-    /*
-	return;
-	_modes = [_modes substringFromIndex:1];
-	NSScanner *scanr = [[NSScanner alloc] initWithString:_modes];
-	NSString *settr;
-	NSString *cmd;
-	NSString *room;
-	NSString *modes;
-	NSString *user = nil;
-	[scanr scanUpToString:@" " intoString:&settr];
-	[scanr scanUpToString:@" " intoString:&cmd];
-	[scanr scanUpToString:@" " intoString:&room];
-	[scanr scanUpToString:@" " intoString:&modes];
-	[scanr scanUpToString:@"\r\n" intoString:&user];
-	RCParseUserMask(settr, &settr, nil, nil);
-	RCChannel *chan = [self channelWithChannelName:room];
-	if (chan) {
-		if ([room isEqualToString:useNick]) {
-			[scanr release];
-			return;
-		}
-		if (!user) {
-			[chan recievedMessage:[NSString stringWithFormat:@"%@", modes] from:settr type:RCMessageTypeMode];
-			[scanr release];
-			return;
-		}
-		[chan recievedMessage:[NSString stringWithFormat:@"%@ %@", modes, user] from:settr type:RCMessageTypeMode];
-		[chan setMode:modes forUser:user];
-		
-	}
-	[scanr release];
+	RCChannel *targetChannel = [self channelWithChannelName:[message parameterAtIndex:0]];
+	NSString *from = nil;
+	RCParseUserMask(message.sender, &from, nil, nil);
+	[targetChannel recievedMessage:[NSString stringWithFormat:@"%@ %@", [message parameterAtIndex:1], [message parameterAtIndex:2]] from:from type:RCMessageTypeMode];
+	// this is probably bugged.
+	// only tested with banning people. ;P not channel modes, etc
 	// Relay[2626:f803] MSG: :ac3xx!ac3xx@rox-103C7229.ac3xx.com MODE #chat +o _m
-	 */
 }
 
 - (void)handleNICK:(RCMessage *)message {
-    /*
-	NSScanner *scanner = [[NSScanner alloc] initWithString:nickChange];
-	NSString *usermask = @"";
-	NSString *oldnick = @"";
-	NSString *command = @"";
-	NSString *newnick = @"";
-	if ([nickChange hasPrefix:@":"]) {
-		[scanner scanUpToString:@" " intoString:&usermask];
-		RCParseUserMask(usermask, &oldnick, nil, nil);
+	NSString *person = nil;
+	NSString *newNick = [message parameterAtIndex:0];
+	RCParseUserMask(message.sender, &person, nil, nil);
+	if ([person isEqualToString:useNick]) {
+		// i changed my nick. welp
+		self.useNick = newNick;
 	}
-	else {
-		oldnick = useNick;
+	for (RCChannel *chan in _channels) {
+		if ([chan isUserInChannel:person])
+			[chan changeNick:person toNick:newNick];
 	}
-	[scanner scanUpToString:@" " intoString:&command];
-	[scanner scanUpToString:@"" intoString:&newnick];
-	[scanner release];
-	if ([newnick hasPrefix:@":"]) {
-#if LOGALL
-		NSLog(@"a hi i am 12 and wat is thi- [%@]", [newnick substringFromIndex:1]);
-#endif
-		newnick = [newnick substringFromIndex:1];
-	}
-	if ([oldnick hasPrefix:@":"]) {
-#if LOGALL
-		NSLog(@"a hi i am 12 and wat is thi- [%@]", [oldnick substringFromIndex:1]);
-#endif
-		oldnick = [oldnick substringFromIndex:1];
-	}
-	if ([oldnick isEqualToString:useNick]) {
-		self.useNick = newnick;
-	}
-	// qwerty .. why do you do this.
-	NSMutableArray *chanarr = [[NSMutableArray new] autorelease];
-	@synchronized(_channels) {
-		for (NSString *channel in _channels) {
-			if ([[self channelWithChannelName:channel] isUserInChannel:oldnick]) {
-				[chanarr addObject:[self channelWithChannelName:channel]];
-			}
-		}
-	}
-	for (RCChannel *chan in chanarr) {
-		[chan changeNick:(([oldnick isEqualToString:@""] || oldnick == nil) ? @"(self)" : oldnick) toNick:newnick];
-	}
-     */
 }
 
 - (void)handleNOTICE:(RCMessage *)message {
@@ -1270,22 +1210,21 @@
 }
 
 void RCParseUserMask(NSString *mask, NSString **_nick, NSString **user, NSString **hostmask) {
+	// this is experimental. ;P
 	if (_nick)
 		*_nick = nil;
 	if (user)
 		*user = nil;
 	if (hostmask)
 		*hostmask = nil;
-	NSScanner *scanr = [NSScanner scannerWithString:mask];
-	[scanr scanUpToString:@"!" intoString:_nick];
-	if ([scanr isAtEnd]) return;
-	[scanr setScanLocation:((int)[scanr scanLocation])+1];
+	NSRange nickRange = [mask rangeOfString:@"!"];
+	NSRange userRange = [mask rangeOfString:@"@"];
+	if (nickRange.location == NSNotFound || userRange.location == NSNotFound) return;
+	*_nick = [mask substringWithRange:NSMakeRange(0, nickRange.location)];
 	if (!user) return;
-	[scanr scanUpToString:@"@" intoString:user];
-	[scanr setScanLocation:((int)[scanr scanLocation])+1];
-	if ([scanr isAtEnd]) return;
+	*user = [mask substringWithRange:NSMakeRange(nickRange.location + 1, userRange.location - (nickRange.location + 1))];
 	if (!hostmask) return;
-	[scanr scanUpToString:@"" intoString:hostmask];
+	*hostmask = [mask substringWithRange:NSMakeRange(userRange.location + 1, [mask length] - (userRange.location + 1))];
 }
 
 - (void)willPresentAlertView:(UIAlertView *)alertView {
