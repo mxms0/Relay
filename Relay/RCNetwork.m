@@ -1098,6 +1098,7 @@
 	NSString *from = nil;
 	RCParseUserMask(message.sender, &from, nil, nil);
 	[targetChannel recievedMessage:[NSString stringWithFormat:@"%@ %@", [message parameterAtIndex:1], [message parameterAtIndex:2]] from:from type:RCMessageTypeMode];
+	[targetChannel setMode:[message parameterAtIndex:1] forUser:[message parameterAtIndex:2]];
 	// this is probably bugged.
 	// only tested with banning people. ;P not channel modes, etc
 	// Relay[2626:f803] MSG: :ac3xx!ac3xx@rox-103C7229.ac3xx.com MODE #chat +o _m

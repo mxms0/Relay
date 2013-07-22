@@ -66,10 +66,12 @@
 - (void)clearAllMessages;
 - (void)setJoined:(BOOL)joind;
 - (void)setShouldHoldUserListUpdates:(BOOL)bn;
-NSString *RCUserRank(NSString *user, RCNetwork *network);
-BOOL RCIsRankHigher(NSString *rank, NSString *rank2, RCNetwork *network);
+inline NSString *RCUserRank(NSString *user, RCNetwork *network);
+inline NSString *RCNickWithoutRank(NSString *nick, RCNetwork *self);
+inline NSInteger RCRankToNumber(unichar rank, RCNetwork *network);
+inline NSInteger RCRankSort(id u1, id u2, RCNetwork *network);
+inline void RCRefreshTable(NSString *or, NSString *nnr, NSArray *current, RCChannel *self);
+inline BOOL RCIsRankHigher(NSString *rank, NSString *rank2, RCNetwork *network);
 inline BOOL RCHighlightCheck(RCChannel *self, NSString **message);
-NSInteger rankToNumber(unichar rank, RCNetwork *network);
-NSInteger sortRank(id u1, id u2, RCNetwork *network);
-char user_hash(NSString *from);
+inline char RCUserHash(NSString *from);
 @end

@@ -34,10 +34,30 @@ NSString *RCUserRank(NSString *user, RCNetwork *network) {
 }
 
 BOOL RCIsRankHigher(NSString *rank, NSString *rank2, RCNetwork* network) {
-    return (rankToNumber([rank characterAtIndex:0], network) < rankToNumber([rank2 characterAtIndex:0], network));
+    return (RCRankToNumber([rank characterAtIndex:0], network) < RCRankToNumber([rank2 characterAtIndex:0], network));
 }
 
-NSInteger rankToNumber(unichar rank, RCNetwork *network) {
+NSString *RCNickWithoutRank(NSString *nick, RCNetwork *self) {
+	return [nick substringFromIndex:[RCUserRank(nick, self) length]];
+}
+
+void RCRefreshTable(NSString *or, NSString *nnr, NSArray *current, RCChannel *self) {
+	NSString *currentRank = @"";
+	int max = 999;
+	for (NSString *rank in current) {
+		int nm = RCRankToNumber([rank characterAtIndex:0], [self delegate]);
+		if (max > nm) {
+			max = nm;
+			currentRank = rank;
+		}
+	}
+	if (![or isEqualToString:currentRank]) {
+		[self setUserLeft:nnr];
+		[self setUserJoined:[currentRank stringByAppendingString:nnr]];
+	}
+}
+
+NSInteger RCRankToNumber(unichar rank, RCNetwork *network) {
     for (NSArray *arr in [[network prefix] allValues]) {
         if ([arr count] == 2) {
             if ([[arr objectAtIndex:1] characterAtIndex:0] == rank) {
@@ -48,15 +68,15 @@ NSInteger rankToNumber(unichar rank, RCNetwork *network) {
     return 999;
 }
 
-NSInteger sortRank(id u1, id u2, RCNetwork *network) {
+NSInteger RCRankSort(id u1, id u2, RCNetwork *network) {
     u1 = [u1 lowercaseString];
     u2 = [u2 lowercaseString];
     NSString *ra = RCUserRank(u1, network);
     NSString *rb = RCUserRank(u2, network);
     unichar r1 = [ra characterAtIndex:0];
     unichar r2 = [rb characterAtIndex:0];
-    NSInteger r1n = rankToNumber(r1, network);
-    NSInteger r2n = rankToNumber(r2, network);
+    NSInteger r1n = RCRankToNumber(r1, network);
+    NSInteger r2n = RCRankToNumber(r2, network);
     if (r1n < r2n)
         return NSOrderedAscending;
     else if (r1n > r2n)
@@ -128,7 +148,7 @@ NSInteger sortRank(id u1, id u2, RCNetwork *network) {
 	return [NSString stringWithFormat:@"[%@ %@]", [super description], channelName];
 }
 
-char user_hash(NSString *from) {
+char RCUserHash(NSString *from) {
     int uhash = 0;
     @synchronized([[UIApplication sharedApplication] delegate]) {
         uhash = ([from hash] % (M_COLOR-2)) + 2;
@@ -148,7 +168,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 		if (!cmp) return NO;
 		NSString *rank = RCUserRank(uname, [self delegate]);
 		NSString *nameOrRank = [uname substringFromIndex:[rank length]];
-		int hhash = ([nameOrRank isEqualToString:[[self delegate] useNick]]) ? 1 : user_hash(nameOrRank);
+		int hhash = ([nameOrRank isEqualToString:[[self delegate] useNick]]) ? 1 : RCUserHash(nameOrRank);
 		
 		NSString *patternuno = [NSString stringWithFormat:@"(^|\\s)([^A-Za-z0-9#]*)(\\Q%@\\E)([^A-Za-z0-9]*)($|\\s)", nameOrRank];
 		NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:patternuno options:NSRegularExpressionCaseInsensitive error:nil];
@@ -193,7 +213,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 	NSString *msg = @"";
     from = [from stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
     from = [from stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
-    char uhash = (![from isEqualToString:[delegate useNick]]) ? user_hash(from) : 1;
+    char uhash = (![from isEqualToString:[delegate useNick]]) ? RCUserHash(from) : 1;
     if ([message isKindOfClass:[NSString class]]) {
         message = [message stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
         message = [message stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
@@ -413,7 +433,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 	@synchronized(fakeUserList) {
 		if (![_joined isEqualToString:@""] && ![_joined isEqualToString:@" "] && ![_joined isEqualToString:@"\r\n"] && ![self isUserInChannel:_joined] && _joined) {
 			NSUInteger newIndex = [fakeUserList indexOfObject:_joined inSortedRange:(NSRange){0, [fakeUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^ NSComparisonResult(id obj1, id obj2) {
-					return sortRank(obj1, obj2, [self delegate]);
+					return RCRankSort(obj1, obj2, [self delegate]);
 			}];
 			[fakeUserList insertObject:_joined atIndex:newIndex];
 		}
@@ -441,7 +461,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 		if (![_joined isEqualToString:@""] && ![_joined isEqualToString:@" "] && ![_joined isEqualToString:@"\r\n"] && ![self isUserInChannel:_joined] && _joined) {
 			[usersPanel reloadData];
 			NSUInteger newIndex = [fullUserList indexOfObject:_joined inSortedRange:(NSRange){0, [fullUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^NSComparisonResult(id obj1, id obj2) {
-				return sortRank(obj1, obj2, [self delegate]);
+				return RCRankSort(obj1, obj2, [self delegate]);
 			}];
 			[fullUserList insertObject:_joined atIndex:newIndex];
 			[[RCChatController sharedController] reloadUserCount];
@@ -488,22 +508,6 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 	joined = NO;
 }
 
-#define NICK_NO_RANK(nick,network) [nick substringFromIndex:[RCUserRank(nick,network) length]]
-#define REFRESH_TABLE \
-NSString *cur_rank = @"";\
-int max = 999;\
-for (NSString *rank in current) {\
-	int nm = rankToNumber([rank characterAtIndex:0], [self delegate]);\
-	if (max > nm) {\
-		max = nm;\
-		cur_rank = rank;\
-	}\
-}\
-if (![or isEqualToString:cur_rank]) { \
-	[self setUserLeft:nnr];\
-	[self setUserJoined:[cur_rank stringByAppendingString:nnr]];\
-}
-
 #define SET_MODE \
 partialLen = [modes substringWithRange:NSMakeRange(stptr, endptr-stptr)];\
 for (int a = 0; a < [partialLen length]; a++) {\
@@ -511,23 +515,24 @@ for (int a = 0; a < [partialLen length]; a++) {\
 		NSString *rankf = [[[delegate prefix] objectForKey:[partialLen substringWithRange:NSMakeRange(a, 1)]] objectAtIndex:1];\
 		if (rankf) {\
 			NSString *full_user = [self nickAndRankForNick:[users objectAtIndex:modecnt]]; NSString* or = RCUserRank(full_user,[self delegate]);\
-			NSString *nnr = NICK_NO_RANK(full_user, [self delegate]);\
+			NSString *nnr = RCNickWithoutRank(full_user, [self delegate]);\
 			NSArray *current = [userRanksAdv objectForKey:nnr];\
 			if (!current) current = [[NSArray new] autorelease];\
 			current = [current arrayByAddingObject:rankf];\
 			[userRanksAdv setObject:current forKey:nnr];\
-			REFRESH_TABLE;\
+			RCRefreshTable(or, nnr, current, self);\
 		}\
 	}\
 	else if (subtracting) {\
 		NSString *rankf = [[[delegate prefix] objectForKey:[partialLen substringWithRange:NSMakeRange(a, 1)]] objectAtIndex:1];\
 		if (rankf) {\
-			NSString *full_user = [self nickAndRankForNick:[users objectAtIndex:modecnt]];NSString *or = RCUserRank(full_user, [self delegate]);\
-			NSString *nnr = NICK_NO_RANK(full_user, [self delegate]);\
+			NSString *full_user = [self nickAndRankForNick:[users objectAtIndex:modecnt]];\
+			NSString *or = RCUserRank(full_user, [self delegate]);\
+			NSString *nnr = RCNickWithoutRank(full_user, [self delegate]);\
 			NSMutableArray *current = [[[userRanksAdv objectForKey:nnr] mutableCopy] autorelease];\
 			[current removeObject:rankf];\
 			if (current) [userRanksAdv setObject:[[current copy] autorelease] forKey:nnr];\
-			REFRESH_TABLE;\
+			RCRefreshTable(or, nnr, current, self);\
 		}\
 	}\
 	modecnt++;\
@@ -547,7 +552,7 @@ for (int a = 0; a < [partialLen length]; a++) {\
 			for (int i = 0; i < [modes length]; i++) {
 				switch ([modes characterAtIndex:i]) {
 					case '+':
-						SET_MODE;;
+						SET_MODE;
 						adding = YES;
 						subtracting = NO;
 						stptr = i + 1;
