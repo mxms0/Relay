@@ -155,7 +155,7 @@ char *RCIPForURL(NSString *URL) {
 	[tv invalidate];
 	tv = nil;
 	[self configureSocketPoll];
-	NSLog(@"CHanging poll speed.. %f", interval);
+	NSLog(@"Changing poll speed.. %f", interval);
 }
 
 - (void)pollSockets {
