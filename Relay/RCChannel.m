@@ -24,6 +24,7 @@ NSString *RCUserRank(NSString *user, RCNetwork *network) {
 	}
 	for (id karr in [[network prefix] allKeys]) {
 		NSArray *arr = [[network prefix] objectForKey:karr];
+		NSLog(@"fds %@", arr);
 		if ([arr count] == 2) {
 			if ([[arr objectAtIndex:1] characterAtIndex:0] == [user characterAtIndex:0]) {
 				return [arr objectAtIndex:1];
