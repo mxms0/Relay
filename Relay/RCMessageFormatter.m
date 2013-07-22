@@ -71,7 +71,7 @@ NSString *colorForIRCColor(char irccolor) {
 	NSMutableString *final = [[NSMutableString alloc] init];
 	if (self.highlight)
 		[final appendString:@"<font color=\"#852d32\">"];
-	
+	/*
 	while (cpos < len) {
 		switch ([string characterAtIndex:cpos]) {
 			case RCIRCAttributeBold:
@@ -157,6 +157,7 @@ NSString *colorForIRCColor(char irccolor) {
 				break;
 		}
 	}
+	 */
 	if (self.highlight)
 		[final appendString:@"</font>"];
 	// RCMessageTypeTopic doesn't have timestamp
