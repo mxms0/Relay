@@ -56,7 +56,9 @@
 // actions sheets
 	#define	RCALERR_GLOPTIONS 200
 	#define RCALERR_INDVOPTIONS 201
-//
+// buttons
+	#define RCChannelListButtonTag 101
+	#define RCUserListButtonTag 102
 	#define CMLog(format, ...) NSLog(@"(%s) in [%s:%d] ::: %@", __PRETTY_FUNCTION__, __FILE__, __LINE__, [NSString stringWithFormat:format, ## __VA_ARGS__])
 	#define MARK CMLog(@"%s", __PRETTY_FUNCTION__);
 

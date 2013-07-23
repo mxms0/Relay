@@ -18,13 +18,13 @@
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
 		[self setOpaque:YES];
+		[self setExclusiveTouch:YES];
 		if (![self isKindOfClass:[RCChatsListViewCard class]]) {
 			navigationBar = [[RCChatNavigationBar alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, 44)];
 			[self addSubview:navigationBar];
 			navigationBar.layer.zPosition = 100000;
 			[navigationBar release];
 			[self setBackgroundColor:[UIColor clearColor]];
-			[self setOpaque:YES];
 			CALayer *shdw = [[CALayer alloc] init];
 			[shdw setName:@"0_fuckingshadow"];
 			UIImage *mfs = [UIImage imageNamed:@"0_hzshdw"];
@@ -46,12 +46,14 @@
 			RCBarButtonItem *bs = [[RCBarButtonItem alloc] init];
 			[bs setImage:[UIImage imageNamed:@"0_listbtn"] forState:UIControlStateNormal];
 			[bs setFrame:CGRectMake(1, 0, 50, 45)];
+			[bs setTag:RCChannelListButtonTag];
 			[bs addTarget:[RCChatController sharedController] action:@selector(menuButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 			[navigationBar addSubview:bs];
 			[bs release];
 			RCBarButtonItem *cs = [[RCBarButtonItem alloc] init];
 			[cs setImage:[UIImage imageNamed:@"0_ulist"] forState:UIControlStateNormal];
 			[cs setFrame:CGRectMake(frame.size.width - 50, 0, 50, 45)];
+			[cs setTag:RCUserListButtonTag];
 			[cs addTarget:[RCChatController sharedController] action:@selector(pushUserListWithDefaultDuration) forControlEvents:UIControlEventTouchUpInside];
 			[navigationBar addSubview:cs];
 			[cs release];
@@ -69,6 +71,15 @@
 	[super setFrame:frame];
 	navigationBar.frame = CGRectMake(navigationBar.frame.origin.x,navigationBar.frame.origin.y, frame.size.width, navigationBar.frame.size.height);
 	[navigationBar setNeedsDisplay];
+}
+
+- (void)setLeftBarButtonItemEnabled:(BOOL)en {
+	for (RCBarButtonItem *bv in [self.navigationBar subviews]) {
+		if ([bv tag] == RCChannelListButtonTag) {
+			[bv setEnabled:en];
+			break;
+		}
+	}
 }
 
 - (void)findShadowAndDoStuffToIt {

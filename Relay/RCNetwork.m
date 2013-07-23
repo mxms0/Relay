@@ -820,10 +820,9 @@
 	NSString *setter = [message parameterAtIndex:2];
 	int ts = [[message parameterAtIndex:3] intValue];
 	NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-	[dateFormatter setDateFormat:@"dd MMMM yyyy, HH:mm:ss"];
+	[dateFormatter setDateFormat:@"MMMM dd, yyyy hh:mm:ss"];
 	NSString *time = [dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:ts]];
 	[dateFormatter release];
-	RCParseUserMask(setter, &setter, nil, nil);
 	[[self channelWithChannelName:channel] recievedMessage:[NSString stringWithFormat:@"Set by %@ on %@", setter, time] from:@"" type:RCMessageTypeNormalE2];
 }
 

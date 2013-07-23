@@ -550,8 +550,7 @@ static RCNetwork *currentNetwork = nil;
 	[infoView reloadData];
 	canDragMainView = NO;
 	[self closeWithDuration:0.00];
-	
-	//[[[[navigationController topViewController] navigationItem] leftBarButtonItem] setEnabled:NO];
+	[chatView setLeftBarButtonItemEnabled:NO];
 	[UIView beginAnimations:nil context:nil];
 	[UIView setAnimationDuration:dr];
 	[infoView setFrame:CGRectMake((isLandscape ? 200 : 52), infoView.frame.origin.y, infoView.frame.size.width, infoView.frame.size.height)];
@@ -565,7 +564,7 @@ static RCNetwork *currentNetwork = nil;
 - (void)popUserListWithDuration:(NSTimeInterval)dr {
 	canDragMainView = YES;
 	[self setEntryFieldEnabled:YES];
-	//[[[[navigationController topViewController] navigationItem] leftBarButtonItem] setEnabled:YES];
+	[chatView setLeftBarButtonItemEnabled:YES];
 	[UIView animateWithDuration:dr animations:^ {
 		[infoView setFrame:CGRectMake(chatView.frame.size.width, infoView.frame.origin.y, infoView.frame.size.width, infoView.frame.size.height)];
 	} completion:^(BOOL fin) {

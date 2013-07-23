@@ -19,4 +19,5 @@
 @property (nonatomic, readonly) RCChatNavigationBar *navigationBar;
 - (id)initWithFrame:(CGRect)frame;
 - (void)findShadowAndDoStuffToIt;
+- (void)setLeftBarButtonItemEnabled:(BOOL)en;
 @end
