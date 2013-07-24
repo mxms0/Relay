@@ -122,9 +122,10 @@
 	[searchArray removeAllObjects];
 	if (!queue) {
 		queue = [[RCOperationQueue alloc] init];
-		[queue setMaxConcurrentOperationCount:1];
+		//		[queue setMaxConcurrentOperationCount:1];
 		[queue setName:@"relay_search_queue"];
 	}
+	NSLog(@"%d", queue.isSuspended);
 	[queue cancelAllOperations];
 	RCOperation *op = [[RCOperation alloc] init];
 	[op setDelegate:self];

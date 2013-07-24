@@ -818,6 +818,7 @@
 	// RPL_TOPICWHOTIME(?)
 	NSString *channel = [message parameterAtIndex:1];
 	NSString *setter = [message parameterAtIndex:2];
+	RCParseUserMask(setter, &setter, nil, nil);
 	int ts = [[message parameterAtIndex:3] intValue];
 	NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
 	[dateFormatter setDateFormat:@"MMMM dd, yyyy hh:mm:ss"];
@@ -1224,7 +1225,10 @@ void RCParseUserMask(NSString *mask, NSString **_nick, NSString **user, NSString
 		*hostmask = nil;
 	NSRange nickRange = [mask rangeOfString:@"!"];
 	NSRange userRange = [mask rangeOfString:@"@"];
-	if (nickRange.location == NSNotFound || userRange.location == NSNotFound) return;
+	if (nickRange.location == NSNotFound || userRange.location == NSNotFound) {
+		*_nick = mask;
+		return;
+	}
 	*_nick = [mask substringWithRange:NSMakeRange(0, nickRange.location)];
 	if (!user) return;
 	*user = [mask substringWithRange:NSMakeRange(nickRange.location + 1, userRange.location - (nickRange.location + 1))];

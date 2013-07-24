@@ -35,7 +35,7 @@
 }
 
 - (void)start {
-	MARK;
+	[super start];
 	NSLog(@"fds %d", self.isCancelled);
 	if (!self.cancelled) {
 		[self willChangeValueForKey:@"isExecuting"];

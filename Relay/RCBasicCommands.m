@@ -40,6 +40,11 @@
 	[e registerSelector:@selector(handleUNQUIET:net:channel:) forCommands:@"unquiet" usingClass:self];
     [e registerSelector:@selector(handleAWAY:net:channel:) forCommands:@"away" usingClass:self];
 	[e registerSelector:@selector(handleUPTIME:net:channel:) forCommands:@"uptime" usingClass:self];
+	[e registerSelector:@selector(handleLIST) forCommands:@"list" usingClass:self];
+}
+
+- (void)handleLIST {
+	[[RCChatController sharedController] animateChannelList];
 }
 
 - (void)handleUPTIME:(NSString *)uptim net:(RCNetwork *)net channel:(RCChannel *)chan {
@@ -52,13 +57,11 @@
 	if (sysctl(meb, 2, &boottime, &size, NULL, 0) != -1 && boottime.tv_sec != 0) {
 		uptime = now - boottime.tv_sec;
 	}
-	NSMutableString *uptimeString = [[NSMutableString alloc] init];
 	int weeks = 0;
 	int days = 0;
 	int hours = 0;
 	int minutes = 0;
 	int seconds = 0;
-	NSLog(@"fds %ld", uptime);
 	if (uptime > 604800) {
 		weeks = floor(uptime/604800);
 		uptime -= weeks * 604800;
@@ -76,8 +79,9 @@
 		uptime -= minutes * 60;
 	}
 	seconds = (int)uptime;
-	NSLog(@"%d weeks, %d days, %d hours, %d minutes, %d seconds", (int)weeks, (int)days, (int)hours, (int) minutes, (int)seconds);
-	
+	NSString *send = [NSString stringWithFormat:@"System Uptime: %d Weeks, %d Days, %d Hours, %d Minutes, %d Seconds", (int)weeks, (int)days, (int)hours, (int)minutes, (int)seconds];
+	[chan recievedMessage:send from:[net useNick] type:RCMessageTypeNormal];
+	[net sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", [chan channelName], send]];
 }
 
 - (void)handleAWAY:(NSString *)args net:(RCNetwork *)net channel:(RCChannel *)chan {
