@@ -131,7 +131,6 @@
 	[queue addOperation:op];
 	[op release];
 
-	isSearching = NO;
 	/* 		for (idx = 0; idx < [channelDatas count]; idx++) {
 	 RCChannelInfo *ifs = [channelDatas objectAtIndex:idx];
 	 if ([[ifs channel] rangeOfString:searchTerm options:NSCaseInsensitiveSearch].location != NSNotFound) {

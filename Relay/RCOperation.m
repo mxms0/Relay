@@ -31,6 +31,7 @@
 
 - (void)cancel {
 	cancelled = YES;
+	[super cancel];
 }
 
 - (void)start {
