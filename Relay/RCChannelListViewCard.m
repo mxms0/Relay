@@ -14,6 +14,8 @@
 
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
+		queue = nil;
+		searchTerm = nil;
 		[navigationBar setMaxSize:18];
 		[navigationBar setNeedsDisplay];
 		channelDatas = [[NSMutableArray alloc] init];
@@ -104,11 +106,18 @@
 }
 
 - (void)searchForKeyword:(RCOperation *)opera {
+	NSString *keyword = searchTerm;
 	for (int i = 0; i < [channelDatas count]; i++) {
 		if (!opera.cancelled) {
-			MARK;
+			RCChannelInfo *ifs = [channelDatas objectAtIndex:i];
+			if ([[ifs channel] rangeOfString:keyword options:NSCaseInsensitiveSearch].location != NSNotFound) {
+				[searchArray addObject:ifs];
+			}
 		}
 	}
+	dispatch_async(dispatch_get_main_queue(), ^ {
+		[channels reloadData];
+	});
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
@@ -119,13 +128,14 @@
 		return;
 	}
 	isSearching = YES;
+	if (searchTerm) [searchTerm release];
+	searchTerm = [[searchBar text] retain];
 	[searchArray removeAllObjects];
 	if (!queue) {
 		queue = [[RCOperationQueue alloc] init];
 		//		[queue setMaxConcurrentOperationCount:1];
 		[queue setName:@"relay_search_queue"];
 	}
-	NSLog(@"%d", queue.isSuspended);
 	[queue cancelAllOperations];
 	RCOperation *op = [[RCOperation alloc] init];
 	[op setDelegate:self];
@@ -204,19 +214,21 @@
 		[ifs setTopic:@"No topic set."];
 	NSString *lcnt = [NSString stringWithFormat:@"%d Users", cc];
 	CGFloat rsz = 0;
-	CGSize szf = [lcnt sizeWithFont:[UIFont systemFontOfSize:12] minFontSize:10 actualFontSize:&rsz forWidth:84 lineBreakMode:NSLineBreakByClipping];
-	NSString *nam = chan;
-	CGFloat azf = 0;
-	[nam sizeWithFont:[UIFont boldSystemFontOfSize:16] minFontSize:8 actualFontSize:&azf forWidth:(320 - (szf.width + 40)) lineBreakMode:NSLineBreakByClipping];
-	NSString *set = [NSString stringWithFormat:@"%@ %d Users", chan, cc];
-	int lfr = [chan length];
-	NSMutableAttributedString *str = [[NSMutableAttributedString alloc] initWithString:set];
-	UIFont *ft = [UIFont boldSystemFontOfSize:azf];
-	[str addAttributes:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:ft, UIColorFromRGB(0x444647), nil] forKeys:[NSArray arrayWithObjects:NSFontAttributeName, NSForegroundColorAttributeName, nil]] range:NSMakeRange(0, lfr)];
-	UIFont *sft = [UIFont systemFontOfSize:rsz];
-	[str addAttributes:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:sft, UIColorFromRGB(0x797c7e), nil] forKeys:[NSArray arrayWithObjects:NSFontAttributeName, NSForegroundColorAttributeName, nil]] range:NSMakeRange(lfr, [set length] - lfr)];
-	[ifs setAttributedString:str];
-	[str release];
+	dispatch_async(dispatch_get_main_queue(), ^{
+		CGSize szf = [lcnt sizeWithFont:[UIFont systemFontOfSize:12] minFontSize:10 actualFontSize:(CGFloat *)&rsz forWidth:84 lineBreakMode:NSLineBreakByClipping];
+		NSString *nam = chan;
+		CGFloat azf = 0;
+		[nam sizeWithFont:[UIFont boldSystemFontOfSize:16] minFontSize:8 actualFontSize:&azf forWidth:(320 - (szf.width + 40)) lineBreakMode:NSLineBreakByClipping];
+		NSString *set = [NSString stringWithFormat:@"%@ %d Users", chan, cc];
+		int lfr = [chan length];
+		NSMutableAttributedString *str = [[NSMutableAttributedString alloc] initWithString:set];
+		UIFont *ft = [UIFont boldSystemFontOfSize:azf];
+		[str addAttributes:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:ft, UIColorFromRGB(0x444647), nil] forKeys:[NSArray arrayWithObjects:NSFontAttributeName, NSForegroundColorAttributeName, nil]] range:NSMakeRange(0, lfr)];
+		UIFont *sft = [UIFont systemFontOfSize:rsz];
+		[str addAttributes:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:sft, UIColorFromRGB(0x797c7e), nil] forKeys:[NSArray arrayWithObjects:NSFontAttributeName, NSForegroundColorAttributeName, nil]] range:NSMakeRange(lfr, [set length] - lfr)];
+		[ifs setAttributedString:str];
+		[str release];
+	}); // potentially very unsafe.
 	[channelDatas addObject:ifs];
 	[ifs release];
 }
@@ -242,6 +254,10 @@
 
 - (void)dealloc {
 	[channelDatas release];
+	[queue release];
+	queue = nil;
+	[searchTerm release];
+	searchTerm = nil;
 	[super dealloc];
 }
 

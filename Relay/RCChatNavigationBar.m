@@ -84,8 +84,7 @@
 	}
 	CGContextSetFillColorWithColor(ctx, UIColorFromRGB(0x282C40).CGColor);
 	CGFloat size = 0.0;
-	float maxWidth = (rect.size.width-90);
-	NSLog(@"fds drawing title %@", title);
+	float maxWidth = (rect.size.width - 90);
 	[title sizeWithFont:[UIFont boldSystemFontOfSize:maxSize] minFontSize:14 actualFontSize:&size forWidth:maxWidth lineBreakMode:NSLineBreakByClipping];
 	[title drawInRect:CGRectMake((!superSpecialLikeAc3xx2 ? 45 : 30), (!!subtitle ? 1.5 : (((rect.size.height-4)/2)-(size/2)))+ (size <= 18 ? 2 : 0), maxWidth, 30) withFont:[UIFont boldSystemFontOfSize:size] lineBreakMode:NSLineBreakByClipping alignment:NSTextAlignmentCenter];
 	if (subtitle) {

@@ -1144,7 +1144,9 @@
 	if ([useNick isEqualToString:from]) {
 		[channel setJoined:NO];
 	}
-	[channel recievedMessage:[message parameterAtIndex:1] from:useNick type:RCMessageTypePart];
+	if (![[message parameterAtIndex:0] isEqualToString:message->message])
+		[channel recievedMessage:[message parameterAtIndex:1] from:from type:RCMessageTypePart];
+	else [channel recievedMessage:@"" from:from type:RCMessageTypePart];
 }
 
 - (void)handlePING:(id)pong {
