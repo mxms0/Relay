@@ -228,9 +228,9 @@
 		[str addAttributes:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:sft, UIColorFromRGB(0x797c7e), nil] forKeys:[NSArray arrayWithObjects:NSFontAttributeName, NSForegroundColorAttributeName, nil]] range:NSMakeRange(lfr, [set length] - lfr)];
 		[ifs setAttributedString:str];
 		[str release];
+		[channelDatas addObject:ifs];
+		[ifs release];
 	}); // potentially very unsafe.
-	[channelDatas addObject:ifs];
-	[ifs release];
 }
 
 - (void)refreshSubtitleLabel {

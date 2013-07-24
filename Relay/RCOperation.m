@@ -35,7 +35,6 @@
 }
 
 - (void)start {
-	[super start];
 	if (!self.cancelled) {
 		[self willChangeValueForKey:@"isExecuting"];
 		[NSThread detachNewThreadSelector:@selector(searchForKeyword:) toTarget:delegate withObject:self];
