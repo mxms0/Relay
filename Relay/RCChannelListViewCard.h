@@ -10,6 +10,7 @@
 #import "RCChannelInfo.h"
 #import "RCChannelInfoTableViewCell.h"
 #import "NSString+IRCStringSupport.h"
+#import "RCOperationQueue.h"
 
 @interface RCChannelListViewCard : RCViewCard <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate> {
 	UITableView *channels;
@@ -17,7 +18,10 @@
 	NSMutableArray *searchArray;
 	NSMutableArray *currentChannels;
 	RCNetwork *currentNetwork;
+	NSString *searchTerm;
+	RCOperationQueue *queue;
 	BOOL isSearching;
+	BOOL shouldBeIterating;
 	BOOL updating;
 }
 @property (nonatomic, assign) RCNetwork *currentNetwork;
@@ -25,4 +29,5 @@
 - (void)recievedChannel:(NSString *)chan withCount:(int)cc andTopic:(NSString *)topics;
 - (void)presentErrorNotificationAndDismiss;
 - (void)scrollToTop;
+- (void)searchForKeyword:(id)oper;
 @end

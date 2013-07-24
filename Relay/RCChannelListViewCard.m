@@ -7,6 +7,7 @@
 
 #import "RCChannelListViewCard.h"
 #import "RCChatController.h"
+#import "RCOperation.h"
 
 @implementation RCChannelListViewCard
 @synthesize currentNetwork;
@@ -102,6 +103,14 @@
 	[channels reloadData];
 }
 
+- (void)searchForKeyword:(RCOperation *)opera {
+	for (int i = 0; i < [channelDatas count]; i++) {
+		if (!opera.cancelled) {
+			MARK;
+		}
+	}
+}
+
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
 	if ([[searchBar text] isEqualToString:@""]) {
 		// do something.
@@ -111,12 +120,28 @@
 	}
 	isSearching = YES;
 	[searchArray removeAllObjects];
-	for (RCChannelInfo *ifs in channelDatas) {
-		if ([[ifs channel] rangeOfString:[searchBar text] options:NSCaseInsensitiveSearch].location != NSNotFound) {
-			[searchArray addObject:ifs];
-			[channels reloadData];
-		}
+	if (!queue) {
+		queue = [[RCOperationQueue alloc] init];
+		[queue setMaxConcurrentOperationCount:1];
+		[queue setName:@"relay_search_queue"];
 	}
+	[queue cancelAllOperations];
+	RCOperation *op = [[RCOperation alloc] init];
+	[op setDelegate:self];
+	[queue addOperation:op];
+	[op release];
+
+	isSearching = NO;
+	/* 		for (idx = 0; idx < [channelDatas count]; idx++) {
+	 RCChannelInfo *ifs = [channelDatas objectAtIndex:idx];
+	 if ([[ifs channel] rangeOfString:searchTerm options:NSCaseInsensitiveSearch].location != NSNotFound) {
+	 [searchArray addObject:ifs];
+	 dispatch_async(dispatch_get_main_queue(), ^{
+	 [channels reloadData];
+	 });
+	 }
+	 }
+	 */
 	// this isn't very fast. max fix this.
 }
 
@@ -197,8 +222,11 @@
 }
 
 - (void)refreshSubtitleLabel {
-	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC/12);;
+	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC/6);
+	// NSEC_PER_ESC/12 looks so much nicer
+	// probably a little too mean on the gpu tho :( ~Maximus
 	dispatch_after(popTime, dispatch_get_main_queue(), ^{
+		MARK;
 		NSString *subtitle = nil;
 		if (updating) {
 			subtitle = [NSString stringWithFormat:@"Loading... %d public channels", [channelDatas count]];

@@ -66,6 +66,8 @@
 		50528955176E70F600127EC0 /* RCViewCard.m in Sources */ = {isa = PBXBuildFile; fileRef = 50528954176E70F600127EC0 /* RCViewCard.m */; };
 		50528958176EDC4100127EC0 /* RCTopViewCard.m in Sources */ = {isa = PBXBuildFile; fileRef = 50528957176EDC4100127EC0 /* RCTopViewCard.m */; };
 		5052895B17701A9600127EC0 /* RCChatsListViewCard.m in Sources */ = {isa = PBXBuildFile; fileRef = 5052895A17701A9600127EC0 /* RCChatsListViewCard.m */; };
+		5055F5D8179F4F2A001A17CB /* RCOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 5055F5D7179F4F2A001A17CB /* RCOperation.m */; };
+		5055F5DB179F4F3C001A17CB /* RCOperationQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 5055F5DA179F4F3C001A17CB /* RCOperationQueue.m */; };
 		505BF8511634B192002BBED5 /* 0_cell_selec.png in Resources */ = {isa = PBXBuildFile; fileRef = 505BF84F1634B192002BBED5 /* 0_cell_selec.png */; };
 		505BF8521634B192002BBED5 /* 0_cell_selec@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 505BF8501634B192002BBED5 /* 0_cell_selec@2x.png */; };
 		505BF85C1634BAFC002BBED5 /* 0_underline.png in Resources */ = {isa = PBXBuildFile; fileRef = 505BF85A1634BAEE002BBED5 /* 0_underline.png */; };
@@ -300,6 +302,10 @@
 		50528957176EDC4100127EC0 /* RCTopViewCard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTopViewCard.m; sourceTree = "<group>"; };
 		5052895917701A9400127EC0 /* RCChatsListViewCard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCChatsListViewCard.h; sourceTree = "<group>"; };
 		5052895A17701A9600127EC0 /* RCChatsListViewCard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCChatsListViewCard.m; sourceTree = "<group>"; };
+		5055F5D6179F4F28001A17CB /* RCOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCOperation.h; sourceTree = "<group>"; };
+		5055F5D7179F4F2A001A17CB /* RCOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCOperation.m; sourceTree = "<group>"; };
+		5055F5D9179F4F3C001A17CB /* RCOperationQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCOperationQueue.h; sourceTree = "<group>"; };
+		5055F5DA179F4F3C001A17CB /* RCOperationQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCOperationQueue.m; sourceTree = "<group>"; };
 		505BF84F1634B192002BBED5 /* 0_cell_selec.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_cell_selec.png; sourceTree = "<group>"; };
 		505BF8501634B192002BBED5 /* 0_cell_selec@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_cell_selec@2x.png"; sourceTree = "<group>"; };
 		505BF85A1634BAEE002BBED5 /* 0_underline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_underline.png; sourceTree = "<group>"; };
@@ -815,6 +821,10 @@
 				50EF930C162CD52600DE3443 /* Command Engine */,
 				50376D2815B3CCAD00E13006 /* RCDateManager.h */,
 				50376D2915B3CCAD00E13006 /* RCDateManager.m */,
+				5055F5D9179F4F3C001A17CB /* RCOperationQueue.h */,
+				5055F5DA179F4F3C001A17CB /* RCOperationQueue.m */,
+				5055F5D6179F4F28001A17CB /* RCOperation.h */,
+				5055F5D7179F4F2A001A17CB /* RCOperation.m */,
 				50E77A781505A21500E75C64 /* RCAppDelegate.h */,
 				50E77A791505A21500E75C64 /* RCAppDelegate.m */,
 				50151F67164DD7AA00248AB7 /* RCXLChatController.h */,
@@ -1287,6 +1297,8 @@
 				50204EDB178E887C00631D85 /* RCChannelInfoTableViewCell.m in Sources */,
 				50C7EB79178FE794001C07C7 /* RCSettingsViewController.m in Sources */,
 				502D212917980C1D0004D036 /* RCMessage.m in Sources */,
+				5055F5D8179F4F2A001A17CB /* RCOperation.m in Sources */,
+				5055F5DB179F4F3C001A17CB /* RCOperationQueue.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
