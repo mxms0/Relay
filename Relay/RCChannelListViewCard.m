@@ -30,7 +30,6 @@
 		[channels setShowsVerticalScrollIndicator:YES];
 		[channels setDelegate:self];
 		[channels setDataSource:self];
-		[channels setScrollEnabled:YES];
 		[self addSubview:channels];
 		[channels release];
 		UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];

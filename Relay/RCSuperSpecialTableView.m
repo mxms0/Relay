@@ -9,13 +9,6 @@
 
 @implementation RCSuperSpecialTableView
 
-- (id)initWithFrame:(CGRect)frame {
-	if ((self = [super initWithFrame:frame])) {
-		[self setScrollsToTop:YES];
-	}
-    return self;
-}
-
 - (void)layoutSubviews {
 	[super layoutSubviews];
 	NSArray *indexPathsForVisibleRows = [self indexPathsForVisibleRows];

@@ -17,7 +17,6 @@ static NSString *template = nil;
 - (id)initWithChannel:(RCChannel *)chan {
 	if ((self = [super init])) {
 		[self setChannel:chan];
-		[[self scrollView] setScrollsToTop:YES];
 		[self setBackgroundColor:[UIColor clearColor]];
 		self.opaque = NO;
 		[self setHidden:YES];
@@ -30,10 +29,8 @@ static NSString *template = nil;
 		self.dataDetectorTypes = (UIDataDetectorTypeLink | UIDataDetectorTypePhoneNumber);
 		self.delegate = (id<UIWebViewDelegate>)self;
 		[[self scrollView] setShowsHorizontalScrollIndicator:NO];
-		[[self scrollView] setShowsHorizontalScrollIndicator:NO];
-		[[self scrollView] setShowsVerticalScrollIndicator:NO];//just incase
+		[[self scrollView] setShowsVerticalScrollIndicator:NO];
         [[self scrollView] setDecelerationRate:UIScrollViewDecelerationRateNormal];
-        [[self scrollView] setScrollsToTop:YES];
 		[self loadHTMLString:template baseURL:[NSURL URLWithString:@""]];
 	}
 	return self;
@@ -144,8 +141,8 @@ static NSString *template = nil;
 - (void)postMessage:(NSString *)_message withType:(RCMessageType)type highlight:(BOOL)high isMine:(BOOL)mine {
     [_message retain];
 	RCMessageFormatter *message = [[RCMessageFormatter alloc] initWithMessage:_message isOld:NO isMine:mine isHighlight:high type:type];
+	[message format];
 	dispatch_async(dispatch_get_main_queue(), ^{
-		[message format];
 		[self layoutMessage:message];
 		[self setNeedsDisplay];
 		[message release];

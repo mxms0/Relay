@@ -9,15 +9,4 @@
 
 @implementation RCTableView
 
-- (id)initWithFrame:(CGRect)frame style:(UITableViewStyle)style {
-	if ((self = [super initWithFrame:frame style:style])) {
-		
-	}
-	return self;
-}
-
-- (void)dealloc {
-	[super dealloc];
-}
-
 @end

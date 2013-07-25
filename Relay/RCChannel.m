@@ -294,10 +294,12 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 		case RCMessageTypeNormal:
 			if (![from isEqualToString:@""]) {
 				isHighlight = RCHighlightCheck(self, &message);
+#if DEBUG
 				if ([from isEqualToStringNoCase:@"ifr0st"] || [from isEqualToStringNoCase:@"fr0st"]) {
-					msg = [[NSString stringWithFormat:@"%@%c%c%d%c%c%@:%c%c%c%c %@", time, RCIRCAttributeBold, RCIRCAttributeColor, 16, RCIRCAttributeItalic, RCIRCAttributeUnderline, from, RCIRCAttributeUnderline, RCIRCAttributeItalic, RCIRCAttributeColor, RCIRCAttributeBold, message] retain];
+					msg = [[NSString stringWithFormat:@"%@%c%c%d%c%c%@:%c%c%c%c %@", time, RCIRCAttributeBold, RCIRCAttributeColor, 16, RCIRCAttributeItalic, RCIRCAttributeUnderline, @"🐢", RCIRCAttributeUnderline, RCIRCAttributeItalic, RCIRCAttributeColor, RCIRCAttributeBold, message] retain];
 					// sorry guys. :P gotta do this.
 				}
+#endif
 				else {
 					msg = [[NSString stringWithFormat:@"%@%c%c%02d%@:%c%c %@", time, RCIRCAttributeBold, RCIRCAttributeInternalNickname, uhash, from, RCIRCAttributeInternalNicknameEnd, RCIRCAttributeBold, message] retain];
 				}

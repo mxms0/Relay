@@ -8,10 +8,6 @@
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 
-@interface RCTableView : UITableView {
-	UIImageView *bottomShadow;
-}
-
-- (id)initWithFrame:(CGRect)frame style:(UITableViewStyle)style;
+@interface RCTableView : UITableView 
 
 @end

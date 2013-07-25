@@ -597,6 +597,8 @@
 		503F1D2515BA35BA0003F808 /* Table View Crap */ = {
 			isa = PBXGroup;
 			children = (
+				501F2B3B150995DE0099C9C3 /* RCTableView.h */,
+				501F2B3C150995DE0099C9C3 /* RCTableView.m */,
 				50457529159570440092CB31 /* RCNetworkCell.h */,
 				5045752A159570450092CB31 /* RCNetworkCell.m */,
 				508065D11638BCC600627DF5 /* RCSpecialTableView.h */,
@@ -634,8 +636,6 @@
 				50E0C34915BCBD8100B79C50 /* RCPrettyAlertView.m */,
 				500873B916339DC0002ABAB6 /* RCPrettyActionSheet.h */,
 				500873BA16339DC0002ABAB6 /* RCPrettyActionSheet.m */,
-				501F2B3B150995DE0099C9C3 /* RCTableView.h */,
-				501F2B3C150995DE0099C9C3 /* RCTableView.m */,
 				5078A361163C75760060AC07 /* RCChatNavigationBar.h */,
 				5078A362163C75760060AC07 /* RCChatNavigationBar.m */,
 				500DD85415BBDBC700F2E59D /* RCPasswordRequestAlert.h */,
