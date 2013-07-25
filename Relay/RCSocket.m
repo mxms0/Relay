@@ -29,22 +29,6 @@ SSL_CTX *RCInitContext(void) {
 	return _ctx;
 }
 
-char *RCIPForURL(NSString *URL) {
-	char *hostname = (char *)[URL UTF8String];
-	struct addrinfo hints, *res;
-	struct in_addr addr;
-	int err;
-	memset(&hints, 0, sizeof(hints));
-	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_family = AF_INET;
-	if ((err = getaddrinfo(hostname, NULL, &hints, &res)) != 0) {
-		return NULL;
-	}
-	addr.s_addr = ((struct sockaddr_in *)(res->ai_addr))->sin_addr.s_addr;
-	freeaddrinfo(res);
-	return inet_ntoa(addr);
-}
-
 + (id)sharedSocket {
 	@synchronized(self) {
 		if (!_instance) _instance = [[self alloc] init];

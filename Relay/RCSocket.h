@@ -35,6 +35,5 @@
 
 + (id)sharedSocket;
 - (int)connectToAddr:(NSString *)server withSSL:(BOOL)ssl andPort:(int)port fromNetwork:(RCNetwork *)net;
-SSL_CTX *RCInitContext(void);
-char *RCIPForURL(NSString *URL);
+inline SSL_CTX *RCInitContext(void);
 @end

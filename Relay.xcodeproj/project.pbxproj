@@ -742,6 +742,19 @@
 			name = AlertView/ActionSheet;
 			sourceTree = "<group>";
 		};
+		509E5B3217A122AC00398F36 /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				50E77A901505A2C300E75C64 /* Relay-Prefix.pch */,
+				50E77A8E1505A29100E75C64 /* main.m */,
+				50B0DB21154233EB00689EDC /* RCKeychainItem.h */,
+				504349FC152CEEDD0037BD12 /* RCKeychainItem.m */,
+				50E77A781505A21500E75C64 /* RCAppDelegate.h */,
+				50E77A791505A21500E75C64 /* RCAppDelegate.m */,
+			);
+			name = Application;
+			sourceTree = "<group>";
+		};
 		50A7FB7114C0F0A800ABADEA = {
 			isa = PBXGroup;
 			children = (
@@ -817,6 +830,7 @@
 		50A7FBAA14C0F7E200ABADEA /* Backend */ = {
 			isa = PBXGroup;
 			children = (
+				509E5B3217A122AC00398F36 /* Application */,
 				5080B08A1749771900635A07 /* Categories */,
 				50EF930C162CD52600DE3443 /* Command Engine */,
 				50376D2815B3CCAD00E13006 /* RCDateManager.h */,
@@ -825,8 +839,6 @@
 				5055F5DA179F4F3C001A17CB /* RCOperationQueue.m */,
 				5055F5D6179F4F28001A17CB /* RCOperation.h */,
 				5055F5D7179F4F2A001A17CB /* RCOperation.m */,
-				50E77A781505A21500E75C64 /* RCAppDelegate.h */,
-				50E77A791505A21500E75C64 /* RCAppDelegate.m */,
 				50151F67164DD7AA00248AB7 /* RCXLChatController.h */,
 				50151F68164DD7AA00248AB7 /* RCXLChatController.m */,
 				500F48CD163B83AD00387192 /* RCChatController.h */,
@@ -849,10 +861,6 @@
 				50F0BFCD15DF73DC001B3F50 /* RCChannelInfo.m */,
 				50E77A821505A21500E75C64 /* RCNetworkManager.h */,
 				50E77A831505A21500E75C64 /* RCNetworkManager.m */,
-				50B0DB21154233EB00689EDC /* RCKeychainItem.h */,
-				504349FC152CEEDD0037BD12 /* RCKeychainItem.m */,
-				50E77A901505A2C300E75C64 /* Relay-Prefix.pch */,
-				50E77A8E1505A29100E75C64 /* main.m */,
 			);
 			name = Backend;
 			sourceTree = "<group>";

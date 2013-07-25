@@ -17,12 +17,14 @@
 	NSMutableArray *channelDatas;
 	NSMutableArray *searchArray;
 	NSMutableArray *currentChannels;
+	NSMutableDictionary *unsortedChannels;
 	RCNetwork *currentNetwork;
 	NSString *searchTerm;
 	RCOperationQueue *queue;
 	BOOL isSearching;
 	BOOL shouldBeIterating;
 	BOOL updating;
+	int count;
 }
 @property (nonatomic, assign) RCNetwork *currentNetwork;
 - (void)setUpdating:(BOOL)ud;

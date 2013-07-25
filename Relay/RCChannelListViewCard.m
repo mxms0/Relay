@@ -18,7 +18,7 @@
 		searchTerm = nil;
 		[navigationBar setMaxSize:18];
 		[navigationBar setNeedsDisplay];
-		channelDatas = [[NSMutableArray alloc] init];
+		channelDatas = nil;
 		CALayer *cv = [[CALayer alloc] init];
 		[cv setContents:(id)[UIImage imageNamed:@"0_nvs"].CGImage];
 		[cv setFrame:CGRectMake(0, -46, 320, 46)];
@@ -63,6 +63,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 	if (updating) return 0;
 	if (isSearching) return [searchArray count];
+	if (!channelDatas) return 0;
 	return [channelDatas count];
 }
 
@@ -70,6 +71,10 @@
 	RCChannelInfoTableViewCell *cc = (RCChannelInfoTableViewCell *)[tableView dequeueReusableCellWithIdentifier:@"0_CSL"];
 	if (!cc) {
 		cc = [[[RCChannelInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"0_CSL"] autorelease];
+	}
+	if (!channelDatas) {
+		[tableView reloadData];
+		return cc;
 	}
 	NSArray *use = channelDatas;
 	if (isSearching) use = searchArray;
@@ -141,24 +146,21 @@
 	[op setDelegate:self];
 	[queue addOperation:op];
 	[op release];
-
-	/* 		for (idx = 0; idx < [channelDatas count]; idx++) {
-	 RCChannelInfo *ifs = [channelDatas objectAtIndex:idx];
-	 if ([[ifs channel] rangeOfString:searchTerm options:NSCaseInsensitiveSearch].location != NSNotFound) {
-	 [searchArray addObject:ifs];
-	 dispatch_async(dispatch_get_main_queue(), ^{
-	 [channels reloadData];
-	 });
-	 }
-	 }
-	 */
-	// this isn't very fast. max fix this.
 }
 
 - (void)setUpdating:(BOOL)ud {
 	updating = ud;
 	dispatch_sync(dispatch_get_main_queue(), ^{
 		if (!updating) {
+			channelDatas = [[NSMutableArray alloc] initWithCapacity:count+1];
+			for (int i = count; i > 0; i--) {
+				NSArray *ary = [unsortedChannels objectForKey:[NSNumber numberWithInt:i]];
+				if (ary) {
+					[channelDatas addObjectsFromArray:ary];
+				}
+			}
+			[unsortedChannels release];
+			unsortedChannels = nil;
 			if ([channelDatas count] == 0) {
 				[self presentErrorNotificationAndDismiss];
 			}
@@ -186,12 +188,14 @@
 	if (!updating) {
 		updating = YES;
 		currentChannels = [[NSMutableArray alloc] init];
+		unsortedChannels = [[NSMutableDictionary alloc] init];
 		for (RCChannel *chan in [currentNetwork _channels]) {
 			[currentChannels addObject:[chan channelName]];
 		}
 		[self refreshSubtitleLabel];
 	}
 	RCChannelInfo *ifs = [[RCChannelInfo alloc] init];
+	count++;
 	[ifs setChannel:chan];
 	BOOL containsChannel = NO;
 	for (NSString *channel in currentChannels) {
@@ -228,24 +232,30 @@
 		[str addAttributes:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:sft, UIColorFromRGB(0x797c7e), nil] forKeys:[NSArray arrayWithObjects:NSFontAttributeName, NSForegroundColorAttributeName, nil]] range:NSMakeRange(lfr, [set length] - lfr)];
 		[ifs setAttributedString:str];
 		[str release];
-		[channelDatas addObject:ifs];
-		[ifs release];
+		NSNumber *key = [NSNumber numberWithInt:cc];
+		NSMutableArray *ary = [unsortedChannels objectForKey:key];
+		if (!ary) {
+			ary = [NSMutableArray arrayWithObject:ifs];
+		}
+		else {
+			[ary addObject:ifs];
+		}
+		[unsortedChannels setObject:ary forKey:key];
 	}); // potentially very unsafe.
 }
 
 - (void)refreshSubtitleLabel {
-	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC/6);
+	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC/8);
 	// NSEC_PER_ESC/12 looks so much nicer
 	// probably a little too mean on the gpu tho :( ~Maximus
 	dispatch_after(popTime, dispatch_get_main_queue(), ^{
-		MARK;
 		NSString *subtitle = nil;
 		if (updating) {
-			subtitle = [NSString stringWithFormat:@"Loading... %d public channels", [channelDatas count]];
+			subtitle = [NSString stringWithFormat:@"Loading... %d public channels", count];
 			[self refreshSubtitleLabel];
 		}
 		else {
-			subtitle = [NSString stringWithFormat:@"%d Public Channels", [channelDatas count]];
+			subtitle = [NSString stringWithFormat:@"%d Public Channels", count];
 		}
 		[self.navigationBar setSubtitle:subtitle];
 		[self.navigationBar setNeedsDisplay];
