@@ -239,9 +239,10 @@
 		}
 		else {
 			[ary addObject:ifs];
+			[ifs release]; // SHOULDNT FORGET THIS.
 		}
 		[unsortedChannels setObject:ary forKey:key];
-	}); // potentially very unsafe.
+	});
 }
 
 - (void)refreshSubtitleLabel {
