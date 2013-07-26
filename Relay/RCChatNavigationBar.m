@@ -19,6 +19,7 @@
 		maxSize = 22;
 		isMain = NO;
 		superSpecialLikeAc3xx2 = NO;
+
 		CALayer *hshdw = [[CALayer alloc] init];
 		UIImage *hfs = [UIImage imageNamed:@"0_vzshdw"];
 		[hshdw setContents:(id)hfs.CGImage];
@@ -74,7 +75,7 @@
 
 - (void)drawRect:(CGRect)rect {
 	[super drawRect:rect];
-	UIImage *bg = [UIImage imageNamed:@"0_headr"];
+	UIImage *bg = [UIImage imageNamed:@"mainnavbarbg"];
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	[bg drawInRect:rect];
 	if (drawIndent) {
@@ -82,7 +83,8 @@
 		[indent drawAtPoint:CGPointMake(rect.size.width/2 - indent.size.width/2, 0)];
 		return;
 	}
-	CGContextSetFillColorWithColor(ctx, UIColorFromRGB(0x282C40).CGColor);
+	CGContextSetShadowWithColor(ctx, CGSizeMake(0, 0.5), 0, [UIColor colorWithWhite:1.000 alpha:0.580].CGColor);
+	CGContextSetFillColorWithColor(ctx, UIColorFromRGB(0x4c4c51).CGColor);
 	CGFloat size = 0.0;
 	float maxWidth = (rect.size.width - 90);
 	[title sizeWithFont:[UIFont boldSystemFontOfSize:maxSize] minFontSize:14 actualFontSize:&size forWidth:maxWidth lineBreakMode:NSLineBreakByClipping];

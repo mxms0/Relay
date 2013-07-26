@@ -17,13 +17,13 @@ static NSString *template = nil;
 - (id)initWithChannel:(RCChannel *)chan {
 	if ((self = [super init])) {
 		[self setChannel:chan];
-		[self setBackgroundColor:[UIColor clearColor]];
+		[self setBackgroundColor:UIColorFromRGB(0xEEEEEE)];
 		self.opaque = NO;
 		[self setHidden:YES];
 		if (!template) {
-			template = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"chatview" ofType:@"html"] encoding:NSUTF8StringEncoding error:nil];
+			template = [[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"chatview" ofType:@"html"] encoding:NSUTF8StringEncoding error:nil] retain];
 			// must . fix. for. SD. displaayss
-			template = [[NSString stringWithFormat:template,[[NSBundle mainBundle] pathForResource:@"0_jaggs@2x" ofType:@"png"]] retain];
+	/*		template = [[NSString stringWithFormat:template,[[NSBundle mainBundle] pathForResource:@"0_jaggs@2x" ofType:@"png"]] retain];*/
 		}
 		preloadPool = [[NSMutableArray alloc] init];
 		self.dataDetectorTypes = (UIDataDetectorTypeLink | UIDataDetectorTypePhoneNumber);

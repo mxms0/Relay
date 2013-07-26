@@ -162,11 +162,11 @@ NSString *colorForIRCColor(char irccolor) {
 		[final appendString:@"</font>"];
 	// RCMessageTypeTopic doesn't have timestamp
 	if (!needsCenter) {
-		NSRange rangeOfFontTag = [final rangeOfString:@"</font>"];
-		if (rangeOfFontTag.location != NSNotFound) {
+		NSRange rangeOfBoldTag = [final rangeOfString:@"<b>"];
+		if (rangeOfBoldTag.location != NSNotFound) {
 			[final insertString:@"<div class=\"ts\">" atIndex:0];
-			[final insertString:@"</div>" atIndex:rangeOfFontTag.location+16];
-			[final insertString:@"<div></div><div class=\"msg\">" atIndex:rangeOfFontTag.location+29];
+			[final insertString:@"</div>" atIndex:rangeOfBoldTag.location+16];
+			[final insertString:@"<div></div><div class=\"msg\">" atIndex:rangeOfBoldTag.location+25];
 			[final appendString:@"</div>"];
 			// necessary fix.
 			// variables named appropriately.

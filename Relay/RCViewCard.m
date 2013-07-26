@@ -44,14 +44,14 @@
 		}
 		if (![self isKindOfClass:[RCTopViewCard class]] && ![self isKindOfClass:[RCChannelListViewCard class]]) {
 			RCBarButtonItem *bs = [[RCBarButtonItem alloc] init];
-			[bs setImage:[UIImage imageNamed:@"0_listbtn"] forState:UIControlStateNormal];
+			[bs setImage:[UIImage imageNamed:@"hamburgerbutton"] forState:UIControlStateNormal];
 			[bs setFrame:CGRectMake(1, 0, 50, 45)];
 			[bs setTag:RCChannelListButtonTag];
 			[bs addTarget:[RCChatController sharedController] action:@selector(menuButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 			[navigationBar addSubview:bs];
 			[bs release];
 			RCBarButtonItem *cs = [[RCBarButtonItem alloc] init];
-			[cs setImage:[UIImage imageNamed:@"0_ulist"] forState:UIControlStateNormal];
+			[cs setImage:[UIImage imageNamed:@"userlistbutton"] forState:UIControlStateNormal];
 			[cs setFrame:CGRectMake(frame.size.width - 50, 0, 50, 45)];
 			[cs setTag:RCUserListButtonTag];
 			[cs addTarget:[RCChatController sharedController] action:@selector(pushUserListWithDefaultDuration) forControlEvents:UIControlEventTouchUpInside];
@@ -99,7 +99,7 @@
 }
 
 - (void)drawRect:(CGRect)rect {
-	[UIColorFromRGB(0xDDE0E5) set];
+	[UIColorFromRGB(0xeeeeee) set];
 	UIRectFill(CGRectMake(0, 10, rect.size.width, rect.size.height));
 }
 
