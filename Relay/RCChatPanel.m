@@ -101,7 +101,9 @@ static NSString *template = nil;
 	}
 	@synchronized(self) {
 		if (preloadPool) {
-			NSLog(@"GOING SWIMMMING");
+#if LOGALL
+			NSLog(@"Preload Pool Loaded for %@", [channel channelName]);
+#endif
 			[preloadPool addObject:ms];
 			return;
 		}
@@ -117,7 +119,6 @@ static NSString *template = nil;
 		}
 		NSString *res = [self stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"postMessage('%@', '%@', %@)", name, ms.string, ((self.scrollView.tracking || self.scrollView.dragging )? @"false" : @"true")]];
 		if ([res isEqualToString:@"nop"]) {
-			//hi
 		}
 		[ms release];
 	});

@@ -391,7 +391,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 }
 
 - (NSMutableArray *)usersMatchingWord:(NSString *)word {
-	NSMutableArray *usrs = [[NSMutableArray alloc] init];
+	NSMutableArray *usrs = [[NSMutableArray alloc] initWithCapacity:8]; // yea 8's great
 	[fullUserList enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		NSInteger ln = [RCUserRank(obj, [self delegate]) length];
 		NSString *obj_ = [obj substringFromIndex:ln];

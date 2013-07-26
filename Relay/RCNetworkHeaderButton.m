@@ -21,6 +21,7 @@
 		coggearwhat = [[UIButton alloc] initWithFrame:CGRectMake(194, 0, 34, 44)];
 		[coggearwhat addTarget:[RCChatController sharedController] action:@selector(showNetworkOptions:) forControlEvents:UIControlEventTouchUpInside];
 		[self addSubview:coggearwhat];
+		[coggearwhat release];
 	}
 	return self;
 }
