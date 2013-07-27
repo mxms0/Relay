@@ -254,7 +254,6 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 	message = [message stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
 	message = [message stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
 	BOOL isHighlight = NO;
-	NSLog(@"[%@] %@:%@", time, from, message);
 	switch (type) {
 		case RCMessageTypeKick:
 			// lol.
@@ -371,7 +370,6 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 	NSString *time = [[RCDateManager sharedInstance] currentDateAsString];
 	if ([time hasSuffix:@" "])
 		time = [time substringToIndex:time.length-1];
-	NSLog(@"fdsfds %@", message);
 	[self recievedMessage:message from:from time:time type:type];
 	[pool drain];
 }

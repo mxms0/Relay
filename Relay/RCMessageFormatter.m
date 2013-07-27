@@ -57,7 +57,6 @@ NSString *colorForIRCColor(char irccolor) {
 }
 
 - (void)format {
-//	[self setString:[[[[string stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"] stringByReplacingOccurrencesOfString:@"\n" withString:@""] stringByEncodingHTMLEntities:YES] stringWithNewLinesAsBRs]];
 	int cpos = 0;
 	BOOL isBold = NO;
 	BOOL isItalic = NO;

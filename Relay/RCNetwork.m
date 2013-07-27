@@ -1110,7 +1110,6 @@
 	NSString *from = nil;
 	RCParseUserMask(message.sender, &from, nil, nil);
 	NSString *testMethod = [message->message stringByReplacingOccurrencesOfString:@" " withString:@""];
-	NSLog(@"FDsfds %d", ([message->message length] - [testMethod length]));
 	if ([message->message length] - [testMethod length] <= 1) return;
 	[targetChannel recievedMessage:[NSString stringWithFormat:@"%@ %@", [message parameterAtIndex:1], [message parameterAtIndex:2]] from:from type:RCMessageTypeMode];
 	if ([message->message length] - [testMethod length] > 1) {
