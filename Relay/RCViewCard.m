@@ -36,7 +36,7 @@
 			[self.layer insertSublayer:shdw atIndex:0];
 			[shdw release];
 			CALayer *bg = [[CALayer alloc] init];
-			[bg setBackgroundColor:UIColorFromRGB(0xDFE2E7).CGColor];
+			[bg setBackgroundColor:UIColorFromRGB(0xEEEEEE).CGColor];
 			[bg setShouldRasterize:YES];
 			[bg setFrame:CGRectMake(0, 10, frame.size.height+44, frame.size.height)];
 			[self.layer insertSublayer:bg atIndex:1];

@@ -57,7 +57,7 @@ NSString *colorForIRCColor(char irccolor) {
 }
 
 - (void)format {
-	[self setString:[[[[string stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"] stringByReplacingOccurrencesOfString:@"\n" withString:@""] stringByEncodingHTMLEntities:YES] stringWithNewLinesAsBRs]];
+//	[self setString:[[[[string stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"] stringByReplacingOccurrencesOfString:@"\n" withString:@""] stringByEncodingHTMLEntities:YES] stringWithNewLinesAsBRs]];
 	int cpos = 0;
 	BOOL isBold = NO;
 	BOOL isItalic = NO;
@@ -160,19 +160,7 @@ NSString *colorForIRCColor(char irccolor) {
 
 	if (self.highlight)
 		[final appendString:@"</font>"];
-	// RCMessageTypeTopic doesn't have timestamp
-	if (!needsCenter) {
-		NSRange rangeOfBoldTag = [final rangeOfString:@"<b>"];
-		if (rangeOfBoldTag.location != NSNotFound) {
-			[final insertString:@"<div class=\"ts\">" atIndex:0];
-			[final insertString:@"</div>" atIndex:rangeOfBoldTag.location+16];
-			[final insertString:@"<div></div><div class=\"msg\">" atIndex:rangeOfBoldTag.location+25];
-			[final appendString:@"</div>"];
-			// necessary fix.
-			// variables named appropriately.
-			// how's this, Cykey?
-		}
-	}
+	[final appendString:@"</div>"];
 	[self setString:(NSString *)final];
 	[final release];
 }

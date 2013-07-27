@@ -191,7 +191,7 @@
 	}
 	@synchronized(_channels) {
 		for (RCChannel *chann in _channels) {
-			if ([[[chann channelName] lowercaseString] isEqualToString:[chan lowercaseString]])
+			if ([[chann channelName] isEqualToStringNoCase:chan])
 				return chann;
 		}
 		if (cr) {
@@ -456,12 +456,14 @@
 #if LOGALL
 	NSLog(@"%@", msg);
 #endif
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	if ([msg isEqualToString:@""] || msg == nil || [msg isEqualToString:@"\r\n"]) return;
 	msg = [msg stringByReplacingOccurrencesOfString:@"\r" withString:@""];
 	msg = [msg stringByReplacingOccurrencesOfString:@"\n" withString:@""];
 	
 	if ([msg hasPrefix:@"PING"]) {
 		[self handlePING:msg];
+		[pool drain];
 		return;
 	}
 	else if ([msg hasPrefix:@"ERROR"]) {
@@ -473,6 +475,7 @@
 		// need to clean this up
 		// postss to chat view as
 		// Disconnected: Closing Link (~iPhone@108.132.140.49) [Quit: Relay 1.0]
+		[pool drain];
 		return;
 	}
 	
@@ -480,6 +483,7 @@
 		if ([msg hasPrefix:@"AUTHENTICATE"]) {
 			[self sendB64SASLAuth];
 		}
+		[pool drain];
 		return;
 	}
 	
@@ -493,6 +497,7 @@
 		[self handleNotHandledMessage:message];
 	}
 	[message release];
+	[pool drain];
 }
 
 - (BOOL)isTryingToConnectOrConnected {
@@ -606,11 +611,11 @@
 	// RPL_WELCOME
 	status = RCSocketStatusConnected;
 	[self networkDidRegister:YES];
-    
-	// useNick = [[message sender] retain];
-	// you are special. the sender is the server name here
-	// we want the first word after the numeric. whihc we TRASH THANKS TO YOU >:l
-	// ~Maximus
+    NSArray *ihateFudge = [message->message componentsSeparatedByString:@" "];
+	NSString *shouldBeMe = [ihateFudge lastObject];
+	RCParseUserMask(shouldBeMe, &shouldBeMe, nil, nil);
+	self.useNick = shouldBeMe;
+	// i am sorry. I can trust this, i think.
 	RCChannel *chan = [self consoleChannel];
 	[chan recievedMessage:[message parameterAtIndex:1] from:@"" type:RCMessageTypeNormal];
 	reloadNetworks();
@@ -1104,9 +1109,13 @@
 	RCChannel *targetChannel = [self channelWithChannelName:[message parameterAtIndex:0]];
 	NSString *from = nil;
 	RCParseUserMask(message.sender, &from, nil, nil);
-	if ([[message parameterAtIndex:0] isEqualToString:useNick]) return;
+	NSString *testMethod = [message->message stringByReplacingOccurrencesOfString:@" " withString:@""];
+	NSLog(@"FDsfds %d", ([message->message length] - [testMethod length]));
+	if ([message->message length] - [testMethod length] <= 1) return;
 	[targetChannel recievedMessage:[NSString stringWithFormat:@"%@ %@", [message parameterAtIndex:1], [message parameterAtIndex:2]] from:from type:RCMessageTypeMode];
-	[targetChannel setMode:[message parameterAtIndex:1] forUser:[message parameterAtIndex:2]];
+	if ([message->message length] - [testMethod length] > 1) {
+		[targetChannel setMode:[message parameterAtIndex:1] forUser:[message parameterAtIndex:2]];
+	}
 	// only tested with banning people. ;P not channel modes, etc
 	// Relay[2626:f803] MSG: :ac3xx!ac3xx@rox-103C7229.ac3xx.com MODE #chat +o _m
 }

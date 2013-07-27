@@ -55,6 +55,7 @@
 - (void)shouldPost:(BOOL)isHighlight withMessage:(NSString *)msg {
 	[self setUserJoined:[self channelName]];
 	[self setUserJoined:[delegate useNick]];
+	//	wat
 	if (isHighlight) {
 		if ([[RCNetworkManager sharedNetworkManager] isBG]) {
 			UILocalNotification *nc = [[UILocalNotification alloc] init];

@@ -32,7 +32,8 @@ static id _dManager = nil;
 }
 
 - (NSString *)currentDateAsString {
-	return [[[formatter stringFromDate:[NSDate date]] retain] autorelease];
+	NSString *time = [formatter stringFromDate:[NSDate date]];
+	return [[[NSString stringWithFormat:@"<div class=\"ts\">%@</div>", time] retain] autorelease];
 }
 
 - (NSString *)properlyFormattedTimeFromISO8601DateString:(NSString *)str {

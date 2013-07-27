@@ -195,56 +195,76 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 	}
 }
 
+- (void)userWasKicked:(NSArray *)messages from:(NSString *)from time:(NSString *)time {
+	if (![messages respondsToSelector:@selector(objectAtIndex:)]) {
+		NSLog(@"INCORRECT TYPE. %@", messages);
+		return;
+	}
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	if (!time) {
+		time = [[RCDateManager sharedInstance] currentDateAsString];
+	}
+	NSString *mesg = [messages objectAtIndex:1];
+	NSString *whog = [messages objectAtIndex:0];
+	if ([mesg isKindOfClass:[NSString class]]) {
+		mesg = [mesg stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
+		mesg = [mesg stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
+	}
+	if ([whog isKindOfClass:[NSString class]]) {
+		whog = [whog stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
+		whog = [whog stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
+	}
+	[self setUserLeft:whog];
+	NSString *msg = [NSString stringWithFormat:@"%@%c%@%c has kicked %c%@%c%@", time, RCIRCAttributeBold, from, RCIRCAttributeBold, RCIRCAttributeBold, whog, RCIRCAttributeBold, (!mesg) ? @"" : [@" (" stringByAppendingFormat:@"%@)", mesg]];
+	BOOL isHighlight = ([whog isEqualToString:[delegate useNick]]);
+	[panel postMessage:msg  withType:RCMessageTypeKick highlight:isHighlight];
+	[pool drain];
+}
+
 - (void)recievedMessage:(NSString *)message from:(NSString *)from time:(NSString *)time type:(RCMessageType)type {
+	if (type == RCMessageTypeKick) {
+		// less hacky this way.
+		[self userWasKicked:(NSArray *)message from:from time:time];
+		return;
+	}
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
-	if (type != RCMessageTypeKick) {
-		NSRange rhacksorry = [message rangeOfString:@"\x12\x13"];
-		if ([message rangeOfString:@"\x12\x13"].location != NSNotFound) {
-			time = [message substringWithRange:NSMakeRange(rhacksorry.location, message.length-rhacksorry.location)];
-			if ([time hasSuffix:@" "]) {
-				time = [time recursivelyRemoveSuffix:@" "];
-			}
-			message = [message substringWithRange:NSMakeRange(0, rhacksorry.location)];
+	NSRange rhacksorry = [message rangeOfString:@"\x12\x13"];
+	if ([message rangeOfString:@"\x12\x13"].location != NSNotFound) {
+		time = [message substringWithRange:NSMakeRange(rhacksorry.location, message.length-rhacksorry.location)];
+		if ([time hasSuffix:@" "]) {
+			time = [time recursivelyRemoveSuffix:@" "];
 		}
+		message = [message substringWithRange:NSMakeRange(0, rhacksorry.location)];
 	}
 	if (!time) {
 		time = [[RCDateManager sharedInstance] currentDateAsString];
 	}
+	message = [[[message stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"] stringByReplacingOccurrencesOfString:@"\n" withString:@""] stringByEncodingHTMLEntities:YES];
+	if (type != RCMessageTypeJoin && type != RCMessageTypeTopic) {
+		if (from)
+			from = [@"<div class=\"msg\">" stringByAppendingString:from];
+		else
+			message = [@"<div class=\"msg\">" stringByAppendingString:message];
+	}
+	
 	NSString *msg = @"";
-    from = [from stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
-    from = [from stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
-    char uhash = (![from isEqualToString:[delegate useNick]]) ? RCUserHash(from) : 1;
-    if ([message isKindOfClass:[NSString class]]) {
-        message = [message stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
-        message = [message stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
-    }
-    BOOL isHighlight = NO;
+	from = [from stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
+	from = [from stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
+	char uhash = (![from isEqualToString:[delegate useNick]]) ? RCUserHash(from) : 1;
+	message = [message stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
+	message = [message stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
+	BOOL isHighlight = NO;
+	NSLog(@"[%@] %@:%@", time, from, message);
 	switch (type) {
-		case RCMessageTypeKick: {
-			if (![message respondsToSelector:@selector(objectAtIndex:)]) {
-				NSLog(@"SENDING THE WRONG TYPE.");
-				return;
-			}
-            NSString *mesg = [(NSArray *)message objectAtIndex:1];
-            NSString *whog = [(NSArray *)message objectAtIndex:0];
-            if ([mesg isKindOfClass:[NSString class]]) {
-                mesg = [mesg stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
-                mesg = [mesg stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
-            }
-            if ([whog isKindOfClass:[NSString class]]) {
-                whog = [whog stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
-                whog = [whog stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
-            }
-            [self setUserLeft:whog];
-            msg = [[NSString stringWithFormat:@"%@%c%@%c has kicked %c%@%c%@", time, RCIRCAttributeBold, from, RCIRCAttributeBold, RCIRCAttributeBold, whog, RCIRCAttributeBold, (!mesg) ? @"" : [@" (" stringByAppendingFormat:@"%@)", mesg]] retain];
-		}
-            break;
+		case RCMessageTypeKick:
+			// lol.
+			break;
 		case RCMessageTypeBan:
-            [self setUserLeft:message];
+			[self setUserLeft:message];
 			msg = [[NSString stringWithFormat:@"%@%c%@%c sets mode +b %@", time, RCIRCAttributeBold, from, RCIRCAttributeBold, message] retain];
 			break;
 		case RCMessageTypePart:
-            [self setUserLeft:from];
+			[self setUserLeft:from];
 			if (![message isEqualToString:@""]) {
 				msg = [[NSString stringWithFormat:@"%@%c%@%c left the channel. (%@)", time, RCIRCAttributeBold, from, RCIRCAttributeBold, message] retain];
 			}
@@ -267,7 +287,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 			else msg = [message retain];
 			break;
 		case RCMessageTypeQuit:
-            if ([self isUserInChannel:from]) {
+			if ([self isUserInChannel:from]) {
 				[self setUserLeft:from];
 				if (![message isEqualToString:@""]) {
 					msg = [[NSString stringWithFormat:@"%@%c%@%c left IRC. (%@)", time, RCIRCAttributeBold, from, RCIRCAttributeBold, message] retain];
@@ -300,9 +320,13 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 					// sorry guys. :P gotta do this.
 				}
 #endif
+#if DEBUG
 				else {
+#endif
 					msg = [[NSString stringWithFormat:@"%@%c%c%02d%@:%c%c %@", time, RCIRCAttributeBold, RCIRCAttributeInternalNickname, uhash, from, RCIRCAttributeInternalNicknameEnd, RCIRCAttributeBold, message] retain];
+#if DEBUG
 				}
+#endif
 			}
 			else {
 				msg = [@"" retain];
@@ -313,10 +337,11 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
             if ([self isUserInChannel:from]) {
 				isHighlight = RCHighlightCheck(self, &message);
                 msg = [[NSString stringWithFormat:@"%@%c-%c%02d%@%c-%c %@", time, RCIRCAttributeBold, RCIRCAttributeInternalNickname, uhash, from, RCIRCAttributeInternalNicknameEnd, RCIRCAttributeBold, message] retain];
-            } else {
-                [[[self delegate] consoleChannel] recievedMessage:[message retain] from:from type:RCMessageTypeNotice];
+			}
+			else {
+				[[[self delegate] consoleChannel] recievedMessage:[message retain] from:from type:RCMessageTypeNotice];
 				// message maybe should be retained.
-                [msg release];
+				[msg release];
                 [p drain];
                 return;
             }
@@ -346,6 +371,7 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 	NSString *time = [[RCDateManager sharedInstance] currentDateAsString];
 	if ([time hasSuffix:@" "])
 		time = [time substringToIndex:time.length-1];
+	NSLog(@"fdsfds %@", message);
 	[self recievedMessage:message from:from time:time type:type];
 	[pool drain];
 }

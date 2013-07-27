@@ -44,6 +44,7 @@
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+	/*
 	UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, 240, 20)];
 	label.text = [self tableView:tableView titleForHeaderInSection:section];
 	label.backgroundColor = [UIColor clearColor];
@@ -51,6 +52,7 @@
 	label.shadowColor = [UIColor blackColor];
 	label.shadowOffset = CGSizeMake(0, 1);
 	label.font = [UIFont boldSystemFontOfSize:14];
+	 */
 	return nil;
 }
 

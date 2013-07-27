@@ -31,7 +31,7 @@
 		message_ = [message_ substringFromIndex:1];
 	}
 	else {
-		NSMutableArray *comps = [[message_ componentsSeparatedByString:@" "] mutableCopy];
+		NSMutableArray *comps = [[[message_ componentsSeparatedByString:@" "] mutableCopy] autorelease];
 		NSMutableArray *properComponents = [[NSMutableArray alloc] init];
 		for (int i = 0; i < [comps count]; i++) {
 			NSString *cmp = [comps objectAtIndex:i];
@@ -40,8 +40,8 @@
 			}
 			else {
 				NSArray *subArray = [comps subarrayWithRange:NSMakeRange(i, [comps count] - i)];
-				NSString *compose = [subArray componentsJoinedByString:@" "];
-				[properComponents addObject:[compose substringFromIndex:1]];
+				NSString *compose = [[subArray componentsJoinedByString:@" "] substringFromIndex:1];
+				[properComponents addObject:compose];
 				//ALREADY VERIFIED TO HAS COLOIN
 				//MY COLON HURTS
 				break;
@@ -54,7 +54,9 @@
 		sender_ = [sender_ substringFromIndex:1];
 	self.sender = sender_;
 	self.numeric = numeric_;
+	[message release];
 	message = [message_ retain];
+	[scanner release];
 }
 
 - (void)parseIRCV3MessageTags {

@@ -7,6 +7,7 @@
 
 #import "RCConsoleChannel.h"
 #import "RCNetwork.h"
+#import "NSString+IRCStringSupport.h"
 
 @implementation RCConsoleChannel
 
@@ -39,9 +40,15 @@
 }
 
 - (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type {
+	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSString *msg = @"";
     NSString *time = @"";
 	time = [[RCDateManager sharedInstance] currentDateAsString];
+	message = [[[message stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"] stringByReplacingOccurrencesOfString:@"\n" withString:@""] stringByEncodingHTMLEntities:YES];
+	if (from)
+		from = [@"<div class=\"msg\">" stringByAppendingString:from];
+	else
+		message = [@"<div class=\"msg\">" stringByAppendingString:message];
 	if ([time hasSuffix:@" "])
 		time = [time substringToIndex:time.length-1];
 			//msg = [[NSString stringWithFormat:@"%c[%@]%c %@ sets mode +b %@",RCIRCAttributeBold, time, RCIRCAttributeBold, from, message] retain];
@@ -67,9 +74,11 @@
 	}
 	else {
 		[super recievedMessage:message from:from type:type];
+		[p drain];
 		return;
 	}
 	[panel postMessage:[msg autorelease] withType:type highlight:NO];
+	[p drain];
 	/* if ([delegate isRegistered] && type == RCMessageTypeNormalE) {
 		[cellRepresentation setNewMessageCount:(newMessageCount++)];
 		[cellRepresentation performSelectorOnMainThread:@selector(setNeedsDisplay) withObject:nil waitUntilDone:NO];
