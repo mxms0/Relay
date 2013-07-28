@@ -156,9 +156,8 @@ char RCUserHash(NSString *from) {
 	return uhash % 0xFF;
 }
 
-BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
+- (BOOL)performHighlightCheck:(NSString **)message {
 	BOOL is_highlight = NO;
-	NSMutableArray *fullUserList = self->fullUserList;
 	for (NSString *uname in [fullUserList sortedArrayUsingComparator:^ NSComparisonResult(id obj1, id obj2) {
 		if ([obj1 length] > [obj2 length]) return NSOrderedAscending;
 		else if ([obj1 length] < [obj2 length]) return NSOrderedDescending;
@@ -241,8 +240,11 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 	}
 	message = [[[message stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"] stringByReplacingOccurrencesOfString:@"\n" withString:@""] stringByEncodingHTMLEntities:YES];
 	if (type != RCMessageTypeJoin && type != RCMessageTypeTopic) {
-		if (from)
+		if (from) {
+			if (type == RCMessageTypeAction)
+				from = [@"\u2022 " stringByAppendingString:from];
 			from = [@"<div class=\"msg\">" stringByAppendingString:from];
+		}
 		else
 			message = [@"<div class=\"msg\">" stringByAppendingString:message];
 	}
@@ -307,12 +309,12 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 			msg = [[NSString stringWithFormat:@"%@%@", time, message] retain];
 			break;
 		case RCMessageTypeAction:
-			isHighlight = RCHighlightCheck(self, &message);
-			msg = [[NSString stringWithFormat:@"%@%c%c%02d\u2022 %@%c%c %@", time, RCIRCAttributeBold, RCIRCAttributeInternalNickname, uhash, from, RCIRCAttributeInternalNicknameEnd, RCIRCAttributeBold, message] retain];
+			isHighlight = [self performHighlightCheck:&message];
+			msg = [[NSString stringWithFormat:@"%@%c%c%02d%@%c%c %@", time, RCIRCAttributeBold, RCIRCAttributeInternalNickname, uhash, from, RCIRCAttributeInternalNicknameEnd, RCIRCAttributeBold, message] retain];
 			break;
 		case RCMessageTypeNormal:
 			if (![from isEqualToString:@""]) {
-				isHighlight = RCHighlightCheck(self, &message);
+				isHighlight = [self performHighlightCheck:&message];
 #if DEBUG
 				if ([from isEqualToStringNoCase:@"ifr0st"] || [from isEqualToStringNoCase:@"fr0st"]) {
 					msg = [[NSString stringWithFormat:@"%@%c%c%d%c%c%@:%c%c%c%c %@", time, RCIRCAttributeBold, RCIRCAttributeColor, 16, RCIRCAttributeItalic, RCIRCAttributeUnderline, @"🐢", RCIRCAttributeUnderline, RCIRCAttributeItalic, RCIRCAttributeColor, RCIRCAttributeBold, message] retain];
@@ -334,14 +336,14 @@ BOOL RCHighlightCheck(RCChannel *self, NSString **message) {
 			break;
 		case RCMessageTypeNotice:
             if ([self isUserInChannel:from]) {
-				isHighlight = RCHighlightCheck(self, &message);
-                msg = [[NSString stringWithFormat:@"%@%c-%c%02d%@%c-%c %@", time, RCIRCAttributeBold, RCIRCAttributeInternalNickname, uhash, from, RCIRCAttributeInternalNicknameEnd, RCIRCAttributeBold, message] retain];
+				isHighlight = [self performHighlightCheck:&message];
+				msg = [[NSString stringWithFormat:@"%@%c-%c%02d%@%c-%c %@", time, RCIRCAttributeBold, RCIRCAttributeInternalNickname, uhash, from, RCIRCAttributeInternalNicknameEnd, RCIRCAttributeBold, message] retain];
 			}
 			else {
 				[[[self delegate] consoleChannel] recievedMessage:[message retain] from:from type:RCMessageTypeNotice];
 				// message maybe should be retained.
 				[msg release];
-                [p drain];
+				[p drain];
                 return;
             }
 			break;

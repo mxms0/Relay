@@ -48,6 +48,7 @@ static BOOL isSetup = NO;
 
 - (void)_setup {
 	dispatch_async(dispatch_get_main_queue(), ^{
+		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		[self configureUI];
 		if (!isSetup) {
 			char *hdir = getenv("HOME");
@@ -68,6 +69,7 @@ static BOOL isSetup = NO;
 	//		[TestFlight takeOff:@"35b8aa0d259ae0c61c57bc770aeafe63_Mzk5NDYyMDExLTExLTA5IDE4OjQ0OjEwLjc4MTM3MQ"];
 	//		[TestFlight setDeviceIdentifier:[[UIDevice currentDevice] uniqueIdentifier]];
 		}
+		[pool drain];
 	});	
 }
 

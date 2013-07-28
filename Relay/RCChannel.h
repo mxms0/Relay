@@ -73,6 +73,5 @@ inline NSInteger RCRankToNumber(unichar rank, RCNetwork *network);
 inline NSInteger RCRankSort(id u1, id u2, RCNetwork *network);
 inline void RCRefreshTable(NSString *or, NSString *nnr, NSArray *current, RCChannel *self);
 inline BOOL RCIsRankHigher(NSString *rank, NSString *rank2, RCNetwork *network);
-inline BOOL RCHighlightCheck(RCChannel *self, NSString **message);
 inline char RCUserHash(NSString *from);
 @end

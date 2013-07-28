@@ -1179,6 +1179,7 @@
 	RCMessageType typ = RCMessageTypeNormal;
 	NSString *userMessage = nil;
 	NSString *from = nil;
+	RCParseUserMask(message.sender, &from, nil, nil);
 	if ([fullMessage hasPrefix:@"\x01"] && [fullMessage hasSuffix:@"\x01"]) {
 		fullMessage = [fullMessage substringWithRange:NSMakeRange(1, [fullMessage length]-2)];
 		if ([fullMessage hasPrefix:@"ACTION"]) {
@@ -1205,7 +1206,6 @@
 		userMessage = [message parameterAtIndex:1];
 	}
 	RCChannel *channel = [self channelWithChannelName:[message parameterAtIndex:0] ifNilCreate:YES];
-	RCParseUserMask(message.sender, &from, nil, nil);
 	[channel recievedMessage:userMessage from:from type:typ];
 }
 
