@@ -11,8 +11,9 @@
 #import "RCChannelInfoTableViewCell.h"
 #import "NSString+IRCStringSupport.h"
 #import "RCOperationQueue.h"
+#import "RCHoverViewCard.h"
 
-@interface RCChannelListViewCard : RCViewCard <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate> {
+@interface RCChannelListViewCard : RCHoverViewCard <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate> {
 	UITableView *channels;
 	NSMutableArray *channelDatas;
 	NSMutableArray *searchArray;

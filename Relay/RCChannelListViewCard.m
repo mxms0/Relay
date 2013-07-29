@@ -16,14 +16,7 @@
 	if ((self = [super initWithFrame:frame])) {
 		queue = nil;
 		searchTerm = nil;
-		[navigationBar setMaxSize:18];
-		[navigationBar setNeedsDisplay];
 		channelDatas = nil;
-		CALayer *cv = [[CALayer alloc] init];
-		[cv setContents:(id)[UIImage imageNamed:@"0_nvs"].CGImage];
-		[cv setFrame:CGRectMake(0, -46, 320, 46)];
-		[self.layer addSublayer:cv];
-		[cv release]; 
 		channels = [[UITableView alloc] initWithFrame:CGRectMake(0, 44, frame.size.width, frame.size.height-44)];
 		[channels setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 		[channels setBackgroundColor:UIColorFromRGB(0xDDE0E5)];
@@ -180,7 +173,7 @@
 	RCPrettyAlertView *alrt = [[RCPrettyAlertView alloc] initWithTitle:@"Error" message:@"There was an issue getting the channel list. Please try again in a minute." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Dismiss", nil];
 	[alrt show];
 	[alrt release];
-	[(RCCuteView *)[self superview] dismiss];
+	[self dismiss];
 }
 
 - (void)recievedChannel:(NSString *)chan withCount:(int)cc andTopic:(NSString *)topics {

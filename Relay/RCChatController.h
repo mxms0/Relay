@@ -24,7 +24,7 @@
 	RCChatPanel *currentPanel;
 	RCTextFieldBackgroundView *_bar;
 	RCTextField *field;
-	RCChannelListViewCard *channelList;
+	RCChannelListViewCard *hoverView;
 	CGFloat chatViewHeights[2];
 	CGFloat suggestLocation;
 	CGFloat currentPanelWidth;
@@ -52,7 +52,7 @@
 - (void)setDefaultTitleAndSubtitle;
 - (void)layoutWithRootViewController:(RCViewController *)rc;
 - (void)presentInitialSetupView;
-- (void)dismissChannelList:(UIView *)cl animated:(BOOL)anim;
+- (void)dismissChannelList:(UIView *)cl;
 - (void)nickSuggestionCancelled;
 - (void)showNetworkListOptions;
 - (void)showNetworkAddViewController;

@@ -21,7 +21,7 @@
 }
 
 - (void)dismiss {
-	[[RCChatController sharedController] dismissChannelList:self animated:YES];
+	[[RCChatController sharedController] dismissChannelList:self];
 }
 
 @end

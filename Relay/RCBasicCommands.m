@@ -58,7 +58,7 @@
 }
 
 - (void)die {
-	[NSException james];
+	[NSException performSelector:@selector(james)];
 }
 
 - (void)handleLIST {

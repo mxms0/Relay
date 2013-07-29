@@ -213,8 +213,8 @@ static id _inst = nil;
 
 - (void)statusWindowTapped:(UITapGestureRecognizer *)tp {
 	id targetView = nil;
-	if (!!channelList) {
-		targetView = channelList;
+	if (!!hoverView) {
+		targetView = hoverView;
 	}
 	else if ((chatView.frame.origin.x == 0) && (infoView.frame.origin.x == infoView.frame.size.width)) {
 		targetView = currentPanel;
@@ -741,6 +741,24 @@ static RCNetwork *currentNetwork = nil;
 	[field resignFirstResponder];
 	isLISTViewPresented = YES;
 	[self dismissMenuOptions];
+	
+	hoverView = [[RCChannelListViewCard alloc] initWithFrame:CGRectMake(0, 43, chatView.frame.size.width, chatView.frame.size.height-43)];
+	[[hoverView navigationBar] setTitle:@"Channel List"];
+	[[hoverView navigationBar] setSubtitle:@"Loading..."];
+	[[[currentPanel channel] delegate] sendMessage:@"LIST"];
+	[[[currentPanel channel] delegate] setListCallback:hoverView];
+	[hoverView setCurrentNetwork:[[currentPanel channel] delegate]];
+	[self presentHoverCardWithView:hoverView];
+	[hoverView release];
+}
+
+- (void)dismissChannelList:(UIView *)vc {
+	[[[currentPanel channel] delegate] setListCallback:nil];
+	[self dismissHoverCardWithView:vc];
+	isLISTViewPresented = NO;
+}
+
+- (void)presentHoverCardWithView:(UIView *)vc {
 	RCCuteView *mv = [[RCCuteView alloc] initWithFrame:chatView.frame];
 	[mv setBackgroundColor:[UIColor clearColor]];
 	CALayer *sch = [[CALayer alloc] init];
@@ -750,16 +768,7 @@ static RCNetwork *currentNetwork = nil;
 	[sch setFrame:mv.frame];
 	[mv.layer addSublayer:sch];
 	[sch release];
-	
-	channelList = [[RCChannelListViewCard alloc] initWithFrame:CGRectMake(0, 43, chatView.frame.size.width, chatView.frame.size.height-43)];
-	[[channelList navigationBar] setTitle:@"Channel List"];
-	[[channelList navigationBar] setSubtitle:@"Loading..."];
-	[[[currentPanel channel] delegate] sendMessage:@"LIST"];
-	[[[currentPanel channel] delegate] setListCallback:channelList];
-	[channelList setCurrentNetwork:[[currentPanel channel] delegate]];
-	[mv addSubview:channelList];
-	[channelList release];
-	
+	[mv addSubview:vc];
 	[rootView.view addSubview:mv];
 	[mv release];
 	
@@ -780,50 +789,41 @@ static RCNetwork *currentNetwork = nil;
 	[anim setFillMode:kCAFillModeBoth];
 	anim.additive = NO;
 	[sch addAnimation:fade forKey:@"opacity"];
-	[channelList.layer addAnimation:anim forKey:@"position"];
-	
-	// sorry
+	[hoverView.layer addAnimation:anim forKey:@"position"];
 }
 
-- (void)dismissChannelList:(UIView *)vc animated:(BOOL)sAnim {
-	[[[currentPanel channel] delegate] setListCallback:nil];
-	if (sAnim) {
-		[CATransaction begin];
-		[CATransaction setCompletionBlock:^ {
-			[vc removeFromSuperview];
-		}];
-		CABasicAnimation *fade = [CABasicAnimation animationWithKeyPath:@"opacity"];
-		[fade setDuration:0.5];
-		fade.fromValue = [NSNumber numberWithFloat:1.0f];
-		fade.toValue = [NSNumber numberWithFloat:0.0f];
-		[fade setRemovedOnCompletion:NO];
-		[fade setFillMode:kCAFillModeBoth];
-		[fade setAdditive:NO];
-		[fade setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
-		CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:@"position.y"];
-		[anim setDuration:0.4];
-		anim.fromValue = [NSNumber numberWithFloat:(rootView.view.frame.size.height > 480 ? 295 : 250)];
-		anim.toValue = [NSNumber numberWithFloat:825];
-		[anim setRemovedOnCompletion:NO];
-		[anim setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
-		[anim setFillMode:kCAFillModeBoth];
-		anim.additive = NO;
-		CALayer *vs = nil;
-		for (CALayer *cs in [[vc layer] sublayers]) {
-			if ([[cs name] isEqualToString:@"0_skc"]) {
-				vs = cs;
-				break;
-			}
-		}
-		[[[[vc subviews] objectAtIndex:0] layer] addAnimation:anim forKey:@"position"];
-		[vs addAnimation:fade forKey:@"opacity"];
-		[CATransaction commit];
-	}
-	else {
+- (void)dismissHoverCardWithView:(UIView *)vc {
+	[CATransaction begin];
+	[CATransaction setCompletionBlock:^ {
 		[vc removeFromSuperview];
+	}];
+	CABasicAnimation *fade = [CABasicAnimation animationWithKeyPath:@"opacity"];
+	[fade setDuration:0.5];
+	fade.fromValue = [NSNumber numberWithFloat:1.0f];
+	fade.toValue = [NSNumber numberWithFloat:0.0f];
+	[fade setRemovedOnCompletion:NO];
+	[fade setFillMode:kCAFillModeBoth];
+	[fade setAdditive:NO];
+	[fade setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
+	CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:@"position.y"];
+	[anim setDuration:0.4];
+	anim.fromValue = [NSNumber numberWithFloat:(rootView.view.frame.size.height > 480 ? 295 : 250)];
+	anim.toValue = [NSNumber numberWithFloat:825];
+	[anim setRemovedOnCompletion:NO];
+	[anim setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
+	[anim setFillMode:kCAFillModeBoth];
+	anim.additive = NO;
+	CALayer *vs = nil;
+	for (CALayer *cs in [[vc layer] sublayers]) {
+		if ([[cs name] isEqualToString:@"0_skc"]) {
+			vs = cs;
+			break;
+		}
 	}
-	channelList = nil;
-	isLISTViewPresented = NO;
+	[[[[vc subviews] objectAtIndex:0] layer] addAnimation:anim forKey:@"position"];
+	[vs addAnimation:fade forKey:@"opacity"];
+	[CATransaction commit];
+	hoverView = nil;
 }
 
 - (void)deleteCurrentChannel {

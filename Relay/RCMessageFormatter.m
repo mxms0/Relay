@@ -161,6 +161,7 @@ NSString *colorForIRCColor(char irccolor) {
 		[final appendString:@"</font>"];
 	[final appendString:@"</div>"];
 	[self setString:(NSString *)final];
+	NSLog(@"fds %@", final);
 	[final release];
 }
 

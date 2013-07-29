@@ -104,6 +104,8 @@
 		5084D380177BFD6500A9C775 /* 0_cnclr.png in Resources */ = {isa = PBXBuildFile; fileRef = 5084D37E177BFD6500A9C775 /* 0_cnclr.png */; };
 		5084D381177BFD6500A9C775 /* 0_cnclr@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5084D37F177BFD6500A9C775 /* 0_cnclr@2x.png */; };
 		5088C0E014C4F89C001ADD06 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5088C0DF14C4F89C001ADD06 /* CFNetwork.framework */; };
+		5089527E17A62D16001264BA /* RCHoverViewCard.m in Sources */ = {isa = PBXBuildFile; fileRef = 5089527D17A62D16001264BA /* RCHoverViewCard.m */; };
+		5089528117A62E34001264BA /* RCHoverWebBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 5089528017A62E34001264BA /* RCHoverWebBrowser.m */; };
 		508D56391776716C005DF032 /* 0_input.png in Resources */ = {isa = PBXBuildFile; fileRef = 508D56371776716C005DF032 /* 0_input.png */; };
 		508D563A1776716C005DF032 /* 0_input@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 508D56381776716C005DF032 /* 0_input@2x.png */; };
 		508D563D17767646005DF032 /* 0_jaggs.png in Resources */ = {isa = PBXBuildFile; fileRef = 508D563B17767643005DF032 /* 0_jaggs.png */; };
@@ -356,6 +358,10 @@
 		5084D37E177BFD6500A9C775 /* 0_cnclr.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_cnclr.png; sourceTree = "<group>"; };
 		5084D37F177BFD6500A9C775 /* 0_cnclr@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_cnclr@2x.png"; sourceTree = "<group>"; };
 		5088C0DF14C4F89C001ADD06 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		5089527C17A62D16001264BA /* RCHoverViewCard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCHoverViewCard.h; sourceTree = "<group>"; };
+		5089527D17A62D16001264BA /* RCHoverViewCard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCHoverViewCard.m; sourceTree = "<group>"; };
+		5089527F17A62E34001264BA /* RCHoverWebBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCHoverWebBrowser.h; sourceTree = "<group>"; };
+		5089528017A62E34001264BA /* RCHoverWebBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCHoverWebBrowser.m; sourceTree = "<group>"; };
 		508D56371776716C005DF032 /* 0_input.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_input.png; sourceTree = "<group>"; };
 		508D56381776716C005DF032 /* 0_input@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_input@2x.png"; sourceTree = "<group>"; };
 		508D563B17767643005DF032 /* 0_jaggs.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_jaggs.png; sourceTree = "<group>"; };
@@ -606,6 +612,10 @@
 				5052895A17701A9600127EC0 /* RCChatsListViewCard.m */,
 				50C46496177FA0140025ED54 /* RCChannelListViewCard.h */,
 				50C46497177FA0140025ED54 /* RCChannelListViewCard.m */,
+				5089527F17A62E34001264BA /* RCHoverWebBrowser.h */,
+				5089528017A62E34001264BA /* RCHoverWebBrowser.m */,
+				5089527C17A62D16001264BA /* RCHoverViewCard.h */,
+				5089527D17A62D16001264BA /* RCHoverViewCard.m */,
 				50C4649D177FB3B00025ED54 /* RCCuteView.h */,
 				50C4649E177FB3B00025ED54 /* RCCuteView.m */,
 			);
@@ -1343,6 +1353,8 @@
 				502D212917980C1D0004D036 /* RCMessage.m in Sources */,
 				5055F5D8179F4F2A001A17CB /* RCOperation.m in Sources */,
 				5055F5DB179F4F3C001A17CB /* RCOperationQueue.m in Sources */,
+				5089527E17A62D16001264BA /* RCHoverViewCard.m in Sources */,
+				5089528117A62E34001264BA /* RCHoverWebBrowser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1402,10 +1414,14 @@
 				CODE_SIGN_ENTITLEMENTS = Relay/Relay.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Evolse Limited (2BR9U9X858)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Evolse Limited (2BR9U9X858)";
-				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "Relay/Relay-Prefix.pch";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = NO;
+				GCC_WARN_PEDANTIC = NO;
+				GCC_WARN_UNDECLARED_SELECTOR = NO;
+				GCC_WARN_UNUSED_PARAMETER = NO;
 				HEADER_SEARCH_PATHS = "./**";
 				INFOPLIST_FILE = "Relay/Relay-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
@@ -1515,6 +1531,10 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "Relay/Relay-Prefix.pch";
+				GCC_WARN_ABOUT_MISSING_NEWLINE = NO;
+				GCC_WARN_PEDANTIC = NO;
+				GCC_WARN_UNDECLARED_SELECTOR = NO;
+				GCC_WARN_UNUSED_PARAMETER = NO;
 				HEADER_SEARCH_PATHS = "./**";
 				INFOPLIST_FILE = "Relay/Relay-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
@@ -1544,10 +1564,14 @@
 				CODE_SIGN_ENTITLEMENTS = Relay/Relay.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Evolse Limited (2BR9U9X858)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Evolse Limited (2BR9U9X858)";
-				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "Relay/Relay-Prefix.pch";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = NO;
+				GCC_WARN_PEDANTIC = NO;
+				GCC_WARN_UNDECLARED_SELECTOR = NO;
+				GCC_WARN_UNUSED_PARAMETER = NO;
 				HEADER_SEARCH_PATHS = "./**";
 				INFOPLIST_FILE = "Relay/Relay-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
