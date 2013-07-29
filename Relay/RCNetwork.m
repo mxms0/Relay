@@ -609,13 +609,14 @@
 
 - (void)handle001:(RCMessage *)message {
 	// RPL_WELCOME
+	// :Welcome to the Internet Relay Network <nick>!<user>@<host>
 	status = RCSocketStatusConnected;
 	[self networkDidRegister:YES];
     NSArray *ihateFudge = [message->message componentsSeparatedByString:@" "];
 	NSString *shouldBeMe = [ihateFudge lastObject];
 	RCParseUserMask(shouldBeMe, &shouldBeMe, nil, nil);
 	self.useNick = shouldBeMe;
-	// i am sorry. I can trust this, i think.
+	// i am sorry. I can trust this, i think. ~Max
 	RCChannel *chan = [self consoleChannel];
 	[chan recievedMessage:[message parameterAtIndex:1] from:@"" type:RCMessageTypeNormal];
 	reloadNetworks();

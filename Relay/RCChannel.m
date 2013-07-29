@@ -238,6 +238,8 @@ char RCUserHash(NSString *from) {
 	if (!time) {
 		time = [[RCDateManager sharedInstance] currentDateAsString];
 	}
+	NSString *original = [message copy];
+	NSString *origFrom = [from copy];
 	message = [[[message stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"] stringByReplacingOccurrencesOfString:@"\n" withString:@""] stringByEncodingHTMLEntities:YES];
 	if (type != RCMessageTypeJoin && type != RCMessageTypeTopic) {
 		if (from) {
@@ -359,8 +361,10 @@ char RCUserHash(NSString *from) {
 	}
 	[panel postMessage:msg withType:type highlight:isHighlight isMine:([from isEqualToString:[delegate useNick]])];
 	if (type == RCMessageTypeNormal || type == RCMessageTypeNormalE || type == RCMessageTypeAction)
-		[self shouldPost:isHighlight withMessage:msg];
+		[self shouldPost:isHighlight withMessage:[NSString stringWithFormat:@"%@: %@", origFrom, original]];
 	[msg release];
+	[original release];
+	[origFrom release];
 	[p drain];
 }
 
