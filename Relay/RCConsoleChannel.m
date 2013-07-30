@@ -45,37 +45,40 @@
     NSString *time = @"";
 	time = [[RCDateManager sharedInstance] currentDateAsString];
 	message = [[[message stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"] stringByReplacingOccurrencesOfString:@"\n" withString:@""] stringByEncodingHTMLEntities:YES];
-	if (from)
-		from = [@"<div class=\"msg\">" stringByAppendingString:from];
-	else
-		message = [@"<div class=\"msg\">" stringByAppendingString:message];
+	message = [message stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
+	message = [message stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
+	from = [from stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
+	from = [from stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
+	time = [time stringByAppendingString:@" <div></div>"];
+	NSLog(@"hello [%@] %@:%@",time,from,message);
 	if ([time hasSuffix:@" "])
 		time = [time substringToIndex:time.length-1];
 	if (type == RCMessageTypeAction) {
-		msg = [[NSString stringWithFormat:@"%@%c\u2022 %@%c%@", time,RCIRCAttributeBold, from, RCIRCAttributeBold, message] retain];
+		msg = [NSString stringWithFormat:@"%c\u2022 %@%c%@", RCIRCAttributeBold, from, RCIRCAttributeBold, message];
 	}
 	else if (type == RCMessageTypeNormal) {
 		if (from) {
-			msg = [[NSString stringWithFormat:@"%@%c%@%c%@", time, RCIRCAttributeBold, from, RCIRCAttributeBold, message] retain];
+			msg = [NSString stringWithFormat:@"%c%@%c%@", RCIRCAttributeBold, from, RCIRCAttributeBold, message];
 		}
 		else {
-			msg = [[NSString stringWithFormat:@"%@ %@", time, message] retain];
+			msg = [NSString stringWithFormat:@" %@", message];
 		}
 		type = RCMessageTypeNormalE;
 	}
 	else if (type == RCMessageTypeNotice) {
-        msg = [[NSString stringWithFormat:@"%@%c-%@-%c %@", time, RCIRCAttributeBold, from, RCIRCAttributeBold, message] retain];
+        msg = [NSString stringWithFormat:@"%c-%@-%c %@", RCIRCAttributeBold, from, RCIRCAttributeBold, message];
 	}
 	else if (type == RCMessageTypeJoin) {
 		//	msg = [@"iPhone joined the channel." retain];
 		// wat
-		msg = [@"Wat." retain];
+		msg = @"Someone shouldn't be joining here.. Wat.";
 	}
 	else {
 		[super recievedMessage:message from:from type:type];
 		[p drain];
 		return;
 	}
+	msg = [[time stringByAppendingFormat:@"<div class=\"msg\">%@</div>", msg] copy];
 	[panel postMessage:[msg autorelease] withType:type highlight:NO];
 	[p drain];
 	/* if ([delegate isRegistered] && type == RCMessageTypeNormalE) {

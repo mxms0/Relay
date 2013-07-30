@@ -242,7 +242,6 @@ char RCUserHash(NSString *from) {
 	NSString *origFrom = [from copy];
 	message = [[[message stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"] stringByReplacingOccurrencesOfString:@"\n" withString:@""] stringByEncodingHTMLEntities:YES];
 	time = [time stringByAppendingString:@" <div></div>"];
-	from = [NSString stringWithFormat:@"%c%@%c", RCIRCAttributeInternalNickname, from, RCIRCAttributeInternalNicknameEnd];
 	NSString *msg = @"";
 	from = [from stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
 	from = [from stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
