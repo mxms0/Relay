@@ -51,7 +51,6 @@
 		message = [@"<div class=\"msg\">" stringByAppendingString:message];
 	if ([time hasSuffix:@" "])
 		time = [time substringToIndex:time.length-1];
-			//msg = [[NSString stringWithFormat:@"%c[%@]%c %@ sets mode +b %@",RCIRCAttributeBold, time, RCIRCAttributeBold, from, message] retain];
 	if (type == RCMessageTypeAction) {
 		msg = [[NSString stringWithFormat:@"%@%c\u2022 %@%c%@", time,RCIRCAttributeBold, from, RCIRCAttributeBold, message] retain];
 	}
