@@ -254,11 +254,9 @@ char RCUserHash(NSString *from) {
 			// lol.
 			break;
 		case RCMessageTypeBan:
-		//	[self setUserLeft:message];
 			msg = [NSString stringWithFormat:@"%@ sets mode +b %@", from, message];
 			break;
 		case RCMessageTypePart:
-			NSLog(@"%@[%@]", from, [from dataUsingEncoding:NSUTF8StringEncoding]);
 			[self setUserLeft:from];
 			if (![message isEqualToString:@""]) {
 				msg = [NSString stringWithFormat:@"%@ left the channel. (%@)", from, message];
