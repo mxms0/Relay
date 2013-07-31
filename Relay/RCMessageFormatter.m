@@ -160,7 +160,6 @@ NSString *colorForIRCColor(char irccolor) {
 	if (self.highlight)
 		[final appendString:@"</font>"];
 	[self setString:(NSString *)final];
-	NSLog(@"fds %@", final);
 	[final release];
 }
 

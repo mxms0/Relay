@@ -50,7 +50,6 @@
 	from = [from stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
 	from = [from stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
 	time = [time stringByAppendingString:@" <div></div>"];
-	NSLog(@"hello [%@] %@:%@",time,from,message);
 	if ([time hasSuffix:@" "])
 		time = [time substringToIndex:time.length-1];
 	if (type == RCMessageTypeAction) {

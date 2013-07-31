@@ -44,7 +44,7 @@
 	#define USE_PRIVATE 1
 	#define _deg(x) ((x * M_PI)/180.0)
 	#define UIApp [UIApplication sharedApplication]
-	#define LOGALL 1
+	#define LOGALL 0
 	#define _DEBUG 0
 	#define isiOS7 !!(objc_getClass("UIAttachmentBehavior"))
 	#define READ_BUF_LEN 4096
@@ -87,7 +87,7 @@
 							}
 						}
 					}
-					else if ( n2 == ',' && *isThereComma == YES) {
+					else if (n2 == ',' && *isThereComma == YES) {
 						*size_of_num = (*size_of_num) + 1;
 						*isThereComma = YES; // nullop basically.
 						return YES;
