@@ -195,7 +195,8 @@
 				return chann;
 		}
 		if (cr) {
-			[self addChannel:chan join:NO];
+			RCChannel *newChan = [self addChannel:chan join:NO];
+			return newChan;
 		}
 		return nil;
 	}
@@ -1184,6 +1185,7 @@
 	RCMessageType typ = RCMessageTypeNormal;
 	NSString *userMessage = nil;
 	NSString *from = nil;
+	NSString *target = [message parameterAtIndex:0];
 	RCParseUserMask(message.sender, &from, nil, nil);
 	if ([fullMessage hasPrefix:@"\x01"] && [fullMessage hasSuffix:@"\x01"]) {
 		fullMessage = [fullMessage substringWithRange:NSMakeRange(1, [fullMessage length]-2)];
@@ -1208,9 +1210,12 @@
 		}
 	}
 	else {
+		if (![[message parameterAtIndex:0] hasPrefix:@"#"]) {
+			RCParseUserMask(message.sender, &target, nil, nil);
+		}
 		userMessage = [message parameterAtIndex:1];
 	}
-	RCChannel *channel = [self channelWithChannelName:[message parameterAtIndex:0] ifNilCreate:YES];
+	RCChannel *channel = [self channelWithChannelName:target ifNilCreate:YES];
 	[channel recievedMessage:userMessage from:from type:typ];
 }
 

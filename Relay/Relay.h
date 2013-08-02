@@ -45,7 +45,7 @@
 	#define _deg(x) ((x * M_PI)/180.0)
 	#define UIApp [UIApplication sharedApplication]
 	#define LOGALL 0
-	#define _DEBUG 0
+	#define _DEBUG 1
 	#define isiOS7 !!(objc_getClass("UIAttachmentBehavior"))
 	#define READ_BUF_LEN 4096
 // alerts
