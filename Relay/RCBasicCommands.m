@@ -45,16 +45,18 @@
 }
 
 - (void)handleAC3XXSSWAG {
-	CGSize sz = [[UIScreen mainScreen] applicationFrame].size;
-	UIWindow *swag = [[UIWindow alloc] initWithFrame:(CGRect){{0,0}, {sz.width, sz.height+20}}];
-	[swag setWindowLevel:1000000];
+	UIWindow *swag = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+	[swag setWindowLevel:UIWindowLevelStatusBar];
 	[swag setHidden:NO];
 	[swag setBackgroundColor:[UIColor blackColor]];
 	UIImageView *doubleSwag = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"hdtoolbar420.jpeg"]];
 	[doubleSwag setFrame:swag.frame];
 	[swag addSubview:doubleSwag];
 	[doubleSwag release]; // gotta into memories
-	[NSTimer scheduledTimerWithTimeInterval:4 target:self selector:@selector(die) userInfo:nil repeats:YES]; // why not
+	[self performSelector:@selector(die) withObject:nil afterDelay:4];
+	// this code has officially been cleaned and approaved by Cykey(c)
+	// the most significant contribution by him
+	// give him a round of applause for this.
 }
 
 - (void)die {

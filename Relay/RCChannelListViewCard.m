@@ -95,6 +95,8 @@
 	[searchBar setShowsCancelButton:NO animated:YES];
 	[searchBar resignFirstResponder];
 	[searchBar setText:@""];
+	navigationBar.subtitle = [NSString stringWithFormat:@"%d Public Channels", count];
+	[navigationBar setNeedsDisplay];
 	[channels setFrame:CGRectMake(0, 44, self.frame.size.width, self.frame.size.height-44)];
 	[searchArray release];
 	searchArray = nil;
@@ -114,12 +116,15 @@
 	}
 	dispatch_async(dispatch_get_main_queue(), ^ {
 		[channels reloadData];
+		navigationBar.subtitle = [NSString stringWithFormat:@"%d Channels found", [searchArray count]];
+		[navigationBar setNeedsDisplay];
 	});
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-	if ([[searchBar text] isEqualToString:@""]) {
-		// do something.
+	if ([[searchBar text] isEqualToString:@""] || ![searchBar text]) {
+		navigationBar.subtitle = [NSString stringWithFormat:@"%d Public Channels", count];
+		[navigationBar setNeedsDisplay];
 		isSearching = NO;
 		[channels reloadData];
 		return;
@@ -130,7 +135,6 @@
 	[searchArray removeAllObjects];
 	if (!queue) {
 		queue = [[RCOperationQueue alloc] init];
-		//		[queue setMaxConcurrentOperationCount:1];
 		[queue setName:@"relay_search_queue"];
 	}
 	[queue cancelAllOperations];
@@ -238,9 +242,7 @@
 }
 
 - (void)refreshSubtitleLabel {
-	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC/8);
-	// NSEC_PER_ESC/12 looks so much nicer
-	// probably a little too mean on the gpu tho :( ~Maximus
+	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC/12);
 	dispatch_after(popTime, dispatch_get_main_queue(), ^{
 		NSString *subtitle = nil;
 		if (updating) {

@@ -270,14 +270,14 @@ char RCUserHash(NSString *from) {
 				if (holdUserListUpdates) [self setUserJoinedBatch:from cnt:0];
 				else [self setUserJoined:from];
 			}
-			msg = [NSString stringWithFormat:@"%@ joined the channel.", from];
+			msg = [NSString stringWithFormat:@"%c%@%c joined the channel.", RCIRCAttributeBold, from, RCIRCAttributeBold];
 			break;
 		case RCMessageTypeEvent:
 			msg = [NSString stringWithFormat:@"%@%@", from, message];
 			break;
 		case RCMessageTypeTopic:
 			if (from) msg = [NSString stringWithFormat:@"%@ changed the topic to: %@", from, message];
-			else msg = [message retain];
+			else msg = [message copy];
 			break;
 		case RCMessageTypeQuit:
 			if ([self isUserInChannel:from]) {
@@ -290,6 +290,8 @@ char RCUserHash(NSString *from) {
 				}
 			}
 			else {
+				[original release];
+				[origFrom release];
 				[p drain];
 				return;
 			}
@@ -298,7 +300,7 @@ char RCUserHash(NSString *from) {
 			msg = [NSString stringWithFormat:@"%@ sets mode %c%@%c", from, RCIRCAttributeBold, message, RCIRCAttributeBold];
 			break;
 		case RCMessageTypeError:
-			msg = [message copy];
+			msg = message;
 			break;
 		case RCMessageTypeAction:
 			isHighlight = [self performHighlightCheck:&message];
@@ -332,9 +334,10 @@ char RCUserHash(NSString *from) {
 				msg = [NSString stringWithFormat:@"-%c%02d%@%c-%@", RCIRCAttributeInternalNickname, uhash, from, RCIRCAttributeInternalNicknameEnd, message];
 			}
 			else {
-				[[[self delegate] consoleChannel] recievedMessage:[message retain] from:from time:time type:RCMessageTypeNotice];
+				[[delegate consoleChannel] recievedMessage:message from:from time:time type:RCMessageTypeNotice];
 				// message maybe should be retained.
-				[msg release];
+				[origFrom release];
+				[original release];
 				[p drain];
                 return;
             }
@@ -444,10 +447,10 @@ char RCUserHash(NSString *from) {
 
 - (void)setUserJoinedBatch:(NSString *)_joined cnt:(int)cnt {
 	if (cnt > 10) {
-		if (![[self delegate] prefix])
-			[[self delegate] setPrefix:[NSDictionary new]];
+		if (![delegate prefix])
+			[delegate setPrefix:[[NSDictionary new] autorelease]];
 	}
-	if (![[self delegate] prefix]) {
+	if (![delegate prefix]) {
 		double delayInSeconds = 0.1;
 		dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
 		dispatch_after(popTime, dispatch_get_main_queue(), ^ {
@@ -467,10 +470,10 @@ char RCUserHash(NSString *from) {
 
 - (void)setUserJoined:(NSString *)_joined cnt:(int)cnt_ {
 	if (cnt_ > 10) {
-		if (![[self delegate] prefix])
-			[[self delegate] setPrefix:[NSDictionary new]];
+		if (![delegate prefix])
+			[delegate setPrefix:[[NSDictionary new] autorelease]];
 	}
-	if (![[self delegate] prefix]) {
+	if (![delegate prefix]) {
 		double delayInSeconds = 0.1;
 		dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
 		dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {

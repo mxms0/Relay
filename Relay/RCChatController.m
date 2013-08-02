@@ -161,13 +161,6 @@ static id _inst = nil;
 	currentPanel = nil;
 	rootView = rc;
 	canDragMainView = YES;
-	UIWindow *wv = [[UIWindow alloc] initWithFrame:CGRectMake(0, 0, rc.view.frame.size.width, 20)];
-	[wv setWindowLevel:1000000];
-	[wv setHidden:NO];
-	[wv setBackgroundColor:[UIColor clearColor]];
-	UITapGestureRecognizer *tp = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(statusWindowTapped:)];
-	[wv addGestureRecognizer:tp];
-	[tp release];
 	// This doesn't work for views inside the RCAddNetworkController...
 	// fix it max
 #warning THIS IS NECESSARY IN XCODE DP5
@@ -278,7 +271,6 @@ static id _inst = nil;
 			[appstore_txt release];
 		});
 	});
-	//	[self performSelectorInBackground:@selector(__reallySend:) withObject:textField.text];
 	[textField setText:@""];
 	[[RCNickSuggestionView sharedInstance] dismiss];
 	return NO;

@@ -19,11 +19,9 @@ SSL_CTX *RCInitContext(void) {
 	SSL_load_error_strings();
 	meth = (SSL_METHOD *)SSLv23_client_method();
 	_ctx = SSL_CTX_new(meth);
-
 	if (_ctx == NULL) {
-		// fuck.
 		MARK;
-		NSLog(@"FUCKKKKK");
+		NSLog(@"Error allocating SSL context.");
 		//	ERR_print_errors(stderr);
 	}
 	return _ctx;
@@ -174,7 +172,6 @@ SSL_CTX *RCInitContext(void) {
 		MARK;
 		return;
 	}
-
 	for (RCNetwork *net in [[RCNetworkManager sharedNetworkManager] networks]) {
 		int sockfd = net->sockfd;
 		if (sockfd == -1) continue;

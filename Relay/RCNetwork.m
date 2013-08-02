@@ -17,7 +17,7 @@
 
 @implementation RCNetwork
 
-@synthesize prefix, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _nicknames, shouldRequestSPass, shouldRequestNPass, listCallback, expanded, _selected, SASL, cache, uUID, isOper, isAway;
+@synthesize prefix, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, userModes, _nicknames, shouldRequestSPass, shouldRequestNPass, listCallback, expanded, _selected, SASL, uUID, isOper, isAway;
 
 - (id)init {
 	if ((self = [super init])) {
@@ -298,9 +298,7 @@
 	writebuf = [[NSMutableString alloc] init];
 	rcache = [[NSMutableData alloc] init];
 	canSend = YES;
-	cache = [[NSMutableString alloc] init];
 	isRegistered = NO;
-	dcCount = 0;
 	self.useNick = nick;
 	self.userModes = @"~&@%+";
 	if (kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iPhoneOS_4_0) {
@@ -696,8 +694,10 @@
 		[ac setServer:redirServer];
 		[ac setPort:[redirPort intValue]];
 		[ac setTag:RCALERR_SERVCHNGE];
-		[ac show];
-		[ac release];
+		dispatch_async(dispatch_get_main_queue(), ^ {
+			[ac show];
+			[ac release];
+		});
 	}
 }
 
@@ -945,6 +945,10 @@
 }
 
 - (void)handle461:(RCMessage *)message {
+	// this is broken
+	// type /nick for example.
+	// wether you hit change or cancel, it disconnects you
+	// its stupid.
 	dispatch_async(dispatch_get_main_queue(), ^{
 		RCPrettyAlertView *ac = [[RCPrettyAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Invalid Username (%@)", [self _description]] message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Change", nil];
 		[ac setTag:RCALERR_INCUNAME];

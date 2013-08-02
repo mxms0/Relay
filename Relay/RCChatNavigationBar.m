@@ -83,6 +83,7 @@
 		[indent drawAtPoint:CGPointMake(rect.size.width/2 - indent.size.width/2, 0)];
 		return;
 	}
+	if ([[self subviews] count] > 2) return; // kind of fixes it. eh
 	CGContextSetShadowWithColor(ctx, CGSizeMake(0, 0.5), 0, [UIColor colorWithWhite:1.000 alpha:0.580].CGColor);
 	CGContextSetFillColorWithColor(ctx, UIColorFromRGB(0x4c4c51).CGColor);
 	CGFloat size = 0.0;

@@ -45,6 +45,13 @@
 
 - (void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
+	UIWindow *wv = [[UIWindow alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 20)];
+	[wv setWindowLevel:1000000];
+	[wv setHidden:NO];
+	[wv setBackgroundColor:[UIColor clearColor]];
+	UITapGestureRecognizer *tp = [[UITapGestureRecognizer alloc] initWithTarget:[RCChatController sharedController] action:@selector(statusWindowTapped:)];
+	[wv addGestureRecognizer:tp];
+	[tp release];
 	if ([[[RCNetworkManager sharedNetworkManager] networks] count] == 0) {
 		[[RCChatController sharedController] presentInitialSetupView];
 	}

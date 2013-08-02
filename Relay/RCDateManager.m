@@ -9,6 +9,7 @@
 
 @implementation RCDateManager
 static id _dManager = nil;
+
 - (id)init {
 	if ((self = [super init])) {
 		formatter = [[NSDateFormatter alloc] init];

@@ -39,11 +39,10 @@
 	}
 }
 
-- (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type {
+- (void)recievedMessage:(NSString *)message from:(NSString *)from time:(NSString *)time type:(RCMessageType)type {
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSString *msg = @"";
-    NSString *time = @"";
-	time = [[RCDateManager sharedInstance] currentDateAsString];
+	if (!time) time = [[RCDateManager sharedInstance] currentDateAsString];
 	message = [[[message stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"] stringByReplacingOccurrencesOfString:@"\n" withString:@""] stringByEncodingHTMLEntities:YES];
 	message = [message stringByReplacingOccurrencesOfString:@"\x04" withString:@""];
 	message = [message stringByReplacingOccurrencesOfString:@"\x05" withString:@""];
@@ -68,12 +67,10 @@
         msg = [NSString stringWithFormat:@"%c-%@-%c %@", RCIRCAttributeBold, from, RCIRCAttributeBold, message];
 	}
 	else if (type == RCMessageTypeJoin) {
-		//	msg = [@"iPhone joined the channel." retain];
-		// wat
 		msg = @"Someone shouldn't be joining here.. Wat.";
 	}
 	else {
-		[super recievedMessage:message from:from type:type];
+		[super recievedMessage:message from:from time:time type:type];
 		[p drain];
 		return;
 	}
@@ -81,14 +78,21 @@
 	[panel postMessage:[msg autorelease] withType:type highlight:NO];
 	[p drain];
 	/* if ([delegate isRegistered] && type == RCMessageTypeNormalE) {
-		[cellRepresentation setNewMessageCount:(newMessageCount++)];
-		[cellRepresentation performSelectorOnMainThread:@selector(setNeedsDisplay) withObject:nil waitUntilDone:NO];
-	} */
+	 [cellRepresentation setNewMessageCount:(newMessageCount++)];
+	 [cellRepresentation performSelectorOnMainThread:@selector(setNeedsDisplay) withObject:nil waitUntilDone:NO];
+	 } */
 	// don't really know how to handle this. it's kind of an awkward situation per-se.
 	// don't want the users having a number notifying them of ircd spam always.
 	// but don't know how to detect wether or not it's ircd spam or some kind of notification.
 	// if the error messages go to the console channel, i mean, this should be easy, but i send them as normal messages
 	// since well, this is the console channel.
+}
+
+- (void)recievedMessage:(NSString *)message from:(NSString *)from type:(RCMessageType)type {
+	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+	NSString *time = [[RCDateManager sharedInstance] currentDateAsString];
+	[self recievedMessage:message from:from time:time type:type];
+	[p drain];
 }
 
 @end

@@ -36,7 +36,6 @@ typedef enum RCSocketStatus {
 	NSString *npass;
 	NSString *userModes;
 	NSString *uUID;
-	NSMutableString *cache;
 	NSMutableString *writebuf;
 	NSMutableData *rcache;
 	SSL_CTX *ctx;
@@ -46,7 +45,6 @@ typedef enum RCSocketStatus {
 	int task;
 	int port;
 	int sockfd;
-	int dcCount;
 	BOOL isRegistered;
 	BOOL useSSL;
 	BOOL COL;
@@ -77,7 +75,6 @@ typedef enum RCSocketStatus {
 @property (nonatomic, retain) NSString *useNick;
 @property (nonatomic, retain) NSString *userModes;
 @property (nonatomic, retain) NSString *uUID;
-@property (nonatomic, readonly) NSMutableString *cache;
 @property (nonatomic, assign) int port;
 @property (nonatomic, assign) BOOL isRegistered;
 @property (nonatomic, assign) BOOL useSSL;

@@ -145,7 +145,6 @@ NSString *colorForIRCColor(char irccolor) {
 			case RCIRCAttributeInternalNicknameEnd:
 				cpos++;
 				[final appendFormat:@"</span>%@", (!isBold ? @"</b>" : @"")];
-			//	[final appendString:@"</span>"];
 				if (nDepth)
 					nDepth--;
 				break;

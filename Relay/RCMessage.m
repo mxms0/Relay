@@ -107,12 +107,12 @@
 }
 
 - (id)parameterAtIndex:(int)index {
+	if (!messageParameters) return message;
 	if ([messageParameters count] <= index) {
 		NSLog(@"FR0ST DID SOMETHING WRONG.");
 		NSLog(@"REQUESTING %d INDEX OF ARRAY THAT'S ONLY %d", index, [messageParameters count]);
-		NSLog(@"THIS IS FROM %@", message);
+		NSLog(@"THIS IS FROM %@:%@:%@", message, sender, numeric);
 	}
-	if (!messageParameters) return message;
 	return [messageParameters objectAtIndex:index];
 }
 

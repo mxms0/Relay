@@ -32,7 +32,6 @@
 	BOOL _isReading;
 	BOOL isPolling;
 }
-
 + (id)sharedSocket;
 - (int)connectToAddr:(NSString *)server withSSL:(BOOL)ssl andPort:(int)port fromNetwork:(RCNetwork *)net;
 inline SSL_CTX *RCInitContext(void);
