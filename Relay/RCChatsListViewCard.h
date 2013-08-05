@@ -9,9 +9,11 @@
 #import "RCViewCard.h"
 #import "RCSpecialTableView.h"
 
-@interface RCChatsListViewCard : RCViewCard <UITableViewDataSource, UITableViewDelegate> {
+@interface RCChatsListViewCard : RCViewCard <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate> {
 	RCSpecialTableView *datas;
 	BOOL _reloading;
+	BOOL canDrag;
+	NSTimer *holdTimer;
 }
 - (void)scrollToTop;
 @end

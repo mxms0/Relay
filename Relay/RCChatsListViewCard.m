@@ -64,6 +64,84 @@
 	[datas reloadData];
 }
 
+- (void)cellWasPanned:(UIPanGestureRecognizer *)lp {
+	//MARK;
+	RCNetworkCell *cell = (RCNetworkCell *)[lp view];
+	switch ([lp state]) {
+		case UIGestureRecognizerStateBegan: {
+			[[cell superview] bringSubviewToFront:cell];
+			[datas setScrollEnabled:NO];
+			for (UIGestureRecognizer *gz in [[lp view] gestureRecognizers]) {
+				if ([gz isKindOfClass:[UILongPressGestureRecognizer class]]) {
+					[gz setEnabled:NO];
+					break;
+				}
+			}
+			break;
+		}
+		case UIGestureRecognizerStateChanged:
+			if (canDrag) {
+				// find subview.
+				CGPoint tr = [lp translationInView:self];
+				BOOL goingDown = (tr.y > 0);
+				CGPoint cr = CGPointMake([cell center].x, cell.center.y + tr.y);
+				[cell setCenter:cr];
+				[lp setTranslation:CGPointZero inView:self];
+				for (RCNetworkCell *aCell in [datas subviews]) {
+					if ([aCell isKindOfClass:[RCNetworkCell class]]) {
+						if (![[cell channel] isEqualToString:[aCell channel]]) {
+							if (CGRectIntersectsRect(cell.frame, aCell.frame)) {
+								if ((cell.frame.origin.y < aCell.frame.origin.y) && !goingDown) {
+									aCell.frame = CGRectMake(0, aCell.frame.origin.y - aCell.frame.size.height, aCell.frame.size.width, aCell.frame.size.height);
+								}
+								else {
+									aCell.frame = CGRectMake(0, aCell.frame.origin.y + aCell.frame.size.height, aCell.frame.size.width, aCell.frame.size.height);
+								}
+								break;
+							}
+						}
+					}
+				}
+			}
+			break;
+		case UIGestureRecognizerStatePossible:
+			break;
+		default:
+			for (UIGestureRecognizer *gz in [[lp view] gestureRecognizers]) {
+				if ([gz isKindOfClass:[UILongPressGestureRecognizer class]]) {
+					[gz setEnabled:YES];
+					break;
+				}
+			}
+			[datas setScrollEnabled:YES];
+//			if (canDrag)
+//				[cell setFrame:CGRectMake(0, cell.frame.origin.y + 5, cell.frame.size.width - 10, cell.frame.size.height - 10)];
+			canDrag = NO;
+			break;
+	}
+}
+
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+	return YES;
+}
+
+- (void)cellWasHeld:(UILongPressGestureRecognizer *)lgp {
+	if (!canDrag) {
+		if (holdTimer) return;
+		holdTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(targetBeginLongPress:) userInfo:[lgp view] repeats:NO];
+	}
+}
+
+- (void)targetBeginLongPress:(NSTimer *)timer {
+	if (!canDrag) {
+		holdTimer = nil;
+	//	RCNetworkCell *cell = [timer userInfo];
+	//	[cell setFrame:CGRectMake(-5, cell.frame.origin.y - 5, cell.frame.size.width+10, cell.frame.size.height+10)];
+		canDrag = YES;
+	}
+}
+
 - (void)reloadData {
 	_reloading = YES;
 	[datas reloadData];
@@ -87,6 +165,15 @@
 	RCNetworkCell *cell = (RCNetworkCell *)[tableView dequeueReusableCellWithIdentifier:ident];
 	if (!cell) {
 		cell = [[[RCNetworkCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:ident] autorelease];
+		UIPanGestureRecognizer *lpress = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(cellWasPanned:)];
+		[cell addGestureRecognizer:lpress];
+		[lpress setDelegate:self];
+		[lpress release];
+		UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(cellWasHeld:)];
+		[longPress setCancelsTouchesInView:NO];
+		[longPress setDelegate:self];
+		[cell addGestureRecognizer:longPress];
+		[longPress release];
 	}
 	if ([[[RCNetworkManager sharedNetworkManager] networks] count] == 0) {
 		[tableView reloadData];
