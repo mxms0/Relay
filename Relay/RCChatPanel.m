@@ -57,12 +57,25 @@ static NSString *template = nil;
 
 - (BOOL)webView:(UIWebView *)webView2 shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
 	NSString *requestString = [[request URL] absoluteString];
+	switch (navigationType) {
+		case UIWebViewNavigationTypeReload:
+			break;
+		case UIWebViewNavigationTypeLinkClicked: {
+			NSString *escaped = [[requestString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] retain];
+			[[RCChatController sharedController] presentWebBrowserViewWithURL:escaped];
+			return NO;
+			break;
+		}
+		default:
+			return YES;
+			break;
+	}
 	if ([requestString isEqualToString:@"file:///"])
 		return YES;
     if ([requestString hasPrefix:@"link:"]) {
         NSLog(@"should open link: %@", [requestString substringFromIndex:[@"link:" length]]);
-        NSString *escaped = [[requestString substringFromIndex:[@"link:" length]] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:escaped]];
+       
+//        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:escaped]];
         return NO;
     }
 	else if ([requestString hasPrefix:@"channel:"]) {

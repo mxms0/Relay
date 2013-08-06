@@ -730,12 +730,23 @@ static RCNetwork *currentNetwork = nil;
 	});
 }
 
+- (void)presentWebBrowserViewWithURL:(NSString *)urlreq {
+	[field resignFirstResponder];
+	isLISTViewPresented = YES;
+	[self dismissMenuOptions];
+	hoverView = [[RCHoverWebBrowser alloc] initWithFrame:CGRectZero];
+	[[hoverView navigationBar] setTitle:@"Loading..."];
+	[[hoverView navigationBar] setSubtitle:urlreq];
+	[self presentHoverCardWithView:hoverView];
+	[hoverView release];
+}
+
 - (void)animateChannelList {
 	[field resignFirstResponder];
 	isLISTViewPresented = YES;
 	[self dismissMenuOptions];
 	
-	hoverView = [[RCChannelListViewCard alloc] initWithFrame:CGRectMake(0, 43, chatView.frame.size.width, chatView.frame.size.height-43)];
+	hoverView = [[RCChannelListViewCard alloc] initWithFrame:CGRectZero];
 	[[hoverView navigationBar] setTitle:@"Channel List"];
 	[[hoverView navigationBar] setSubtitle:@"Loading..."];
 	[[[currentPanel channel] delegate] sendMessage:@"LIST"];
@@ -752,6 +763,7 @@ static RCNetwork *currentNetwork = nil;
 }
 
 - (void)presentHoverCardWithView:(UIView *)vc {
+	[vc setFrame:CGRectMake(0, 43, chatView.frame.size.width, chatView.frame.size.height-43)];
 	RCCuteView *mv = [[RCCuteView alloc] initWithFrame:chatView.frame];
 	[mv setBackgroundColor:[UIColor clearColor]];
 	CALayer *sch = [[CALayer alloc] init];

@@ -11,14 +11,16 @@
 
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
-		navigationBar.title = @"Loading";
-		navigationBar.subtitle = @"...";
-		[navigationBar setNeedsDisplay];
-		webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, navigationBar.frame.size.height, frame.size.width, frame.size.height - navigationBar.frame.size.height)];
+		webView = [[UIWebView alloc] init];
 		[self addSubview:webView];
 		[webView release];
 	}
 	return self;
+}
+
+- (void)setFrame:(CGRect)frame {
+	[super setFrame:frame];
+	[webView setFrame:CGRectMake(0, navigationBar.frame.size.height, frame.size.width, frame.size.height - navigationBar.frame.size.height)];
 }
 
 - (void)scrollToTop {

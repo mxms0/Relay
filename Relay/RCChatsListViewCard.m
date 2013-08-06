@@ -66,7 +66,7 @@
 - (void)cellWasPanned:(UIPanGestureRecognizer *)lp {
 	id view = [lp view];
 	if ([view isKindOfClass:[RCNetworkHeaderButton class]]) {
-		RCNetworkHeaderButton *btn = (RCNetworkHeaderButton *)view;
+	//	RCNetworkHeaderButton *btn = (RCNetworkHeaderButton *)view;
 		switch ([lp state]) {
 			case UIGestureRecognizerStateBegan: {
 				if (isRearranging) {
@@ -117,7 +117,7 @@
 					CGRect frame = CGRectMake(0, cr.y - (cell.frame.size.height/2), cell.frame.size.width, cell.frame.size.height);
 					CGRect bounds = [datas rectForSection:pf.section];
 					CGFloat headerHeight = [self tableView:datas heightForHeaderInSection:pf.section];
-					CGRect realBounds = CGRectMake(0, bounds.origin.y + (2 * headerHeight), bounds.size.width, bounds.size.height - (3 * headerHeight));
+					CGRect realBounds = CGRectMake(0, bounds.origin.y + (3 * headerHeight), bounds.size.width, bounds.size.height - (4 * headerHeight));
 					if (CGRectIntersectsRect(realBounds, frame))
 						[cell setFrame:frame];
 					[lp setTranslation:CGPointZero inView:self];
@@ -190,6 +190,11 @@
 }
 
 - (void)cellWasHeld:(UILongPressGestureRecognizer *)lgp {
+	if ([[lgp view] isKindOfClass:[RCNetworkCell class]]) {
+		RCNetworkCell *cell = (RCNetworkCell *)[lgp view];
+		if ([[cell channel] isEqualToString:@"\x01IRC"])
+			return;
+	}
 	if (!isRearranging) {
 		if (holdTimer) return;
 		holdTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(targetBeginLongPress:) userInfo:[lgp view] repeats:NO];

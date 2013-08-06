@@ -42,7 +42,7 @@
 			[self.layer insertSublayer:bg atIndex:1];
 			[bg release];
 		}
-		if (![self isKindOfClass:[RCTopViewCard class]] && ![self isKindOfClass:[RCChannelListViewCard class]]) {
+		if ([NSStringFromClass([self class]) isEqualToString:@"RCViewCard"]) {
 			RCBarButtonItem *bs = [[RCBarButtonItem alloc] init];
 			[bs setImage:[UIImage imageNamed:@"hamburgerbutton"] forState:UIControlStateNormal];
 			[bs setFrame:CGRectMake(1, 0, 50, 45)];

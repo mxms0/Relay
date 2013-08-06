@@ -14,6 +14,7 @@
 #import "RCChannelListViewCard.h"
 #import "RCCuteView.h"
 #import "RCSettingsViewController.h"
+#import "RCHoverWebBrowser.h"
 
 @class RCChatViewController, RCChatsListViewController, RCUserListViewController;
 @interface RCChatController : NSObject <UIAlertViewDelegate, UIActionSheetDelegate, UIGestureRecognizerDelegate, UITextFieldDelegate> {
@@ -24,7 +25,7 @@
 	RCChatPanel *currentPanel;
 	RCTextFieldBackgroundView *_bar;
 	RCTextField *field;
-	RCChannelListViewCard *hoverView;
+	RCHoverViewCard *hoverView;
 	CGFloat chatViewHeights[2];
 	CGFloat suggestLocation;
 	CGFloat currentPanelWidth;
@@ -52,6 +53,7 @@
 - (void)setDefaultTitleAndSubtitle;
 - (void)layoutWithRootViewController:(RCViewController *)rc;
 - (void)presentInitialSetupView;
+- (void)presentWebBrowserViewWithURL:(NSString *)url;
 - (void)dismissChannelList:(UIView *)cl;
 - (void)nickSuggestionCancelled;
 - (void)showNetworkListOptions;
