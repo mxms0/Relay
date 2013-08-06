@@ -8,6 +8,8 @@
 #import <UIKit/UIKit.h>
 #import "RCChannelInfo.h"
 
-@interface RCChannelInfoTableViewCell : UITableViewCell
+@interface RCChannelInfoTableViewCell : UITableViewCell {
+	UILabel *rightLabel;
+}
 @property (nonatomic, retain) RCChannelInfo *channelInfo;
 @end

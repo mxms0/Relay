@@ -62,7 +62,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	RCChannelInfoTableViewCell *cc = (RCChannelInfoTableViewCell *)[tableView dequeueReusableCellWithIdentifier:@"0_CSL"];
 	if (!cc) {
-		cc = [[[RCChannelInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"0_CSL"] autorelease];
+		cc = [[[RCChannelInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"0_CSL"] autorelease];
 	}
 	if (!channelDatas) {
 		[tableView reloadData];
@@ -212,33 +212,16 @@
 		[ifs setTopic:[topics stringByStrippingIRCMetadata]];
 	else
 		[ifs setTopic:@"No topic set."];
-	NSString *lcnt = [NSString stringWithFormat:@"%d Users", cc];
-	CGFloat rsz = 0;
-	dispatch_async(dispatch_get_main_queue(), ^{
-		CGSize szf = [lcnt sizeWithFont:[UIFont systemFontOfSize:12] minFontSize:10 actualFontSize:(CGFloat *)&rsz forWidth:84 lineBreakMode:NSLineBreakByClipping];
-		NSString *nam = chan;
-		CGFloat azf = 0;
-		[nam sizeWithFont:[UIFont boldSystemFontOfSize:16] minFontSize:8 actualFontSize:&azf forWidth:(320 - (szf.width + 40)) lineBreakMode:NSLineBreakByClipping];
-		NSString *set = [NSString stringWithFormat:@"%@ %d Users", chan, cc];
-		int lfr = [chan length];
-		NSMutableAttributedString *str = [[NSMutableAttributedString alloc] initWithString:set];
-		UIFont *ft = [UIFont boldSystemFontOfSize:azf];
-		[str addAttributes:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:ft, UIColorFromRGB(0x444647), nil] forKeys:[NSArray arrayWithObjects:NSFontAttributeName, NSForegroundColorAttributeName, nil]] range:NSMakeRange(0, lfr)];
-		UIFont *sft = [UIFont systemFontOfSize:rsz];
-		[str addAttributes:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:sft, UIColorFromRGB(0x797c7e), nil] forKeys:[NSArray arrayWithObjects:NSFontAttributeName, NSForegroundColorAttributeName, nil]] range:NSMakeRange(lfr, [set length] - lfr)];
-		[ifs setAttributedString:str];
-		[str release];
-		NSNumber *key = [NSNumber numberWithInt:cc];
-		NSMutableArray *ary = [unsortedChannels objectForKey:key];
-		if (!ary) {
-			ary = [NSMutableArray arrayWithObject:ifs];
-		}
-		else {
-			[ary addObject:ifs];
-			[ifs release]; // SHOULDNT FORGET THIS.
-		}
-		[unsortedChannels setObject:ary forKey:key];
-	});
+	NSNumber *key = [NSNumber numberWithInt:cc];
+	NSMutableArray *ary = [unsortedChannels objectForKey:key];
+	if (!ary) {
+		ary = [NSMutableArray arrayWithObject:ifs];
+	}
+	else {
+		[ary addObject:ifs];
+		[ifs release]; // SHOULDNT FORGET THIS.
+	}
+	[unsortedChannels setObject:ary forKey:key];
 }
 
 - (void)refreshSubtitleLabel {
@@ -246,7 +229,7 @@
 	dispatch_after(popTime, dispatch_get_main_queue(), ^{
 		NSString *subtitle = nil;
 		if (updating) {
-			subtitle = [NSString stringWithFormat:@"Loading... %d public channels", count];
+			subtitle = [NSString stringWithFormat:@"Loading... %d Public Channels", count];
 			[self refreshSubtitleLabel];
 		}
 		else {

@@ -13,12 +13,30 @@
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
 		self.selectionStyle = UITableViewCellSelectionStyleNone;
+		rightLabel = [[UILabel alloc] init];
+		self.textLabel.font = [UIFont boldSystemFontOfSize:12];
 	}
 	return self;
 }
 
+- (void)layoutSubviews {
+	[super layoutSubviews];
+	CGFloat act = 0;
+	CGFloat width = [self.textLabel.text sizeWithFont:[UIFont boldSystemFontOfSize:16] minFontSize:8 actualFontSize:&act forWidth:260 lineBreakMode:NSLineBreakByTruncatingMiddle].width;
+	[self.textLabel setFont:[UIFont boldSystemFontOfSize:act]];
+	[rightLabel setFrame:CGRectMake(width+5, 10, 320 - width + 10, 10)];
+}
+
+- (void)setChannelInfo:(RCChannelInfo *)_channelInfo {
+//	self.channelInfo = _channelInfo;
+	self.textLabel.text = [_channelInfo channel];
+	rightLabel.text = [NSString stringWithFormat:@"%d Users", [_channelInfo userCount]];
+	self.detailTextLabel.text = [_channelInfo topic];
+}
+
 - (void)drawRect:(CGRect)rect {
 	[super drawRect:rect];
+	return;
 	NSAttributedString *str = [channelInfo attributedString];
 	[str drawAtPoint:CGPointMake(8, 3)];
 	NSString *tlt = [channelInfo topic];
