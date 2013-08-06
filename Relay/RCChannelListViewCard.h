@@ -27,6 +27,7 @@
 	BOOL shouldBeIterating;
 	BOOL updating;
 	int count;
+	int max;
 }
 @property (nonatomic, assign) RCNetwork *currentNetwork;
 - (void)setUpdating:(BOOL)ud;

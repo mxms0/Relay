@@ -75,7 +75,6 @@
 		return cc;
 	}
 	[cc setChannelInfo:[use objectAtIndex:indexPath.row]];
-	[cc setBackgroundColor:[UIColor blackColor]];
 	[cc setNeedsDisplay];
 	return cc;
 }
@@ -149,7 +148,7 @@
 	dispatch_sync(dispatch_get_main_queue(), ^{
 		if (!updating) {
 			channelDatas = [[NSMutableArray alloc] initWithCapacity:count+1];
-			for (int i = count; i > 0; i--) {
+			for (int i = max; i > 0; i--) {
 				NSArray *ary = [unsortedChannels objectForKey:[NSNumber numberWithInt:i]];
 				if (ary) {
 					[channelDatas addObjectsFromArray:ary];
@@ -191,6 +190,7 @@
 		[self refreshSubtitleLabel];
 	}
 	RCChannelInfo *ifs = [[RCChannelInfo alloc] init];
+	max = MAX(max, cc);
 	count++;
 	[ifs setChannel:chan];
 	BOOL containsChannel = NO;

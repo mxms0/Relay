@@ -64,97 +64,123 @@
 }
 
 - (void)cellWasPanned:(UIPanGestureRecognizer *)lp {
-	RCNetworkCell *cell = (RCNetworkCell *)[lp view];
-	NSIndexPath *pf = [datas indexPathForCell:cell];
-	if ([[cell channel] isEqualToString:@"\x01IRC"]) {
-		return;
-	}
-	switch ([lp state]) {
-		case UIGestureRecognizerStateBegan: {
-			if (isRearranging) {
-				[[cell superview] bringSubviewToFront:cell];
-				[datas setScrollEnabled:NO];
-				for (UIGestureRecognizer *gz in [[lp view] gestureRecognizers]) {
-					if ([gz isKindOfClass:[UILongPressGestureRecognizer class]]) {
-						[gz setEnabled:NO];
-						break;
-					}
-				}
-			}
-			break;
-		}
-		case UIGestureRecognizerStateChanged:
-			if (isRearranging) {
-				// find subview.
-				CGPoint tr = [lp translationInView:self];
-				BOOL goingDown = (tr.y > 0);
-				CGPoint cr = CGPointMake([cell center].x, cell.center.y + tr.y);
-				CGRect frame = CGRectMake(0, cr.y - (cell.frame.size.height/2), cell.frame.size.width, cell.frame.size.height);
-				CGRect bounds = [datas rectForSection:pf.section];
-				CGFloat headerHeight = [self tableView:datas heightForHeaderInSection:pf.section];
-				CGRect realBounds = CGRectMake(0, bounds.origin.y + (2 * headerHeight), bounds.size.width, bounds.size.height - (3 * headerHeight));
-				if (CGRectIntersectsRect(realBounds, frame))
-					[cell setFrame:frame];
-				[lp setTranslation:CGPointZero inView:self];
-				for (RCNetworkCell *aCell in [datas visibleCells]) {
-					NSIndexPath *newPath = [datas indexPathForCell:aCell];
-					if (newPath.section != pf.section) continue;
-					if (![[aCell channel] isEqualToString:@"\x01IRC"] && (aCell != cell)) {
-						if (CGRectIntersectsRect(aCell.frame, cell.frame)) {
-							CGFloat hheight = aCell.frame.origin.y + (aCell.frame.size.height/2);
-							CGFloat mheight = cell.frame.origin.y + (cell.frame.size.height/2);
-							CGFloat offst = fabsf(mheight - hheight);
-							if (offst < aCell.frame.size.height/2) {
-								[UIView animateWithDuration:0.1 animations:^ {
-									[aCell setFrame:CGRectMake(0, aCell.frame.origin.y - (!goingDown ? -aCell.frame.size.height : aCell.frame.size.height), aCell.frame.size.width, aCell.frame.size.height)];
-								}];
-							}
+	id view = [lp view];
+	if ([view isKindOfClass:[RCNetworkHeaderButton class]]) {
+		RCNetworkHeaderButton *btn = (RCNetworkHeaderButton *)view;
+		switch ([lp state]) {
+			case UIGestureRecognizerStateBegan: {
+				if (isRearranging) {
+					[datas setScrollEnabled:NO];
+					for (UIGestureRecognizer *gz in [[lp view] gestureRecognizers]) {
+						if ([gz isKindOfClass:[UILongPressGestureRecognizer class]]) {
+							[gz setEnabled:NO];
 							break;
 						}
 					}
 				}
+				break;
 			}
-			break;
-		case UIGestureRecognizerStatePossible:
-			break;
-		default:
-			for (UIGestureRecognizer *gz in [[lp view] gestureRecognizers]) {
-				if ([gz isKindOfClass:[UILongPressGestureRecognizer class]]) {
-					[gz setEnabled:YES];
-					break;
+			case UIGestureRecognizerStateChanged:
+				break;
+			case UIGestureRecognizerStatePossible:
+				break;
+			default:
+				break;
+		}
+	}
+	else {
+		RCNetworkCell *cell = (RCNetworkCell *)[lp view];
+		NSIndexPath *pf = [datas indexPathForCell:cell];
+		if ([[cell channel] isEqualToString:@"\x01IRC"]) {
+			return;
+		}
+		switch ([lp state]) {
+			case UIGestureRecognizerStateBegan: {
+				if (isRearranging) {
+					[[cell superview] bringSubviewToFront:cell];
+					[datas setScrollEnabled:NO];
+					for (UIGestureRecognizer *gz in [[lp view] gestureRecognizers]) {
+						if ([gz isKindOfClass:[UILongPressGestureRecognizer class]]) {
+							[gz setEnabled:NO];
+							break;
+						}
+					}
 				}
+				break;
 			}
-			[datas setScrollEnabled:YES];
-			for (UITableViewCell *aCell in [datas visibleCells]) {
-				if (CGRectIntersectsRect(aCell.frame, cell.frame)) {
-					if (cell != aCell) {
-						CGFloat hheight = aCell.frame.size.height + aCell.frame.origin.y;
-						CGFloat wheight = cell.frame.size.height + cell.frame.origin.y;
-						CGFloat difst = wheight - hheight;
-						[UIView animateWithDuration:0.1 animations:^ {
-							if (difst > 0) {
-								[cell setFrame:CGRectMake(0, aCell.frame.origin.y + aCell.frame.size.height, aCell.frame.size.width, aCell.frame.size.height)];
+			case UIGestureRecognizerStateChanged:
+				if (isRearranging) {
+					// find subview.
+					CGPoint tr = [lp translationInView:self];
+					BOOL goingDown = (tr.y > 0);
+					CGPoint cr = CGPointMake([cell center].x, cell.center.y + tr.y);
+					CGRect frame = CGRectMake(0, cr.y - (cell.frame.size.height/2), cell.frame.size.width, cell.frame.size.height);
+					CGRect bounds = [datas rectForSection:pf.section];
+					CGFloat headerHeight = [self tableView:datas heightForHeaderInSection:pf.section];
+					CGRect realBounds = CGRectMake(0, bounds.origin.y + (2 * headerHeight), bounds.size.width, bounds.size.height - (3 * headerHeight));
+					if (CGRectIntersectsRect(realBounds, frame))
+						[cell setFrame:frame];
+					[lp setTranslation:CGPointZero inView:self];
+					for (RCNetworkCell *aCell in [datas visibleCells]) {
+						NSIndexPath *newPath = [datas indexPathForCell:aCell];
+						if (newPath.section != pf.section) continue;
+						if (![[aCell channel] isEqualToString:@"\x01IRC"] && (aCell != cell)) {
+							if (CGRectIntersectsRect(aCell.frame, cell.frame)) {
+								CGFloat hheight = aCell.frame.origin.y + (aCell.frame.size.height/2);
+								CGFloat mheight = cell.frame.origin.y + (cell.frame.size.height/2);
+								CGFloat offst = fabsf(mheight - hheight);
+								if (offst < aCell.frame.size.height/2) {
+									[UIView animateWithDuration:0.1 animations:^ {
+										[aCell setFrame:CGRectMake(0, aCell.frame.origin.y - (!goingDown ? -aCell.frame.size.height : aCell.frame.size.height), aCell.frame.size.width, aCell.frame.size.height)];
+									}];
+								}
+								break;
 							}
-							else {
-								[cell setFrame:CGRectMake(0, aCell.frame.origin.y - aCell.frame.size.height, aCell.frame.size.width, aCell.frame.size.height)];
-							}
-						}];
-						CGRect bounds = [datas rectForSection:pf.section];
-						CGFloat headerHeight = [self tableView:datas heightForHeaderInSection:pf.section];
-						CGFloat offy = (cell.frame.origin.y - bounds.origin.y)/headerHeight;
-						RCNetwork *netOp = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:pf.section];
-						[netOp moveChannel:[cell channel] toIndex:offy];
-						[datas reloadData];
+						}
+					}
+				}
+				break;
+			case UIGestureRecognizerStatePossible:
+				break;
+			default:
+				for (UIGestureRecognizer *gz in [[lp view] gestureRecognizers]) {
+					if ([gz isKindOfClass:[UILongPressGestureRecognizer class]]) {
+						[gz setEnabled:YES];
 						break;
 					}
 				}
-				else {
-					
-					
+				[datas setScrollEnabled:YES];
+				for (UITableViewCell *aCell in [datas visibleCells]) {
+					if (CGRectIntersectsRect(aCell.frame, cell.frame)) {
+						if (cell != aCell) {
+							CGFloat hheight = aCell.frame.size.height + aCell.frame.origin.y;
+							CGFloat wheight = cell.frame.size.height + cell.frame.origin.y;
+							CGFloat difst = wheight - hheight;
+							[UIView animateWithDuration:0.1 animations:^ {
+								if (difst > 0) {
+									[cell setFrame:CGRectMake(0, aCell.frame.origin.y + aCell.frame.size.height, aCell.frame.size.width, aCell.frame.size.height)];
+								}
+								else {
+									[cell setFrame:CGRectMake(0, aCell.frame.origin.y - aCell.frame.size.height, aCell.frame.size.width, aCell.frame.size.height)];
+								}
+							}];
+							CGRect bounds = [datas rectForSection:pf.section];
+							CGFloat headerHeight = [self tableView:datas heightForHeaderInSection:pf.section];
+							CGFloat offy = (cell.frame.origin.y - bounds.origin.y)/headerHeight;
+							RCNetwork *netOp = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:pf.section];
+							[netOp moveChannel:[cell channel] toIndex:offy];
+							[datas reloadData];
+							break;
+						}
+					}
+					else {
+						
+						
+					}
 				}
-			}
-			isRearranging = NO;
-			break;
+				isRearranging = NO;
+				break;
+		}
 	}
 }
 
@@ -174,6 +200,23 @@
 	if (!isRearranging) {
 		holdTimer = nil;
 		isRearranging = YES;
+		if ([[timer userInfo] isKindOfClass:[RCNetworkHeaderButton class]]) {
+			[[timer userInfo] setSelected:NO];
+			rearrangingHeaders = YES;
+			for (int vd = 0; vd < [[[RCNetworkManager sharedNetworkManager] networks] count]; vd++) {
+				RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:vd];
+				if ([net expanded]) {
+					NSMutableArray *adds = [[NSMutableArray alloc] init];
+					for (int i = 0; i < [[net _channels] count]; i++) {
+						[adds addObject:[NSIndexPath indexPathForRow:i inSection:vd]];
+					}
+					[datas beginUpdates];
+					[datas deleteRowsAtIndexPaths:adds withRowAnimation:UITableViewRowAnimationTop];
+					[datas endUpdates];
+					[adds release];
+				}
+			}
+		}
 	}
 }
 
@@ -185,7 +228,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	if (_reloading) return 0;
+	if (_reloading || rearrangingHeaders) return 0;
 	RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:section];
 	return (net.expanded ? [[net _channels] count] : 0);
 }
@@ -241,6 +284,17 @@
 		return nil;
 	}
 	RCNetworkHeaderButton *bts = [[RCNetworkHeaderButton alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+	/*
+	 UIPanGestureRecognizer *lpress = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(cellWasPanned:)];
+	 [bts addGestureRecognizer:lpress];
+	 [lpress setDelegate:self];
+	 [lpress release];
+	 UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(cellWasHeld:)];
+	 [longPress setCancelsTouchesInView:NO];
+	 [longPress setDelegate:self];
+	 [bts addGestureRecognizer:longPress];
+	 [longPress release];
+	 */
 	RCNetwork *use = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:section];
 	[bts setSection:section];
 	[bts setNetwork:use];
@@ -267,6 +321,7 @@
 }
 
 - (void)headerTapped:(RCNetworkHeaderButton *)hb {
+	if (rearrangingHeaders) return;
 	if ([[hb net] expanded]) {
 		[hb setSelected:NO];
 		[[hb net] setExpanded:NO];

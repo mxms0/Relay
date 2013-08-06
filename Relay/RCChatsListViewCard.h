@@ -13,6 +13,7 @@
 	RCSpecialTableView *datas;
 	BOOL _reloading;
 	BOOL isRearranging;
+	BOOL rearrangingHeaders;
 	NSTimer *holdTimer;
 }
 @property (nonatomic, readonly) BOOL isRearranging;
