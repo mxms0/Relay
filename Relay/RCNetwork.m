@@ -1197,6 +1197,9 @@
 		fullMessage = [fullMessage substringWithRange:NSMakeRange(1, [fullMessage length]-2)];
 		if ([fullMessage hasPrefix:@"ACTION"]) {
 			userMessage = [fullMessage substringFromIndex:7];
+			if (![[message parameterAtIndex:0] hasPrefix:@"#"]) {
+				RCParseUserMask(message.sender, &target, nil, nil);
+			}
 			typ = RCMessageTypeAction;
 		}
 		else if ([fullMessage hasPrefix:@"PING"]) {
