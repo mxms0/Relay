@@ -43,6 +43,7 @@ static BOOL isSetup = NO;
 	self.window.rootViewController = self.navigationController;
     [self.window makeKeyAndVisible];
 	[self performSelectorInBackground:@selector(_setup) withObject:nil];
+	[TestFlight takeOff:TEAM_TOKEN];
 	return YES;
 }
 

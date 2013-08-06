@@ -11,6 +11,7 @@
 #import "RCNetworkHeaderButton.h"
 
 @implementation RCChatsListViewCard
+@synthesize isRearranging;
 
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
@@ -40,8 +41,6 @@
 		[st setImage:[UIImage imageNamed:@"0_stb"] forState:UIControlStateNormal];
 		[navigationBar addSubview:st];
 		[st release];
-		// i know, one day i'll actually implement settings. :p
-		// sorry guys.
     }
     return self;
 }
@@ -65,40 +64,52 @@
 }
 
 - (void)cellWasPanned:(UIPanGestureRecognizer *)lp {
-	//MARK;
 	RCNetworkCell *cell = (RCNetworkCell *)[lp view];
+	NSIndexPath *pf = [datas indexPathForCell:cell];
+	if ([[cell channel] isEqualToString:@"\x01IRC"]) {
+		return;
+	}
 	switch ([lp state]) {
 		case UIGestureRecognizerStateBegan: {
-			[[cell superview] bringSubviewToFront:cell];
-			[datas setScrollEnabled:NO];
-			for (UIGestureRecognizer *gz in [[lp view] gestureRecognizers]) {
-				if ([gz isKindOfClass:[UILongPressGestureRecognizer class]]) {
-					[gz setEnabled:NO];
-					break;
+			if (isRearranging) {
+				[[cell superview] bringSubviewToFront:cell];
+				[datas setScrollEnabled:NO];
+				for (UIGestureRecognizer *gz in [[lp view] gestureRecognizers]) {
+					if ([gz isKindOfClass:[UILongPressGestureRecognizer class]]) {
+						[gz setEnabled:NO];
+						break;
+					}
 				}
 			}
 			break;
 		}
 		case UIGestureRecognizerStateChanged:
-			if (canDrag) {
+			if (isRearranging) {
 				// find subview.
 				CGPoint tr = [lp translationInView:self];
 				BOOL goingDown = (tr.y > 0);
 				CGPoint cr = CGPointMake([cell center].x, cell.center.y + tr.y);
-				[cell setCenter:cr];
+				CGRect frame = CGRectMake(0, cr.y - (cell.frame.size.height/2), cell.frame.size.width, cell.frame.size.height);
+				CGRect bounds = [datas rectForSection:pf.section];
+				CGFloat headerHeight = [self tableView:datas heightForHeaderInSection:pf.section];
+				CGRect realBounds = CGRectMake(0, bounds.origin.y + (2 * headerHeight), bounds.size.width, bounds.size.height - (3 * headerHeight));
+				if (CGRectIntersectsRect(realBounds, frame))
+					[cell setFrame:frame];
 				[lp setTranslation:CGPointZero inView:self];
-				for (RCNetworkCell *aCell in [datas subviews]) {
-					if ([aCell isKindOfClass:[RCNetworkCell class]]) {
-						if (![[cell channel] isEqualToString:[aCell channel]]) {
-							if (CGRectIntersectsRect(cell.frame, aCell.frame)) {
-								if ((cell.frame.origin.y < aCell.frame.origin.y) && !goingDown) {
-									aCell.frame = CGRectMake(0, aCell.frame.origin.y - aCell.frame.size.height, aCell.frame.size.width, aCell.frame.size.height);
-								}
-								else {
-									aCell.frame = CGRectMake(0, aCell.frame.origin.y + aCell.frame.size.height, aCell.frame.size.width, aCell.frame.size.height);
-								}
-								break;
+				for (RCNetworkCell *aCell in [datas visibleCells]) {
+					NSIndexPath *newPath = [datas indexPathForCell:aCell];
+					if (newPath.section != pf.section) continue;
+					if (![[aCell channel] isEqualToString:@"\x01IRC"] && (aCell != cell)) {
+						if (CGRectIntersectsRect(aCell.frame, cell.frame)) {
+							CGFloat hheight = aCell.frame.origin.y + (aCell.frame.size.height/2);
+							CGFloat mheight = cell.frame.origin.y + (cell.frame.size.height/2);
+							CGFloat offst = fabsf(mheight - hheight);
+							if (offst < aCell.frame.size.height/2) {
+								[UIView animateWithDuration:0.1 animations:^ {
+									[aCell setFrame:CGRectMake(0, aCell.frame.origin.y - (!goingDown ? -aCell.frame.size.height : aCell.frame.size.height), aCell.frame.size.width, aCell.frame.size.height)];
+								}];
 							}
+							break;
 						}
 					}
 				}
@@ -114,9 +125,35 @@
 				}
 			}
 			[datas setScrollEnabled:YES];
-//			if (canDrag)
-//				[cell setFrame:CGRectMake(0, cell.frame.origin.y + 5, cell.frame.size.width - 10, cell.frame.size.height - 10)];
-			canDrag = NO;
+			for (UITableViewCell *aCell in [datas visibleCells]) {
+				if (CGRectIntersectsRect(aCell.frame, cell.frame)) {
+					if (cell != aCell) {
+						CGFloat hheight = aCell.frame.size.height + aCell.frame.origin.y;
+						CGFloat wheight = cell.frame.size.height + cell.frame.origin.y;
+						CGFloat difst = wheight - hheight;
+						[UIView animateWithDuration:0.1 animations:^ {
+							if (difst > 0) {
+								[cell setFrame:CGRectMake(0, aCell.frame.origin.y + aCell.frame.size.height, aCell.frame.size.width, aCell.frame.size.height)];
+							}
+							else {
+								[cell setFrame:CGRectMake(0, aCell.frame.origin.y - aCell.frame.size.height, aCell.frame.size.width, aCell.frame.size.height)];
+							}
+						}];
+						CGRect bounds = [datas rectForSection:pf.section];
+						CGFloat headerHeight = [self tableView:datas heightForHeaderInSection:pf.section];
+						CGFloat offy = (cell.frame.origin.y - bounds.origin.y)/headerHeight;
+						RCNetwork *netOp = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:pf.section];
+						[netOp moveChannel:[cell channel] toIndex:offy];
+						[datas reloadData];
+						break;
+					}
+				}
+				else {
+					
+					
+				}
+			}
+			isRearranging = NO;
 			break;
 	}
 }
@@ -127,18 +164,16 @@
 }
 
 - (void)cellWasHeld:(UILongPressGestureRecognizer *)lgp {
-	if (!canDrag) {
+	if (!isRearranging) {
 		if (holdTimer) return;
 		holdTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(targetBeginLongPress:) userInfo:[lgp view] repeats:NO];
 	}
 }
 
 - (void)targetBeginLongPress:(NSTimer *)timer {
-	if (!canDrag) {
+	if (!isRearranging) {
 		holdTimer = nil;
-	//	RCNetworkCell *cell = [timer userInfo];
-	//	[cell setFrame:CGRectMake(-5, cell.frame.origin.y - 5, cell.frame.size.width+10, cell.frame.size.height+10)];
-		canDrag = YES;
+		isRearranging = YES;
 	}
 }
 

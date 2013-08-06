@@ -103,6 +103,7 @@ static id _inst = nil;
 }
 
 - (void)userPanned:(UIPanGestureRecognizer *)pan {
+	if ([bottomView isRearranging]) return;
 	if (isLISTViewPresented) return;
 	if (isLandscape) {
 		[self userPanned_special:pan];

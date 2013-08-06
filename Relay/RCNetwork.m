@@ -62,11 +62,11 @@
 		}
 		[item release];
 	}
-	NSMutableArray *rooms = [[[info objectForKey:CHANNELS_KEY] mutableCopy] autorelease];
-	if (!rooms) {
+	NSMutableArray *channels = [[[info objectForKey:CHANNELS_KEY] mutableCopy] autorelease];
+	if (!channels) {
 		[network addChannel:@"\x01IRC" join:NO];
 	}
-	[network _setupChannels:rooms];
+	[network _setupChannels:channels];
 	return [network autorelease];
 }
 
@@ -220,14 +220,10 @@
 			}
 			[chan setDelegate:self];
 			if ([chan isKindOfClass:[RCConsoleChannel class]]) {
-				[[self _channels] insertObject:chan atIndex:0];
-			}
-			else if ([chan isKindOfClass:[RCChannel class]] && ![chan isKindOfClass:[RCPMChannel class]]) {
-				if ([self consoleChannel]) [[self _channels] insertObject:chan atIndex:1];
-				else [[self _channels] insertObject:chan atIndex:0];
+				[_channels insertObject:chan atIndex:0];
 			}
 			else {
-				[[self _channels] insertObject:chan atIndex:[[self _channels] count]];
+				[_channels addObject:chan];
 			}
 			[chan release];
 			if (join) [chan setJoined:YES withArgument:nil];
@@ -257,6 +253,16 @@
 		[_channels removeObject:chan];
 		[[RCNetworkManager sharedNetworkManager] saveNetworks];
 	}
+}
+
+- (void)moveChannel:(NSString *)chan toIndex:(int)idx {
+	RCChannel *ctrlChan = [self channelWithChannelName:chan];
+	[ctrlChan retain];
+	int ridx = [_channels indexOfObject:[self channelWithChannelName:chan]];
+	[_channels removeObjectAtIndex:ridx];
+	[_channels insertObject:ctrlChan atIndex:idx-1];
+	[ctrlChan release];
+	[[RCNetworkManager sharedNetworkManager] saveNetworks];
 }
 
 - (void)savePasswords {

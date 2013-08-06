@@ -39,7 +39,7 @@
 	#define PREFS_ABSOLUT [[NSUserDefaults standardUserDefaults] objectForKey:PREFS_PLIST]
 	#define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 	#define isPad (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-	#define TEAM_TOKEN @"35b8aa0d259ae0c61c57bc770aeafe63_Mzk5NDYyMDExLTExLTA5IDE4OjQ0OjEwLjc4MTM3MQ"
+	#define TEAM_TOKEN @"b6b92f88-8b8b-4d6b-ae0c-53cc8adf1038"
 	#define DEL_CONFIRM_KEY 1112
 	#define USE_PRIVATE 1
 	#define _deg(x) ((x * M_PI)/180.0)

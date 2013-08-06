@@ -12,8 +12,9 @@
 @interface RCChatsListViewCard : RCViewCard <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate> {
 	RCSpecialTableView *datas;
 	BOOL _reloading;
-	BOOL canDrag;
+	BOOL isRearranging;
 	NSTimer *holdTimer;
 }
+@property (nonatomic, readonly) BOOL isRearranging;
 - (void)scrollToTop;
 @end

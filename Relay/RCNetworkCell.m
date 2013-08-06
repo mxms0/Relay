@@ -97,4 +97,8 @@
 	[super setSelected:selected];
 }
 
+- (id)description {
+	return [NSString stringWithFormat:@"<%@: %p; frame = %@; channel = %@", NSStringFromClass([self class]), self, NSStringFromCGRect(self.frame), self.channel];
+}
+
 @end
