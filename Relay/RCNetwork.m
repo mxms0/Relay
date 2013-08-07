@@ -255,12 +255,11 @@
 	}
 }
 
-- (void)moveChannel:(NSString *)chan toIndex:(int)idx {
-	RCChannel *ctrlChan = [self channelWithChannelName:chan];
+- (void)moveChannelAtIndex:(int)idx toIndex:(int)newIdx; {
+	RCChannel *ctrlChan = [_channels objectAtIndex:idx];
 	[ctrlChan retain];
-	int ridx = [_channels indexOfObject:[self channelWithChannelName:chan]];
-	[_channels removeObjectAtIndex:ridx];
-	[_channels insertObject:ctrlChan atIndex:idx-1];
+	[_channels removeObjectAtIndex:idx];
+	[_channels insertObject:ctrlChan atIndex:newIdx-1];
 	[ctrlChan release];
 	[[RCNetworkManager sharedNetworkManager] saveNetworks];
 }

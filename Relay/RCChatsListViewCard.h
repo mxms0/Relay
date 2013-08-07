@@ -9,7 +9,7 @@
 #import "RCViewCard.h"
 #import "RCSpecialTableView.h"
 
-@interface RCChatsListViewCard : RCViewCard <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate> {
+@interface RCChatsListViewCard : RCViewCard <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate, RCRearrangeableTableViewDelegate> {
 	RCSpecialTableView *datas;
 	BOOL _reloading;
 	BOOL isRearranging;
@@ -18,4 +18,5 @@
 }
 @property (nonatomic, readonly) BOOL isRearranging;
 - (void)scrollToTop;
+- (BOOL)isPanning;
 @end

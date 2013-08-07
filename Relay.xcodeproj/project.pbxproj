@@ -113,6 +113,7 @@
 		508D563E17767646005DF032 /* 0_jaggs@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 508D563C17767644005DF032 /* 0_jaggs@2x.png */; };
 		50929EB6151E65F1007E23D3 /* RCPMChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 50929EB5151E65F1007E23D3 /* RCPMChannel.m */; };
 		50929EBA151E86FA007E23D3 /* RCiPadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50929EB9151E86FA007E23D3 /* RCiPadViewController.m */; };
+		50955ED717B1C75F00795B39 /* RCRearrangeableTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50955ED617B1C75F00795B39 /* RCRearrangeableTableView.m */; };
 		509A8362169F960C0032BC2D /* 0_sugbg.png in Resources */ = {isa = PBXBuildFile; fileRef = 509A8360169F960C0032BC2D /* 0_sugbg.png */; };
 		509A8363169F960C0032BC2D /* 0_sugbg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 509A8361169F960C0032BC2D /* 0_sugbg@2x.png */; };
 		509A8367169FA1D00032BC2D /* RCNickButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 509A8366169FA1D00032BC2D /* RCNickButton.m */; };
@@ -372,6 +373,8 @@
 		50929EB5151E65F1007E23D3 /* RCPMChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCPMChannel.m; sourceTree = "<group>"; };
 		50929EB8151E86FA007E23D3 /* RCiPadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCiPadViewController.h; sourceTree = "<group>"; };
 		50929EB9151E86FA007E23D3 /* RCiPadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCiPadViewController.m; sourceTree = "<group>"; };
+		50955ED517B1C75F00795B39 /* RCRearrangeableTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCRearrangeableTableView.h; sourceTree = "<group>"; };
+		50955ED617B1C75F00795B39 /* RCRearrangeableTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCRearrangeableTableView.m; sourceTree = "<group>"; };
 		509A8360169F960C0032BC2D /* 0_sugbg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_sugbg.png; sourceTree = "<group>"; };
 		509A8361169F960C0032BC2D /* 0_sugbg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_sugbg@2x.png"; sourceTree = "<group>"; };
 		509A8365169FA1D00032BC2D /* RCNickButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCNickButton.h; sourceTree = "<group>"; };
@@ -625,6 +628,8 @@
 		503F1D2515BA35BA0003F808 /* Table View Crap */ = {
 			isa = PBXGroup;
 			children = (
+				50955ED517B1C75F00795B39 /* RCRearrangeableTableView.h */,
+				50955ED617B1C75F00795B39 /* RCRearrangeableTableView.m */,
 				501F2B3B150995DE0099C9C3 /* RCTableView.h */,
 				501F2B3C150995DE0099C9C3 /* RCTableView.m */,
 				50457529159570440092CB31 /* RCNetworkCell.h */,
@@ -1355,6 +1360,7 @@
 				5055F5DB179F4F3C001A17CB /* RCOperationQueue.m in Sources */,
 				5089527E17A62D16001264BA /* RCHoverViewCard.m in Sources */,
 				5089528117A62E34001264BA /* RCHoverWebBrowser.m in Sources */,
+				50955ED717B1C75F00795B39 /* RCRearrangeableTableView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

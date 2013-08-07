@@ -61,7 +61,7 @@ static NSString *template = nil;
 		case UIWebViewNavigationTypeReload:
 			break;
 		case UIWebViewNavigationTypeLinkClicked: {
-			NSString *escaped = [[requestString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] retain];
+			NSString *escaped = [requestString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 			[[RCChatController sharedController] presentWebBrowserViewWithURL:escaped];
 			return NO;
 			break;

@@ -6,7 +6,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "RCRearrangeableTableView.h"
 
-@interface RCSpecialTableView : UITableView
+@interface RCSpecialTableView : RCRearrangeableTableView
 
 @end

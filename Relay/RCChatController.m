@@ -103,8 +103,7 @@ static id _inst = nil;
 }
 
 - (void)userPanned:(UIPanGestureRecognizer *)pan {
-	if ([bottomView isRearranging]) return;
-	if (isLISTViewPresented) return;
+	if ([bottomView isRearranging] || [bottomView isPanning] || isLISTViewPresented) return;
 	if (isLandscape) {
 		[self userPanned_special:pan];
 		return;
@@ -751,7 +750,7 @@ static RCNetwork *currentNetwork = nil;
 	[[hoverView navigationBar] setSubtitle:@"Loading..."];
 	[[[currentPanel channel] delegate] sendMessage:@"LIST"];
 	[[[currentPanel channel] delegate] setListCallback:hoverView];
-	[hoverView setCurrentNetwork:[[currentPanel channel] delegate]];
+	[(RCChannelListViewCard *)hoverView setCurrentNetwork:[[currentPanel channel] delegate]];
 	[self presentHoverCardWithView:hoverView];
 	[hoverView release];
 }
