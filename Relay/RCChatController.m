@@ -177,7 +177,7 @@ static id _inst = nil;
 	infoView = [[RCTopViewCard alloc] initWithFrame:CGRectMake(frame.width, offx, frame.width, frame.height)];
 	[rc.view insertSubview:infoView atIndex:2];
 	UIPanGestureRecognizer *pg = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(userPanned:)];
-	[rc.view addGestureRecognizer:pg];
+	[chatView addGestureRecognizer:pg];
 	[pg release];
 	for (UIGestureRecognizer *gest in [bottomView->datas gestureRecognizers]) {
 		if ([gest isKindOfClass:NSClassFromString(@"UIScrollViewPanGestureRecognizer")]) {
