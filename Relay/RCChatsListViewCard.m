@@ -29,6 +29,8 @@
 		datas = [[RCSpecialTableView alloc] initWithFrame:CGRectMake(0, 44, 320, frame.size.height-44) style:UITableViewStylePlain];
 		[datas setDelegate:self];
 		[datas setDataSource:self];
+		[datas setRearrangeDelegate:self];
+		[datas setShouldImmobilizeFirstCell:YES];
 		[datas setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 		[datas setBackgroundColor:[UIColor clearColor]];
 		[datas setTableFooterView:adn];
