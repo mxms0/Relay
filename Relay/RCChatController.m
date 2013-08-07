@@ -103,7 +103,8 @@ static id _inst = nil;
 }
 
 - (void)userPanned:(UIPanGestureRecognizer *)pan {
-	if ([bottomView isRearranging] || [bottomView isPanning] || isLISTViewPresented) return;
+	MARK;
+	if ([bottomView isRearranging] || isLISTViewPresented) return;
 	if (isLandscape) {
 		[self userPanned_special:pan];
 		return;
@@ -178,6 +179,12 @@ static id _inst = nil;
 	UIPanGestureRecognizer *pg = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(userPanned:)];
 	[rc.view addGestureRecognizer:pg];
 	[pg release];
+	for (UIGestureRecognizer *gest in [bottomView->datas gestureRecognizers]) {
+		if ([gest isKindOfClass:NSClassFromString(@"UIScrollViewPanGestureRecognizer")]) {
+			[pg requireGestureRecognizerToFail:gest];
+			break;
+		}
+	}
 	chatViewHeights[0] = frame.height-83;
 	chatViewHeights[1] = frame.height-299;
 	[self setDefaultTitleAndSubtitle];

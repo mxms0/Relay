@@ -10,6 +10,7 @@
 #import "RCSpecialTableView.h"
 
 @interface RCChatsListViewCard : RCViewCard <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate, RCRearrangeableTableViewDelegate> {
+@public
 	RCSpecialTableView *datas;
 	BOOL _reloading;
 	BOOL isRearranging;

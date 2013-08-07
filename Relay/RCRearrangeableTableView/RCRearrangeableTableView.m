@@ -80,7 +80,7 @@
 				CGRect bounds = [self rectForSection:idx.section];
 				CGFloat headerHeight = [self.delegate tableView:self heightForHeaderInSection:idx.section];
 				int _pfx = (2 + (int)shouldImmobilizeFirstCell);
-				CGRect realBounds = CGRectMake(0, bounds.origin.y + headerHeight + ((_pfx -1) * cell.frame.size.height), bounds.size.width, bounds.size.height - ((_pfx + 1) * headerHeight));
+				CGRect realBounds = CGRectMake(0, bounds.origin.y + headerHeight + ((_pfx -1) * cell.frame.size.height), bounds.size.width, bounds.size.height - (headerHeight + ((_pfx) * cell.frame.size.height)));
 				// keep the moving cell inside of its section.
 				if (CGRectIntersectsRect(realBounds, frame))
 					[cell setFrame:frame];
