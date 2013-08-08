@@ -276,7 +276,7 @@ char RCUserHash(NSString *from) {
 			msg = [NSString stringWithFormat:@"%@%@", from, message];
 			break;
 		case RCMessageTypeTopic:
-			if (from) msg = [NSString stringWithFormat:@"%@ changed the topic to: %@", from, message];
+			if (from) msg = [[NSString stringWithFormat:@"%@ changed the topic to: %@", from, message] retain];
 			else msg = [message copy];
 			break;
 		case RCMessageTypeQuit:

@@ -36,6 +36,15 @@
 				break;
 			}
 		}
+		UILabel *apology = [[UILabel alloc] initWithFrame:CGRectMake(0, -100, 320, 100)];
+		[apology setFont:[UIFont boldSystemFontOfSize:12]];
+		[apology setTextColor:[UIColor darkGrayColor]];
+		[apology setBackgroundColor:[UIColor clearColor]];
+		[apology setText:@"I'm sure this takes a while to load on large servers like freenode, and I'm sure you're wondering why it isn't \"live\", just note, it's fastest this way. ;P"];
+		[apology setNumberOfLines:0];
+		[apology setTextAlignment:NSTextAlignmentCenter];
+		[channels addSubview:apology];
+		[apology release];
 		// can probably use UIAppearence to do this.. :/
 		[channels setTableHeaderView:searchBar];
 		[searchBar release];
