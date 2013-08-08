@@ -114,6 +114,7 @@
 		50929EB6151E65F1007E23D3 /* RCPMChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 50929EB5151E65F1007E23D3 /* RCPMChannel.m */; };
 		50929EBA151E86FA007E23D3 /* RCiPadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50929EB9151E86FA007E23D3 /* RCiPadViewController.m */; };
 		50955EDA17B1DFA200795B39 /* RCRearrangeableTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50955ED917B1DFA200795B39 /* RCRearrangeableTableView.m */; };
+		50955EDC17B3796E00795B39 /* mainnavbarbg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50955EDB17B3796E00795B39 /* mainnavbarbg@2x.png */; };
 		509A8362169F960C0032BC2D /* 0_sugbg.png in Resources */ = {isa = PBXBuildFile; fileRef = 509A8360169F960C0032BC2D /* 0_sugbg.png */; };
 		509A8363169F960C0032BC2D /* 0_sugbg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 509A8361169F960C0032BC2D /* 0_sugbg@2x.png */; };
 		509A8367169FA1D00032BC2D /* RCNickButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 509A8366169FA1D00032BC2D /* RCNickButton.m */; };
@@ -126,7 +127,6 @@
 		50A1452B17A2E9E70082E4A0 /* userlistbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A1452917A2E9E70082E4A0 /* userlistbutton.png */; };
 		50A1452C17A2E9E70082E4A0 /* userlistbutton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A1452A17A2E9E70082E4A0 /* userlistbutton@2x.png */; };
 		50A1453717A2F76D0082E4A0 /* mainnavbarbg.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A1453517A2F76D0082E4A0 /* mainnavbarbg.png */; };
-		50A1453817A2F76D0082E4A0 /* mainnavbarbg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A1453617A2F76D0082E4A0 /* mainnavbarbg@2x.png */; };
 		50A1453B17A30FD70082E4A0 /* maintextfield.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A1453917A30FD70082E4A0 /* maintextfield.png */; };
 		50A1453C17A30FD70082E4A0 /* maintextfield@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50A1453A17A30FD70082E4A0 /* maintextfield@2x.png */; };
 		50A1453E17A335500082E4A0 /* hdtoolbar420.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 50A1453D17A3354F0082E4A0 /* hdtoolbar420.jpeg */; };
@@ -375,6 +375,7 @@
 		50929EB9151E86FA007E23D3 /* RCiPadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCiPadViewController.m; sourceTree = "<group>"; };
 		50955ED817B1DFA200795B39 /* RCRearrangeableTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCRearrangeableTableView.h; path = RCRearrangeableTableView/RCRearrangeableTableView.h; sourceTree = "<group>"; };
 		50955ED917B1DFA200795B39 /* RCRearrangeableTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCRearrangeableTableView.m; path = RCRearrangeableTableView/RCRearrangeableTableView.m; sourceTree = "<group>"; };
+		50955EDB17B3796E00795B39 /* mainnavbarbg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mainnavbarbg@2x.png"; sourceTree = "<group>"; };
 		509A8360169F960C0032BC2D /* 0_sugbg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_sugbg.png; sourceTree = "<group>"; };
 		509A8361169F960C0032BC2D /* 0_sugbg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_sugbg@2x.png"; sourceTree = "<group>"; };
 		509A8365169FA1D00032BC2D /* RCNickButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCNickButton.h; sourceTree = "<group>"; };
@@ -390,7 +391,6 @@
 		50A1452917A2E9E70082E4A0 /* userlistbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = userlistbutton.png; sourceTree = "<group>"; };
 		50A1452A17A2E9E70082E4A0 /* userlistbutton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "userlistbutton@2x.png"; sourceTree = "<group>"; };
 		50A1453517A2F76D0082E4A0 /* mainnavbarbg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mainnavbarbg.png; sourceTree = "<group>"; };
-		50A1453617A2F76D0082E4A0 /* mainnavbarbg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mainnavbarbg@2x.png"; sourceTree = "<group>"; };
 		50A1453917A30FD70082E4A0 /* maintextfield.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = maintextfield.png; sourceTree = "<group>"; };
 		50A1453A17A30FD70082E4A0 /* maintextfield@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "maintextfield@2x.png"; sourceTree = "<group>"; };
 		50A1453D17A3354F0082E4A0 /* hdtoolbar420.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = hdtoolbar420.jpeg; sourceTree = "<group>"; };
@@ -727,7 +727,7 @@
 			isa = PBXGroup;
 			children = (
 				50A1453517A2F76D0082E4A0 /* mainnavbarbg.png */,
-				50A1453617A2F76D0082E4A0 /* mainnavbarbg@2x.png */,
+				50955EDB17B3796E00795B39 /* mainnavbarbg@2x.png */,
 				50A3222516607BE500F86E03 /* 0_strangebg.png */,
 				50A3222616607BF500F86E03 /* 0_strangebg@2x.png */,
 				50728FDC15E0B433008D2630 /* 0_navbtn_d.png */,
@@ -1263,10 +1263,10 @@
 				50A1452B17A2E9E70082E4A0 /* userlistbutton.png in Resources */,
 				50A1452C17A2E9E70082E4A0 /* userlistbutton@2x.png in Resources */,
 				50A1453717A2F76D0082E4A0 /* mainnavbarbg.png in Resources */,
-				50A1453817A2F76D0082E4A0 /* mainnavbarbg@2x.png in Resources */,
 				50A1453B17A30FD70082E4A0 /* maintextfield.png in Resources */,
 				50A1453C17A30FD70082E4A0 /* maintextfield@2x.png in Resources */,
 				50A1453E17A335500082E4A0 /* hdtoolbar420.jpeg in Resources */,
+				50955EDC17B3796E00795B39 /* mainnavbarbg@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

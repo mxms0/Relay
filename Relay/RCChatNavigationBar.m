@@ -19,7 +19,7 @@
 		maxSize = 22;
 		isMain = NO;
 		superSpecialLikeAc3xx2 = NO;
-
+		[self setOpaque:NO];
 		CALayer *hshdw = [[CALayer alloc] init];
 		UIImage *hfs = [UIImage imageNamed:@"0_vzshdw"];
 		[hshdw setContents:(id)hfs.CGImage];
@@ -75,6 +75,8 @@
 
 - (void)drawRect:(CGRect)rect {
 	[super drawRect:rect];
+	[[UIColor clearColor] set];
+	[[UIColor clearColor] setFill];
 	UIImage *bg = [UIImage imageNamed:@"mainnavbarbg"];
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	[bg drawInRect:rect];

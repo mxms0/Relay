@@ -44,6 +44,11 @@
 	return self;
 }
 
+- (void)setFrame:(CGRect)frame {
+	[super setFrame:frame];
+	[channels setFrame:CGRectMake(0, 44, frame.size.width, frame.size.height-44)];
+}
+
 - (void)scrollToTop {
 	[channels setContentOffset:CGPointMake(0, 44) animated:YES];
 }
@@ -185,47 +190,43 @@
 		currentChannels = [[NSMutableArray alloc] init];
 		unsortedChannels = [[NSMutableDictionary alloc] init];
 		for (RCChannel *chan in [currentNetwork _channels]) {
-			[currentChannels addObject:[chan channelName]];
+			if (![[chan channelName] isEqualToString:@"\x01IRC"])
+				[currentChannels addObject:[chan channelName]];
 		}
 		[self refreshSubtitleLabel];
 	}
 	RCChannelInfo *ifs = [[RCChannelInfo alloc] init];
 	max = MAX(max, cc);
 	count++;
-	[ifs setChannel:chan];
-	BOOL containsChannel = NO;
-	for (NSString *channel in currentChannels) {
-		if ([chan isEqualToStringNoCase:channel]) {
-			containsChannel = YES;
-			break;
+	dispatch_async(dispatch_get_current_queue(), ^{ 
+		[ifs setChannel:chan];
+		for (NSString *channel in currentChannels) {
+			if ([chan isEqualToStringNoCase:channel]) {
+				[ifs setIsAlreadyInChannel:YES];
+				[currentChannels removeObject:chan];
+				break;
+			}
 		}
-	}
-	if (containsChannel) {
-		[ifs setIsAlreadyInChannel:YES];
-		[currentChannels removeObject:chan];
-	}
-	else {
-		[ifs setIsAlreadyInChannel:NO];
-	}
-	[ifs setUserCount:cc];
-	if (![topics isEqualToString:@""])
-		[ifs setTopic:[topics stringByStrippingIRCMetadata]];
-	else
-		[ifs setTopic:@"No topic set."];
-	NSNumber *key = [NSNumber numberWithInt:cc];
-	NSMutableArray *ary = [unsortedChannels objectForKey:key];
-	if (!ary) {
-		ary = [NSMutableArray arrayWithObject:ifs];
-	}
-	else {
-		[ary addObject:ifs];
-		[ifs release]; // SHOULDNT FORGET THIS.
-	}
-	[unsortedChannels setObject:ary forKey:key];
+		[ifs setUserCount:cc];
+		if (![topics isEqualToString:@""])
+			[ifs setTopic:[topics stringByStrippingIRCMetadata]];
+		else
+			[ifs setTopic:@"No topic set."];
+		NSNumber *key = [NSNumber numberWithInt:cc];
+		NSMutableArray *ary = [unsortedChannels objectForKey:key];
+		if (!ary) {
+			ary = [NSMutableArray arrayWithObject:ifs];
+		}
+		else {
+			[ary addObject:ifs];
+			[ifs release]; // SHOULDNT FORGET THIS.
+		}
+		[unsortedChannels setObject:ary forKey:key];
+	});
 }
 
 - (void)refreshSubtitleLabel {
-	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC/12);
+	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC/2);
 	dispatch_after(popTime, dispatch_get_main_queue(), ^{
 		NSString *subtitle = nil;
 		if (updating) {

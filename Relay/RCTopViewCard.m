@@ -75,7 +75,6 @@
 		set = [chan channelName];
 	}
 	[((RCChatNavigationBar *)[self navigationBar]) setTitle:set];
-	[tableView reloadData];
 	[chan setUsersPanel:(RCUserListPanel *)tableView];
 }
 
