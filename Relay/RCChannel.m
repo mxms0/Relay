@@ -310,8 +310,8 @@ char RCUserHash(NSString *from) {
 			if (![from isEqualToString:@""]) {
 				isHighlight = [self performHighlightCheck:&message];
 #if DEBUG
-				if ([from isEqualToStringNoCase:@"ifr0st"] || [from isEqualToStringNoCase:@"fr0st"]) {
-					msg = [NSString stringWithFormat:@"%c%c%d%c%c%@:%c%c%c%c %@", RCIRCAttributeBold, RCIRCAttributeColor, 16, RCIRCAttributeItalic, RCIRCAttributeUnderline, @"🐢", RCIRCAttributeUnderline, RCIRCAttributeItalic, RCIRCAttributeColor, RCIRCAttributeBold, message];
+				if ([from isEqualToStringNoCase:@"coolstar"] || [from isEqualToStringNoCase:@"coolstar"]) {
+					msg = [NSString stringWithFormat:@"%c%c%d%c%c%@:%c%c%c%c %@", RCIRCAttributeBold, RCIRCAttributeColor, 16, RCIRCAttributeItalic, RCIRCAttributeUnderline, @"♻", RCIRCAttributeUnderline, RCIRCAttributeItalic, RCIRCAttributeColor, RCIRCAttributeBold, message];
 					// sorry guys. :P gotta do this.
 				}
 #endif

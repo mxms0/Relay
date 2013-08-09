@@ -29,8 +29,7 @@ static id _eInstance = nil;
 		[cmds setObject:[NSArray arrayWithObjects:NSStringFromSelector(selector), NSStringFromClass(mee), nil] forKey:[commands lowercaseString]];
 	else {
 		for (NSString *command in commands) {
-			if ([command isKindOfClass:[NSString class]])
-				[cmds setObject:[NSArray arrayWithObjects:NSStringFromSelector(selector), NSStringFromClass(mee), nil] forKey:[command lowercaseString]];
+			[cmds setObject:[NSArray arrayWithObjects:NSStringFromSelector(selector), NSStringFromClass(mee), nil] forKey:[command lowercaseString]];
 		}
 	}
 }
