@@ -107,6 +107,7 @@
 		case UIGestureRecognizerStatePossible:
 			break;
 		default:
+			if (!isRearranging) return;
 			for (UIGestureRecognizer *gz in [cell gestureRecognizers]) {
 				if ([gz isKindOfClass:[UILongPressGestureRecognizer class]]) {
 					[gz setEnabled:YES];
