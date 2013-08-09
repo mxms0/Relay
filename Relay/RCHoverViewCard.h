@@ -8,7 +8,6 @@
 #import "RCViewCard.h"
 
 @interface RCHoverViewCard : RCViewCard
-
 - (void)dismiss;
 - (void)scrollToTop;
 @end

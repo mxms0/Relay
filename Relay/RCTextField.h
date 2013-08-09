@@ -7,8 +7,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface RCTextField : UITextField {
-	UITextFieldViewMode clearMode;
-}
+@interface RCTextField : UITextField 
 
 @end

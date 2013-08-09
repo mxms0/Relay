@@ -13,7 +13,6 @@
 @synthesize channel;
 
 static NSString *template = nil;
-
 - (id)initWithChannel:(RCChannel *)chan {
 	if ((self = [super init])) {
 		[self setChannel:chan];
@@ -22,12 +21,10 @@ static NSString *template = nil;
 		[self setHidden:YES];
 		if (!template) {
 			template = [[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"chatview" ofType:@"html"] encoding:NSUTF8StringEncoding error:nil] retain];
-			// must . fix. for. SD. displaayss
-	/*		template = [[NSString stringWithFormat:template,[[NSBundle mainBundle] pathForResource:@"0_jaggs@2x" ofType:@"png"]] retain];*/
 		}
 		preloadPool = [[NSMutableArray alloc] init];
 		self.dataDetectorTypes = (UIDataDetectorTypeLink | UIDataDetectorTypePhoneNumber);
-		self.delegate = (id<UIWebViewDelegate>)self;
+		self.delegate = (id <UIWebViewDelegate>)self;
 		[[self scrollView] setShowsHorizontalScrollIndicator:NO];
 		[[self scrollView] setShowsVerticalScrollIndicator:NO];
         [[self scrollView] setDecelerationRate:UIScrollViewDecelerationRateNormal];
@@ -58,12 +55,16 @@ static NSString *template = nil;
 
 - (BOOL)webView:(UIWebView *)webView2 shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
 	NSString *requestString = [[request URL] absoluteString];
+	BOOL openInSafari = YES;
 	switch (navigationType) {
 		case UIWebViewNavigationTypeReload:
 			break;
 		case UIWebViewNavigationTypeLinkClicked: {
 			NSString *escaped = [requestString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-			[[RCChatController sharedController] presentWebBrowserViewWithURL:escaped];
+			if (openInSafari)
+				[[UIApplication sharedApplication] openURL:[NSURL URLWithString:escaped]];
+			else
+				[[RCChatController sharedController] presentWebBrowserViewWithURL:escaped];
 			return NO;
 			break;
 		}
@@ -71,59 +72,34 @@ static NSString *template = nil;
 			return YES;
 			break;
 	}
-	if ([requestString isEqualToString:@"file:///"])
-		return YES;
-    if ([requestString hasPrefix:@"link:"]) {
-        NSLog(@"should open link: %@", [requestString substringFromIndex:[@"link:" length]]);
-       
-//        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:escaped]];
-        return NO;
-    }
-	else if ([requestString hasPrefix:@"channel:"]) {
-		NSLog(@"should join: %@", [requestString substringFromIndex:[@"channel:" length]]);
-		NSString *escaped = [[requestString substringFromIndex:[@"channel:" length]] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-		RCChannel *ch = [[(RCChannel *)[self channel] delegate] addChannel:escaped join:YES];
-		if (ch) {
-			[[RCChatController sharedController] selectChannel:[ch channelName] fromNetwork:nil];
-		}
-		reloadNetworks();
-		// select network here.
-		return NO;
-	}
-	else {
-		[[UIApplication sharedApplication] openURL:[request URL]];
-	}
-    return NO;
+	return NO;
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     @synchronized(self) {
-		NSMutableArray *pre_pool = preloadPool;
-		preloadPool = nil;
-		for (RCMessageFormatter *ms in pre_pool) {
+		for (RCMessageFormatter *ms in preloadPool) {
 			[self layoutMessage:ms];
 		}
-		[pre_pool release];
+		[preloadPool release];
+		preloadPool = nil;
 	}
 }
 
 - (void)layoutMessage:(RCMessageFormatter *)ms {
-    /* hi max please refactor this <3 */
-	// leaving this for historical purposes.
 	if (self.hidden) {
 		self.hidden = NO;
 	}
 	@synchronized(self) {
 		if (preloadPool) {
 #if LOGALL
-			NSLog(@"Preload Pool Loaded for %@", [channel channelName]);
+			NSLog(@"Adding to preload pool [%@] %@", [channel channelName], ms);
 #endif
 			[preloadPool addObject:ms];
 			return;
 		}
 	}
 	[ms retain];
-	dispatch_async(dispatch_get_main_queue(), ^(void) {
+	dispatch_async(dispatch_get_main_queue(), ^ {
 		NSString *name = nil;
 		if (ms.needsCenter) {
 			name = [self stringByEvaluatingJavaScriptFromString:@"createMessage(true);"];
@@ -131,9 +107,8 @@ static NSString *template = nil;
 		else {
 			name = [self stringByEvaluatingJavaScriptFromString:@"createMessage(false);"];
 		}
-		NSString *res = [self stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"postMessage('%@', '%@', %@)", name, ms.string, ((self.scrollView.tracking || self.scrollView.dragging )? @"false" : @"true")]];
-		if ([res isEqualToString:@"nop"]) {
-		}
+		(void)[self stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"postMessage('%@', '%@', %@)", name, ms.string, ((self.scrollView.tracking || self.scrollView.dragging) ? @"false" : @"true")]];
+		
 		[ms release];
 	});
 }
@@ -163,10 +138,6 @@ static NSString *template = nil;
 		[message release];
 		[_message release];
 	});
-}
-
-- (void)setScrollingEnabled:(BOOL)en {
-	[[self scrollView] setScrollEnabled:en];
 }
 
 - (void)dealloc {

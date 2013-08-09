@@ -137,6 +137,11 @@
 		RCIRCAttributeInternalNicknameEnd = 0x05
 	};
 
+	typedef enum RCPasswordRequestAlertType {
+		RCPasswordRequestAlertTypeNickServ,
+		RCPasswordRequestAlertTypeServer
+	} RCPasswordRequestAlertType;
+
 	static inline void reloadNetworks(void);
 	static inline void reloadNetworks(void) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"us.mxms.relay.reload" object:nil];

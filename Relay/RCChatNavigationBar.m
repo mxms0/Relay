@@ -15,10 +15,7 @@
 	if ((self = [super initWithFrame:frame])) {
 		title = nil;
 		subtitle = nil;
-		drawIndent = NO;
 		maxSize = 22;
-		isMain = NO;
-		superSpecialLikeAc3xx2 = NO;
 		[self setOpaque:NO];
 		CALayer *hshdw = [[CALayer alloc] init];
 		UIImage *hfs = [UIImage imageNamed:@"0_vzshdw"];

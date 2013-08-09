@@ -6,8 +6,6 @@
 //
 
 #import "RCAddCell.h"
-#import <QuartzCore/QuartzCore.h>
-#import "RCBasicViewController.h"
 
 @implementation RCAddCell
 

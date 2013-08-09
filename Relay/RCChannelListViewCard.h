@@ -6,19 +6,17 @@
 //
 
 #import "RCViewCard.h"
-#import "RCSuperSpecialTableView.h"
 #import "RCChannelInfo.h"
 #import "RCChannelInfoTableViewCell.h"
 #import "NSString+IRCStringSupport.h"
 #import "RCOperationQueue.h"
 #import "RCHoverViewCard.h"
-#import <CoreText/CoreText.h>
 
 @interface RCChannelListViewCard : RCHoverViewCard <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate> {
 	UITableView *channels;
 	NSMutableArray *channelDatas;
 	NSMutableArray *searchArray;
-	NSMutableArray *currentChannels;
+	NSMutableDictionary *currentChannels;
 	NSMutableDictionary *unsortedChannels;
 	RCNetwork *currentNetwork;
 	NSString *searchTerm;

@@ -24,7 +24,7 @@
 }
 
 - (void)scrollToTop {
-	
+	NSLog(@"Not Implemented/Shouldn't be calling super. <<%@>>", self);
 }
 
 - (void)dismiss {

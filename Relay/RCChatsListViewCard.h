@@ -19,5 +19,4 @@
 }
 @property (nonatomic, readonly) BOOL isRearranging;
 - (void)scrollToTop;
-- (BOOL)isPanning;
 @end

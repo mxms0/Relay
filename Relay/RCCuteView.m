@@ -14,8 +14,7 @@
 	[super touchesEnded:touches withEvent:event];
 	UITouch *tc = [touches anyObject];
 	CGPoint pt = [tc locationInView:self];
-	if (CGRectIntersectsRect(CGRectMake(pt.x, pt.y, 13, 13), CGRectMake(0, 0, 320, 40))) {
-		// sorry.
+	if (CGRectContainsPoint(CGRectMake(0, 0, self.frame.size.width, 40), pt)) {
 		[self dismiss];
 	}
 }

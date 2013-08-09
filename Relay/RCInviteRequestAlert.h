@@ -6,7 +6,7 @@
 //
 
 #import "RCPrettyAlertView.h"
-#import "RCNetwork.h"
 
 @interface RCInviteRequestAlert : RCPrettyAlertView
+
 @end

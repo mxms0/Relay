@@ -6,8 +6,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "RCTableView.h"
-#import "RCTextField.h"
 #import "RCMessageFormatter.h"
 #import "RCTextFieldBackgroundView.h"
 #import "RCNickSuggestionView.h"
@@ -19,11 +17,9 @@
 	CGFloat suggestionLocation;
 }
 @property (nonatomic, assign) RCChannel *channel;
-
 - (id)initWithChannel:(RCChannel *)chan;
 - (void)postMessage:(NSString *)_message withType:(RCMessageType)tr highlight:(BOOL)high;
 - (void)postMessage:(NSString *)_message withType:(RCMessageType)rr highlight:(BOOL)high isMine:(BOOL)mine;
 - (void)scrollToBottom;
 - (void)scrollToTop;
-- (void)setScrollingEnabled:(BOOL)en;
 @end

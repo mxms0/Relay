@@ -6,9 +6,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <QuartzCore/QuartzCore.h>
 
-@interface RCSuperSpecialTableView : UITableView {
-	CALayer *jaggs;
-}
+@interface RCSuperSpecialTableView : UITableView
+
 @end

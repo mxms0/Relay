@@ -7,7 +7,6 @@
 #import <Foundation/Foundation.h>
 
 @interface NSString (HTML)
-
 - (NSString *)gtm_stringByEscapingForHTML;
 - (NSString *)gtm_stringByEscapingForAsciiHTML;
 - (NSString *)stringWithNewLinesAsBRs;

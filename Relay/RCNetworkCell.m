@@ -8,7 +8,7 @@
 #import "RCNetworkCell.h"
 
 @implementation RCNetworkCell
-@synthesize channel, white, newMessageCount, joined, hasHighlights;
+@synthesize channel, white, newMessageCount, hasHighlights;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {

@@ -7,8 +7,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface RCCuteView : UIView 
-
+@interface RCCuteView : UIView
 - (void)dismiss;
-
 @end

@@ -14,8 +14,6 @@
 #import <time.h>
 #import <sys/sysctl.h>
 
-@interface RCBasicCommands : NSObject {
-
-}
+@interface RCBasicCommands : NSObject 
 
 @end

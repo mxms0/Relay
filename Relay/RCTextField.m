@@ -17,7 +17,6 @@
 
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
-		clearMode = UITextFieldViewModeWhileEditing;
 		[self setTextColor:UIColorFromRGB(0xa5a6a7)];
 		[self setFont:[UIFont systemFontOfSize:12]];
 		[self setRightViewMode:UITextFieldViewModeWhileEditing];
@@ -40,14 +39,14 @@
 
 - (BOOL)becomeFirstResponder {
 	BOOL ret = [super becomeFirstResponder];
-	if (ret && (clearMode == UITextFieldViewModeWhileEditing))
+	if (ret)
 		self.rightViewMode = UITextFieldViewModeAlways ;
 	return ret ;
 }
 
 - (BOOL)resignFirstResponder {
     BOOL ret = [super resignFirstResponder];
-	if (ret && (clearMode == UITextFieldViewModeWhileEditing))
+	if (ret)
 		self.rightViewMode = UITextFieldViewModeWhileEditing;
 	return ret ;
 }

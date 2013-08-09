@@ -7,6 +7,7 @@
 
 #import "NSString+IRCStringSupport.h"
 #import <CoreText/CoreText.h>
+
 typedef struct {
 	NSString *escapeSequence;
 	unichar uchar;
@@ -20,7 +21,6 @@ static HTMLEscapeMap gAsciiHTMLEscapeMap[] = {
 	{ @"&apos;", 39 },
 	{ @"&lt;", 60 },
 	{ @"&gt;", 62 },
-
 	{ @"&nbsp;", 160 }, 
 	{ @"&iexcl;", 161 }, 
 	{ @"&cent;", 162 }, 
@@ -117,18 +117,14 @@ static HTMLEscapeMap gAsciiHTMLEscapeMap[] = {
 	{ @"&yacute;", 253 }, 
 	{ @"&thorn;", 254 }, 
 	{ @"&yuml;", 255 },
-	
 	{ @"&OElig;", 338 },
 	{ @"&oelig;", 339 },
 	{ @"&Scaron;", 352 },
 	{ @"&scaron;", 353 },
 	{ @"&Yuml;", 376 },
-	
 	{ @"&fnof;", 402 },
-	
 	{ @"&circ;", 710 },
 	{ @"&tilde;", 732 },
-	
 	{ @"&Alpha;", 913 }, 
 	{ @"&Beta;", 914 }, 
 	{ @"&Gamma;", 915 }, 
@@ -180,8 +176,7 @@ static HTMLEscapeMap gAsciiHTMLEscapeMap[] = {
 	{ @"&omega;", 969 }, 
 	{ @"&thetasym;", 977 }, 
 	{ @"&upsih;", 978 }, 
-	{ @"&piv;", 982 }, 
-	
+	{ @"&piv;", 982 },
 	{ @"&ensp;", 8194 },
 	{ @"&emsp;", 8195 },
 	{ @"&thinsp;", 8201 },
@@ -199,23 +194,16 @@ static HTMLEscapeMap gAsciiHTMLEscapeMap[] = {
 	{ @"&bdquo;", 8222 },
 	{ @"&dagger;", 8224 },
 	{ @"&Dagger;", 8225 },
-
 	{ @"&bull;", 8226 }, 
-	{ @"&hellip;", 8230 }, 
-	
+	{ @"&hellip;", 8230 },
 	{ @"&permil;", 8240 },
-	
 	{ @"&prime;", 8242 }, 
-	{ @"&Prime;", 8243 }, 
-	
+	{ @"&Prime;", 8243 },
 	{ @"&lsaquo;", 8249 },
 	{ @"&rsaquo;", 8250 },
-	
 	{ @"&oline;", 8254 }, 
-	{ @"&frasl;", 8260 }, 
-	
+	{ @"&frasl;", 8260 },
 	{ @"&euro;", 8364 },
-	 
 	{ @"&image;", 8465 },
 	{ @"&weierp;", 8472 }, 
 	{ @"&real;", 8476 }, 
@@ -291,16 +279,13 @@ static HTMLEscapeMap gUnicodeHTMLEscapeMap[] = {
 	{ @"&apos;", 39 },
 	{ @"&lt;", 60 },
 	{ @"&gt;", 62 },
-	
 	{ @"&OElig;", 338 },
 	{ @"&oelig;", 339 },
 	{ @"&Scaron;", 352 },
 	{ @"&scaron;", 353 },
 	{ @"&Yuml;", 376 },
-	
 	{ @"&circ;", 710 },
 	{ @"&tilde;", 732 },
-    
 	{ @"&ensp;", 8194 },
 	{ @"&emsp;", 8195 },
 	{ @"&thinsp;", 8201 },
@@ -324,8 +309,6 @@ static HTMLEscapeMap gUnicodeHTMLEscapeMap[] = {
 	{ @"&euro;", 8364 },
 };
 
-
-// Utility function for Bsearching table above
 static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
 	const unichar *uchar = (const unichar *)ucharVoid;
 	const HTMLEscapeMap *map = (const HTMLEscapeMap*)mapVoid;
@@ -359,7 +342,6 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
 		return nil;
 	}
 	unichar *buffer2 = (unichar *)[data2 mutableBytes];
-	
 	NSUInteger buffer2Length = 0;
 	
 	for (NSUInteger i = 0; i < length; ++i) {
@@ -375,7 +357,8 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
 			else {
 				[finalString appendFormat:@"&#%d;", buffer[i]];
 			}
-		} else {
+		}
+		else {
 			buffer2[buffer2Length] = buffer[i];
 			buffer2Length += 1;
 		}
@@ -387,16 +370,12 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
 }
 
 - (NSString *)gtm_stringByEscapingForHTML {
-	return [self gtm_stringByEscapingHTMLUsingTable:gUnicodeHTMLEscapeMap 
-											 ofSize:sizeof(gUnicodeHTMLEscapeMap) 
-									escapingUnicode:NO];
-} // gtm_stringByEscapingHTML
+	return [self gtm_stringByEscapingHTMLUsingTable:gUnicodeHTMLEscapeMap ofSize:sizeof(gUnicodeHTMLEscapeMap) escapingUnicode:NO];
+}
 
 - (NSString *)gtm_stringByEscapingForAsciiHTML {
-	return [self gtm_stringByEscapingHTMLUsingTable:gAsciiHTMLEscapeMap 
-											 ofSize:sizeof(gAsciiHTMLEscapeMap) 
-									escapingUnicode:YES];
-} // gtm_stringByEscapingAsciiHTML
+	return [self gtm_stringByEscapingHTMLUsingTable:gAsciiHTMLEscapeMap ofSize:sizeof(gAsciiHTMLEscapeMap) escapingUnicode:YES];
+}
 
 - (NSString *)stringByEncodingHTMLEntities {
     return [NSString stringWithString:[self gtm_stringByEscapingForAsciiHTML]];
@@ -446,12 +425,8 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
 	if (!NSClassFromString(@"NSRegularExpression")) return self;
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSString *pattern1 = @"\\B[#&](\\w+)\\b";
-	// don't forget about (?:\B|(?!=[^\s,]#))[#&]([^\s,]+)
 	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern1 options:0 error:nil];
-	// old : $1\x04\x30\x30<a href=\"channel:$2\" class=\"channel\">$2</a>\x05
-	//	NSString *template = [NSString stringWithFormat:@"$1\x04\x30\x30\x3 href=%Cchannel:$2\x6 class=%Cchannel\x6%C$2\x5\x05", (unsigned short)0x6, (unsigned short)0x6, (unsigned short)0x4];
 	NSString *template = @"$1\x04\x30\x30<a href=\"channel:$2\" class=\"channel\">$2</a>\x05";
-	// ffs
 	NSString *modifiedString = [[regex stringByReplacingMatchesInString:self options:0 range:NSMakeRange(0, [self length]) withTemplate:template] retain];
 	[pool drain];
 	return [modifiedString autorelease];
@@ -490,7 +465,6 @@ static int EscapeMapCompare(const void *ucharVoid, const void *mapVoid) {
                     itc = NO;
                     readNumber(&b, &itc, &cpos, istring);
                 } 
-                // BOOL readNumber(int* num, BOOL* isThereComma, int* size_of_num, char* data, int size);
                 lpos = cpos;
                 break;
             case RCIRCAttributeInternalNickname:;;

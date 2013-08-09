@@ -45,118 +45,6 @@ static id _inst = nil;
 	[[chatView navigationBar] setNeedsDisplay];
 }
 
-- (void)userPanned_special:(UIPanGestureRecognizer *)pan {
-	if (isLISTViewPresented) return;
-	if (pan.state == UIGestureRecognizerStateChanged) {
-		CGPoint tr = [pan translationInView:[chatView superview]];
-		CGPoint centr = CGPointMake([chatView center].x +tr.x, [chatView center].y);
-		if (draggingUserList && [infoView frame].origin.x > [chatView frame].size.width) {
-			draggingUserList = NO;
-		}
-#if LOGALL
-		NSLog(@"HI I AM @ %f [LANDSCAPE]", centr.x);
-#endif
-		if (centr.x < 240 || draggingUserList) {
-			
-			draggingUserList = YES;
-			if (infoView.frame.origin.x > 240) {
-				[infoView setCenter:CGPointMake([infoView center].x+tr.x, [infoView center].y)];
-			}
-			else {
-				
-			}
-			[pan setTranslation:CGPointZero inView:[chatView superview]];
-			return;
-		}
-		if (!draggingUserList) {
-			if (canDragMainView) {
-				//	if (centr.x <= 595 && centr.x > 285) {
-				if (centr.x < 510) {
-					[chatView setCenter:centr];
-					[pan setTranslation:CGPointZero inView:[chatView superview]];
-				}
-			}
-		}
-	}
-	else if (pan.state == UIGestureRecognizerStateEnded) {
-		if (draggingUserList) {
-			if ([pan velocityInView:[chatView superview]].x > 0) {
-				[self popUserListWithDuration:0.30];
-			}
-			else {
-				[self pushUserListWithDuration:0.30];
-			}
-		}
-		else {
-			if (!canDragMainView) return;
-			if ([pan velocityInView:chatView.superview].x > 0) {
-				[self openWithDuration:0.30];
-			}
-			else
-				[self closeWithDuration:0.30];
-		}
-		draggingUserList = NO;
-	}
-	else if (pan.state == UIGestureRecognizerStateCancelled || pan.state == UIGestureRecognizerStateFailed) {
-		[self cleanLayersAndMakeMainChatVisible];
-	}
-}
-
-- (void)userPanned:(UIPanGestureRecognizer *)pan {
-	if ([bottomView isRearranging] || isLISTViewPresented) return;
-	if (isLandscape) {
-		[self userPanned_special:pan];
-		return;
-	}
-	if (pan.state == UIGestureRecognizerStateChanged) {
-		CGPoint tr = [pan translationInView:[chatView superview]];
-		CGPoint centr = CGPointMake([chatView center].x +tr.x, [chatView center].y);
-		if (draggingUserList && [infoView frame].origin.x > [infoView frame].size.width) {
-			draggingUserList = NO;
-		}
-#if LOGALL
-		NSLog(@"HI I AM @ %f", centr.x);
-#endif
-		if (centr.x < 160 || draggingUserList) {
-			
-			draggingUserList = YES;
-			[infoView setCenter:CGPointMake([infoView center].x+tr.x, [infoView center].y)];
-			[pan setTranslation:CGPointZero inView:[chatView superview]];
-			return;
-		}
-		if (!draggingUserList) {
-			if (canDragMainView) {
-				//	if (centr.x <= 595 && centr.x > 285) {
-				[chatView setCenter:centr];
-				[pan setTranslation:CGPointZero inView:[chatView superview]];
-				//}
-			}
-		}
-	}
-	else if (pan.state == UIGestureRecognizerStateEnded) {
-		if (draggingUserList) {
-			if ([pan velocityInView:[chatView superview]].x > 0) {
-				[self popUserListWithDuration:0.30];
-			}
-			else {
-				[self pushUserListWithDuration:0.30];
-			}
-		}
-		else {
-			if (!canDragMainView) return;
-			if ([pan velocityInView:chatView.superview].x > 0) {
-				[self openWithDuration:0.30];
-			}
-			else
-				[self closeWithDuration:0.30];
-		}
-		draggingUserList = NO;
-	}
-	else if (pan.state == UIGestureRecognizerStateCancelled || pan.state == UIGestureRecognizerStateFailed) {
-		[self cleanLayersAndMakeMainChatVisible];
-	}
-}
-
 - (void)layoutWithRootViewController:(RCViewController *)rc {
 	currentPanel = nil;
 	rootView = rc;
@@ -280,6 +168,15 @@ static id _inst = nil;
 	[textField setText:@""];
 	[[RCNickSuggestionView sharedInstance] dismiss];
 	return NO;
+}
+
+- (void)nickSuggestionCancelled {
+	nickSuggestionDisabled = YES;
+	[[RCNickSuggestionView sharedInstance] dismiss];
+}
+
+- (CGFloat)suggestionLocation {
+	return 184;
 }
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
@@ -408,73 +305,6 @@ static RCNetwork *currentNetwork = nil;
 	[newc release];
 }
 
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-	switch ([actionSheet tag]) {
-		case RCALERR_GLOPTIONS: {
-			if (buttonIndex == 0) {
-				RCSettingsViewController *vc = [[RCSettingsViewController alloc] initWithStyle:0];
-				[self presentViewControllerInMainViewController:vc];
-				[vc release];
-				// settings
-			}
-			else if (buttonIndex == 1) {
-				// connect all
-				for (RCNetwork *net in [[RCNetworkManager sharedNetworkManager] networks]) {
-					[net connect];
-				}
-			}
-			else if (buttonIndex == 2) {
-				for (RCNetwork *net in [[RCNetworkManager sharedNetworkManager] networks]) {
-					[net disconnect];
-				}
-				// disconnect all
-			}
-			else if (buttonIndex == 3) {
-				// hm..
-				// clear badges
-				for (RCNetwork *net in [[RCNetworkManager sharedNetworkManager] networks]) {
-					if ([net isConnected]) {
-						for (RCChannel *chan in [net _channels]) {
-							[chan setNewMessageCount:0];
-							[[chan cellRepresentation] setNewMessageCount:0];
-							[[chan cellRepresentation] setNeedsDisplay];
-						}
-					}
-				}
-				// this may be slow in the future.
-				// find a better way to do this.
-			}
-			else if (buttonIndex == 4) {
-				// cancel
-			}
-			break;
-		}
-		case RCALERR_INDVOPTIONS: {
-			if (buttonIndex == 0) {
-				[actionSheet dismissWithClickedButtonIndex:buttonIndex animated:YES];
-				[self showDeleteConfirmationForNetwork];
-			}
-			else if (buttonIndex == 1) {
-				RCAddNetworkController *addNet = [[RCAddNetworkController alloc] initWithNetwork:currentNetwork];
-				[self presentViewControllerInMainViewController:addNet];
-				[addNet release];
-				currentNetwork = nil;
-				// edit.
-			}
-			else if (buttonIndex == 2) {
-				[currentNetwork connectOrDisconnectDependingOnCurrentStatus];
-				currentNetwork = nil;
-				//connect
-			}
-			else if (buttonIndex == 3) {
-				// cancel.
-				// kbye
-			}
-			break;
-		}
-	}
-}
-
 - (void)presentInitialSetupView {
 	return;
 	RCInitialSetupView *sv = [[RCInitialSetupView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
@@ -484,11 +314,6 @@ static RCNetwork *currentNetwork = nil;
 	[sv setAlpha:5.0];
 }
 
-- (void)nickSuggestionCancelled {
-	nickSuggestionDisabled = YES;
-	[[RCNickSuggestionView sharedInstance] dismiss];
-}
-
 - (void)showDeleteConfirmationForNetwork {
 	RCPrettyAlertView *qq = [[RCPrettyAlertView alloc] initWithTitle:@"Are you sure?" message:[NSString stringWithFormat:@"Are you sure you want to delete %@? This action cannot be undone.", [currentNetwork _description]] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Delete", nil];
 	[qq setTag:DEL_CONFIRM_KEY];
@@ -496,16 +321,115 @@ static RCNetwork *currentNetwork = nil;
 	[qq release];
 }
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-	switch ([alertView tag]) {
-		case DEL_CONFIRM_KEY:
-			if (buttonIndex == 1) {
-				[[NSNotificationCenter defaultCenter] postNotificationName:@"us.mxms.relay.del" object:[currentNetwork uUID]];
-				currentNetwork = nil;
+- (void)userPanned_special:(UIPanGestureRecognizer *)pan {
+	if (isLISTViewPresented) return;
+	if (pan.state == UIGestureRecognizerStateChanged) {
+		CGPoint tr = [pan translationInView:[chatView superview]];
+		CGPoint centr = CGPointMake([chatView center].x +tr.x, [chatView center].y);
+		if (draggingUserList && [infoView frame].origin.x > [chatView frame].size.width) {
+			draggingUserList = NO;
+		}
+#if LOGALL
+		NSLog(@"HI I AM @ %f [LANDSCAPE]", centr.x);
+#endif
+		if (centr.x < 240 || draggingUserList) {
+			
+			draggingUserList = YES;
+			if (infoView.frame.origin.x > 240) {
+				[infoView setCenter:CGPointMake([infoView center].x+tr.x, [infoView center].y)];
 			}
-			break;
-		default:
-			break;
+			else {
+				
+			}
+			[pan setTranslation:CGPointZero inView:[chatView superview]];
+			return;
+		}
+		if (!draggingUserList) {
+			if (canDragMainView) {
+				//	if (centr.x <= 595 && centr.x > 285) {
+				if (centr.x < 510) {
+					[chatView setCenter:centr];
+					[pan setTranslation:CGPointZero inView:[chatView superview]];
+				}
+			}
+		}
+	}
+	else if (pan.state == UIGestureRecognizerStateEnded) {
+		if (draggingUserList) {
+			if ([pan velocityInView:[chatView superview]].x > 0) {
+				[self popUserListWithDuration:0.30];
+			}
+			else {
+				[self pushUserListWithDuration:0.30];
+			}
+		}
+		else {
+			if (!canDragMainView) return;
+			if ([pan velocityInView:chatView.superview].x > 0) {
+				[self openWithDuration:0.30];
+			}
+			else
+				[self closeWithDuration:0.30];
+		}
+		draggingUserList = NO;
+	}
+	else if (pan.state == UIGestureRecognizerStateCancelled || pan.state == UIGestureRecognizerStateFailed) {
+		[self cleanLayersAndMakeMainChatVisible];
+	}
+}
+
+- (void)userPanned:(UIPanGestureRecognizer *)pan {
+	if ([bottomView isRearranging] || isLISTViewPresented) return;
+	if (isLandscape) {
+		[self userPanned_special:pan];
+		return;
+	}
+	if (pan.state == UIGestureRecognizerStateChanged) {
+		CGPoint tr = [pan translationInView:[chatView superview]];
+		CGPoint centr = CGPointMake([chatView center].x +tr.x, [chatView center].y);
+		if (draggingUserList && [infoView frame].origin.x > [infoView frame].size.width) {
+			draggingUserList = NO;
+		}
+#if LOGALL
+		NSLog(@"HI I AM @ %f", centr.x);
+#endif
+		if (centr.x < 160 || draggingUserList) {
+			
+			draggingUserList = YES;
+			[infoView setCenter:CGPointMake([infoView center].x+tr.x, [infoView center].y)];
+			[pan setTranslation:CGPointZero inView:[chatView superview]];
+			return;
+		}
+		if (!draggingUserList) {
+			if (canDragMainView) {
+				//	if (centr.x <= 595 && centr.x > 285) {
+				[chatView setCenter:centr];
+				[pan setTranslation:CGPointZero inView:[chatView superview]];
+				//}
+			}
+		}
+	}
+	else if (pan.state == UIGestureRecognizerStateEnded) {
+		if (draggingUserList) {
+			if ([pan velocityInView:[chatView superview]].x > 0) {
+				[self popUserListWithDuration:0.30];
+			}
+			else {
+				[self pushUserListWithDuration:0.30];
+			}
+		}
+		else {
+			if (!canDragMainView) return;
+			if ([pan velocityInView:chatView.superview].x > 0) {
+				[self openWithDuration:0.30];
+			}
+			else
+				[self closeWithDuration:0.30];
+		}
+		draggingUserList = NO;
+	}
+	else if (pan.state == UIGestureRecognizerStateCancelled || pan.state == UIGestureRecognizerStateFailed) {
+		[self cleanLayersAndMakeMainChatVisible];
 	}
 }
 
@@ -735,17 +659,6 @@ static RCNetwork *currentNetwork = nil;
 	});
 }
 
-- (void)presentWebBrowserViewWithURL:(NSString *)urlreq {
-	[field resignFirstResponder];
-	isLISTViewPresented = YES;
-	[self dismissMenuOptions];
-	hoverView = [[RCHoverWebBrowser alloc] initWithFrame:CGRectZero];
-	[[hoverView navigationBar] setTitle:@"Loading..."];
-	[[hoverView navigationBar] setSubtitle:urlreq];
-	[self presentHoverCardWithView:hoverView];
-	[hoverView release];
-}
-
 - (void)animateChannelList {
 	[field resignFirstResponder];
 	isLISTViewPresented = YES;
@@ -834,6 +747,17 @@ static RCNetwork *currentNetwork = nil;
 	[vs addAnimation:fade forKey:@"opacity"];
 	[CATransaction commit];
 	hoverView = nil;
+}
+
+- (void)presentWebBrowserViewWithURL:(NSString *)urlreq {
+	[field resignFirstResponder];
+	isLISTViewPresented = YES;
+	[self dismissMenuOptions];
+	hoverView = [[RCHoverWebBrowser alloc] initWithFrame:CGRectZero];
+	[[hoverView navigationBar] setTitle:@"Loading..."];
+	[[hoverView navigationBar] setSubtitle:urlreq];
+	[self presentHoverCardWithView:hoverView];
+	[hoverView release];
 }
 
 - (void)deleteCurrentChannel {
@@ -933,8 +857,84 @@ static RCNetwork *currentNetwork = nil;
 		[chatView insertSubview:_bar atIndex:[[chatView subviews] count]];
 }
 
-- (CGFloat)suggestionLocation {
-	return 184;
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+	switch ([alertView tag]) {
+		case DEL_CONFIRM_KEY:
+			if (buttonIndex == 1) {
+				[[NSNotificationCenter defaultCenter] postNotificationName:@"us.mxms.relay.del" object:[currentNetwork uUID]];
+				currentNetwork = nil;
+			}
+			break;
+		default:
+			break;
+	}
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+	switch ([actionSheet tag]) {
+		case RCALERR_GLOPTIONS: {
+			if (buttonIndex == 0) {
+				RCSettingsViewController *vc = [[RCSettingsViewController alloc] initWithStyle:0];
+				[self presentViewControllerInMainViewController:vc];
+				[vc release];
+				// settings
+			}
+			else if (buttonIndex == 1) {
+				// connect all
+				for (RCNetwork *net in [[RCNetworkManager sharedNetworkManager] networks]) {
+					[net connect];
+				}
+			}
+			else if (buttonIndex == 2) {
+				for (RCNetwork *net in [[RCNetworkManager sharedNetworkManager] networks]) {
+					[net disconnect];
+				}
+				// disconnect all
+			}
+			else if (buttonIndex == 3) {
+				// hm..
+				// clear badges
+				for (RCNetwork *net in [[RCNetworkManager sharedNetworkManager] networks]) {
+					if ([net isConnected]) {
+						for (RCChannel *chan in [net _channels]) {
+							[chan setNewMessageCount:0];
+							[[chan cellRepresentation] setNewMessageCount:0];
+							[[chan cellRepresentation] setNeedsDisplay];
+						}
+					}
+				}
+				// this may be slow in the future.
+				// find a better way to do this.
+			}
+			else if (buttonIndex == 4) {
+				// cancel
+			}
+			break;
+		}
+		case RCALERR_INDVOPTIONS: {
+			if (buttonIndex == 0) {
+				[actionSheet dismissWithClickedButtonIndex:buttonIndex animated:YES];
+				[self showDeleteConfirmationForNetwork];
+			}
+			else if (buttonIndex == 1) {
+				RCAddNetworkController *addNet = [[RCAddNetworkController alloc] initWithNetwork:currentNetwork];
+				[self presentViewControllerInMainViewController:addNet];
+				[addNet release];
+				currentNetwork = nil;
+				// edit.
+			}
+			else if (buttonIndex == 2) {
+				[currentNetwork connectOrDisconnectDependingOnCurrentStatus];
+				currentNetwork = nil;
+				//connect
+			}
+			else if (buttonIndex == 3) {
+				// cancel.
+				// kbye
+			}
+			break;
+		}
+	}
 }
 
 @end

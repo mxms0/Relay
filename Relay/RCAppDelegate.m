@@ -21,12 +21,6 @@
 @synthesize window = _window, navigationController = _navigationController;
 static BOOL isSetup = NO;
 
-- (void)dealloc {
-	[_window release];
-	[_navigationController release];
-    [super dealloc];
-}
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
 	UIViewController *rcv;
@@ -66,8 +60,6 @@ static BOOL isSetup = NO;
 			[[RCNetworkManager sharedNetworkManager] setIsBG:NO];
 			[[RCNetworkManager sharedNetworkManager] unpack];
 			isSetup = YES;
-	//		[TestFlight takeOff:@"35b8aa0d259ae0c61c57bc770aeafe63_Mzk5NDYyMDExLTExLTA5IDE4OjQ0OjEwLjc4MTM3MQ"];
-	//		[TestFlight setDeviceIdentifier:[[UIDevice currentDevice] uniqueIdentifier]];
 		}
 		[pool drain];
 	});	
@@ -96,10 +88,6 @@ static BOOL isSetup = NO;
             [network sendMessage:@"AWAY :Be back later."];
         }
     }
-	/*
-	 Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
-	 If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-	 */
 }
 
 - (void)showExpirationWarning {
@@ -138,25 +126,20 @@ static BOOL isSetup = NO;
 		if ([network isConnected])
 			[network sendMessage:@"AWAY"];
     }
-	/*
-	 Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-	 */
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
 	reloadNetworks();
-	/*
-	 Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-	 */
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
 	NSLog(@"I want to liveeeeeee");
-	/*
-	 Called when the application is about to terminate.
-	 Save data if appropriate.
-	 See also applicationDidEnterBackground:.
-	 */
+}
+
+- (void)dealloc {
+	[_window release];
+	[_navigationController release];
+    [super dealloc];
 }
 
 @end

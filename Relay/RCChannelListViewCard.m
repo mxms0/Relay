@@ -196,11 +196,11 @@
 - (void)recievedChannel:(NSString *)chan withCount:(int)cc andTopic:(NSString *)topics {
 	if (!updating) {
 		updating = YES;
-		currentChannels = [[NSMutableArray alloc] init];
+		currentChannels = [[NSMutableDictionary alloc] init];
 		unsortedChannels = [[NSMutableDictionary alloc] init];
 		for (RCChannel *chan in [currentNetwork _channels]) {
 			if (![[chan channelName] isEqualToString:@"\x01IRC"])
-				[currentChannels addObject:[chan channelName]];
+				[currentChannels setObject:(id)kCFBooleanTrue forKey:[[chan channelName] lowercaseString]];
 		}
 		[self refreshSubtitleLabel];
 	}
@@ -209,12 +209,9 @@
 	count++;
 	dispatch_async(dispatch_get_current_queue(), ^{ 
 		[ifs setChannel:chan];
-		for (NSString *channel in currentChannels) {
-			if ([chan isEqualToStringNoCase:channel]) {
-				[ifs setIsAlreadyInChannel:YES];
-				[currentChannels removeObject:chan];
-				break;
-			}
+		if ([currentChannels objectForKey:[chan lowercaseString]]) {
+			[ifs setIsAlreadyInChannel:YES];
+			[currentChannels removeObjectForKey:[chan lowercaseString]];
 		}
 		[ifs setUserCount:cc];
 		if (![topics isEqualToString:@""])
@@ -225,17 +222,17 @@
 		NSMutableArray *ary = [unsortedChannels objectForKey:key];
 		if (!ary) {
 			ary = [NSMutableArray arrayWithObject:ifs];
+			[unsortedChannels setObject:ary forKey:key];
 		}
 		else {
 			[ary addObject:ifs];
-			[ifs release]; // SHOULDNT FORGET THIS.
 		}
-		[unsortedChannels setObject:ary forKey:key];
+		[ifs release]; // SHOULDNT FORGET THIS
 	});
 }
 
 - (void)refreshSubtitleLabel {
-	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC/2);
+	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC/12);
 	dispatch_after(popTime, dispatch_get_main_queue(), ^{
 		NSString *subtitle = nil;
 		if (updating) {

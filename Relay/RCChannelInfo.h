@@ -17,6 +17,4 @@
 @property (nonatomic, assign) BOOL isAlreadyInChannel;
 @property (nonatomic, retain) NSString *topic;
 @property (nonatomic, retain) NSString *channel;
-@property (nonatomic, retain) NSAttributedString *attributedString;
-
 @end

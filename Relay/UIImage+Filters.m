@@ -10,7 +10,6 @@
 @implementation UIImage (Gaussian)
 
 - (UIImage *)imageWith3x3GaussianBlur {
-    
 	const CGFloat filter[3][3] = {
 		{1.0f/16.0f, 2.0f/16.0f, 1.0f/16.0f},
 		{2.0f/16.0f, 4.0f/16.0f, 2.0f/16.0f},

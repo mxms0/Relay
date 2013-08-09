@@ -22,7 +22,7 @@
 - (NSString *)objectForKey:(NSString *)key {
 	if (!key) return nil;
 	NSMutableDictionary *cpy = [NSMutableDictionary dictionaryWithDictionary:base];
-	NSData *ret;
+	NSData *ret = nil;
 	[cpy setObject:(id)kSecMatchLimitOne forKey:(id)kSecMatchLimit];
 	[cpy setObject:(id)kCFBooleanTrue forKey:(id)kSecReturnData];
 	OSStatus st = SecItemCopyMatching((CFDictionaryRef)cpy, (CFTypeRef *)&ret);

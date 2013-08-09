@@ -47,7 +47,6 @@ SSL_CTX *RCInitContext(void) {
 }
 
 - (int)connectToAddr:(NSString *)server withSSL:(BOOL)_ssl andPort:(int)port fromNetwork:(RCNetwork *)net {
-	// heh. sorry this took so long to clean up. ;P
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 #if LOGALL
 	NSLog(@"System Proxy Settings: {{%@}};", CFNetworkCopySystemProxySettings());

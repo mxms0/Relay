@@ -21,7 +21,7 @@ static id _nInstance = nil;
 	if ((self = [super init])) {
 		[self setFrame:CGRectMake(10, 0, 280, 34)];
 		[self setBackgroundColor:[UIColor clearColor]];
-		self.layer.zPosition = 10000;
+		self.layer.zPosition = UIWindowLevelAlert - 1;
 	}
 	return self;
 }

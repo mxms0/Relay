@@ -22,7 +22,6 @@
 		self.textLabel.textColor = [UIColor whiteColor];
 		self.textLabel.backgroundColor = [UIColor clearColor];
         transform = 0;
-        // Initialization code
     }
     return self;
 }

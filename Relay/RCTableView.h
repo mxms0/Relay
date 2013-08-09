@@ -6,7 +6,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <QuartzCore/QuartzCore.h>
 
 @interface RCTableView : UITableView 
 

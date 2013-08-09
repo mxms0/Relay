@@ -17,6 +17,7 @@
 	if ((self = [super initWithFrame:frame])) {
 		navigationBar = [[RCChatNavigationBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
 		[self addSubview:navigationBar];
+		navigationBar.layer.zPosition = 100000;
 		[navigationBar release];
 		[self setOpaque:YES];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadData) name:@"us.mxms.relay.reload" object:nil];
@@ -59,14 +60,7 @@
 - (void)removeNetwork:(NSNotification *)_net {
 	RCNetwork *net = [[RCNetworkManager sharedNetworkManager] networkWithDescription:[_net object]];
 	[[RCNetworkManager sharedNetworkManager] removeNet:net];
-	_reloading = YES;
-	[datas reloadData];
-	_reloading = NO;
-	[datas reloadData];
-}
-
-- (BOOL)isPanning {
-	return [datas isTracking];
+	[self reloadData];
 }
 
 - (void)tableView:(UITableView *)tableView movedCellFromIndex:(NSIndexPath *)idx toIndex:(NSIndexPath *)newIdx {
@@ -144,17 +138,6 @@
 		return nil;
 	}
 	RCNetworkHeaderButton *bts = [[RCNetworkHeaderButton alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-	/*
-	 UIPanGestureRecognizer *lpress = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(cellWasPanned:)];
-	 [bts addGestureRecognizer:lpress];
-	 [lpress setDelegate:self];
-	 [lpress release];
-	 UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(cellWasHeld:)];
-	 [longPress setCancelsTouchesInView:NO];
-	 [longPress setDelegate:self];
-	 [bts addGestureRecognizer:longPress];
-	 [longPress release];
-	 */
 	RCNetwork *use = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:section];
 	[bts setSection:section];
 	[bts setNetwork:use];

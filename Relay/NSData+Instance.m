@@ -10,7 +10,6 @@
 @implementation NSData (RCNewLineSet)
 
 static id _existingSet = nil;
-
 + (id)nlCharacterDataSet {
 	if (!_existingSet) _existingSet = [[NSData dataWithBytes:"\r\n" length:2] retain];
 	return _existingSet;
