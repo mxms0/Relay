@@ -117,7 +117,6 @@
 			[self setScrollEnabled:YES];
 			int count = 0;
 			for (UITableViewCell *aCell in [self visibleCells]) {
-				count++;
 				if (CGRectIntersectsRect(aCell.frame, cell.frame)) {
 					if (cell != aCell) {
 						CGFloat hheight = aCell.frame.size.height + aCell.frame.origin.y;
@@ -140,6 +139,7 @@
 						return;
 					}
 				}
+				count++;
 			}
 			CGRect boundingBox = [self rectForSection:idx.section];
 			if (cell.frame.origin.y + 44 >= (boundingBox.origin.y + boundingBox.size.height)) {

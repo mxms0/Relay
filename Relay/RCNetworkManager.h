@@ -22,6 +22,10 @@
 - (BOOL)replaceNetwork:(RCNetwork *)net withNetwork:(RCNetwork *)net;
 - (void)jumpToFirstNetworkAndConsole;
 - (void)addNetwork:(RCNetwork *)net;
+- (void)saveSettingsDictionary:(NSDictionary *)dict dispatchChanges:(BOOL)n;
+- (NSDictionary *)settingsDictionary;
+- (id)valueForSetting:(NSString *)set;
+- (void)setValue:(id)val forSetting:(NSString *)set;
 - (NSString *)networkPreferencesPath;
 - (NSMutableArray *)networks;
 - (void)removeNet:(RCNetwork *)net;

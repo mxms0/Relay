@@ -75,12 +75,16 @@
 
 - (void)tableView:(UITableView *)tableView cellDidBeginDragging:(UITableViewCell *)cell {
 	isRearranging = YES;
-	[cell setAlpha:0.7];
+	[UIView animateWithDuration:0.1 animations:^ {
+		[cell setAlpha:0.7];
+	}];
 }
 
 - (void)tableView:(UITableView *)tableView cellDidFinishDragging:(UITableViewCell *)cell {
 	isRearranging = NO;
-	[cell setAlpha:1.0];
+	[UIView animateWithDuration:0.1 animations:^ {
+		[cell setAlpha:1.0];
+	}];
 }
 
 - (void)reloadData {

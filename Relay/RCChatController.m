@@ -45,6 +45,13 @@ static id _inst = nil;
 	[[chatView navigationBar] setNeedsDisplay];
 }
 
+- (void)settingsChanged {
+	BOOL shouldAutocorrect = [[[RCNetworkManager sharedNetworkManager] valueForSetting:AUTOCORRECTION_KEY] boolValue];
+	BOOL shouldCapitalize = [[[RCNetworkManager sharedNetworkManager] valueForSetting:AUTOCAPITALIZE_KEY] boolValue];
+	[field setAutocorrectionType:(shouldAutocorrect ? UITextAutocorrectionTypeDefault : UITextAutocorrectionTypeNo)];
+	[field setAutocapitalizationType:(shouldCapitalize ? UITextAutocapitalizationTypeSentences : UITextAutocapitalizationTypeNone)];
+}
+
 - (void)layoutWithRootViewController:(RCViewController *)rc {
 	currentPanel = nil;
 	rootView = rc;
@@ -56,6 +63,7 @@ static id _inst = nil;
 	/*
 	 if (isiOS7)
 	 offx = 20; */
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsChanged) name:SETTINGS_CHANGED_KEY object:nil];
 	CGSize frame = [[UIScreen mainScreen] applicationFrame].size;
 	bottomView = [[RCChatsListViewCard alloc] initWithFrame:CGRectMake(0, offx, frame.width, frame.height)];
 	[rc.view insertSubview:bottomView atIndex:0];
@@ -91,11 +99,11 @@ static id _inst = nil;
 	[field setMinimumFontSize:17];
 	[field setAdjustsFontSizeToFitWidth:YES];
 	[field setDelegate:self];
-	[field setAutocapitalizationType:UITextAutocapitalizationTypeNone];
-	[field setAutocorrectionType:UITextAutocorrectionTypeNo];
 	[_bar addSubview:field];
 	[field release];
-	suggestLocation = [self suggestionLocation];;
+	suggestLocation = [self suggestionLocation];
+	(void)[RCDateManager sharedInstance]; // make sure this exists.
+	[[NSNotificationCenter defaultCenter] postNotificationName:SETTINGS_CHANGED_KEY object:nil];
 }
 
 - (void)statusWindowTapped:(UITapGestureRecognizer *)tp {

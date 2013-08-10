@@ -51,9 +51,6 @@
 		else {
 			rendr = [NSString stringWithFormat:@"%d", newMessageCount];
 		}
-		//len = [rendr sizeWithFont:[UIFont boldSystemFontOfSize:7.5]].width;
-		// sorry. :s
-		// it's not my fault! i promise. surenix did it!
 		BOOL longerThanNormal = ([rendr isEqualToString:@"99+"]);
 		CGFloat radius = 5.4;;
 		CGRect ovalThing = CGRectMake((longerThanNormal ? 95 : 100), 5, (longerThanNormal ? 16 : 11), 11);

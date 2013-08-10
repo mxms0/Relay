@@ -6,9 +6,6 @@
 //
 
 #ifndef Relay_Relay_h
-#ifdef NO_LOGGING__
-    #define NSLog NOLog
-#endif
     #define Relay_Relay_h
 	#define USER_KEY @"0_USER"
 	#define NICK_KEY @"0_NICK"
@@ -28,11 +25,17 @@
 	#define BG_NOTIF @"0_BGNOTIF"
 	#define CHANNAMEKEY @"0_CHANKEYNAME"
 	#define UUID_KEY @"0_UDIDKEY"
+	#define SETTINGS_CHANGED_KEY @"0_settschanged"
+// settings save keys
+	#define SETTINGS_KEY @"0_SETTINGSKEY"
+	#define TIMESECONDS_KEY @"0_useseconds"
+	#define AUTOCAPITALIZE_KEY @"0_autocapitlize"
+	#define AUTOCORRECTION_KEY @"0_autocorct"
+	#define TWENTYFOURHOURTIME_KEY @"0_24hrtime"
+//
 	#ifndef kCFCoreFoundationVersionNumber_iPhoneOS_4_0
 		#define kCFCoreFoundationVersionNumber_iPhoneOS_4_0 550.32
 	#endif
-	#define PREFS_PLIST @"/Networks.plist"
-	#define NETS_PLIST @"/Chat.plist"
 	#define RCCurrentNetKey @"0_CURRENTNET"
 	#define DEFAULT_NICK @"Guest"
 	#define RCCurrentChanKey @"0_CURRENTCHAN"
@@ -42,12 +45,10 @@
 	#define TEAM_TOKEN @"b6b92f88-8b8b-4d6b-ae0c-53cc8adf1038"
 	#define DEL_CONFIRM_KEY 1112
 	#define USE_PRIVATE 1
-	#define _deg(x) ((x * M_PI)/180.0)
 	#define UIApp [UIApplication sharedApplication]
 	#define LOGALL 0
 	#define _DEBUG 1
 	#define isiOS7 !!(objc_getClass("UIAttachmentBehavior"))
-	#define READ_BUF_LEN 4096
 // alerts
 	#define RCALERR_INCNICK 666
 	#define RCALERR_INCUNAME 667

@@ -6,12 +6,14 @@
 //
 
 #import "RCDateManager.h"
+#import "RCNetworkManager.h"
 
 @implementation RCDateManager
 static id _dManager = nil;
 
 - (id)init {
 	if ((self = [super init])) {
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dateFormatChanged) name:SETTINGS_CHANGED_KEY object:nil];
 		formatter = [[NSDateFormatter alloc] init];
 		formatter.dateStyle = NSDateFormatterNoStyle;
 		formatter.PMSymbol = @"";
@@ -30,6 +32,18 @@ static id _dManager = nil;
 + (id)sharedInstance {
 	if (!_dManager) [[self alloc] init];
 	return _dManager;
+}
+
+- (void)dateFormatChanged {
+	NSString *hour = @"hh";
+	NSString *seconds = @"";
+	BOOL twentyFourHour = [[[RCNetworkManager sharedNetworkManager] valueForSetting:TWENTYFOURHOURTIME_KEY] boolValue];
+	BOOL useSeconds = [[[RCNetworkManager sharedNetworkManager] valueForSetting:TIMESECONDS_KEY] boolValue];
+	if (twentyFourHour)
+		hour = @"HH";
+	if (useSeconds)
+		seconds = @":ss";
+	formatter.dateFormat = [NSString stringWithFormat:@"%@:mm%@", hour, seconds];
 }
 
 - (NSString *)currentDateAsString {

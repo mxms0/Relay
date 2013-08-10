@@ -111,6 +111,7 @@
 		508D563A1776716C005DF032 /* 0_input@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 508D56381776716C005DF032 /* 0_input@2x.png */; };
 		508D563D17767646005DF032 /* 0_jaggs.png in Resources */ = {isa = PBXBuildFile; fileRef = 508D563B17767643005DF032 /* 0_jaggs.png */; };
 		508D563E17767646005DF032 /* 0_jaggs@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 508D563C17767644005DF032 /* 0_jaggs@2x.png */; };
+		50902FD217B60DC300D89F96 /* RCSettingsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 50902FD117B60DC300D89F96 /* RCSettingsTableViewCell.m */; };
 		50929EB6151E65F1007E23D3 /* RCPMChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 50929EB5151E65F1007E23D3 /* RCPMChannel.m */; };
 		50929EBA151E86FA007E23D3 /* RCiPadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50929EB9151E86FA007E23D3 /* RCiPadViewController.m */; };
 		50955EDA17B1DFA200795B39 /* RCRearrangeableTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50955ED917B1DFA200795B39 /* RCRearrangeableTableView.m */; };
@@ -369,6 +370,8 @@
 		508D56381776716C005DF032 /* 0_input@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_input@2x.png"; sourceTree = "<group>"; };
 		508D563B17767643005DF032 /* 0_jaggs.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_jaggs.png; sourceTree = "<group>"; };
 		508D563C17767644005DF032 /* 0_jaggs@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_jaggs@2x.png"; sourceTree = "<group>"; };
+		50902FD017B60DC300D89F96 /* RCSettingsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCSettingsTableViewCell.h; sourceTree = "<group>"; };
+		50902FD117B60DC300D89F96 /* RCSettingsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCSettingsTableViewCell.m; sourceTree = "<group>"; };
 		50929EB4151E65F1007E23D3 /* RCPMChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCPMChannel.h; sourceTree = "<group>"; };
 		50929EB5151E65F1007E23D3 /* RCPMChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCPMChannel.m; sourceTree = "<group>"; };
 		50929EB8151E86FA007E23D3 /* RCiPadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCiPadViewController.h; sourceTree = "<group>"; };
@@ -652,6 +655,8 @@
 				50A3222A16607C3E00F86E03 /* RCSuperSpecialTableView.m */,
 				50204ED9178E887C00631D85 /* RCChannelInfoTableViewCell.h */,
 				50204EDA178E887C00631D85 /* RCChannelInfoTableViewCell.m */,
+				50902FD017B60DC300D89F96 /* RCSettingsTableViewCell.h */,
+				50902FD117B60DC300D89F96 /* RCSettingsTableViewCell.m */,
 			);
 			name = "Table View Crap";
 			sourceTree = "<group>";
@@ -1361,6 +1366,7 @@
 				5089527E17A62D16001264BA /* RCHoverViewCard.m in Sources */,
 				5089528117A62E34001264BA /* RCHoverWebBrowser.m in Sources */,
 				50955EDA17B1DFA200795B39 /* RCRearrangeableTableView.m in Sources */,
+				50902FD217B60DC300D89F96 /* RCSettingsTableViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

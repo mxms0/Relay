@@ -15,6 +15,14 @@
 		[self.tableView setTableHeaderView:pure];
 		[pure release];
 		[self.tableView setContentInset:UIEdgeInsetsMake(-100, 0, 0, 0)];
+		sectionalArrays = @[
+						@[@"  Aesthetics", @"Autocorrection", @"Autocapitalization", @"24 Hour Time", @"Use Seconds"],
+						@[@"  Defaults", @"Nick Name", @"User Name", @"Real Name", @"Quit Message"],
+		];
+		[sectionalArrays retain];
+		keyValues = [NSDictionary dictionaryWithObjectsAndKeys:AUTOCORRECTION_KEY, @"autocorrection", AUTOCAPITALIZE_KEY, @"autocapitalization", TWENTYFOURHOURTIME_KEY, @"24 hour time", TIMESECONDS_KEY, @"use seconds", nil];
+		[keyValues retain];
+		managedPreferences = [[[RCNetworkManager sharedNetworkManager] settingsDictionary] mutableCopy];
 	}
 	return self;
 }
@@ -38,16 +46,20 @@
 	[bt release];
 }
 
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+	return [sectionalArrays count];
+}
+
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
 	return 25;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	return 1;
+	return [sectionalArrays[section] count] - 1;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-	return @"  Aesthetics";
+	return [sectionalArrays[section] objectAtIndex:0];
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
@@ -58,20 +70,37 @@
 	label.shadowColor = [UIColor blackColor];
 	label.shadowOffset = CGSizeMake(0, 1);
 	label.font = [UIFont boldSystemFontOfSize:14];
-	return label;
+	return [label autorelease];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	NSString *cellIdentifier = [NSString stringWithFormat:@"0_%d_%d", indexPath.row, indexPath.section];
-	RCBasicTextInputCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+	RCSettingsTableViewCell *cell = (RCSettingsTableViewCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+	NSString *text = [sectionalArrays[indexPath.section] objectAtIndex:indexPath.row + 1];
 	if (!cell) {
-		cell = [[[RCBasicTextInputCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier] autorelease];
+		cell = [[[RCSettingsTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier] autorelease];
+		switch (indexPath.section) {
+			case 0: {
+				UISwitch *aSwitch = [[UISwitch alloc] init];
+				[aSwitch addTarget:self action:@selector(switchToggled:) forControlEvents:UIControlEventValueChanged];
+				aSwitch.on = (BOOL)[[managedPreferences objectForKey:[keyValues objectForKey:[text lowercaseString]]] boolValue];
+				[cell setAccessoryView:aSwitch];
+				[aSwitch release];
+				break;
+			}
+			default:
+				break;
+		}
 	}
-	switch (indexPath.section) {
-		case 0:
-			break;
-	}
+	cell.textLabel.text = text;
 	return cell;
+}
+
+- (void)switchToggled:(UISwitch *)aSwitch {
+	madeChanges = YES;
+	RCSettingsTableViewCell *cell = (RCSettingsTableViewCell *)[aSwitch superview];
+	NSString *key = [keyValues objectForKey:[cell.textLabel.text lowercaseString]];
+	[managedPreferences setObject:(aSwitch.on ? (id)kCFBooleanTrue : (id)kCFBooleanFalse) forKey:key];
 }
 
 - (NSString *)titleText {
@@ -83,11 +112,21 @@
 }
 
 - (void)saveChanges {
+	if (madeChanges) {
+		[[RCNetworkManager sharedNetworkManager] saveSettingsDictionary:managedPreferences dispatchChanges:YES];
+	}
 	[self dismiss];
 }
 
 - (void)dismiss {
 	[self dismissModalViewControllerAnimated:YES];
+}
+
+- (void)dealloc {
+	[managedPreferences release];
+	[keyValues release];
+	[sectionalArrays release];
+	[super dealloc];
 }
 
 @end

@@ -149,6 +149,35 @@ static NSMutableArray *networks = nil;
 
 - (NSMutableArray *)networks {
 	return networks;
+} 
+
+- (NSDictionary *)settingsDictionary {
+	NSDictionary *dict = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SETTINGS_KEY];
+	if (!dict) {
+		dict = [NSDictionary dictionary];
+	}
+	return [[dict retain] autorelease];
+}
+
+- (id)valueForSetting:(NSString *)set {
+	NSDictionary *settings = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SETTINGS_KEY];
+	return [settings objectForKey:set];
+}
+
+- (void)setValue:(id)val forSetting:(NSString *)set {
+	NSMutableDictionary *dict = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:SETTINGS_KEY] mutableCopy];
+	if (!dict) {
+		dict = [[NSMutableDictionary alloc] init];
+	}
+	[dict setValue:val forKey:set];
+	[self saveSettingsDictionary:dict dispatchChanges:NO];
+	[dict release];
+}
+
+- (void)saveSettingsDictionary:(NSDictionary *)dict dispatchChanges:(BOOL)dispatch {
+	[[NSUserDefaults standardUserDefaults] setValue:dict forKey:SETTINGS_KEY];
+	[[NSUserDefaults standardUserDefaults] synchronize];
+	[[NSNotificationCenter defaultCenter] postNotificationName:SETTINGS_CHANGED_KEY object:nil];
 }
 
 - (void)dealloc {
