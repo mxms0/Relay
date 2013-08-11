@@ -473,7 +473,7 @@ static RCNetwork *currentNetwork = nil;
 		//	[topView showUserListPanel];
 	}
 	else if ([channel isKindOfClass:[RCChannel class]]) {
-		[[infoView navigationBar] setSubtitle:[NSString stringWithFormat:@"%d users in %@", [[channel fullUserList] count], [channel channelName]]];
+		[[infoView navigationBar] setSubtitle:[NSString stringWithFormat:@"%d users in %@", [[channel fullUserList] count], channel]];
 		//	[topView showUserListPanel];
 	}
 	[[infoView navigationBar] setNeedsDisplay];
@@ -773,7 +773,7 @@ static RCNetwork *currentNetwork = nil;
 }
 
 - (void)deleteCurrentChannel {
-	RCPrettyAlertView *confirm = [[RCPrettyAlertView alloc] initWithTitle:@"Are you sure?" message:[NSString stringWithFormat:@"Are you sure you want to remove %@?", [[currentPanel channel] channelName]] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Remove", nil];
+	RCPrettyAlertView *confirm = [[RCPrettyAlertView alloc] initWithTitle:@"Are you sure?" message:[NSString stringWithFormat:@"Are you sure you want to remove %@?", [currentPanel channel]] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Remove", nil];
 	[confirm show];
 	[confirm release];
 	[self dismissMenuOptions];
@@ -830,7 +830,7 @@ static RCNetwork *currentNetwork = nil;
 	RCChannel *chan = [currentPanel channel];
 	if ([chan isKindOfClass:[RCPMChannel class]] || [chan isKindOfClass:[RCConsoleChannel class]])
 		return;
-	[[infoView navigationBar] setSubtitle:[NSString stringWithFormat:@"%d users in %@", [[chan fullUserList] count], [chan channelName]]];
+	[[infoView navigationBar] setSubtitle:[NSString stringWithFormat:@"%d users in %@", [[chan fullUserList] count], chan]];
 	[[infoView navigationBar] setNeedsDisplay];
 }
 

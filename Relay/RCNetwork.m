@@ -584,7 +584,7 @@
 		for (RCChannel *chan in _channels) {
 			if (![chan isKindOfClass:[RCConsoleChannel class]] && ![chan isKindOfClass:[RCPMChannel class]]) {
 				if ([chan joinOnConnect]) {
-					[joinList appendFormat:@"%@,", [chan channelName]];
+					[joinList appendFormat:@"%@,", chan];
 				}
 			}
 		}

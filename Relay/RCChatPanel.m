@@ -92,7 +92,7 @@ static NSString *template = nil;
 	@synchronized(self) {
 		if (preloadPool) {
 #if LOGALL
-			NSLog(@"Adding to preload pool [%@] %@", [channel channelName], ms);
+			NSLog(@"Adding to preload pool [%@] %@", channel, ms);
 #endif
 			[preloadPool addObject:ms];
 			return;

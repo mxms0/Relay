@@ -101,7 +101,7 @@
 	seconds = (int)uptime;
 	NSString *send = [NSString stringWithFormat:@"System Uptime: %d Weeks, %d Days, %d Hours, %d Minutes, %d Seconds", (int)weeks, (int)days, (int)hours, (int)minutes, (int)seconds];
 	[chan recievedMessage:send from:[net useNick] type:RCMessageTypeNormal];
-	[net sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", [chan channelName], send]];
+	[net sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", chan, send]];
 }
 
 - (void)handleAWAY:(NSString *)args net:(RCNetwork *)net channel:(RCChannel *)chan {
@@ -151,7 +151,7 @@
 
 - (void)handleMODE:(NSString *)args net:(RCNetwork *)net channel:(RCChannel *)chan {
 	if (![args hasPrefix:@"#"]) {
-		[net sendMessage:[NSString stringWithFormat:@"MODE %@ %@", [chan channelName], args]];
+		[net sendMessage:[NSString stringWithFormat:@"MODE %@ %@", chan, args]];
 	}
 	else {
 		[net sendMessage:[NSString stringWithFormat:@"MODE %@", args]];
@@ -217,12 +217,12 @@
     }
     NSString *message = [NSString stringWithFormat:@"I am in %d channels while connected to %d networks. I have %d o:lines, %d ops, %d halfops, and %d voices with power over %d individual users.", chanCount, netCount, olineCount, opsCount, hopsCount, voiceCount, powerCount];
     [chan recievedMessage:message from:[net useNick] type:RCMessageTypeNormal];
-	[net sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", [chan channelName], message]];
+	[net sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", chan, message]];
 }
 
 - (void)handleTOPIC:(NSString *)tp net:(RCNetwork *)net channel:(RCChannel *)chan {
 	if (!tp) {
-		[net sendMessage:[NSString stringWithFormat:@"TOPIC %@", [chan channelName]]];
+		[net sendMessage:[NSString stringWithFormat:@"TOPIC %@", chan]];
 		return;
 	}
 	[net sendMessage:[NSString stringWithFormat:@"TOPIC %@", tp]];
@@ -241,7 +241,7 @@
 - (void)handleMYVERSION:(NSString *)vs net:(RCNetwork *)_net channel:(RCChannel *)_chan {
 	NSString *vsr = @"Current Version: Relay 1.0 (Build NaNaNaNaNaNaN)";
 	[_chan recievedMessage:vsr from:[_net useNick] type:RCMessageTypeNormal];
-	[_net sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", [_chan channelName], vsr]];
+	[_net sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", _chan, vsr]];
 }
 
 - (void)handleSLAP:(NSString *)slap net:(RCNetwork *)net channel:(RCChannel *)chan {
@@ -256,7 +256,7 @@
 	[fmt setTimeStyle:NSDateFormatterLongStyle];
 	// fix time zone stufffs.
 	NSString *date = [@"The date & time is currently: " stringByAppendingString:[fmt stringFromDate:[NSDate date]]];
-	[net sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", [chan channelName], date]];
+	[net sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", chan, date]];
 	[chan recievedMessage:date from:[net useNick] type:RCMessageTypeNormal];
 	[fmt release];
 }
@@ -281,7 +281,7 @@
 }
 
 - (void)_wut:(NSString *)wut net:(RCNetwork *)net channel:(RCChannel *)chan {
-	NSString *str = [NSString stringWithFormat:@"PRIVMSG %@ :\u0CA0_\u0CA0", [chan channelName]];
+	NSString *str = [NSString stringWithFormat:@"PRIVMSG %@ :\u0CA0_\u0CA0", chan];
 	[net sendMessage:str];
 	[chan recievedMessage:@"\u0CA0_\u0CA0" from:[net useNick] type:RCMessageTypeNormal];
 }
@@ -291,14 +291,14 @@
 	for (int i = 0; i < [rev length]; i++) {
 		[revd appendString:[NSString stringWithFormat:@"%C", [rev characterAtIndex:[rev length]-(i+1)]]];
 	}
-	[net sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", [chan channelName], revd]];
+	[net sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", chan, revd]];
 	[chan recievedMessage:revd from:[net useNick] type:RCMessageTypeNormal];
 	[revd release];
 }
 
 - (void)handleNAMES:(NSString *)names net:(RCNetwork *)net channel:(RCChannel *)chan {
 	if (!names) {
-		NSString *req = [NSString stringWithFormat:@"NAMES %@", [chan channelName]];
+		NSString *req = [NSString stringWithFormat:@"NAMES %@", chan];
 		[net sendMessage:req];
 		[[RCChatController sharedController] closeWithDuration:0.00]; // just in case. :s
 		[[RCChatController sharedController] pushUserListWithDefaultDuration];
@@ -382,7 +382,7 @@
 
 - (void)handleME:(NSString *)me net:(RCNetwork *)net channel:(RCChannel *)chan {
 	if (!me) return;
-	NSString *msg = [NSString stringWithFormat:@"PRIVMSG %@ :%c%@ %@%c", [chan channelName], 0x01, @"ACTION", me, 0x01];
+	NSString *msg = [NSString stringWithFormat:@"PRIVMSG %@ :%c%@ %@%c", chan, 0x01, @"ACTION", me, 0x01];
 	if ([net sendMessage:msg])
 		[chan recievedMessage:me from:[net useNick] type:RCMessageTypeAction];
 }
