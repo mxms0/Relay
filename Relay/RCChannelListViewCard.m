@@ -171,7 +171,8 @@
 			[unsortedChannels release];
 			unsortedChannels = nil;
 			if ([channelDatas count] == 0) {
-				[self presentErrorNotificationAndDismiss];
+				[self presentErrorNotification:@"There was an error obtaining channels. Please try again in a minute"];
+				[self dismiss];
 			}
 			else {
 				[currentChannels release];
@@ -186,8 +187,8 @@
 	});
 }
 
-- (void)presentErrorNotificationAndDismiss {
-	RCPrettyAlertView *alrt = [[RCPrettyAlertView alloc] initWithTitle:@"Error" message:@"There was an issue getting the channel list. Please try again in a minute." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Dismiss", nil];
+- (void)presentErrorNotification:(NSString *)str {
+	RCPrettyAlertView *alrt = [[RCPrettyAlertView alloc] initWithTitle:@"Error" message:str delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Dismiss", nil];
 	[alrt show];
 	[alrt release];
 	[self dismiss];

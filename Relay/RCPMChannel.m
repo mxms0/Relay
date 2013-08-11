@@ -11,14 +11,13 @@
 #import "NSString+IRCStringSupport.h"
 
 @implementation RCPMChannel
-@synthesize ipInfo, chanInfos, connectAddr, thirstyForWhois;
+@synthesize ipInfo, chanInfos, thirstyForWhois, hasWhois, connectionInfo;
 
 - (id)initWithChannelName:(NSString *)_name {
 	if ((self = [super initWithChannelName:_name])) {
 		partnerIsOnline = NO;
 		ipInfo = nil;
 		chanInfos = nil;
-		connectAddr = nil;
 	}
 	return self;
 }
@@ -36,7 +35,7 @@
 }
 
 - (void)changeNick:(NSString *)old toNick:(NSString *)new_ {
-	dispatch_async(dispatch_get_main_queue(), ^(void){
+	dispatch_async(dispatch_get_main_queue(), ^ {
 		@synchronized(self) {
 			if ([old isEqualToString:[self channelName]]) {
 				if ([[self delegate] channelWithChannelName: new_]) {
@@ -55,7 +54,6 @@
 - (void)shouldPost:(BOOL)isHighlight withMessage:(NSString *)msg {
 	[self setUserJoined:[self channelName]];
 	[self setUserJoined:[delegate useNick]];
-	//	wat
 	if (isHighlight) {
 		if ([[RCNetworkManager sharedNetworkManager] isBG]) {
 			UILocalNotification *nc = [[UILocalNotification alloc] init];
@@ -82,6 +80,11 @@
 	thirstyForWhois = YES;
 	// remember: override users WHOIS command and do remote WHOIS, similar to this below.
 	[delegate sendMessage:[NSString stringWithFormat:@"WHOIS %@ %@", channelName, channelName]];
+}
+
+- (void)recievedWHOISInformation {
+	thirstyForWhois = NO;
+	hasWhois = YES;
 }
 
 - (void)_reallySetWhois:(NSString *)whois {

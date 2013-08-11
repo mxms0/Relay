@@ -480,6 +480,7 @@ static RCNetwork *currentNetwork = nil;
 	[infoView reloadData];
 	canDragMainView = NO;
 	[self closeWithDuration:0.00];
+	[infoView prepareToBecomeVisible];
 	[chatView setLeftBarButtonItemEnabled:NO];
 	[UIView beginAnimations:nil context:nil];
 	[UIView setAnimationDuration:dr];
@@ -680,6 +681,9 @@ static RCNetwork *currentNetwork = nil;
 	[(RCChannelListViewCard *)hoverView setCurrentNetwork:[[currentPanel channel] delegate]];
 	[self presentHoverCardWithView:hoverView];
 	[hoverView release];
+	if (![[[currentPanel channel] delegate] isTryingToConnectOrConnected]) {
+		// do stuff here
+	}
 }
 
 - (void)dismissChannelList:(UIView *)vc {

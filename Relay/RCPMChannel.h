@@ -10,14 +10,16 @@
 @interface RCPMChannel : RCChannel {
 	NSString *ipInfo;
 	NSString *chanInfos;
+	NSString *connectionInfo;
 	BOOL partnerIsOnline;
-	NSString *connectAddr;
 }
 @property (nonatomic, retain) NSString *ipInfo;
 @property (nonatomic, retain) NSString *chanInfos;
-@property (nonatomic, retain) NSString *connectAddr;
-@property (nonatomic, readonly) BOOL thirstyForWhois;
+@property (nonatomic, retain) NSString *connectionInfo;
+@property (nonatomic, assign) BOOL thirstyForWhois;
+@property (nonatomic, assign) BOOL hasWhois;
 - (BOOL)isPrivate;
 - (void)_reallySetWhois:(NSString *)whois;
 - (void)requestWhoisInformation;
+- (void)recievedWHOISInformation;
 @end

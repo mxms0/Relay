@@ -19,4 +19,5 @@
 - (void)setChannel:(RCChannel *)chan;
 - (void)reloadData;
 - (void)scrollToTop;
+- (void)prepareToBecomeVisible;
 @end

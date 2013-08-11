@@ -145,7 +145,11 @@ NSInteger RCRankSort(id u1, id u2, RCNetwork *network) {
 }
 
 - (id)description {
-	return [NSString stringWithFormat:@"[%@ %@]", [super description], channelName];
+	return channelName;
+}
+
+- (id)debugDescription {
+	return [NSString stringWithFormat:@"<%@ %@>", [super description], self];
 }
 
 char RCUserHash(NSString *from) {

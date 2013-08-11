@@ -763,22 +763,57 @@
 
 - (void)handle311:(RCMessage *)message {
 	// RPL_WHOISUSER
+	// :irc.saurik.com 311 mxms__ Maximus ~textual 184.33.54.165 * :Textual User
+	NSString *name = [message parameterAtIndex:2];
+	NSString *ips = [message parameterAtIndex:3];
+	NSString *ident = [message parameterAtIndex:5];
+	NSString *final = [NSString stringWithFormat:@"%@@%@ and real name \"%@\"", name, ips, ident];
+	RCPMChannel *user = (RCPMChannel *)[self channelWithChannelName:[message parameterAtIndex:1]];
+	if (user) {
+		[user setIpInfo:final];
+	}
+	else {
+		// post to current chan
+	}
 }
 
 - (void)handle312:(RCMessage *)message {
 	// RPL_WHOISSERVER
+	// :irc.saurik.com 312 mxms__ Maximus *.irc.saurik.com :Saurik
+	NSString *connInfo = [NSString stringWithFormat:@"%@ (%@)", [message parameterAtIndex:2], [message parameterAtIndex:3]];
+	RCPMChannel *chan = (RCPMChannel *)[self channelWithChannelName:[message parameterAtIndex:1]];
+	if (chan) {
+		[chan setConnectionInfo:connInfo];
+	}
 }
 
 - (void)handle313:(RCMessage *)message {
 	// RPL_WHOISOPERATOR
 }
 
+- (void)handle317:(RCMessage *)message {
+	// :irc.saurik.com 317 mxms__ Maximus 12 1376202021 :seconds idle, signon time
+	// meh
+}
+
 - (void)handle318:(RCMessage *)message {
+	RCPMChannel *channel = (RCPMChannel *)[self channelWithChannelName:[message parameterAtIndex:1]];
+	[channel recievedWHOISInformation];
 	// RPL_ENDOFWHOIS
 }
 
 - (void)handle319:(RCMessage *)message {
 	// RPL_WHOISCHANNELS
+	NSString *channels = [message parameterAtIndex:2];
+	RCPMChannel *channel = (RCPMChannel *)[self channelWithChannelName:[message parameterAtIndex:1]];
+	if (channel) {
+		[channel setChanInfos:channels];
+		// maybe separate these with commans, and put 'and' at the end to be fancy. ;P
+		// Maximus is in #theos, #iphonedev, #bacon, #k, and #_k
+		// hm... i like it
+		// ~Maximus
+	}
+	// :irc.saurik.com 319 mxms__ Maximus :#theos #iphonedev #bacon @#k @#_k 
 }
 
 - (void)handle321:(RCMessage *)message {

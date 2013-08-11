@@ -65,6 +65,21 @@ static NSMutableArray *networks = nil;
 	[[RCChatController sharedController] selectChannel:@"\x01IRC" fromNetwork:[networks objectAtIndex:0]];
 }
 
+- (void)receivedMemoryWarning {
+	for (RCNetwork *net in networks) {
+		for (RCChannel *chan in net->_channels) {
+			if ([chan isKindOfClass:[RCPMChannel class]]) {
+				[(RCPMChannel *)chan setIpInfo:nil];
+				[(RCPMChannel *)chan setConnectionInfo:nil];
+				[(RCPMChannel *)chan setChanInfos:nil];
+			}
+		}
+	}
+	// also consider trimming conversations down to like 30 messages
+	// but thats probably slow being that webkit needs to be on main thread
+	// hm.. what can i trash..
+}
+
 - (void)setupWelcomeView {
 	NSLog(@"SHOULD BRING UP ADD NETWORK CONTROLLERR !!11");
 	[[RCChatController sharedController] setDefaultTitleAndSubtitle];

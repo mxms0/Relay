@@ -21,6 +21,7 @@
 - (void)ircNetworkWithInfo:(NSDictionary *)info isNew:(BOOL)n;
 - (BOOL)replaceNetwork:(RCNetwork *)net withNetwork:(RCNetwork *)net;
 - (void)jumpToFirstNetworkAndConsole;
+- (void)receivedMemoryWarning;
 - (void)addNetwork:(RCNetwork *)net;
 - (void)saveSettingsDictionary:(NSDictionary *)dict dispatchChanges:(BOOL)n;
 - (NSDictionary *)settingsDictionary;

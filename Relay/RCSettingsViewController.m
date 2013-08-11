@@ -20,7 +20,7 @@
 						@[@"  Defaults", @"Nick Name", @"User Name", @"Real Name", @"Quit Message"],
 		];
 		[sectionalArrays retain];
-		keyValues = [NSDictionary dictionaryWithObjectsAndKeys:AUTOCORRECTION_KEY, @"autocorrection", AUTOCAPITALIZE_KEY, @"autocapitalization", TWENTYFOURHOURTIME_KEY, @"24 hour time", TIMESECONDS_KEY, @"use seconds", nil];
+		keyValues = [NSDictionary dictionaryWithObjectsAndKeys:AUTOCORRECTION_KEY, @"Autocorrection", AUTOCAPITALIZE_KEY, @"Autocapitalization", TWENTYFOURHOURTIME_KEY, @"24 Hour Time", TIMESECONDS_KEY, @"Use Seconds", nil];
 		[keyValues retain];
 		managedPreferences = [[[RCNetworkManager sharedNetworkManager] settingsDictionary] mutableCopy];
 	}
@@ -83,7 +83,7 @@
 			case 0: {
 				UISwitch *aSwitch = [[UISwitch alloc] init];
 				[aSwitch addTarget:self action:@selector(switchToggled:) forControlEvents:UIControlEventValueChanged];
-				aSwitch.on = (BOOL)[[managedPreferences objectForKey:[keyValues objectForKey:[text lowercaseString]]] boolValue];
+				aSwitch.on = (BOOL)[[managedPreferences objectForKey:[keyValues objectForKey:text]] boolValue];
 				[cell setAccessoryView:aSwitch];
 				[aSwitch release];
 				break;
@@ -99,7 +99,7 @@
 - (void)switchToggled:(UISwitch *)aSwitch {
 	madeChanges = YES;
 	RCSettingsTableViewCell *cell = (RCSettingsTableViewCell *)[aSwitch superview];
-	NSString *key = [keyValues objectForKey:[cell.textLabel.text lowercaseString]];
+	NSString *key = [keyValues objectForKey:cell.textLabel.text];
 	[managedPreferences setObject:(aSwitch.on ? (id)kCFBooleanTrue : (id)kCFBooleanFalse) forKey:key];
 }
 

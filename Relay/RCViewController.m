@@ -14,6 +14,7 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 	NSLog(@"CLEANUP CLEANUP EVERYBODY CLEANUP");
+	[[RCNetworkManager sharedNetworkManager] receivedMemoryWarning];
 	// will clear all private message whois infos
 	// if that still fails, will clear user lists. maybe.s
 }

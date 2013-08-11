@@ -30,7 +30,7 @@
 @property (nonatomic, assign) RCNetwork *currentNetwork;
 - (void)setUpdating:(BOOL)ud;
 - (void)recievedChannel:(NSString *)chan withCount:(int)cc andTopic:(NSString *)topics;
-- (void)presentErrorNotificationAndDismiss;
+- (void)presentErrorNotification:(NSString *)errorString;
 - (void)scrollToTop;
 - (void)searchForKeyword:(id)oper;
 @end

@@ -36,7 +36,6 @@
 	else {
 		cc = (RCUserTableCell *)[v superview];
 	}
-	
 	if ([cc isWhois]) {
 		[UIColorFromRGB(0xEEF2F4) set];
 		UIRectFill(rect);

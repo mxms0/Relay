@@ -40,7 +40,7 @@
 - (BOOL)becomeFirstResponder {
 	BOOL ret = [super becomeFirstResponder];
 	if (ret)
-		self.rightViewMode = UITextFieldViewModeAlways ;
+		self.rightViewMode = UITextFieldViewModeAlways;
 	return ret ;
 }
 

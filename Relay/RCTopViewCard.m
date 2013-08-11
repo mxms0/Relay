@@ -21,7 +21,7 @@
 		[bt release];
 		tableView = [[RCSuperSpecialTableView alloc] initWithFrame:CGRectMake(0, 44, frame.size.width, frame.size.height-44)];
 		[tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-		[tableView setBackgroundColor:UIColorFromRGB(0xDDE0E5)];
+		[tableView setBackgroundColor:UIColorFromRGB(0xeeeeee)];
 		[tableView setShowsVerticalScrollIndicator:YES];
 		[tableView setDelegate:self];
 		[tableView setDataSource:self];
@@ -30,6 +30,7 @@
 		UIPanGestureRecognizer *panr = [[UIPanGestureRecognizer alloc] initWithTarget:[RCChatController sharedController] action:@selector(userSwiped_specialLikeAc3xx:)];
 		[self addGestureRecognizer:panr];
 		[panr release];
+		currentChan = nil;
 	}
 	return self;
 }
@@ -43,6 +44,14 @@
 			[sub setFrame:CGRectMake(sub.frame.origin.x, sub.frame.origin.y, sub.frame.size.width, self.frame.size.height)];
 			[sub setHidden:shouldBeVisible];
 			break;
+		}
+	}
+}
+
+- (void)prepareToBecomeVisible {
+	if ([currentChan isKindOfClass:[RCPMChannel class]]) {
+		if (![(RCPMChannel *)currentChan hasWhois]) {
+			[(RCPMChannel *)currentChan requestWhoisInformation];
 		}
 	}
 }
@@ -122,6 +131,7 @@
 				[c setIsLast:YES];
 		}
 	}
+
 	[c setNeedsDisplay];
 	return c;
 }
