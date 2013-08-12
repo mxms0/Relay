@@ -316,7 +316,7 @@
 	RCChannel *chan = [self consoleChannel];
 	if (chan) [chan recievedMessage:[NSString stringWithFormat:@"Connecting to %@ on port %d", server, port] from:@"" type:RCMessageTypeNormal];
 	sockfd = [[RCSocket sharedSocket] connectToAddr:server withSSL:useSSL andPort:port fromNetwork:self];
-	[self sendMessage:@"CAP LS" canWait:NO];
+	if (SASL) [self sendMessage:@"CAP LS" canWait:NO];
 	if ([spass length] > 0) {
 		[self sendMessage:[@"PASS " stringByAppendingString:spass] canWait:NO];
 	}
@@ -871,7 +871,7 @@
 	[dateFormatter setDateFormat:@"MMMM dd, yyyy hh:mm:ss"];
 	NSString *time = [dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:ts]];
 	[dateFormatter release];
-	[[self channelWithChannelName:channel] recievedMessage:[NSString stringWithFormat:@"Set by %@ on %@", setter, time] from:@"" type:RCMessageTypeNormalE2];
+	[[self channelWithChannelName:channel] recievedMessage:[NSString stringWithFormat:@"Set by %c%@%c on %@", RCIRCAttributeBold, setter, RCIRCAttributeBold, time] from:@"" type:RCMessageTypeNormalE2];
 }
 
 - (void)handle353:(RCMessage *)message {

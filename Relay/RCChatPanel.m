@@ -41,15 +41,12 @@ static NSString *template = nil;
 	// also implement tab completion/handling for keyboards.
 	if ([textField.text isEqualToString:@""] || textField.text == nil) return NO;
 	NSString *appstore_txt = [textField.text retain];
-	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
-	dispatch_async(queue, ^ {
-		dispatch_sync(dispatch_get_main_queue(), ^ {
-			[channel userWouldLikeToPartakeInThisConversation:appstore_txt];
-			[appstore_txt release];
-		});
-	});
+//	dispatch_async(dispatch_get_main_queue(), ^ {
+		[channel userWouldLikeToPartakeInThisConversation:appstore_txt];
+		[appstore_txt release];
+		[[RCNickSuggestionView sharedInstance] dismiss];
+//	});
 	[textField setText:@""];
-	[[RCNickSuggestionView sharedInstance] dismiss];
 	return NO;
 }
 

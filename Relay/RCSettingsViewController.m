@@ -18,6 +18,7 @@
 		sectionalArrays = @[
 						@[@"  Aesthetics", @"Autocorrection", @"Autocapitalization", @"24 Hour Time", @"Use Seconds"],
 						@[@"  Defaults", @"Nick Name", @"User Name", @"Real Name", @"Quit Message"],
+						@[@"  Info", @"About"],
 		];
 		[sectionalArrays retain];
 		keyValues = [NSDictionary dictionaryWithObjectsAndKeys:AUTOCORRECTION_KEY, @"Autocorrection", AUTOCAPITALIZE_KEY, @"Autocapitalization", TWENTYFOURHOURTIME_KEY, @"24 Hour Time", TIMESECONDS_KEY, @"Use Seconds", nil];

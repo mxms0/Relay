@@ -421,6 +421,7 @@ _end:
 					case 2:
 						cell.textLabel.text = @"Attempt SASL";
 						UISwitch *fsc = [[UISwitch alloc] init];
+						fsc.on = [network SASL];
 						[fsc addTarget:self action:@selector(saslSwitched:) forControlEvents:UIControlEventValueChanged];
 						[cell setAccessoryView:fsc];
 						[fsc release];

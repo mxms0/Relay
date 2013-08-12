@@ -52,6 +52,7 @@
 	if ([currentChan isKindOfClass:[RCPMChannel class]]) {
 		if (![(RCPMChannel *)currentChan hasWhois]) {
 			[(RCPMChannel *)currentChan requestWhoisInformation];
+			
 		}
 	}
 }

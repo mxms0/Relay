@@ -11,10 +11,6 @@
 
 - (void)drawRect:(CGRect)rect {
 	[super drawRect:rect];
-	if (shouldDrawBG) {
-	//	UIImage *tch = [UIImage imageNamed:@"0_tch"];
-	//	[tch drawAtPoint:CGPointMake(9, 6)];
-	}
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {

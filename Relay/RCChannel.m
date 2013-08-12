@@ -263,10 +263,10 @@ char RCUserHash(NSString *from) {
 		case RCMessageTypePart:
 			[self setUserLeft:from];
 			if (![message isEqualToString:@""]) {
-				msg = [NSString stringWithFormat:@"%@ left the channel. (%@)", from, message];
+				msg = [NSString stringWithFormat:@"%c%@%c left the channel. (%@)", RCIRCAttributeBold, from, RCIRCAttributeBold, message];
 			}
 			else {
-				msg = [NSString stringWithFormat:@"%@ left the channel.", from];
+				msg = [NSString stringWithFormat:@"%c%@%c left the channel.", RCIRCAttributeBold, from, RCIRCAttributeBold];
 			}
 			break;
 		case RCMessageTypeJoin:
@@ -287,10 +287,10 @@ char RCUserHash(NSString *from) {
 			if ([self isUserInChannel:from]) {
 				[self setUserLeft:from];
 				if (![message isEqualToString:@""]) {
-					msg = [NSString stringWithFormat:@"%@ left IRC. (%@)", from, message];
+					msg = [NSString stringWithFormat:@"%c%@%c left IRC. (%@)", RCIRCAttributeBold, from, RCIRCAttributeBold, message];
 				}
 				else {
-					msg = [NSString stringWithFormat:@"%@ left IRC.", from];
+					msg = [NSString stringWithFormat:@"%c%@%c left IRC.", RCIRCAttributeBold, from, RCIRCAttributeBold];
 				}
 			}
 			else {
