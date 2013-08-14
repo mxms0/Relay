@@ -83,8 +83,8 @@
 		return;
 	}
 	if ([[self subviews] count] > 2) return; // kind of fixes it. eh
-	CGContextSetShadowWithColor(ctx, CGSizeMake(0, 0.5), 0, [UIColor colorWithWhite:1.000 alpha:0.580].CGColor);
-	CGContextSetFillColorWithColor(ctx, UIColorFromRGB(0x4c4c51).CGColor);
+	CGContextSetShadowWithColor(ctx, CGSizeMake(0, -1), 0, [UIColor blackColor].CGColor);
+	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
 	CGFloat size = 0.0;
 	float maxWidth = (rect.size.width - 90);
 	[title sizeWithFont:[UIFont boldSystemFontOfSize:maxSize] minFontSize:14 actualFontSize:&size forWidth:maxWidth lineBreakMode:NSLineBreakByClipping];

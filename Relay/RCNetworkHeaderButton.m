@@ -65,8 +65,9 @@
 			subTextColor = UIColorFromRGB(0xaaabb0);
 			textColor = UIColorFromRGB(0xd5d7dd);
 		}
-		UIImage *bg = [UIImage imageNamed:@"0_selch"];
-		[bg drawInRect:CGRectMake(0, 0, rect.size.width, 44)];
+		[UIColorFromRGB(0x353538) set];
+		UIRectFill(rect);
+//		[bg drawInRect:CGRectMake(0, 0, rect.size.width, 44)];
 		UIImage *arrow = [UIImage imageNamed:@"0_arrowd"];
 		[arrow drawInRect:CGRectMake(232,14, 16, 16)];
 	}
@@ -81,8 +82,6 @@
 			textColor = [UIColor whiteColor];
 		}
 		if (showsGlow) {
-			UIImage *glow = [UIImage imageNamed:@"0_sglow"];
-			[glow drawInRect:CGRectMake(0, 0, glow.size.width, glow.size.height)];
 		}
 	}
 	NSString *text = [net _description];

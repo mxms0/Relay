@@ -36,7 +36,7 @@
 			[self.layer insertSublayer:shdw atIndex:0];
 			[shdw release];
 			CALayer *bg = [[CALayer alloc] init];
-			[bg setBackgroundColor:UIColorFromRGB(0xEEEEEE).CGColor];
+			[bg setBackgroundColor:UIColorFromRGB(0x353538).CGColor];
 			[bg setShouldRasterize:YES];
 			[bg setFrame:CGRectMake(0, 10, frame.size.height+44, frame.size.height)];
 			[self.layer insertSublayer:bg atIndex:1];
@@ -44,7 +44,7 @@
 		}
 		if ([NSStringFromClass([self class]) isEqualToString:@"RCViewCard"]) {
 			RCBarButtonItem *bs = [[RCBarButtonItem alloc] init];
-			[bs setImage:[UIImage imageNamed:@"hamburgerbutton"] forState:UIControlStateNormal];
+			[bs setImage:[UIImage imageNamed:@"mainhamburger"] forState:UIControlStateNormal];
 			[bs setFrame:CGRectMake(1, 0, 50, 45)];
 			[bs setTag:RCChannelListButtonTag];
 			[bs addTarget:[RCChatController sharedController] action:@selector(menuButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
@@ -100,7 +100,7 @@
 
 - (void)drawRect:(CGRect)rect {
 	[super drawRect:rect];
-	[UIColorFromRGB(0xeeeeee) set];
+	[UIColorFromRGB(0x353538) set];
 	UIRectFill(CGRectMake(0, 10, rect.size.width, rect.size.height));
 }
 

@@ -16,7 +16,7 @@ static NSString *template = nil;
 - (id)initWithChannel:(RCChannel *)chan {
 	if ((self = [super init])) {
 		[self setChannel:chan];
-		[self setBackgroundColor:UIColorFromRGB(0xEEEEEE)];
+		[self setBackgroundColor:UIColorFromRGB(0x353538)];
 		self.opaque = NO;
 		[self setHidden:YES];
 		if (!template) {
