@@ -116,19 +116,17 @@
             var maxscrollback = 150;
 			
 			function createMessage(needsCenter) {
-				if (cnt >= maxscrollback) {
+				if (cnt > maxscrollback) {
 					var dx = document.body.firstElementChild;
 					var cc = 0;
 					while (dx.firstElementChild) {
 						dx.removeChild(dx.firstElementChild);
 						cc++;
 						if (cc == 50) {
-							cnt = 0;
+							maxscrollback += 50;
 							break;
 						}
 					}
-					dx.firstElementChild.style.display = "none";
-					dx.removeChild(dx.firstElementChild);
 				}
 				cnt++;
                 var newdiv = document.createElement('p');

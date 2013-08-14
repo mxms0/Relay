@@ -115,7 +115,7 @@
 	if (showingUserInfo) {
 		if ([currentChan isKindOfClass:[RCPMChannel class]]) {
 			[c setIsWhois:YES];
-			[c setChannel:currentChan];
+			[c setChannel:(RCPMChannel *)currentChan];
 		}
 		[c setIsLast:YES];
 		[c setNeedsDisplay];
