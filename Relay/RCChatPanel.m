@@ -37,19 +37,6 @@ static NSString *template = nil;
     [self stringByEvaluatingJavaScriptFromString:@"scrollToTop();"];
 }
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-	// also implement tab completion/handling for keyboards.
-	if ([textField.text isEqualToString:@""] || textField.text == nil) return NO;
-	NSString *appstore_txt = [textField.text retain];
-//	dispatch_async(dispatch_get_main_queue(), ^ {
-		[channel userWouldLikeToPartakeInThisConversation:appstore_txt];
-		[appstore_txt release];
-		[[RCNickSuggestionView sharedInstance] dismiss];
-//	});
-	[textField setText:@""];
-	return NO;
-}
-
 - (BOOL)webView:(UIWebView *)webView2 shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
 	NSString *requestString = [[request URL] absoluteString];
 	BOOL openInSafari = YES;
@@ -117,7 +104,7 @@ static NSString *template = nil;
 - (void)layoutSubviews {
 	for (UIView *subv in [[[self subviews] objectAtIndex:0] subviews]) {
 		if ([subv isKindOfClass:[UIImageView class]])
-			[subv setHidden:YES];
+			[subv removeFromSuperview];
 	}
 }
 

@@ -113,8 +113,10 @@
 	// or else crash from objc_msgSend on deallocated objc
 	[c setIsWhois:NO];
 	if (showingUserInfo) {
-		if ([currentChan isKindOfClass:[RCPMChannel class]])
+		if ([currentChan isKindOfClass:[RCPMChannel class]]) {
 			[c setIsWhois:YES];
+			[c setChannel:currentChan];
+		}
 		[c setIsLast:YES];
 		[c setNeedsDisplay];
 		return c;

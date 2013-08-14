@@ -412,7 +412,7 @@ char RCUserHash(NSString *from) {
 		newMessageCount++;
 		if (isHighlight) hasHighlights = YES;
 		if ([[RCChatController sharedController] isShowingChatListView]) {
-			if (newMessageCount > 101) return;
+			if (newMessageCount > 100) return;
 			// if it's at 100, it will stop drawing anything new anyways. since the 99+ thing. so k
 			[cellRepresentation setNewMessageCount:newMessageCount];
 			[cellRepresentation performSelectorOnMainThread:@selector(setNeedsDisplay) withObject:nil waitUntilDone:NO];

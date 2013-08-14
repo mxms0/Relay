@@ -28,6 +28,7 @@
 }
 
 - (void)drawRect:(CGRect)rect {
+	[super drawRect:rect];
 	RCUserTableCell *cc;
 	UIView *v = [self superview];
 	if ([[self superview] isKindOfClass:[RCUserTableCell class]]) {
@@ -39,6 +40,8 @@
 	if ([cc isWhois]) {
 		[UIColorFromRGB(0xEEF2F4) set];
 		UIRectFill(rect);
+		[UIColorFromRGB(0x4c4c51) set];
+		[[((RCPMChannel *)[cc channel]) chanInfos] drawInRect:CGRectMake(2, 2, rect.size.width - 52, 50) withFont:[UIFont systemFontOfSize:12]];
 	}
 	else {
 		UIImage *bg = [UIImage imageNamed:@"0_strangebg"];

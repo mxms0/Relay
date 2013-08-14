@@ -99,6 +99,7 @@
 }
 
 - (void)drawRect:(CGRect)rect {
+	[super drawRect:rect];
 	[UIColorFromRGB(0xeeeeee) set];
 	UIRectFill(CGRectMake(0, 10, rect.size.width, rect.size.height));
 }

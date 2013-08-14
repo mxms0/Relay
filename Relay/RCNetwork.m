@@ -547,6 +547,7 @@
 }
 
 - (void)disconnectCleanupWithMessage:(NSString *)msg {
+	if (status == RCSocketStatusClosed) return;
 	_isDisconnecting = NO;
 	status = RCSocketStatusClosed;
 	close(sockfd);

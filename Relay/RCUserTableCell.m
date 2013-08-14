@@ -11,7 +11,7 @@
 #import "RCPMChannel.h"
 
 @implementation RCUserTableCell
-@synthesize isLast, isWhois, contentView;
+@synthesize isLast, isWhois, contentView, channel;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {

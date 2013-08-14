@@ -12,11 +12,11 @@
 + (void)load {
 	RCCommandEngine *e = [RCCommandEngine sharedInstance];
 	[e registerSelector:@selector(handleME:net:channel:) forCommands:@"me" usingClass:self];
-	[e registerSelector:@selector(handleJOIN:net:channel:) forCommands:[NSArray arrayWithObjects:@"join", @"j", nil] usingClass:self];
-	[e registerSelector:@selector(handlePART:net:channel:) forCommands:[NSArray arrayWithObjects:@"part", @"p", nil] usingClass:self];
+	[e registerSelector:@selector(handleJOIN:net:channel:) forCommands:@"join" usingClass:self];
+	[e registerSelector:@selector(handlePART:net:channel:) forCommands:@"part" usingClass:self];
 	[e registerSelector:@selector(handleNP:net:channel:) forCommands:[NSArray arrayWithObjects:@"np", @"ipod", nil] usingClass:self];
 	// yes, i realize np and ipod should be two different commands. but for now, it will do.
-	[e registerSelector:@selector(handlePRIVMSG:net:channel:) forCommands:[NSArray arrayWithObjects:@"pm", @"privmsg", @"query", @"msg", nil] usingClass:self];
+	[e registerSelector:@selector(handlePRIVMSG:net:channel:) forCommands:[NSArray arrayWithObjects:@"privmsg", @"query", @"msg", nil] usingClass:self];
 	[e registerSelector:@selector(handleRAW:net:channel:) forCommands:[NSArray arrayWithObjects:@"raw", @"quote", nil] usingClass:self];
 	[e registerSelector:@selector(handleNAMES:net:channel:) forCommands:[NSArray arrayWithObjects:@"names", @"users", nil] usingClass:self];
 	[e registerSelector:@selector(_wut:net:channel:) forCommands:@"o_o" usingClass:self];
@@ -30,13 +30,13 @@
 	[e registerSelector:@selector(handleTOPIC:net:channel:) forCommands:@"topic" usingClass:self];
 	[e registerSelector:@selector(handleBRAG:net:channel:) forCommands:@"brag" usingClass:self];
 	[e registerSelector:@selector(handleMODE:net:channel:) forCommands:@"mode" usingClass:self];
-	[e registerSelector:@selector(handleOP:net:channel:) forCommands:[NSArray arrayWithObjects:@"op", @"o", nil] usingClass:self];
+	[e registerSelector:@selector(handleOP:net:channel:) forCommands:@"op" usingClass:self];
 	[e registerSelector:@selector(handleDEOP:net:channel:) forCommands:@"deop" usingClass:self];
-	[e registerSelector:@selector(handleHALFOP:net:channel:) forCommands:[NSArray arrayWithObjects:@"halfop", @"h", nil] usingClass:self];
+	[e registerSelector:@selector(handleHALFOP:net:channel:) forCommands:@"halfop" usingClass:self];
 	[e registerSelector:@selector(handleDEHALFOP:net:channel:) forCommands:@"dehalfop" usingClass:self];
-	[e registerSelector:@selector(handleVOICE:net:channel:) forCommands:[NSArray arrayWithObjects:@"voice", @"v", nil] usingClass:self];
+	[e registerSelector:@selector(handleVOICE:net:channel:) forCommands:@"voice" usingClass:self];
 	[e registerSelector:@selector(handleDEVOICE:net:channel:) forCommands:@"devoice" usingClass:self];
-	[e registerSelector:@selector(handleQUIET:net:channel:) forCommands:[NSArray arrayWithObjects:@"quiet", @"q", nil] usingClass:self];
+	[e registerSelector:@selector(handleQUIET:net:channel:) forCommands:@"quiet" usingClass:self];
 	[e registerSelector:@selector(handleUNQUIET:net:channel:) forCommands:@"unquiet" usingClass:self];
     [e registerSelector:@selector(handleAWAY:net:channel:) forCommands:@"away" usingClass:self];
 	[e registerSelector:@selector(handleUPTIME:net:channel:) forCommands:@"uptime" usingClass:self];

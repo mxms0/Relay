@@ -9,7 +9,7 @@
 #import "RCBasicTableViewCell.h"
 #import "RCUserTableCellContentView.h"
 
-@class RCUserTableCellContentView;
+@class RCUserTableCellContentView, RCPMChannel;
 @interface RCUserTableCell : RCBasicTableViewCell {
 	RCUserTableCellContentView *contentView;
 	BOOL isLast;
@@ -17,6 +17,7 @@
 	BOOL fakeSelected;
 }
 @property (nonatomic, readonly) RCUserTableCellContentView *contentView;
+@property (nonatomic, retain) RCPMChannel *channel;
 @property (nonatomic, assign) BOOL isLast;
 @property (nonatomic, assign) BOOL isWhois;
 @end

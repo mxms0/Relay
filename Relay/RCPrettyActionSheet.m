@@ -51,6 +51,7 @@
 }
 
 - (void)drawRect:(CGRect)rect {
+	[super drawRect:rect];
 	[UIColorFromRGB(0x181d24) set];
 	UIRectFill(rect);
 	UIImage *img = [UIImage imageNamed:@"0_as_bg"];

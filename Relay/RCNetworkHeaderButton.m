@@ -53,6 +53,7 @@
 }
 
 - (void)drawRect:(CGRect)rect {
+	[super drawRect:rect];
 	UIColor *textColor = [UIColor colorWithRed:0.409 green:0.434 blue:0.523 alpha:1.000];
 	UIColor *subTextColor = UIColorFromRGB(0x556280);
 	if ([net expanded] || _pSelected) {

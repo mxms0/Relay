@@ -16,4 +16,5 @@
 + (id)sharedInstance;
 - (void)handleCommand:(NSString *)command fromNetwork:(RCNetwork *)net forChannel:(RCChannel *)chan;
 - (void)registerSelector:(SEL)selector forCommands:(id)commands usingClass:(Class)mee;
+- (NSArray *)commandsMatchingString:(NSString *)str;
 @end

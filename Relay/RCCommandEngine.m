@@ -76,4 +76,8 @@ static id _eInstance = nil;
 	[net sendMessage:cmd];
 }
 
+- (NSArray *)commandsMatchingString:(NSString *)str {
+	return [[cmds allKeys] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"(SELF beginswith[cd] %@)", str]];
+}
+
 @end

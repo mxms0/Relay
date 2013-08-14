@@ -30,6 +30,8 @@ static id _inst = nil;
 			if (height > 480) {
 				[self release];
 				self = [[RCXLChatController alloc] initWithRootViewController:rc];
+				[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+				[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:)  name:UIKeyboardWillHideNotification object:nil];
 				return self;
 			}
 		}
@@ -152,15 +154,35 @@ static id _inst = nil;
 	[sheet release];
 }
 
-- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
-	[self repositionKeyboardForUse:YES animated:YES];
-	[currentPanel scrollToBottom];
-	return YES;
+- (void)keyboardWillShow:(NSNotification *)noti {
+	CGRect keyboardFrame;
+	[[[noti userInfo] valueForKey:UIKeyboardFrameEndUserInfoKey] getValue:&keyboardFrame];
+	NSNumber *dur = [[noti userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey];
+	NSNumber *curve = [[noti userInfo] objectForKey:UIKeyboardAnimationCurveUserInfoKey];
+	keyboardFrame = [chatView convertRect:keyboardFrame toView:nil];
+	CGRect containerFrame = _bar.frame;
+	containerFrame.origin.y = chatView.bounds.size.height - (keyboardFrame.size.height + containerFrame.size.height);
+	[UIView beginAnimations:nil context:NULL];
+	[UIView setAnimationBeginsFromCurrentState:YES];
+	[UIView setAnimationDuration:[dur doubleValue]];
+	[UIView setAnimationCurve:[curve intValue]];
+	_bar.frame = containerFrame;
+	[currentPanel setFrame:CGRectMake(0, currentPanel.frame.origin.y, currentPanel.frame.size.width, _bar.frame.origin.y - 43)];
+	[UIView commitAnimations];
 }
 
-- (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
-	[self repositionKeyboardForUse:NO animated:YES];
-	return YES;
+- (void)keyboardWillHide:(NSNotification *)noti {
+    NSNumber *dur = [[noti userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey];
+    NSNumber *curve = [[noti userInfo] objectForKey:UIKeyboardAnimationCurveUserInfoKey];
+	CGRect containerFrame = _bar.frame;
+	containerFrame.origin.y = chatView.bounds.size.height - containerFrame.size.height;
+	[UIView beginAnimations:nil context:NULL];
+	[UIView setAnimationBeginsFromCurrentState:YES];
+	[UIView setAnimationDuration:[dur doubleValue]];
+	[UIView setAnimationCurve:[curve intValue]];
+	_bar.frame = containerFrame;
+	[currentPanel setFrame:CGRectMake(0, currentPanel.frame.origin.y, currentPanel.frame.size.width, _bar.frame.origin.y - 43)];
+	[UIView commitAnimations];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
@@ -217,14 +239,12 @@ static id _inst = nil;
 				return;
 			});
 		}
-		else if ([personMayb length] == 0) {
-			dispatch_sync(dispatch_get_main_queue(), ^{
-				[[RCNickSuggestionView sharedInstance] dismiss];
-				[tf release];
-			});
-		}
 		else if ([personMayb length] > 1) {
-			NSArray *found = [[currentPanel channel] usersMatchingWord:personMayb];
+			NSArray *found = nil;
+			if ([personMayb characterAtIndex:0] == '/') {
+				found = [[RCCommandEngine sharedInstance] commandsMatchingString:[personMayb substringFromIndex:1]];
+			}
+			else found = [[currentPanel channel] usersMatchingWord:personMayb];
 			dispatch_sync(dispatch_get_main_queue(), ^{
 				if ([found count] > 0) {
 					[[RCNickSuggestionView sharedInstance] setRange:rr inputField:tf];

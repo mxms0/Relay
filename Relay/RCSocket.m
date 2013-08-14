@@ -63,7 +63,6 @@ SSL_CTX *RCInitContext(void) {
 	if ((host = gethostbyname([server UTF8String])) == NULL) {
 		[net disconnectCleanupWithMessage:@"Error obtaining host."];
 		// ERROR OBTAINING HOST
-		MARK;
 		[p drain];
 		return -1;
 	}
@@ -71,7 +70,6 @@ SSL_CTX *RCInitContext(void) {
 	if (sockfd < 0) {
 		[net disconnectCleanupWithMessage:@"Error establishing socket."];
 		// ERROR ESTABLISHING SOCKET(?)
-		MARK;
 		[p drain];
 		return -1;
 	}
@@ -82,7 +80,6 @@ SSL_CTX *RCInitContext(void) {
 	addr.sin_port = htons(port);
 	addr.sin_addr.s_addr = *(long *)(host ->h_addr);
 	if (connect(sockfd, (struct sockaddr *)&addr, sizeof(addr)) != 0) {
-		MARK;
 		[net disconnectCleanupWithMessage:@"Error connecting."];
 		// ERROR CONNECTING
 		return -1;
@@ -96,7 +93,6 @@ SSL_CTX *RCInitContext(void) {
 		if (SSL_connect(net->ssl) == -1) {
 			// ERROR CONNECTING ..
 			[net disconnectCleanupWithMessage:@"Error connecting via SSL."];
-			MARK;
 			[p drain];
 			return -1;
 		}

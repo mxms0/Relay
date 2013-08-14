@@ -53,6 +53,7 @@
 }
 
 - (void)drawRect:(CGRect)rect {
+	[super drawRect:rect];
 	[UIColorFromRGB(0x29324A) set];
 	UIRectFill(rect);
 }
