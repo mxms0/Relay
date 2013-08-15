@@ -8,6 +8,36 @@
 	<string>${PRODUCT_NAME}</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
+	<key>CFBundleIcons</key>
+	<dict>
+		<key>CFBundlePrimaryIcon</key>
+		<dict>
+			<key>CFBundleIconFiles</key>
+			<array>
+				<string>Relay57x57</string>
+				<string>Relay60x60</string>
+				<string>Relay40x40</string>
+				<string>Relay29x29</string>
+				<string>iTunesArtwork</string>
+			</array>
+		</dict>
+	</dict>
+	<key>CFBundleIcons~ipad</key>
+	<dict>
+		<key>CFBundlePrimaryIcon</key>
+		<dict>
+			<key>CFBundleIconFiles</key>
+			<array>
+				<string>Relay50x50</string>
+				<string>Relay72x72</string>
+				<string>Relay76x76</string>
+				<string>Relay60x60</string>
+				<string>Relay40x40</string>
+				<string>Relay29x29</string>
+				<string>iTunesArtwork</string>
+			</array>
+		</dict>
+	</dict>
 	<key>CFBundleIdentifier</key>
 	<string>us.mxms.relay</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -27,6 +57,8 @@
 		<string>Icon.png</string>
 		<string>Icon@2x.png</string>
 	</array>
+	<key>LSApplicationCategoryType</key>
+	<string></string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIPrerenderedIcon</key>
