@@ -22,10 +22,6 @@
 		[self setOpaque:YES];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadData) name:@"us.mxms.relay.reload" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeNetwork:) name:@"us.mxms.relay.del" object:nil];
-		UIButton *adn = [[UIButton alloc] initWithFrame:CGRectMake(-20, 0, 84, 84)];
-		[adn setImage:[UIImage imageNamed:@"0_adn"] forState:UIControlStateNormal];
-		[adn setImage:[UIImage imageNamed:@"0_adn_pres"] forState:UIControlStateHighlighted];
-		[adn addTarget:[RCChatController sharedController] action:@selector(showNetworkAddViewController) forControlEvents:UIControlEventTouchUpInside];
 		_reloading = NO;
 		datas = [[RCSpecialTableView alloc] initWithFrame:CGRectMake(0, 44, 320, frame.size.height-44) style:UITableViewStylePlain];
 		[datas setDelegate:self];
@@ -34,16 +30,19 @@
 		[datas setShouldImmobilizeFirstCell:YES];
 		[datas setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 		[datas setBackgroundColor:[UIColor clearColor]];
-		[datas setTableFooterView:adn];
-		[adn release];
 		[self addSubview:datas];
 		[datas release];
 		[self setOpaque:YES];
-		RCBarButtonItem *st = [[RCBarButtonItem alloc] initWithFrame:CGRectMake(1, 0, 50, 45)];
+		RCBarButtonItem *st = [[RCBarButtonItem alloc] initWithFrame:CGRectMake(0, 1, 50, 45)];
 		[st addTarget:[RCChatController sharedController] action:@selector(showNetworkListOptions) forControlEvents:UIControlEventTouchUpInside];
 		[st setImage:[UIImage imageNamed:@"settingsbutton"] forState:UIControlStateNormal];
 		[navigationBar addSubview:st];
 		[st release];
+		RCBarButtonItem *add = [[RCBarButtonItem alloc] initWithFrame:CGRectMake(0, 0, 50, 45)];
+		[add addTarget:[RCChatController sharedController] action:@selector(showNetworkAddViewController) forControlEvents:UIControlEventTouchUpInside];
+		[add setImage:[UIImage imageNamed:@"newnetworkbutton"] forState:UIControlStateNormal];
+		[navigationBar addSubview:add];
+		[add release];
     }
     return self;
 }
@@ -104,6 +103,10 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 	if (_reloading) return 0;
 	return [[[RCNetworkManager sharedNetworkManager] networks] count];
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+	return 35;
 }
 
 - (RCNetworkCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {

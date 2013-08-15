@@ -16,8 +16,9 @@
 	if ((self = [super initWithFrame:frame])) {
 		net = nil;
 		[self setOpaque:YES];
-		coggearwhat = [[UIButton alloc] initWithFrame:CGRectMake(194, 0, 34, 44)];
+		coggearwhat = [[UIButton alloc] initWithFrame:CGRectMake(3, 0, 34, 44)];
 		[coggearwhat addTarget:[RCChatController sharedController] action:@selector(showNetworkOptions:) forControlEvents:UIControlEventTouchUpInside];
+		[coggearwhat setImage:[UIImage imageNamed:@"settingsbutton"] forState:UIControlStateNormal];
 		[self addSubview:coggearwhat];
 		[coggearwhat release];
 	}
@@ -26,12 +27,6 @@
 
 - (void)setSelected:(BOOL)selected {
 	[super setSelected:selected];
-	if (selected) {
-		[coggearwhat setImage:[UIImage imageNamed:@"0_COGGEARWHAT_pres"] forState:UIControlStateNormal];
-	}
-	else {
-		[coggearwhat setImage:[UIImage imageNamed:@"0_COGGEARWHAT"] forState:UIControlStateNormal];
-	}
 	[self setNeedsDisplay];
 }
 
@@ -54,25 +49,21 @@
 
 - (void)drawRect:(CGRect)rect {
 	[super drawRect:rect];
-	UIColor *textColor = [UIColor colorWithRed:0.409 green:0.434 blue:0.523 alpha:1.000];
-	UIColor *subTextColor = UIColorFromRGB(0x556280);
+	UIColor *textColor = UIColorFromRGB(0xcccccc);
 	if ([net expanded] || _pSelected) {
 		if ([net isConnected]) {
-			subTextColor = UIColorFromRGB(0xb5bbcc);
-			textColor = UIColorFromRGB(0xEdeff5);
+			textColor = UIColorFromRGB(0xcccccc);
 		}
 		else {
-			subTextColor = UIColorFromRGB(0xaaabb0);
-			textColor = UIColorFromRGB(0xd5d7dd);
+			textColor = UIColorFromRGB(0xcccccc);
 		}
 		[UIColorFromRGB(0x353538) set];
 		UIRectFill(rect);
-//		[bg drawInRect:CGRectMake(0, 0, rect.size.width, 44)];
 		UIImage *arrow = [UIImage imageNamed:@"0_arrowd"];
 		[arrow drawInRect:CGRectMake(232,14, 16, 16)];
 	}
 	else {
-		[UIColorFromRGB(0x29324A) set];
+		[UIColorFromRGB(0x353538) set];
 		UIRectFill(rect);
 		UIImage *ul = [UIImage imageNamed:@"0_underline"];
 		[ul drawAsPatternInRect:CGRectMake(0, 42, rect.size.width, 2)];
@@ -87,21 +78,17 @@
 	NSString *text = [net _description];
 	NSString *detail = [net server];
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
+	CGContextSetShadowWithColor(ctx, CGSizeMake(0, -1), 0, [UIColor blackColor].CGColor);
 	CGContextSetFillColorWithColor(ctx, textColor.CGColor);
 	CGContextScaleCTM(ctx, [[UIScreen mainScreen] scale], [[UIScreen mainScreen] scale]);
-	[text drawInRect:CGRectMake(5, 1, 200, 40) withFont:[UIFont boldSystemFontOfSize:9] lineBreakMode:NSLineBreakByCharWrapping alignment:NSTextAlignmentLeft];
-	CGContextSetFillColorWithColor(ctx, subTextColor.CGColor);
-	[detail drawInRect:CGRectMake(5, 13, 200, 30) withFont:[UIFont systemFontOfSize:5.5]];
+	[text drawInRect:CGRectMake(20, 1, 200, 40) withFont:[UIFont boldSystemFontOfSize:9] lineBreakMode:NSLineBreakByCharWrapping alignment:NSTextAlignmentLeft];
+	[detail drawInRect:CGRectMake(20, 12, 200, 30) withFont:[UIFont systemFontOfSize:5.5]];
 }
 
 - (void)setNetwork:(RCNetwork *)_net {
 	[net release];
 	net = [_net retain];
 	_pSelected = [net expanded];
-	NSString *img = @"0_COGGEARWHAT";
-	if (_pSelected)
-		img = @"0_COGGEARWHAT_pres";
-	[coggearwhat setImage:[UIImage imageNamed:img] forState:UIControlStateNormal];
 }
 
 - (RCNetwork *)net {

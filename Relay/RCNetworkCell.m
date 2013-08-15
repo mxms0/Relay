@@ -24,26 +24,29 @@
 
 - (void)drawRect:(CGRect)rect {
 	[super drawRect:rect];
-	[UIColorFromRGB(0x141925) set];
+	[UIColorFromRGB(0x3d3d40) set];
 	UIRectFill(CGRectMake(0, 0, rect.size.width, rect.size.height));
 	UIImage *arrow = [UIImage imageNamed:@"0_arrowr"];
 	[arrow drawInRect:CGRectMake(232, 14, 16, 16)];
 	[UIColorFromRGB(0x2A2E37) set];
-	UIRectFill(CGRectMake(0,rect.size.height-1,rect.size.width, 1));
 	if (!self.channel) return;
 	BOOL isPM = (![self.channel hasPrefix:@"#"] && ![self.channel hasPrefix:@"\x01"]);
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
-	CGContextSetShadowWithColor(ctx, CGSizeMake(0, 1), 0, [UIColor blackColor].CGColor);
-	UIColor *def = UIColorFromRGB(0x545b69);
-	if (white || fakeWhite) def = UIColorFromRGB(0xd7d9dd);
+	CGContextSetShadowWithColor(ctx, CGSizeMake(0, -1), 0, [UIColor blackColor].CGColor);
+	UIColor *def = UIColorFromRGB(0xcfcfcf);
+	if (white || fakeWhite) def = UIColorFromRGB(0xfbf8f8);
 	CGContextSetFillColorWithColor(ctx, def.CGColor);
 	CGContextScaleCTM(ctx, [[UIScreen mainScreen] scale], [[UIScreen mainScreen] scale]);
 
-	[channel drawAtPoint:CGPointMake((isPM ? 18 : 5), (isPM ? 4 : 5)) forWidth:(newMessageCount > 0 ? (newMessageCount > 99 ? 90 : 95) : 110) withFont:[UIFont boldSystemFontOfSize:9] minFontSize:5 actualFontSize:NULL lineBreakMode:NSLineBreakByCharWrapping baselineAdjustment:UIBaselineAdjustmentAlignCenters];
+	[channel drawAtPoint:CGPointMake(20, 3.5) forWidth:(newMessageCount > 0 ? (newMessageCount > 99 ? 90 : 95) : 95) withFont:[UIFont systemFontOfSize:8] minFontSize:5 actualFontSize:NULL lineBreakMode:NSLineBreakByCharWrapping baselineAdjustment:UIBaselineAdjustmentAlignCenters];
+	UIImage *glyph = nil;
 	if (isPM) {
-		UIImage *bubl = [UIImage imageNamed:@"0_pbubl"];
-		[bubl drawInRect:CGRectMake(4, 4, 12, 12)];
+		glyph = [UIImage imageNamed:@"usericon"];
 	}
+	else {
+		glyph = [UIImage imageNamed:@"channelbubble"];
+	}
+	[glyph drawInRect:CGRectMake(4, 4, 12, 12) blendMode:kCGBlendModeNormal alpha:0.5];
 	if (newMessageCount > 0) {
 		NSString *rendr = @"";
 		if (newMessageCount > 99) {

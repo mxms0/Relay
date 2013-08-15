@@ -244,6 +244,7 @@ static id _inst = nil;
 			NSArray *found = nil;
 			if ([personMayb characterAtIndex:0] == '/') {
 				found = [[RCCommandEngine sharedInstance] commandsMatchingString:[personMayb substringFromIndex:1]];
+				rr = NSMakeRange(rr.location + 1, rr.length - 1);
 			}
 			else found = [[currentPanel channel] usersMatchingWord:personMayb];
 			dispatch_sync(dispatch_get_main_queue(), ^{

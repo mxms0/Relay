@@ -39,13 +39,14 @@
 }
 
 - (void)layoutSubviews {
+	[super layoutSubviews];
 	int loc = 0;
 	for (UIButton *btn in self.subviews) {
 		if (loc == 0) {
 			// do nothing..
 		}
 		if (loc == 1) {
-			[btn setFrame:CGRectMake(self.frame.size.width - btn.frame.size.width - 4, btn.frame.origin.y, btn.frame.size.width, btn.frame.size.height)];
+			[btn setFrame:CGRectMake(self.frame.size.width - btn.frame.size.width - 4 + (superSpecialLikeAc3xx2 ? (-52) : 0), btn.frame.origin.y, btn.frame.size.width, btn.frame.size.height)];
 		}
 		loc++;
 	}
@@ -92,7 +93,7 @@
 	if (subtitle) {
 		CGFloat subsze = 0.0;
 		[subtitle sizeWithFont:[UIFont systemFontOfSize:12] minFontSize:11 actualFontSize:&subsze forWidth:maxWidth lineBreakMode:NSLineBreakByClipping];
-		CGContextSetFillColorWithColor(ctx, UIColorFromRGB(0x626464).CGColor);
+//		CGContextSetFillColorWithColor(ctx, UIColorFromRGB(0x626464).CGColor);
 		[subtitle drawInRect:CGRectMake(50, 25, (!superSpecialLikeAc3xx2 ? maxWidth : 175), 14) withFont:[UIFont systemFontOfSize:subsze] lineBreakMode:NSLineBreakByClipping alignment:NSTextAlignmentCenter];
 	}
 }

@@ -130,7 +130,8 @@
 								[cell setFrame:CGRectMake(0, aCell.frame.origin.y - aCell.frame.size.height, aCell.frame.size.width, aCell.frame.size.height)];
 							}
 						}];
-						[rearrangeDelegate tableView:self cellDidFinishDragging:cell];
+						if ([rearrangeDelegate respondsToSelector:@selector(tableView:cellDidBeginDragging:)])
+							[rearrangeDelegate tableView:self cellDidFinishDragging:cell];
 						CGRect bounds = [self rectForSection:idx.section];
 						CGFloat offy = (cell.frame.origin.y - bounds.origin.y)/cell.frame.size.height;
 						[rearrangeDelegate tableView:self movedCellFromIndex:idx toIndex:[NSIndexPath indexPathForRow:offy inSection:idx.section]];
@@ -146,7 +147,8 @@
 				[UIView animateWithDuration:0.1 animations:^ {
 					[cell setFrame:CGRectMake(0, (boundingBox.origin.y + boundingBox.size.height) - cell.frame.size.height, cell.frame.size.width, cell.frame.size.height)];
 				}];
-				[rearrangeDelegate tableView:self cellDidFinishDragging:cell];
+				if ([rearrangeDelegate respondsToSelector:@selector(tableView:cellDidBeginDragging:)])
+					[rearrangeDelegate tableView:self cellDidFinishDragging:cell];
 				[rearrangeDelegate tableView:self movedCellFromIndex:idx toIndex:[NSIndexPath indexPathForRow:count inSection:idx.section]];
 				[self reloadData];
 			}

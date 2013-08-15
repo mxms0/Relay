@@ -19,32 +19,22 @@
 		channelDatas = nil;
 		channels = [[UITableView alloc] initWithFrame:CGRectMake(0, 44, frame.size.width, frame.size.height-44)];
 		[channels setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-		[channels setBackgroundColor:UIColorFromRGB(0xDDE0E5)];
+		[channels setBackgroundColor:[UIColor clearColor]];
 		[channels setShowsVerticalScrollIndicator:YES];
 		[channels setDelegate:self];
 		[channels setDataSource:self];
 		[self addSubview:channels];
 		[channels release];
-		UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+		RCSearchBar *searchBar = [[RCSearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
 		[searchBar setDelegate:self];
 		[searchBar setShowsCancelButton:NO];
 		[searchBar setUserInteractionEnabled:NO];
-		[searchBar setAlpha:0.5];
 		for (UIView *sv in [searchBar subviews]) {
 			if ([sv isKindOfClass:NSClassFromString(@"UISearchBarBackground")]) {
 				[sv removeFromSuperview];
 				break;
 			}
 		}
-		UILabel *apology = [[UILabel alloc] initWithFrame:CGRectMake(0, -100, 320, 100)];
-		[apology setFont:[UIFont boldSystemFontOfSize:12]];
-		[apology setTextColor:[UIColor darkGrayColor]];
-		[apology setBackgroundColor:[UIColor clearColor]];
-		[apology setText:@"I'm sure this takes a while to load on large servers like freenode, and I'm sure you're wondering why it isn't \"live\", just note, it's fastest this way. ;P"];
-		[apology setNumberOfLines:0];
-		[apology setTextAlignment:NSTextAlignmentCenter];
-		[channels addSubview:apology];
-		[apology release];
 		// can probably use UIAppearence to do this.. :/
 		[channels setTableHeaderView:searchBar];
 		[searchBar release];

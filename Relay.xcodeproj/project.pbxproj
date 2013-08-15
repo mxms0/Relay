@@ -17,6 +17,12 @@
 		500552F8177AB09A00020FCB /* 0_arrowr@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 500552F6177AB09700020FCB /* 0_arrowr@2x.png */; };
 		500552FB177AB7BD00020FCB /* 0_removr.png in Resources */ = {isa = PBXBuildFile; fileRef = 500552F9177AB7B900020FCB /* 0_removr.png */; };
 		500552FC177AB7BD00020FCB /* 0_removr@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 500552FA177AB7BB00020FCB /* 0_removr@2x.png */; };
+		5008474817BCD4F900356056 /* RCSearchBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 5008474717BCD4F900356056 /* RCSearchBar.m */; };
+		5008474A17BCDE3300356056 /* newnetworkbutton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5008474917BCDE3300356056 /* newnetworkbutton@2x.png */; };
+		5008474C17BCE39A00356056 /* networkcellarrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5008474B17BCE39A00356056 /* networkcellarrow@2x.png */; };
+		5008474E17BCE53400356056 /* channelbubble@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5008474D17BCE53400356056 /* channelbubble@2x.png */; };
+		5008475017BCE65600356056 /* usericon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5008474F17BCE65600356056 /* usericon@2x.png */; };
+		5008475217BCEA9200356056 /* cellseparator@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5008475117BCEA9200356056 /* cellseparator@2x.png */; };
 		500873BB16339DC0002ABAB6 /* RCPrettyActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 500873BA16339DC0002ABAB6 /* RCPrettyActionSheet.m */; };
 		5008758315E09DCF004D3CBC /* 0_navback.png in Resources */ = {isa = PBXBuildFile; fileRef = 5008758115E09DCE004D3CBC /* 0_navback.png */; };
 		5008758415E09DCF004D3CBC /* 0_navback@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5008758215E09DCF004D3CBC /* 0_navback@2x.png */; };
@@ -246,6 +252,13 @@
 		500552F6177AB09700020FCB /* 0_arrowr@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_arrowr@2x.png"; sourceTree = "<group>"; };
 		500552F9177AB7B900020FCB /* 0_removr.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_removr.png; sourceTree = "<group>"; };
 		500552FA177AB7BB00020FCB /* 0_removr@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_removr@2x.png"; sourceTree = "<group>"; };
+		5008474617BCD4F800356056 /* RCSearchBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCSearchBar.h; sourceTree = "<group>"; };
+		5008474717BCD4F900356056 /* RCSearchBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCSearchBar.m; sourceTree = "<group>"; };
+		5008474917BCDE3300356056 /* newnetworkbutton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "newnetworkbutton@2x.png"; sourceTree = "<group>"; };
+		5008474B17BCE39A00356056 /* networkcellarrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "networkcellarrow@2x.png"; sourceTree = "<group>"; };
+		5008474D17BCE53400356056 /* channelbubble@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channelbubble@2x.png"; sourceTree = "<group>"; };
+		5008474F17BCE65600356056 /* usericon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "usericon@2x.png"; sourceTree = "<group>"; };
+		5008475117BCEA9200356056 /* cellseparator@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cellseparator@2x.png"; sourceTree = "<group>"; };
 		500873B916339DC0002ABAB6 /* RCPrettyActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCPrettyActionSheet.h; sourceTree = "<group>"; };
 		500873BA16339DC0002ABAB6 /* RCPrettyActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCPrettyActionSheet.m; sourceTree = "<group>"; };
 		5008758115E09DCE004D3CBC /* 0_navback.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_navback.png; sourceTree = "<group>"; };
@@ -624,6 +637,8 @@
 				5089527D17A62D16001264BA /* RCHoverViewCard.m */,
 				50C4649D177FB3B00025ED54 /* RCCuteView.h */,
 				50C4649E177FB3B00025ED54 /* RCCuteView.m */,
+				5008474617BCD4F800356056 /* RCSearchBar.h */,
+				5008474717BCD4F900356056 /* RCSearchBar.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -925,6 +940,7 @@
 		50C464A9177FC0900025ED54 /* Buttons */ = {
 			isa = PBXGroup;
 			children = (
+				5008474917BCDE3300356056 /* newnetworkbutton@2x.png */,
 				50A1452917A2E9E70082E4A0 /* userlistbutton.png */,
 				50980D6517BC198A0067F047 /* userlistbutton@2x.png */,
 				50A046B817A2E8DC005BF447 /* hamburgerbutton.png */,
@@ -1029,6 +1045,10 @@
 		50D5B52317801B2400F2A39E /* Etc. */ = {
 			isa = PBXGroup;
 			children = (
+				5008475117BCEA9200356056 /* cellseparator@2x.png */,
+				5008474F17BCE65600356056 /* usericon@2x.png */,
+				5008474D17BCE53400356056 /* channelbubble@2x.png */,
+				5008474B17BCE39A00356056 /* networkcellarrow@2x.png */,
 				50A1453D17A3354F0082E4A0 /* hdtoolbar420.jpeg */,
 				50A1453917A30FD70082E4A0 /* maintextfield.png */,
 				50980D6717BC1ADB0067F047 /* maintextfield@2x.png */,
@@ -1272,6 +1292,11 @@
 				50980D6417BC18E60067F047 /* mainhamburger@2x.png in Resources */,
 				50980D6617BC198C0067F047 /* userlistbutton@2x.png in Resources */,
 				50980D6817BC1ADB0067F047 /* maintextfield@2x.png in Resources */,
+				5008474A17BCDE3300356056 /* newnetworkbutton@2x.png in Resources */,
+				5008474C17BCE39A00356056 /* networkcellarrow@2x.png in Resources */,
+				5008474E17BCE53400356056 /* channelbubble@2x.png in Resources */,
+				5008475017BCE65600356056 /* usericon@2x.png in Resources */,
+				5008475217BCEA9200356056 /* cellseparator@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1367,6 +1392,7 @@
 				5089528117A62E34001264BA /* RCHoverWebBrowser.m in Sources */,
 				50955EDA17B1DFA200795B39 /* RCRearrangeableTableView.m in Sources */,
 				50902FD217B60DC300D89F96 /* RCSettingsTableViewCell.m in Sources */,
+				5008474817BCD4F900356056 /* RCSearchBar.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
