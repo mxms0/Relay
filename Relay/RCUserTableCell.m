@@ -23,9 +23,7 @@
 		[contentView addSubview:self.textLabel];
 		[self.textLabel release];
 		self.textLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:15];
-		self.textLabel.textColor = [UIColor colorWithRed:0.236 green:0.239 blue:0.243 alpha:1.000];
-		self.textLabel.shadowColor = [UIColor whiteColor];
-		self.textLabel.shadowOffset = CGSizeMake(0, 1);
+		self.textLabel.textColor = [UIColor colorWithRed:204/255.0f green:204/255.0f blue:204/255.0f alpha:1.0f];
 		self.selectionStyle = UITableViewCellSelectionStyleNone;
 		isWhois = NO;
 		fakeSelected = NO;

@@ -60,10 +60,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-	self.view.backgroundColor = UIColorFromRGB(0x141925);
-	self.tableView.backgroundView.backgroundColor = UIColorFromRGB(0x141925);
-	self.tableView.backgroundColor = UIColorFromRGB(0x141925);
-	self.tableView.separatorColor = UIColorFromRGB(0x141925);
+	self.view.backgroundColor = [UIColor colorWithRed:43/255.0f green:43/255.0f blue:46/255.0f alpha:1.0f];
+	self.tableView.backgroundView.backgroundColor = [UIColor colorWithRed:43/255.0f green:43/255.0f blue:46/255.0f alpha:1.0f];
+	self.tableView.backgroundColor = [UIColor colorWithRed:43/255.0f green:43/255.0f blue:46/255.0f alpha:1.0f];
+	self.tableView.separatorColor = [UIColor colorWithRed:43/255.0f green:43/255.0f blue:46/255.0f alpha:1.0f];
 	titleView.text = [self titleText];
 }
 

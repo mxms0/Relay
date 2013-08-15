@@ -21,7 +21,7 @@
 		[bt release];
 		tableView = [[RCSuperSpecialTableView alloc] initWithFrame:CGRectMake(0, 44, frame.size.width, frame.size.height-44)];
 		[tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-		[tableView setBackgroundColor:UIColorFromRGB(0xeeeeee)];
+		[tableView setBackgroundColor:[UIColor colorWithRed:53/255.0f green:53/255.0f blue:56/255.0f alpha:1.0f]];
 		[tableView setShowsVerticalScrollIndicator:YES];
 		[tableView setDelegate:self];
 		[tableView setDataSource:self];

@@ -44,12 +44,11 @@
 		[[((RCPMChannel *)[cc channel]) chanInfos] drawInRect:CGRectMake(2, 2, rect.size.width - 52, 50) withFont:[UIFont systemFontOfSize:12]];
 	}
 	else {
-		UIImage *bg = [UIImage imageNamed:@"0_strangebg"];
-		[bg drawInRect:CGRectMake(0, 0, rect.size.width, rect.size.height+1) blendMode:kCGBlendModeNormal alpha:(fakeSelected ? 0.9 : 1.0)];
-	}
-	if (![cc isLast]) {
-		UIImage *ul = [UIImage imageNamed:@"0_usl"];
-		[ul drawAsPatternInRect:CGRectMake(0, 43, rect.size.width, 1)];
+		[self setBackgroundColor:[UIColor colorWithRed:53/255.0f green:53/255.0f blue:56/255.0f alpha:1.0f]];
+        [[UIColor colorWithRed:35/255.0f green:35/255.0f blue:36/255.0f alpha:1.0f] set];
+        UIRectFill(CGRectMake(0, rect.size.height - 2, rect.size.width, 0.5));
+        [[UIColor colorWithRed:73/255.0f green:73/255.0f blue:76/255.0f alpha:1.0f] set];
+        UIRectFill(CGRectMake(0, rect.size.height - 1, rect.size.width, 1));
 	}
 }
 

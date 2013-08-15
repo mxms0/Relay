@@ -6,6 +6,7 @@
 //
 
 #import "RCSettingsViewController.h"
+#import "RCAboutViewController.h"
 
 @implementation RCSettingsViewController
 
@@ -69,7 +70,7 @@
 	UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, 240, 20)];
 	label.text = [self tableView:tableView titleForHeaderInSection:section];
 	label.backgroundColor = [UIColor clearColor];
-	label.textColor = [UIColor whiteColor];
+	label.textColor = [UIColor colorWithRed:204/255.0f green:204/255.0f blue:204/255.0f alpha:1.0f];
 	label.shadowColor = [UIColor blackColor];
 	label.shadowOffset = CGSizeMake(0, 1);
 	label.font = [UIFont boldSystemFontOfSize:14];
@@ -84,19 +85,42 @@
 		cell = [[[RCSettingsTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier] autorelease];
 		switch (indexPath.section) {
 			case 0: {
-				UISwitch *aSwitch = [[UISwitch alloc] init];
-				[aSwitch addTarget:self action:@selector(switchToggled:) forControlEvents:UIControlEventValueChanged];
-				aSwitch.on = (BOOL)[[managedPreferences objectForKey:[keyValues objectForKey:text]] boolValue];
-				[cell setAccessoryView:aSwitch];
-				[aSwitch release];
 				break;
 			}
+            case 1: {
+				break;
+            }
+            case 2: {
+				break;
+            }
+            case 3: {
+				break;
+            }
+            case 4: {
+				break;
+            }
 			default:
 				break;
 		}
 	}
 	cell.textLabel.text = text;
 	return cell;
+}
+
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    switch (indexPath.section) {
+        case 3: {
+            break;
+        }
+        case 4: {
+            RCAboutViewController *about = [[RCAboutViewController alloc] init];
+            [self.navigationController pushViewController:about animated:YES];
+            break;
+        }
+        default: {
+            break;
+        }
+    }
 }
 
 - (void)switchToggled:(UISwitch *)aSwitch {

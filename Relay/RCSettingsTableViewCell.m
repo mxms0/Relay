@@ -11,10 +11,10 @@
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
-		[self setBackgroundColor:UIColorFromRGB(0x393d4a)];
+		[self setBackgroundColor:[UIColor colorWithRed:53/255.0f green:53/255.0f blue:56/255.0f alpha:1.0f]];
 		self.selectionStyle = UITableViewCellSelectionStyleNone;
-		self.textLabel.font = [UIFont boldSystemFontOfSize:15.5];
-		self.textLabel.textColor = [UIColor whiteColor];
+		self.textLabel.font = [UIFont systemFontOfSize:15.5];
+		self.textLabel.textColor = [UIColor colorWithRed:204/255.0f green:204/255.0f blue:204/255.0f alpha:1.0f];
 		self.textLabel.backgroundColor = [UIColor clearColor];
     }
     return self;
@@ -22,7 +22,7 @@
 
 - (void)drawRect:(CGRect)rect {
 	[super drawRect:rect];
-	[UIColorFromRGB(0x393d4a) set];
+	[[UIColor colorWithRed:53/255.0f green:53/255.0f blue:56/255.0f alpha:1.0f] set];
 	UIRectFill(rect);
 }
 

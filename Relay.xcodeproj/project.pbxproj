@@ -234,6 +234,7 @@
 		50F9036F15C5B105001BC6F0 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 50F9036D15C5B105001BC6F0 /* libssl.a */; };
 		50FC091E1583BA610019DB14 /* RCChannelManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5038C8311583B8E4004BA602 /* RCChannelManager.m */; };
 		A35989DA17BD51A500680622 /* Relay72x72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A35989D917BD51A500680622 /* Relay72x72@2x.png */; };
+		A35989DE17BD737A00680622 /* RCAboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A35989DD17BD737A00680622 /* RCAboutViewController.m */; };
 		A3764E64177E166F00C1615F /* RCServerChangeAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = A3764E63177E135E00C1615F /* RCServerChangeAlertView.m */; };
 		A39E9DAC17BCF45D00B8B3A1 /* icon_close_red@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A39E9DAB17BCF45D00B8B3A1 /* icon_close_red@2x.png */; };
 		A39E9DAE17BCF4AE00B8B3A1 /* icon_tick@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A39E9DAD17BCF4AE00B8B3A1 /* icon_tick@2x.png */; };
@@ -557,6 +558,8 @@
 		50F9036C15C5B105001BC6F0 /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libcrypto.a; sourceTree = "<group>"; };
 		50F9036D15C5B105001BC6F0 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libssl.a; sourceTree = "<group>"; };
 		A35989D917BD51A500680622 /* Relay72x72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Relay72x72@2x.png"; sourceTree = "<group>"; };
+		A35989DC17BD737A00680622 /* RCAboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCAboutViewController.h; sourceTree = "<group>"; };
+		A35989DD17BD737A00680622 /* RCAboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCAboutViewController.m; sourceTree = "<group>"; };
 		A3764E62177E135E00C1615F /* RCServerChangeAlertView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCServerChangeAlertView.h; sourceTree = "<group>"; };
 		A3764E63177E135E00C1615F /* RCServerChangeAlertView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCServerChangeAlertView.m; sourceTree = "<group>"; };
 		A39E9DAB17BCF45D00B8B3A1 /* icon_close_red@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_close_red@2x.png"; sourceTree = "<group>"; };
@@ -640,6 +643,8 @@
 				50150FB4163DBB3400B78D62 /* RCBaseNavigationViewController.m */,
 				50C7EB77178FE794001C07C7 /* RCSettingsViewController.h */,
 				50C7EB78178FE794001C07C7 /* RCSettingsViewController.m */,
+				A35989DC17BD737A00680622 /* RCAboutViewController.h */,
+				A35989DD17BD737A00680622 /* RCAboutViewController.m */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -1446,6 +1451,7 @@
 				50E9BEC215A13C9900121507 /* RCBasicViewController.m in Sources */,
 				AA503EEF15AD2C5A00EF223E /* RCAlternateNicknamesManager.m in Sources */,
 				50376D2A15B3CCAD00E13006 /* RCDateManager.m in Sources */,
+				A35989DE17BD737A00680622 /* RCAboutViewController.m in Sources */,
 				50376D2E15B3D1D700E13006 /* RCTextFieldBackgroundView.m in Sources */,
 				500DD85615BBDBC700F2E59D /* RCPasswordRequestAlert.m in Sources */,
 				50E0C34A15BCBD8100B79C50 /* RCPrettyAlertView.m in Sources */,

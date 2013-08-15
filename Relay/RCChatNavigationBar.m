@@ -15,7 +15,7 @@
 	if ((self = [super initWithFrame:frame])) {
 		title = nil;
 		subtitle = nil;
-		maxSize = 22;
+		maxSize = 18;
 		[self setOpaque:NO];
 		CALayer *hshdw = [[CALayer alloc] init];
 		UIImage *hfs = [UIImage imageNamed:@"0_vzshdw"];
@@ -88,13 +88,13 @@
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
 	CGFloat size = 0.0;
 	float maxWidth = (rect.size.width - 90);
-	[title sizeWithFont:[UIFont boldSystemFontOfSize:maxSize] minFontSize:14 actualFontSize:&size forWidth:maxWidth lineBreakMode:NSLineBreakByClipping];
-	[title drawInRect:CGRectMake((!superSpecialLikeAc3xx2 ? 45 : 30), (!!subtitle ? 1.5 : (((rect.size.height-4)/2)-(size/2)))+ (size <= 18 ? 2 : 0), maxWidth, 30) withFont:[UIFont boldSystemFontOfSize:size] lineBreakMode:NSLineBreakByClipping alignment:NSTextAlignmentCenter];
+	[title sizeWithFont:[UIFont systemFontOfSize:maxSize] minFontSize:12 actualFontSize:&size forWidth:maxWidth lineBreakMode:NSLineBreakByClipping];
+	[title drawInRect:CGRectMake((!superSpecialLikeAc3xx2 ? 45 : 22), (!!subtitle ? 1.5 : (((rect.size.height-4)/2)-(size/2)))+ (size <= 18 ? 2 : 0), maxWidth, 30) withFont:[UIFont boldSystemFontOfSize:size] lineBreakMode:NSLineBreakByClipping alignment:NSTextAlignmentCenter];
 	if (subtitle) {
 		CGFloat subsze = 0.0;
-		[subtitle sizeWithFont:[UIFont systemFontOfSize:12] minFontSize:11 actualFontSize:&subsze forWidth:maxWidth lineBreakMode:NSLineBreakByClipping];
+		[subtitle sizeWithFont:[UIFont systemFontOfSize:11] minFontSize:10 actualFontSize:&subsze forWidth:maxWidth lineBreakMode:NSLineBreakByClipping];
 //		CGContextSetFillColorWithColor(ctx, UIColorFromRGB(0x626464).CGColor);
-		[subtitle drawInRect:CGRectMake(50, 25, (!superSpecialLikeAc3xx2 ? maxWidth : 175), 14) withFont:[UIFont systemFontOfSize:subsze] lineBreakMode:NSLineBreakByClipping alignment:NSTextAlignmentCenter];
+		[subtitle drawInRect:CGRectMake(50, 24, (!superSpecialLikeAc3xx2 ? maxWidth : 175), 14) withFont:[UIFont systemFontOfSize:subsze] lineBreakMode:NSLineBreakByClipping alignment:NSTextAlignmentCenter];
 	}
 }
 
