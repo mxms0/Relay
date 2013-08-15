@@ -67,7 +67,7 @@ static BOOL isSetup = NO;
 
 - (void)configureUI {
 	UINavigationBar *nb = [UINavigationBar appearance];
-	[nb setBackgroundImage:[UIImage imageNamed:@"0_headr"] forBarMetrics:UIBarMetricsDefault];
+	[nb setBackgroundImage:[UIImage imageNamed:@"mainnavbarbg"] forBarMetrics:UIBarMetricsDefault];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

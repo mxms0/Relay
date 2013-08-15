@@ -980,10 +980,15 @@
 }
 
 - (void)handle437:(RCMessage *)message {
-	// ERR_UNAVAILRESOURCE
-#if LOGALL
-	NSLog(@"ERR_UNAVAILRESOURCE: %@", message->message);
-#endif
+    NSLog([message parameterAtIndex:2]);
+    [[self consoleChannel] recievedMessage:[message parameterAtIndex:2] from:nil type:RCMessageTypeNormal];
+	dispatch_async(dispatch_get_main_queue(), ^{
+		RCPrettyAlertView *ac = [[RCPrettyAlertView alloc] initWithTitle:@"Nickname Unavailable" message:[NSString stringWithFormat:@"Please input another nickname for %@ below.", [self _description]] delegate:self cancelButtonTitle:@"Disconnect" otherButtonTitles:@"Retry", nil];
+		[ac setTag:RCALERR_INCUNAME];
+		[ac setAlertViewStyle:UIAlertViewStylePlainTextInput];
+		[ac show];
+		[ac release];
+	});
 }
 
 - (void)handle461:(RCMessage *)message {
@@ -991,13 +996,15 @@
 	// type /nick for example.
 	// wether you hit change or cancel, it disconnects you
 	// its stupid.
-	dispatch_async(dispatch_get_main_queue(), ^{
-		RCPrettyAlertView *ac = [[RCPrettyAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Invalid Username (%@)", [self _description]] message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Change", nil];
-		[ac setTag:RCALERR_INCUNAME];
-		[ac setAlertViewStyle:UIAlertViewStylePlainTextInput];
-		[ac show];
-		[ac release];
-	});
+    if ([self isRegistered]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            RCPrettyAlertView *ac = [[RCPrettyAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Invalid Username (%@)", [self _description]] message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Change", nil];
+            [ac setTag:RCALERR_INCUNAME];
+            [ac setAlertViewStyle:UIAlertViewStylePlainTextInput];
+            [ac show];
+            [ac release];
+        });
+    }
 }
 
 - (void)handle464:(RCMessage *)message {

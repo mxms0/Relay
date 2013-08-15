@@ -227,7 +227,7 @@
 	dispatch_after(popTime, dispatch_get_main_queue(), ^{
 		NSString *subtitle = nil;
 		if (updating) {
-			subtitle = [NSString stringWithFormat:@"Loading... %d Public Channels", count];
+			subtitle = [NSString stringWithFormat:@"Loading %d public channels...", count];
 			[self refreshSubtitleLabel];
 		}
 		else {
