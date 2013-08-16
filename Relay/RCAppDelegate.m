@@ -67,12 +67,13 @@ static BOOL isSetup = NO;
 
 - (void)configureUI {
 	UINavigationBar *nb = [UINavigationBar appearance];
-    if (!isiOS7) {
-        [nb setBackgroundImage:[UIImage imageNamed:@"mainnavbarbg"] forBarMetrics:UIBarMetricsDefault];
-    } else {
-        [nb setBackgroundImage:[UIImage imageNamed:@"dark_ios7_mainnavbarbg"] forBarMetrics:UIBarMetricsDefault];
-        [UIApplication sharedApplication].statusBarStyle = 1;
-    }
+	if (!isiOS7) {
+		[nb setBackgroundImage:[UIImage imageNamed:@"mainnavbarbg"] forBarMetrics:UIBarMetricsDefault];
+	}
+	else {
+		[nb setBackgroundImage:[UIImage imageNamed:@"dark_ios7_mainnavbarbg"] forBarMetrics:UIBarMetricsDefault];
+		[UIApplication sharedApplication].statusBarStyle = 1;
+	}
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

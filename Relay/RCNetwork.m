@@ -980,7 +980,6 @@
 }
 
 - (void)handle437:(RCMessage *)message {
-    NSLog([message parameterAtIndex:2]);
     [[self consoleChannel] recievedMessage:[message parameterAtIndex:2] from:nil type:RCMessageTypeNormal];
 	dispatch_async(dispatch_get_main_queue(), ^{
 		RCPrettyAlertView *ac = [[RCPrettyAlertView alloc] initWithTitle:@"Nickname Unavailable" message:[NSString stringWithFormat:@"Please input another nickname for %@ below.", [self _description]] delegate:self cancelButtonTitle:@"Disconnect" otherButtonTitles:@"Retry", nil];
@@ -996,7 +995,7 @@
 	// type /nick for example.
 	// wether you hit change or cancel, it disconnects you
 	// its stupid.
-    if ([self isRegistered]) {
+	if (isRegistered) {
         dispatch_async(dispatch_get_main_queue(), ^{
             RCPrettyAlertView *ac = [[RCPrettyAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Invalid Username (%@)", [self _description]] message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Change", nil];
             [ac setTag:RCALERR_INCUNAME];

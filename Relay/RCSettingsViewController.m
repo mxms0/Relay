@@ -20,11 +20,11 @@
 						@[@"    DEFAULT SETTINGS", @"Nickname", @"Real Name", @"User Name", @"Quit Message"],
 						@[@"    APPEARANCE", @"Night Mode", @"Seconds In Timestamps", @"24 Hour Time"],
 						@[@"    BEHAVIOR", @"Autocorrect", @"Autocapitalize"],
-                        @[@"", @"Custom Commands"],
-                        @[@"", @"About Relay"]
+                        @[@"    ADVANCED", @"Custom Commands"],
+                        @[@"    ABOUT", @"About Relay"]
 		];
 		[sectionalArrays retain];
-		keyValues = [NSDictionary dictionaryWithObjectsAndKeys:AUTOCORRECTION_KEY, @"Autocorrection", AUTOCAPITALIZE_KEY, @"Autocapitalization", TWENTYFOURHOURTIME_KEY, @"24 Hour Time", TIMESECONDS_KEY, @"Use Seconds", nil];
+		keyValues = [NSDictionary dictionaryWithObjectsAndKeys:AUTOCORRECTION_KEY, @"Autocorrect", AUTOCAPITALIZE_KEY, @"Autocapitalize", TWENTYFOURHOURTIME_KEY, @"24 Hour Time", TIMESECONDS_KEY, @"Seconds In Timestamps", nil];
 		[keyValues retain];
 		managedPreferences = [[[RCNetworkManager sharedNetworkManager] settingsDictionary] mutableCopy];
 	}
@@ -125,6 +125,7 @@
         case 4: {
             RCAboutViewController *about = [[RCAboutViewController alloc] init];
             [self.navigationController pushViewController:about animated:YES];
+			[about release];
             break;
         }
         default: {
