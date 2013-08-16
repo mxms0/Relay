@@ -9,6 +9,7 @@
 #import "RCAboutInfoView.h"
 
 @interface RCAboutViewController : UIViewController {
+    UILabel *titleView;
 	NSMutableAttributedString *attributedString;
 }
 
