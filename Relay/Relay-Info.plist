@@ -14,6 +14,12 @@
 		<dict>
 			<key>CFBundleIconFiles</key>
 			<array>
+				<string>Icon80x80</string>
+				<string>Icon58x58</string>
+				<string>Icon29x29</string>
+				<string>Icon120x120</string>
+				<string>Icon114x114</string>
+				<string>Icon57x57</string>
 				<string>Relay57x57</string>
 				<string>Relay60x60</string>
 				<string>Relay40x40</string>
@@ -28,6 +34,16 @@
 		<dict>
 			<key>CFBundleIconFiles</key>
 			<array>
+				<string>Icon29x29</string>
+				<string>Icon58x58</string>
+				<string>Icon80x80</string>
+				<string>Icon40x40</string>
+				<string>Icon100x100</string>
+				<string>Icon50x50</string>
+				<string>Icon152x152</string>
+				<string>Icon76x76</string>
+				<string>Icon144x144</string>
+				<string>Icon72x72</string>
 				<string>Relay50x50</string>
 				<string>Relay72x72</string>
 				<string>Relay76x76</string>
