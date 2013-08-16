@@ -22,7 +22,7 @@
 		[self.textLabel removeFromSuperview];
 		[contentView addSubview:self.textLabel];
 		[self.textLabel release];
-		self.textLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:15];
+		self.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:15];
 		self.textLabel.textColor = [UIColor colorWithRed:204/255.0f green:204/255.0f blue:204/255.0f alpha:1.0f];
 		self.selectionStyle = UITableViewCellSelectionStyleNone;
 		isWhois = NO;

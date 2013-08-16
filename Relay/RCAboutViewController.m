@@ -12,7 +12,8 @@
 - (id)init {
 	if ((self = [super init])) {
 		[self setTitle:@"About Relay"];
-        self.edgesForExtendedLayout = UIRectEdgeNone;
+        if (isiOS7)
+            self.edgesForExtendedLayout = UIRectEdgeNone;
 		[self.view setBackgroundColor:[UIColor colorWithRed:53/255.0f green:53/255.0f blue:56/255.0f alpha:1.0f]];
 		UIColor *lightText = [UIColor colorWithRed:204/255.0f green:204/255.0f blue:204/255.0f alpha:1.0f];
 		UIColor *darkText = [UIColor colorWithRed:83/255.0f green:83/255.0f blue:85/255.0f alpha:1.0f];
