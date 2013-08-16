@@ -28,10 +28,8 @@
 		titleView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 180, 40)];
 		titleView.backgroundColor = [UIColor clearColor];
 		titleView.textAlignment = UITextAlignmentCenter;
-		titleView.font = [UIFont boldSystemFontOfSize:22];
-		titleView.shadowColor = [UIColor whiteColor];
-		titleView.textColor = UIColorFromRGB(0x424343);
-		titleView.shadowOffset = CGSizeMake(0, 1);
+		titleView.font = [UIFont boldSystemFontOfSize:18];
+		titleView.textColor = [UIColor whiteColor];
 		self.navigationItem.titleView = titleView;
 		[titleView release];
     }

@@ -17,9 +17,9 @@
 		[pure release];
 		[self.tableView setContentInset:UIEdgeInsetsMake(-100, 0, 0, 0)];
 		sectionalArrays = @[
-						@[@"  Global Settings", @"Nickname", @"Real Name", @"User Name", @"Quit Message"],
-						@[@"  Appearance", @"Light/Dark UI", @"Seconds In Timestamps", @"24 Hour Time"],
-						@[@"  Behavior", @"Autocorrect", @"Autocapitalize"],
+						@[@"    DEFAULT SETTINGS", @"Nickname", @"Real Name", @"User Name", @"Quit Message"],
+						@[@"    APPEARANCE", @"Night Mode", @"Seconds In Timestamps", @"24 Hour Time"],
+						@[@"    BEHAVIOR", @"Autocorrect", @"Autocapitalize"],
                         @[@"", @"Custom Commands"],
                         @[@"", @"About Relay"]
 		];
@@ -55,7 +55,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-	return 25;
+	return 36;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -67,13 +67,13 @@
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-	UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, 240, 20)];
+	UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(20, 32, 240, 20)];
 	label.text = [self tableView:tableView titleForHeaderInSection:section];
 	label.backgroundColor = [UIColor clearColor];
 	label.textColor = [UIColor colorWithRed:204/255.0f green:204/255.0f blue:204/255.0f alpha:1.0f];
 	label.shadowColor = [UIColor blackColor];
 	label.shadowOffset = CGSizeMake(0, 1);
-	label.font = [UIFont boldSystemFontOfSize:14];
+	label.font = [UIFont systemFontOfSize:14];
 	return [label autorelease];
 }
 
@@ -88,9 +88,19 @@
 				break;
 			}
             case 1: {
+                UISwitch *aSwitch = [[UISwitch alloc] init];
+                [aSwitch addTarget:self action:@selector(switchToggled:) forControlEvents:UIControlEventValueChanged];
+                aSwitch.on = (BOOL)[[managedPreferences objectForKey:[keyValues objectForKey:text]] boolValue];
+                [cell setAccessoryView:aSwitch];
+                [aSwitch release];
 				break;
             }
             case 2: {
+                UISwitch *aSwitch = [[UISwitch alloc] init];
+                [aSwitch addTarget:self action:@selector(switchToggled:) forControlEvents:UIControlEventValueChanged];
+                aSwitch.on = (BOOL)[[managedPreferences objectForKey:[keyValues objectForKey:text]] boolValue];
+                [cell setAccessoryView:aSwitch];
+                [aSwitch release];
 				break;
             }
             case 3: {
@@ -107,7 +117,7 @@
 	return cell;
 }
 
-- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     switch (indexPath.section) {
         case 3: {
             break;

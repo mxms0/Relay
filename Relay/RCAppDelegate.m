@@ -67,7 +67,12 @@ static BOOL isSetup = NO;
 
 - (void)configureUI {
 	UINavigationBar *nb = [UINavigationBar appearance];
-	[nb setBackgroundImage:[UIImage imageNamed:@"mainnavbarbg"] forBarMetrics:UIBarMetricsDefault];
+    if (!isiOS7) {
+        [nb setBackgroundImage:[UIImage imageNamed:@"mainnavbarbg"] forBarMetrics:UIBarMetricsDefault];
+    } else {
+        [nb setBackgroundImage:[UIImage imageNamed:@"dark_ios7_mainnavbarbg"] forBarMetrics:UIBarMetricsDefault];
+        [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
+    }
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

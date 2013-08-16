@@ -235,6 +235,8 @@
 		50FC091E1583BA610019DB14 /* RCChannelManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5038C8311583B8E4004BA602 /* RCChannelManager.m */; };
 		A35989DA17BD51A500680622 /* Relay72x72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A35989D917BD51A500680622 /* Relay72x72@2x.png */; };
 		A35989DE17BD737A00680622 /* RCAboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A35989DD17BD737A00680622 /* RCAboutViewController.m */; };
+		A35989E117BDBAC300680622 /* dark_ios7_mainnavbarbg.png in Resources */ = {isa = PBXBuildFile; fileRef = A35989E017BDBAC300680622 /* dark_ios7_mainnavbarbg.png */; };
+		A374232617BDCAF200EBE42E /* about@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A374232517BDCAF200EBE42E /* about@2x.png */; };
 		A3764E64177E166F00C1615F /* RCServerChangeAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = A3764E63177E135E00C1615F /* RCServerChangeAlertView.m */; };
 		A39E9DAC17BCF45D00B8B3A1 /* icon_close_red@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A39E9DAB17BCF45D00B8B3A1 /* icon_close_red@2x.png */; };
 		A39E9DAE17BCF4AE00B8B3A1 /* icon_tick@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A39E9DAD17BCF4AE00B8B3A1 /* icon_tick@2x.png */; };
@@ -560,6 +562,8 @@
 		A35989D917BD51A500680622 /* Relay72x72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Relay72x72@2x.png"; sourceTree = "<group>"; };
 		A35989DC17BD737A00680622 /* RCAboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCAboutViewController.h; sourceTree = "<group>"; };
 		A35989DD17BD737A00680622 /* RCAboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCAboutViewController.m; sourceTree = "<group>"; };
+		A35989E017BDBAC300680622 /* dark_ios7_mainnavbarbg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dark_ios7_mainnavbarbg.png; sourceTree = "<group>"; };
+		A374232517BDCAF200EBE42E /* about@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "about@2x.png"; sourceTree = "<group>"; };
 		A3764E62177E135E00C1615F /* RCServerChangeAlertView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCServerChangeAlertView.h; sourceTree = "<group>"; };
 		A3764E63177E135E00C1615F /* RCServerChangeAlertView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCServerChangeAlertView.m; sourceTree = "<group>"; };
 		A39E9DAB17BCF45D00B8B3A1 /* icon_close_red@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_close_red@2x.png"; sourceTree = "<group>"; };
@@ -1127,6 +1131,14 @@
 			name = "Command Engine";
 			sourceTree = "<group>";
 		};
+		A35989DF17BDBAB400680622 /* Navigation */ = {
+			isa = PBXGroup;
+			children = (
+				A35989E017BDBAC300680622 /* dark_ios7_mainnavbarbg.png */,
+			);
+			name = Navigation;
+			sourceTree = "<group>";
+		};
 		A39E9DAF17BD37AF00B8B3A1 /* Light UI */ = {
 			isa = PBXGroup;
 			children = (
@@ -1137,6 +1149,7 @@
 		A39E9DB017BD37B800B8B3A1 /* Dark UI */ = {
 			isa = PBXGroup;
 			children = (
+				A35989DF17BDBAB400680622 /* Navigation */,
 			);
 			name = "Dark UI";
 			sourceTree = "<group>";
@@ -1161,6 +1174,7 @@
 		A39E9DB217BD4A0700B8B3A1 /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				A374232517BDCAF200EBE42E /* about@2x.png */,
 				A35989D917BD51A500680622 /* Relay72x72@2x.png */,
 				A39E9DCF17BD4EEC00B8B3A1 /* Relay50x50.png */,
 				A39E9DD017BD4EEC00B8B3A1 /* Relay50x50@2x.png */,
@@ -1236,9 +1250,11 @@
 				A35989DA17BD51A500680622 /* Relay72x72@2x.png in Resources */,
 				50A7FB8B14C0F0A800ABADEA /* InfoPlist.strings in Resources */,
 				502F30A61776FA6E00A6E73E /* 0_selch@2x.png in Resources */,
+				A35989E117BDBAC300680622 /* dark_ios7_mainnavbarbg.png in Resources */,
 				50AAE7ED151ADDAB00E631FD /* 0_r_shadow@2x.png in Resources */,
 				50AAE7EE151ADDAB00E631FD /* 0_r_shadow.png in Resources */,
 				502F30A21776F58900A6E73E /* 0_adn@2x.png in Resources */,
+				A374232617BDCAF200EBE42E /* about@2x.png in Resources */,
 				502A66D215BCC3C30009C890 /* 0_alertview.png in Resources */,
 				502A66D315BCC3C30009C890 /* 0_alertview@2x.png in Resources */,
 				502A66D615BCC79F0009C890 /* 0_alertview_mask.png in Resources */,

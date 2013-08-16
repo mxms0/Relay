@@ -8,6 +8,6 @@
 
 #import "RCBasicViewController.h"
 
-@interface RCAboutViewController : RCBasicViewController
+@interface RCAboutViewController : UIViewController
 
 @end
