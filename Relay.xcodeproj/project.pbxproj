@@ -234,6 +234,8 @@
 		50F9036E15C5B105001BC6F0 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 50F9036C15C5B105001BC6F0 /* libcrypto.a */; };
 		50F9036F15C5B105001BC6F0 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 50F9036D15C5B105001BC6F0 /* libssl.a */; };
 		50FC091E1583BA610019DB14 /* RCChannelManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5038C8311583B8E4004BA602 /* RCChannelManager.m */; };
+		A302A2A917BE43C600C5E863 /* action_sheet_top_gloss@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A302A2A817BE43C600C5E863 /* action_sheet_top_gloss@2x.png */; };
+		A302A2AB17BE43D400C5E863 /* action_sheet_top_gloss.png in Resources */ = {isa = PBXBuildFile; fileRef = A302A2AA17BE43D400C5E863 /* action_sheet_top_gloss.png */; };
 		A35989DA17BD51A500680622 /* Relay72x72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A35989D917BD51A500680622 /* Relay72x72@2x.png */; };
 		A35989DE17BD737A00680622 /* RCAboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A35989DD17BD737A00680622 /* RCAboutViewController.m */; };
 		A35989E117BDBAC300680622 /* dark_ios7_mainnavbarbg.png in Resources */ = {isa = PBXBuildFile; fileRef = A35989E017BDBAC300680622 /* dark_ios7_mainnavbarbg.png */; };
@@ -562,6 +564,8 @@
 		50F66FED16509CD100AA0FD2 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		50F9036C15C5B105001BC6F0 /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libcrypto.a; sourceTree = "<group>"; };
 		50F9036D15C5B105001BC6F0 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libssl.a; sourceTree = "<group>"; };
+		A302A2A817BE43C600C5E863 /* action_sheet_top_gloss@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "action_sheet_top_gloss@2x.png"; sourceTree = "<group>"; };
+		A302A2AA17BE43D400C5E863 /* action_sheet_top_gloss.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = action_sheet_top_gloss.png; sourceTree = "<group>"; };
 		A35989D917BD51A500680622 /* Relay72x72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Relay72x72@2x.png"; sourceTree = "<group>"; };
 		A35989DC17BD737A00680622 /* RCAboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCAboutViewController.h; sourceTree = "<group>"; };
 		A35989DD17BD737A00680622 /* RCAboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCAboutViewController.m; sourceTree = "<group>"; };
@@ -1136,6 +1140,15 @@
 			name = "Command Engine";
 			sourceTree = "<group>";
 		};
+		A302A2A717BE43BF00C5E863 /* Action Sheet */ = {
+			isa = PBXGroup;
+			children = (
+				A302A2AA17BE43D400C5E863 /* action_sheet_top_gloss.png */,
+				A302A2A817BE43C600C5E863 /* action_sheet_top_gloss@2x.png */,
+			);
+			name = "Action Sheet";
+			sourceTree = "<group>";
+		};
 		A35989DF17BDBAB400680622 /* Navigation */ = {
 			isa = PBXGroup;
 			children = (
@@ -1154,6 +1167,7 @@
 		A39E9DB017BD37B800B8B3A1 /* Dark UI */ = {
 			isa = PBXGroup;
 			children = (
+				A302A2A717BE43BF00C5E863 /* Action Sheet */,
 				A35989DF17BDBAB400680622 /* Navigation */,
 			);
 			name = "Dark UI";
@@ -1302,6 +1316,7 @@
 				A39E9DCD17BD4E8E00B8B3A1 /* Relay72x72.png in Resources */,
 				50C84A7A1633BC7F003BFFE3 /* 0_as_cancel.png in Resources */,
 				50C84A7B1633BC7F003BFFE3 /* 0_as_cancel@2x.png in Resources */,
+				A302A2AB17BE43D400C5E863 /* action_sheet_top_gloss.png in Resources */,
 				A39E9DAC17BCF45D00B8B3A1 /* icon_close_red@2x.png in Resources */,
 				50C84A7C1633BC7F003BFFE3 /* 0_as_del_press.png in Resources */,
 				50C84A7D1633BC7F003BFFE3 /* 0_as_del_press@2x.png in Resources */,
@@ -1357,6 +1372,7 @@
 				50351C8516CED12500679CCC /* 0_pbbg@2x.png in Resources */,
 				509AF49617715C5F004C3A68 /* Default-568h@2x.png in Resources */,
 				509AF49817715CBF004C3A68 /* Default@2x.png in Resources */,
+				A302A2A917BE43C600C5E863 /* action_sheet_top_gloss@2x.png in Resources */,
 				5051DDF5177550F000C8B161 /* imabadperson.png in Resources */,
 				5051DDF6177550F000C8B161 /* imabadperson@2x.png in Resources */,
 				5051DDF917765E8600C8B161 /* 0_headr.png in Resources */,

@@ -52,9 +52,9 @@
 
 - (void)drawRect:(CGRect)rect {
 	[super drawRect:rect];
-	[UIColorFromRGB(0x181d24) set];
+	[[UIColor colorWithRed:43/255.0f green:43/255.0f blue:46/255.0f alpha:1.0f] set];
 	UIRectFill(rect);
-	UIImage *img = [UIImage imageNamed:@"0_as_bg"];
+	UIImage *img = [UIImage imageNamed:@"action_sheet_top_gloss"];
 	[img drawAsPatternInRect:CGRectMake(0, 0, rect.size.width, img.size.height)];
 }
 
