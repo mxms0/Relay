@@ -36,7 +36,7 @@ static BOOL isSetup = NO;
 	self.window.rootViewController = self.navigationController;
     [self.window makeKeyAndVisible];
 	[self performSelectorInBackground:@selector(_setup) withObject:nil];
-	[TestFlight takeOff:TEAM_TOKEN];
+//	[TestFlight takeOff:TEAM_TOKEN];
 	return YES;
 }
 
@@ -71,7 +71,7 @@ static BOOL isSetup = NO;
         [nb setBackgroundImage:[UIImage imageNamed:@"mainnavbarbg"] forBarMetrics:UIBarMetricsDefault];
     } else {
         [nb setBackgroundImage:[UIImage imageNamed:@"dark_ios7_mainnavbarbg"] forBarMetrics:UIBarMetricsDefault];
-        [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
+        [UIApplication sharedApplication].statusBarStyle = 1;
     }
 }
 

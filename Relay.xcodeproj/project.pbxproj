@@ -37,6 +37,7 @@
 		501F2B3D150995DE0099C9C3 /* RCTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 501F2B3C150995DE0099C9C3 /* RCTableView.m */; };
 		50204EDB178E887C00631D85 /* RCChannelInfoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 50204EDA178E887C00631D85 /* RCChannelInfoTableViewCell.m */; };
 		50221BA414EF6CB800C7AF58 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50221BA314EF6CB800C7AF58 /* CoreText.framework */; };
+		5025DF2C17BDE0FB00C10EB8 /* RCAboutInfoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5025DF2B17BDE0FB00C10EB8 /* RCAboutInfoView.m */; };
 		502A66D215BCC3C30009C890 /* 0_alertview.png in Resources */ = {isa = PBXBuildFile; fileRef = 502A66CE15BCC3C30009C890 /* 0_alertview.png */; };
 		502A66D315BCC3C30009C890 /* 0_alertview@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 502A66CF15BCC3C30009C890 /* 0_alertview@2x.png */; };
 		502A66D615BCC79F0009C890 /* 0_alertview_mask.png in Resources */ = {isa = PBXBuildFile; fileRef = 502A66D415BCC79F0009C890 /* 0_alertview_mask.png */; };
@@ -300,6 +301,8 @@
 		50204ED9178E887C00631D85 /* RCChannelInfoTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCChannelInfoTableViewCell.h; sourceTree = "<group>"; };
 		50204EDA178E887C00631D85 /* RCChannelInfoTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCChannelInfoTableViewCell.m; sourceTree = "<group>"; };
 		50221BA314EF6CB800C7AF58 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		5025DF2A17BDE0FB00C10EB8 /* RCAboutInfoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCAboutInfoView.h; sourceTree = "<group>"; };
+		5025DF2B17BDE0FB00C10EB8 /* RCAboutInfoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCAboutInfoView.m; sourceTree = "<group>"; };
 		502A66CE15BCC3C30009C890 /* 0_alertview.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_alertview.png; sourceTree = "<group>"; };
 		502A66CF15BCC3C30009C890 /* 0_alertview@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_alertview@2x.png"; sourceTree = "<group>"; };
 		502A66D415BCC79F0009C890 /* 0_alertview_mask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_alertview_mask.png; sourceTree = "<group>"; };
@@ -656,6 +659,8 @@
 		503F1D2415BA353B0003F808 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				5025DF2A17BDE0FB00C10EB8 /* RCAboutInfoView.h */,
+				5025DF2B17BDE0FB00C10EB8 /* RCAboutInfoView.m */,
 				50C4523C177536EF00AC843D /* RCInitialSetupView.h */,
 				50C4523D177536EF00AC843D /* RCInitialSetupView.m */,
 				501524E8169A02B000F4B4EF /* RCNickSuggestionView.h */,
@@ -678,8 +683,6 @@
 				5089527D17A62D16001264BA /* RCHoverViewCard.m */,
 				50C4649D177FB3B00025ED54 /* RCCuteView.h */,
 				50C4649E177FB3B00025ED54 /* RCCuteView.m */,
-				5008474617BCD4F800356056 /* RCSearchBar.h */,
-				5008474717BCD4F900356056 /* RCSearchBar.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -687,6 +690,8 @@
 		503F1D2515BA35BA0003F808 /* Table View Crap */ = {
 			isa = PBXGroup;
 			children = (
+				5008474617BCD4F800356056 /* RCSearchBar.h */,
+				5008474717BCD4F900356056 /* RCSearchBar.m */,
 				50955ED817B1DFA200795B39 /* RCRearrangeableTableView.h */,
 				50955ED917B1DFA200795B39 /* RCRearrangeableTableView.m */,
 				501F2B3B150995DE0099C9C3 /* RCTableView.h */,
@@ -1511,6 +1516,7 @@
 				50955EDA17B1DFA200795B39 /* RCRearrangeableTableView.m in Sources */,
 				50902FD217B60DC300D89F96 /* RCSettingsTableViewCell.m in Sources */,
 				5008474817BCD4F900356056 /* RCSearchBar.m in Sources */,
+				5025DF2C17BDE0FB00C10EB8 /* RCAboutInfoView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
