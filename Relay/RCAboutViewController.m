@@ -6,6 +6,7 @@
 //
 
 #import "RCAboutViewController.h"
+#import <objc/objc.h>
 
 @implementation RCAboutViewController
 
@@ -19,8 +20,8 @@
 		self.navigationItem.titleView = titleView;
 		[titleView release];
 		[self setTitle:@"About Relay"];
-        if (isiOS7)
-            self.edgesForExtendedLayout = UIRectEdgeNone;
+		if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)])
+			[self performSelector:@selector(setEdgesForExtendedLayout:) withObject:[NSNumber numberWithInt:0]];
 		[self.view setBackgroundColor:[UIColor colorWithRed:53/255.0f green:53/255.0f blue:56/255.0f alpha:1.0f]];
 		UIColor *lightText = [UIColor colorWithRed:153/255.0f green:153/255.0f blue:153/255.0f alpha:1.0f];
 		UIColor *darkText = [UIColor colorWithRed:204/255.0f green:204/255.0f blue:204/255.0f alpha:1.0f];

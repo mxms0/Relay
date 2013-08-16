@@ -138,7 +138,7 @@
 	madeChanges = YES;
 	RCSettingsTableViewCell *cell = (RCSettingsTableViewCell *)[aSwitch superview];
 	NSString *key = [keyValues objectForKey:cell.textLabel.text];
-	[managedPreferences setObject:(aSwitch.on ? (id)kCFBooleanTrue : (id)kCFBooleanFalse) forKey:key];
+	if (key) [managedPreferences setObject:(aSwitch.on ? (id)kCFBooleanTrue : (id)kCFBooleanFalse) forKey:key];
 }
 
 - (NSString *)titleText {

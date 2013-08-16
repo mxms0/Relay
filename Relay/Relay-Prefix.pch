@@ -12,5 +12,6 @@
 	#import <UIKit/UIKit.h>
 	#import <QuartzCore/QuartzCore.h>
 	#import <Foundation/Foundation.h>
+	#import <objc/runtime.h>
 	#import "Relay.h"
 #endif
