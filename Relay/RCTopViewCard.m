@@ -134,7 +134,7 @@
 				[c setIsLast:YES];
 		}
 	}
-
+	[c setChannel:(RCPMChannel *)currentChan];
 	[c setNeedsDisplay];
 	return c;
 }

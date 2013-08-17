@@ -76,7 +76,7 @@
 	UILabel *titleLabel = [[UILabel alloc] init];
 	CGSize size = [title sizeWithFont:[UIFont systemFontOfSize:12] minFontSize:10 actualFontSize:NULL forWidth:320 lineBreakMode:NSLineBreakByCharWrapping];
 	[titleLabel setText:title];
-	[titleLabel setFrame:CGRectMake(15, buttonView.frame.origin.y - (size.height + 10), screenSize.width - 30, size.height)];
+	[titleLabel setFrame:CGRectMake(15, buttonView.frame.origin.y - (size.height + 10) + 1, screenSize.width - 30, size.height)];
 	[titleLabel setTextColor:[UIColor whiteColor]];
 	[titleLabel setBackgroundColor:[UIColor clearColor]];
 	[titleLabel setFont:[UIFont systemFontOfSize:12]];

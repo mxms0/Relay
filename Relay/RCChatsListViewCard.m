@@ -38,7 +38,7 @@
 		[st setImage:[UIImage imageNamed:@"settingsbutton"] forState:UIControlStateNormal];
 		[navigationBar addSubview:st];
 		[st release];
-		RCBarButtonItem *add = [[RCBarButtonItem alloc] initWithFrame:CGRectMake(0, 0, 50, 45)];
+		RCBarButtonItem *add = [[RCBarButtonItem alloc] initWithFrame:CGRectMake(0, 1, 50, 45)];
 		[add addTarget:[RCChatController sharedController] action:@selector(showNetworkAddViewController) forControlEvents:UIControlEventTouchUpInside];
 		[add setImage:[UIImage imageNamed:@"newnetworkbutton"] forState:UIControlStateNormal];
 		[navigationBar addSubview:add];

@@ -128,7 +128,7 @@
 		RCMessageTypeNormalE2
 	} RCMessageType;
 
-	enum RCIRCAttribute {
+	typedef enum RCIRCAttribute {
 		RCIRCAttributeColor = 0x03,
 		RCIRCAttributeBold = 0x02,
 		RCIRCAttributeReset = 0x0F,
@@ -136,7 +136,7 @@
 		RCIRCAttributeUnderline = 0x1F,
 		RCIRCAttributeInternalNickname = 0x04,
 		RCIRCAttributeInternalNicknameEnd = 0x05
-	};
+	} RCIRCAttribute;
 
 	typedef enum RCPasswordRequestAlertType {
 		RCPasswordRequestAlertTypeNickServ,

@@ -76,13 +76,14 @@
 
 - (void)joinIRCNodeAndConnectToSupportChannel {
 	RCNetwork *net = [[RCNetwork alloc] init];
+	[net setSDescription:@"IRCNode"];
 	[net setServer:@"irc.ircnode.org"];
 	[net setPort:6667];
 	[net setUseSSL:NO];
 	[net setSASL:NO];
-	[net setUserModes:@"SupportUser"];
+	[net setUsername:@"SupportUser"];
 	[net setRealname:@"SupportUser"];
-	[net setNick:@"SupportUser"];
+	[net setNick:[NSString stringWithFormat:@"RelayUser%d", arc4random_uniform(200)]];
 	[net setCOL:NO];
 	[net setExpanded:YES];
 	[net setupRooms:[NSArray arrayWithObjects:@"\x01IRC", @"#Relay", nil]];

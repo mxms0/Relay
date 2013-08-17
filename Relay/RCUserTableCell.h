@@ -7,17 +7,16 @@
 
 #import <UIKit/UIKit.h>
 #import "RCBasicTableViewCell.h"
-#import "RCUserTableCellContentView.h"
 
-@class RCUserTableCellContentView, RCPMChannel;
+@class RCChannel;
 @interface RCUserTableCell : RCBasicTableViewCell {
-	RCUserTableCellContentView *contentView;
+	RCChannel *channel;
+	NSString *prefix;
 	BOOL isLast;
 	BOOL isWhois;
 	BOOL fakeSelected;
 }
-@property (nonatomic, readonly) RCUserTableCellContentView *contentView;
-@property (nonatomic, retain) RCPMChannel *channel;
 @property (nonatomic, assign) BOOL isLast;
 @property (nonatomic, assign) BOOL isWhois;
+- (void)setChannel:(RCChannel *)chan;
 @end

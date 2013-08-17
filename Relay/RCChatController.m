@@ -30,8 +30,6 @@ static id _inst = nil;
 			if (height > 480) {
 				[self release];
 				self = [[RCXLChatController alloc] initWithRootViewController:rc];
-				[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-				[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:)  name:UIKeyboardWillHideNotification object:nil];
 				return self;
 			}
 		}
@@ -55,6 +53,8 @@ static id _inst = nil;
 }
 
 - (void)layoutWithRootViewController:(RCViewController *)rc {
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
 	currentPanel = nil;
 	rootView = rc;
 	canDragMainView = YES;
