@@ -14,7 +14,6 @@
 
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
-		net = nil;
 		[self setOpaque:YES];
 		coggearwhat = [[UIButton alloc] initWithFrame:CGRectMake(3, 0, 34, 44)];
 		[coggearwhat addTarget:[RCChatController sharedController] action:@selector(showNetworkOptions:) forControlEvents:UIControlEventTouchUpInside];

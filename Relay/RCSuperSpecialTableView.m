@@ -9,8 +9,4 @@
 
 @implementation RCSuperSpecialTableView
 
-- (void)layoutSubviews {
-	[super layoutSubviews];
-}
-
 @end

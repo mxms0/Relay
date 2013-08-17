@@ -59,10 +59,7 @@
 	[self.view addSubview:iconView];
 	[iconView release];
 	
-	CGFloat offy = (iconView.frame.origin.y + iconView.frame.size.height + 28);
-	CGFloat boxHeight = self.view.frame.size.height - offy;
-	CGFloat yPos = offy + (boxHeight/2 - 180);
-	RCAboutInfoView *infos = [[RCAboutInfoView alloc] initWithFrame:CGRectMake(0, yPos, 320, 280)];
+	RCAboutInfoView *infos = [[RCAboutInfoView alloc] initWithFrame:CGRectMake(0, iconHeight + 50, 320, 280)];
 	[infos setBackgroundColor:[UIColor colorWithRed:53/255.0f green:53/255.0f blue:56/255.0f alpha:1.0f]];
 	[infos setAttributedString:attributedString];
 	[attributedString release];
@@ -70,6 +67,36 @@
 	[infos setNeedsDisplay];
 	[infos release];
 	titleView.text = @"About Relay";
+	RCActionSheetButton *support = [[RCActionSheetButton alloc] initWithFrame:CGRectMake(21, self.view.frame.size.height - 60, self.view.frame.size.width - (2 * 21), 46) type:RCActionSheetButtonTypeNormal];
+	[support addTarget:self action:@selector(joinIRCNodeAndConnectToSupportChannel) forControlEvents:UIControlEventTouchUpInside];
+	[support setTitle:@"Get Support at #Relay" forState:UIControlStateNormal];
+	[self.view addSubview:support];
+	[support release];
+}
+
+- (void)joinIRCNodeAndConnectToSupportChannel {
+	RCNetwork *net = [[RCNetwork alloc] init];
+	[net setServer:@"irc.ircnode.org"];
+	[net setPort:6667];
+	[net setUseSSL:NO];
+	[net setSASL:NO];
+	[net setUserModes:@"SupportUser"];
+	[net setRealname:@"SupportUser"];
+	[net setNick:@"SupportUser"];
+	[net setCOL:NO];
+	[net setExpanded:YES];
+	[net setupRooms:[NSArray arrayWithObjects:@"\x01IRC", @"#Relay", nil]];
+	CFUUIDRef uRef = CFUUIDCreate(NULL);
+	CFStringRef uStringRef = CFUUIDCreateString(NULL, uRef);
+	CFRelease(uRef);
+	[net setUUID:(NSString *)uStringRef];
+	CFRelease(uStringRef);
+	[[RCNetworkManager sharedNetworkManager] addNetwork:net];
+	[net release];
+	reloadNetworks();
+	[net connect];
+	[[RCChatController sharedController] selectChannel:@"#Relay" fromNetwork:net];
+	[self dismissModalViewControllerAnimated:YES];
 }
 
 - (void)didReceiveMemoryWarning {

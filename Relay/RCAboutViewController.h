@@ -7,6 +7,9 @@
 
 #import "RCBasicViewController.h"
 #import "RCAboutInfoView.h"
+#import "RCActionSheetButton.h"
+#import "RCNetworkManager.h"
+#import "RCChatController.h"
 
 @interface RCAboutViewController : UIViewController {
     UILabel *titleView;

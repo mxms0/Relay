@@ -7,7 +7,7 @@
 
 #import "RCChatsListViewCard.h"
 #import "RCChatController.h"
-#import "RCNetworkCell.h"
+#import "RCChannelCell.h"
 #import "RCNetworkHeaderButton.h"
 
 @implementation RCChatsListViewCard
@@ -69,7 +69,7 @@
 }
 
 - (BOOL)tableView:(UITableView *)tableView canDragCell:(UITableViewCell *)cell {
-	RCNetworkCell *nCell = (RCNetworkCell *)cell;
+	RCChannelCell *nCell = (RCChannelCell *)cell;
 	return !([[nCell channel] isEqualToString:@"\x01IRC"]);
 }
 
@@ -109,11 +109,11 @@
 	return 35;
 }
 
-- (RCNetworkCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (RCChannelCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	static NSString *ident = @"0_fcell";
-	RCNetworkCell *cell = (RCNetworkCell *)[tableView dequeueReusableCellWithIdentifier:ident];
+	RCChannelCell *cell = (RCChannelCell *)[tableView dequeueReusableCellWithIdentifier:ident];
 	if (!cell) {
-		cell = [[[RCNetworkCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:ident] autorelease];
+		cell = [[[RCChannelCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:ident] autorelease];
 	}
 	if ([[[RCNetworkManager sharedNetworkManager] networks] count] == 0) {
 		[tableView reloadData];
@@ -163,7 +163,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	RCNetworkCell *cc = (RCNetworkCell *)[tableView cellForRowAtIndexPath:indexPath];
+	RCChannelCell *cc = (RCChannelCell *)[tableView cellForRowAtIndexPath:indexPath];
 	[cc setWhite:YES];
 	[cc setNeedsDisplay];
 	RCNetwork *net = [[[RCNetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.section];

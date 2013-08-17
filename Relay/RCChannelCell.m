@@ -1,23 +1,18 @@
 //
-//  RCNetworkCell.m
+//  RCChannelCell.m
 //  Relay
 //
 //  Created by Max Shavrick on 6/22/12.
 //
 
-#import "RCNetworkCell.h"
+#import "RCChannelCell.h"
 
-@implementation RCNetworkCell
+@implementation RCChannelCell
 @synthesize channel, white, newMessageCount, hasHighlights;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
-		self.channel = nil;
-		[self setSelectionStyle:UITableViewCellSelectionStyleNone];
 		self.backgroundColor = [UIColor clearColor];
-		self.white = NO;
-		fakeWhite = NO;
-		self.newMessageCount = 0;
     }
     return self;
 }

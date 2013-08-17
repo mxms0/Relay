@@ -143,6 +143,12 @@
 		RCPasswordRequestAlertTypeServer
 	} RCPasswordRequestAlertType;
 
+	typedef enum RCActionSheetButtonType {
+		RCActionSheetButtonTypeDestructive,
+		RCActionSheetButtonTypeNormal,
+		RCActionSheetButtonTypeCancel
+	} RCActionSheetButtonType;
+
 	static inline void reloadNetworks(void);
 	static inline void reloadNetworks(void) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"us.mxms.relay.reload" object:nil];

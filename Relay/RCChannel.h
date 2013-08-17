@@ -15,7 +15,7 @@
 #import "RCDateManager.h"
 #import "RCCommandEngine.h"
 
-@class RCNetwork, RCNetworkCell;
+@class RCNetwork, RCChannelCell;
 @interface RCChannel : NSObject {
 @public
 	NSString *channelName;
@@ -29,7 +29,7 @@
 	BOOL hasHighlights;
 	unsigned newMessageCount;
 	RCNetwork *delegate;
-	RCNetworkCell *cellRepresentation;
+	RCChannelCell *cellRepresentation;
     NSMutableArray *fullUserList;
 	NSMutableArray *fakeUserList;
     NSMutableDictionary *userRanksAdv;
@@ -42,7 +42,7 @@
 @property (nonatomic, retain) NSString *password;
 @property (nonatomic, assign) RCUserListPanel *usersPanel;
 @property (nonatomic, readonly) NSMutableArray *fullUserList;
-@property (nonatomic, retain) RCNetworkCell *cellRepresentation;
+@property (nonatomic, retain) RCChannelCell *cellRepresentation;
 @property (nonatomic, assign) unsigned newMessageCount;
 - (void)disconnected:(NSString *)msg;
 - (void)changeNick:(NSString *)old toNick:(NSString *)new_;

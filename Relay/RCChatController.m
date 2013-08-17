@@ -150,7 +150,6 @@ static id _inst = nil;
 	// settings
 	RCPrettyActionSheet *sheet = [[RCPrettyActionSheet alloc] initWithTitle:@"Options" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Settings" otherButtonTitles:@"Connect All", @"Disconnect All", @"Clear Badges", nil];
 	[sheet setTag:RCALERR_GLOPTIONS];
-	[sheet setButtonCount:5];
 	[sheet showInView:rootView.view];
 	[sheet release];
 }
@@ -315,9 +314,8 @@ static RCNetwork *currentNetwork = nil;
 - (void)showNetworkOptions:(id)arg1 {
 	currentNetwork = [[arg1 superview] net];
 	RCPrettyActionSheet *sheet = [[RCPrettyActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"What do you want to do for %@?", [currentNetwork _description]] delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Delete" otherButtonTitles:@"Edit", ([currentNetwork isTryingToConnectOrConnected] ? @"Disconnect" : @"Connect"), nil];
-	[sheet setButtonCount:4];
 	[sheet setTag:RCALERR_INDVOPTIONS];
-	[sheet showInView:[[((RCAppDelegate *)[UIApp delegate]) navigationController] view]];
+	[sheet showInView:rootView.view];
 	[sheet release];
 }
 
@@ -947,7 +945,6 @@ static RCNetwork *currentNetwork = nil;
 		}
 		case RCALERR_INDVOPTIONS: {
 			if (buttonIndex == 0) {
-				[actionSheet dismissWithClickedButtonIndex:buttonIndex animated:YES];
 				[self showDeleteConfirmationForNetwork];
 			}
 			else if (buttonIndex == 1) {
