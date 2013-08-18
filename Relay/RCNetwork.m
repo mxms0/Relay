@@ -265,17 +265,18 @@
 }
 
 - (void)savePasswords {
-	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^ {
-		if ([self spass]) {
+	dispatch_async(dispatch_get_main_queue(), ^ {
+		if (spass) {
 			RCKeychainItem *keychain = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@spass", uUID]];
 			[keychain setObject:spass forKey:(id)kSecValueData];
 			[keychain release];
 		}
-		if ([self npass]) {
+		if (npass) {
 			RCKeychainItem *keychain = [[RCKeychainItem alloc] initWithIdentifier:[NSString stringWithFormat:@"%@npass", uUID]];
 			[keychain setObject:npass forKey:(id)kSecValueData];
 			[keychain release];
 		}
+		[[RCNetworkManager sharedNetworkManager] saveNetworks];
 	});
 	// should consider making RCPasswordStore or something. ~Maximus
 }
@@ -288,6 +289,7 @@
 		if (shouldRequestSPass) type = RCPasswordRequestAlertTypeServer;
 		else if (shouldRequestNPass) type = RCPasswordRequestAlertTypeNickServ;
 		RCPasswordRequestAlert *rs = [[RCPasswordRequestAlert alloc] initWithNetwork:self type:type];
+		[rs setTag:RCALERR_INCSPASS];
 		[rs show];
 		[rs release];
 		return;
@@ -617,11 +619,6 @@
 	// :Welcome to the Internet Relay Network <nick>!<user>@<host>
 	status = RCSocketStatusConnected;
 	[self networkDidRegister:YES];
-    NSArray *ihateFudge = [message->message componentsSeparatedByString:@" "];
-	NSString *shouldBeMe = [ihateFudge lastObject];
-	RCParseUserMask(shouldBeMe, &shouldBeMe, nil, nil);
-	self.useNick = shouldBeMe;
-	// i am sorry. I can trust this, i think. ~Max
 	RCChannel *chan = [self consoleChannel];
 	[chan recievedMessage:[message parameterAtIndex:1] from:@"" type:RCMessageTypeNormal];
 	reloadNetworks();
@@ -1173,11 +1170,13 @@
 }
 
 - (void)handleNICK:(RCMessage *)message {
+	NSLog(@"fsd %@[%@]%@", message->message, [message parameterAtIndex:0], message.sender);
 	NSString *person = nil;
 	NSString *newNick = [message parameterAtIndex:0];
 	RCParseUserMask(message.sender, &person, nil, nil);
 	if ([person isEqualToString:useNick]) {
 		// i changed my nick. welp
+		nick = newNick;
 		self.useNick = newNick;
 	}
 	for (RCChannel *chan in _channels) {

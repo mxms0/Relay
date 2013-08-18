@@ -62,9 +62,9 @@ static id _inst = nil;
 	// fix it max
 #warning THIS IS NECESSARY IN XCODE DP5
 	int offx = 0;
-	/*
+	
 	 if (isiOS7)
-	 offx = 20; */
+	 offx = 20; 
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsChanged) name:SETTINGS_CHANGED_KEY object:nil];
 	CGSize frame = [[UIScreen mainScreen] applicationFrame].size;
 	bottomView = [[RCChatsListViewCard alloc] initWithFrame:CGRectMake(0, offx, frame.width, frame.height)];
@@ -481,10 +481,7 @@ static RCNetwork *currentNetwork = nil;
 	[chatView setFrame:CGRectMake(267, chatView.frame.origin.y, chatView.frame.size.width, chatView.frame.size.height)];
 	[chatView findShadowAndDoStuffToIt];
 	[UIView commitAnimations];
-	
-	//	[currentPanel resignFirstResponder];
 	[self setEntryFieldEnabled:NO];
-	[self dismissMenuOptions];
 }
 
 - (void)pushUserListWithDuration:(NSTimeInterval)dr {
@@ -514,7 +511,6 @@ static RCNetwork *currentNetwork = nil;
 	[UIView commitAnimations];
 	[currentPanel resignFirstResponder];
 	[self setEntryFieldEnabled:NO];
-	[self dismissMenuOptions];
 }
 
 - (void)popUserListWithDuration:(NSTimeInterval)dr {
@@ -605,98 +601,15 @@ static RCNetwork *currentNetwork = nil;
 - (void)showMenuOptions:(id)unused {
 	if (isLISTViewPresented) return;
 	BOOL isConsole =  ([[currentPanel channel] isKindOfClass:[RCConsoleChannel class]]);
-	RCChatNavigationBar *rc = (RCChatNavigationBar *)[chatView navigationBar];
-	NSMutableArray *buttons = [[NSMutableArray alloc] init];
-	if (!isConsole) {
-		UIButton *joinr = [[UIButton alloc] init];
-		SEL jsel = @selector(joinOrConnectDependingOnState);
-		if (![[currentPanel channel] joined]) {
-			[joinr setImage:[UIImage imageNamed:@"0_joinliv"] forState:UIControlStateNormal];
-		}
-		else {
-			[joinr setImage:[UIImage imageNamed:@"0_cncl"] forState:UIControlStateNormal];
-			jsel = @selector(dismissMenuOptions);
-		}
-		[joinr addTarget:self action:jsel forControlEvents:UIControlEventTouchUpInside];
-		[buttons addObject:joinr];
-		[joinr release];
-		UIButton *trsh = [[UIButton alloc] init];
-		[trsh setImage:[UIImage imageNamed:@"0_trshdis"] forState:UIControlStateNormal];
-		[trsh addTarget:self action:@selector(deleteCurrentChannel) forControlEvents:UIControlEventTouchUpInside];
-		[buttons addObject:trsh];
-		[trsh release];
-		UIButton *lev = [[UIButton alloc] init];
-		UIImage *levi = nil;
-		SEL fsel = @selector(leaveCurrentChannel);
-		if ([[currentPanel channel] joined]) {
-			levi = [UIImage imageNamed:@"0_lev"];
-		}
-		else {
-			levi = [UIImage imageNamed:@"0_cncl"];
-			fsel = @selector(dismissMenuOptions);
-		}
-		[lev setImage:levi forState:UIControlStateNormal];
-		[lev addTarget:self action:fsel forControlEvents:UIControlEventTouchUpInside];
-		[buttons addObject:lev];
-		[lev release];
-		[rc setNeedsDisplay];
-	}
-	[rc setDrawIndent:YES];
-	[rc setNeedsDisplay];
-	UIButton *meml = [[UIButton alloc] init];
-	[meml setImage:[UIImage imageNamed:@"0_meml"] forState:UIControlStateNormal];
-	[meml addTarget:self action:@selector(animateChannelList) forControlEvents:UIControlEventTouchUpInside];
-	if ([buttons count] > 0)
-		[buttons insertObject:meml atIndex:3];
-	else [buttons addObject:meml];
-	[meml release];
-	CGRect frame = CGRectMake(65, 2, [rc frame].size.width-130, 43);
 	if (isConsole) {
-		UIButton *cnc = [[UIButton alloc] init];
-		[cnc setImage:[UIImage imageNamed:@"0_cncl"] forState:UIControlStateNormal];
-		[cnc addTarget:self action:@selector(dismissMenuOptions) forControlEvents:UIControlEventTouchUpInside];
-		[buttons addObject:cnc];
-		[cnc release];
-		frame = CGRectMake(100, 2, [rc frame].size.width - 200, 43);
+		
 	}
-	for (int i = 0; i < [buttons count]; i++) {
-		CGFloat indivSize = frame.size.width/[buttons count];
-		UIButton *b = (UIButton *)[buttons objectAtIndex:i];
-		[b setFrame:CGRectMake(i*indivSize+(frame.origin.x), 1, indivSize, frame.size.height)];
-		[b setAlpha:0];
-		[UIView beginAnimations:nil context:nil];
-		[rc addSubview:b];
-		[b setAlpha:1];
-		[UIView commitAnimations];
-	}
-	[buttons release];
-}
-
-- (void)dismissMenuOptions {
-	RCChatNavigationBar *rc = (RCChatNavigationBar *)[chatView navigationBar];
-	for (UIButton *subv in [rc subviews]) {
-		if (![subv isKindOfClass:[RCBarButtonItem class]]) {
-			if ([subv tag] != 1132) {
-				[UIView animateWithDuration:0.1 animations:^ {
-					[subv setAlpha:0];
-				} completion:^(BOOL fin) {
-					[subv removeFromSuperview];
-				}];
-			}
-		}
-	}
-	double delayInSeconds = 0.175;
-	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-	dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-		[rc setDrawIndent:NO];
-		[rc setNeedsDisplay];
-	});
+	// present custom action sheet here.
 }
 
 - (void)animateChannelList {
 	[field resignFirstResponder];
 	isLISTViewPresented = YES;
-	[self dismissMenuOptions];
 	
 	hoverView = [[RCChannelListViewCard alloc] initWithFrame:CGRectZero];
 	[[hoverView navigationBar] setTitle:@"Channel List"];
@@ -789,7 +702,6 @@ static RCNetwork *currentNetwork = nil;
 - (void)presentWebBrowserViewWithURL:(NSString *)urlreq {
 	[field resignFirstResponder];
 	isLISTViewPresented = YES;
-	[self dismissMenuOptions];
 	hoverView = [[RCHoverWebBrowser alloc] initWithFrame:CGRectZero];
 	[[hoverView navigationBar] setTitle:@"Loading..."];
 	[[hoverView navigationBar] setSubtitle:urlreq];
@@ -801,13 +713,11 @@ static RCNetwork *currentNetwork = nil;
 	RCPrettyAlertView *confirm = [[RCPrettyAlertView alloc] initWithTitle:@"Are you sure?" message:[NSString stringWithFormat:@"Are you sure you want to remove %@?", [currentPanel channel]] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Remove", nil];
 	[confirm show];
 	[confirm release];
-	[self dismissMenuOptions];
 }
 
 - (void)leaveCurrentChannel {
 	if ([[[currentPanel channel] delegate] isConnected])
 		[[currentPanel channel] setJoined:NO withArgument:@"Relay."];
-	[self dismissMenuOptions];
 }
 
 - (void)joinOrConnectDependingOnState {
@@ -817,11 +727,9 @@ static RCNetwork *currentNetwork = nil;
 	else {
 		[[currentPanel channel] setTemporaryJoinOnConnect:YES];
 	}
-	[self dismissMenuOptions];
 }
 
 - (void)showMemberList {
-	[self dismissMenuOptions];
 	[self pushUserListWithDefaultDuration];
 }
 
@@ -860,7 +768,7 @@ static RCNetwork *currentNetwork = nil;
 }
 
 - (void)selectChannel:(NSString *)channel fromNetwork:(RCNetwork *)_net {
-	for (UIView *subv in [chatView subviews]) {
+	for (UIView *subv in [[[chatView subviews] copy] autorelease]) {
 		if ([subv isKindOfClass:[RCChatPanel class]])
 			[subv removeFromSuperview];
 	}

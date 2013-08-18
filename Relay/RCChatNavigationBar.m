@@ -9,7 +9,7 @@
 #import "RCChatController.h"
 
 @implementation RCChatNavigationBar
-@synthesize subtitle, title, isMain, drawIndent, superSpecialLikeAc3xx2, maxSize;
+@synthesize subtitle, title, isMain, superSpecialLikeAc3xx2, maxSize;
 
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
@@ -78,11 +78,6 @@
 	UIImage *bg = [UIImage imageNamed:@"mainnavbarbg"];
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	[bg drawInRect:rect];
-	if (drawIndent) {
-		UIImage *indent = [UIImage imageNamed:@"0_indents"];
-		[indent drawAtPoint:CGPointMake(rect.size.width/2 - indent.size.width/2, 0)];
-		return;
-	}
 	if ([[self subviews] count] > 2) return; // kind of fixes it. eh
 	CGContextSetShadowWithColor(ctx, CGSizeMake(0, -1), 0, [UIColor blackColor].CGColor);
 	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);

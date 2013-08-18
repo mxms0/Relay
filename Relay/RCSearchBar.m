@@ -13,7 +13,7 @@
 	[super layoutSubviews];
 	for (UIView *subv in [self subviews]) {
 		if ([subv isKindOfClass:NSClassFromString(@"UISearchBarTextField")]) {
-			for (UIView *esubv in [subv subviews]) {
+			for (UIView *esubv in [[[subv subviews] copy] autorelease]) {
 				if ([esubv isKindOfClass:NSClassFromString(@"UITextFieldBorderView")]) {
 					[esubv removeFromSuperview];
 					break;

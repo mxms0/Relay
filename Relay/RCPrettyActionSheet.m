@@ -87,7 +87,7 @@
 	projectedHeight += 20;
 	[buttonView setFrame:CGRectMake(0, screenSize.height - projectedHeight, screenSize.width, projectedHeight)];
 	projectedOffset = buttonView.frame.origin.y - 20;
-	[self setFrame:(CGRect){{0,0}, screenSize}];
+	[self setFrame:(CGRect){{0, (isiOS7 ? 20 : 0)}, screenSize}];
 }
 
 - (void)showInView:(UIView *)view {

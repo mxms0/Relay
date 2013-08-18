@@ -29,7 +29,7 @@
 		[searchBar setDelegate:self];
 		[searchBar setShowsCancelButton:NO];
 		[searchBar setUserInteractionEnabled:NO];
-		for (UIView *sv in [searchBar subviews]) {
+		for (UIView *sv in [[[searchBar subviews] copy] autorelease]) {
 			if ([sv isKindOfClass:NSClassFromString(@"UISearchBarBackground")]) {
 				[sv removeFromSuperview];
 				break;

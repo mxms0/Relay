@@ -17,7 +17,10 @@
 	if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
 		self.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:15];
 		self.textLabel.textColor = [UIColor colorWithRed:204/255.0f green:204/255.0f blue:204/255.0f alpha:1.0f];
+		self.textLabel.backgroundColor = [UIColor clearColor];
+		self.contentView.backgroundColor = [UIColor clearColor];
 		self.selectionStyle = UITableViewCellSelectionStyleNone;
+		[self setBackgroundColor:[UIColor colorWithRed:53/255.0f green:53/255.0f blue:56/255.0f alpha:1.0f]];
 		isWhois = NO;
 		fakeSelected = NO;
     }
@@ -36,10 +39,9 @@
 
 - (void)drawRect:(CGRect)rect {
 	[super drawRect:rect];
-	[self setBackgroundColor:[UIColor colorWithRed:53/255.0f green:53/255.0f blue:56/255.0f alpha:1.0f]];
-	[[UIColor colorWithRed:35/255.0f green:35/255.0f blue:36/255.0f alpha:1.0f] set];
+	[[UIColor colorWithRed:35/255.0f green:35/255.0f blue:36/255.0f alpha:1.0f] setFill];
 	UIRectFill(CGRectMake(0, rect.size.height - 2, rect.size.width, 0.5));
-	[[UIColor colorWithRed:73/255.0f green:73/255.0f blue:76/255.0f alpha:1.0f] set];
+	[[UIColor colorWithRed:73/255.0f green:73/255.0f blue:76/255.0f alpha:1.0f] setFill];
 	UIRectFill(CGRectMake(0, rect.size.height - 1, rect.size.width, 1));
 	if (prefix) {
 	

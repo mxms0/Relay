@@ -102,7 +102,7 @@ static NSString *template = nil;
 }
 
 - (void)layoutSubviews {
-	for (UIView *subv in [[[self subviews] objectAtIndex:0] subviews]) {
+	for (UIView *subv in [[[[[self subviews] objectAtIndex:0] subviews] copy] autorelease]) {
 		if ([subv isKindOfClass:[UIImageView class]])
 			[subv removeFromSuperview];
 	}

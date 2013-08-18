@@ -24,7 +24,7 @@
                         @[@"    ABOUT", @"About Relay"]
 		];
 		[sectionalArrays retain];
-		keyValues = [NSDictionary dictionaryWithObjectsAndKeys:AUTOCORRECTION_KEY, @"Autocorrect", AUTOCAPITALIZE_KEY, @"Autocapitalize", TWENTYFOURHOURTIME_KEY, @"24 Hour Time", TIMESECONDS_KEY, @"Seconds In Timestamps", nil];
+		keyValues = [NSDictionary dictionaryWithObjectsAndKeys:AUTOCORRECTION_KEY, @"Autocorrect", AUTOCAPITALIZE_KEY, @"Autocapitalize", TWENTYFOURHOURTIME_KEY, @"24 Hour Time", TIMESECONDS_KEY, @"Seconds In Timestamps", THEME_NAME_KEY, @"Night Mode", nil];
 		[keyValues retain];
 		managedPreferences = [[[RCNetworkManager sharedNetworkManager] settingsDictionary] mutableCopy];
 	}
@@ -90,7 +90,10 @@
             case 1: {
                 UISwitch *aSwitch = [[UISwitch alloc] init];
                 [aSwitch addTarget:self action:@selector(switchToggled:) forControlEvents:UIControlEventValueChanged];
-                aSwitch.on = (BOOL)[[managedPreferences objectForKey:[keyValues objectForKey:text]] boolValue];
+				NSString *key = [keyValues objectForKey:text];
+				if ([key isEqualToString:THEME_NAME_KEY])
+					aSwitch.on = [[managedPreferences objectForKey:key] isEqualToString:@"DarkUI"];
+                else aSwitch.on = (BOOL)[[managedPreferences objectForKey:[keyValues objectForKey:text]] boolValue];
                 [cell setAccessoryView:aSwitch];
                 [aSwitch release];
 				break;
@@ -138,7 +141,11 @@
 	madeChanges = YES;
 	RCSettingsTableViewCell *cell = (RCSettingsTableViewCell *)[aSwitch superview];
 	NSString *key = [keyValues objectForKey:cell.textLabel.text];
-	if (key) [managedPreferences setObject:(aSwitch.on ? (id)kCFBooleanTrue : (id)kCFBooleanFalse) forKey:key];
+	if ([key isEqualToString:THEME_NAME_KEY]) {
+		themeChanged = YES;
+		[managedPreferences setObject:(aSwitch.on ? @"DarkUI" : @"LightUI") forKey:THEME_NAME_KEY];
+	}
+	else [managedPreferences setObject:(aSwitch.on ? (id)kCFBooleanTrue : (id)kCFBooleanFalse) forKey:key];
 }
 
 - (NSString *)titleText {
@@ -151,6 +158,9 @@
 
 - (void)saveChanges {
 	if (madeChanges) {
+		if (themeChanged) {
+			[[NSNotificationCenter defaultCenter] postNotificationName:THEME_CHANGED_KEY object:[managedPreferences objectForKey:THEME_NAME_KEY] userInfo:nil];
+		}
 		[[RCNetworkManager sharedNetworkManager] saveSettingsDictionary:managedPreferences dispatchChanges:YES];
 	}
 	[self dismiss];

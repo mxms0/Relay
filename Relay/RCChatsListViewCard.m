@@ -172,6 +172,7 @@
 }
 
 - (void)headerTapped:(RCNetworkHeaderButton *)hb {
+	if ([datas isRearranging]) return;
 	if (rearrangingHeaders) return;
 	if ([[hb net] expanded]) {
 		[hb setSelected:NO];

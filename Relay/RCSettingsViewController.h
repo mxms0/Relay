@@ -17,6 +17,7 @@
 	NSMutableDictionary *managedPreferences;
 	NSArray *sectionalArrays;
 	BOOL madeChanges;
+	BOOL themeChanged;
 }
 
 - (void)dismiss;

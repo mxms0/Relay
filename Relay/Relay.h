@@ -32,6 +32,8 @@
 	#define AUTOCAPITALIZE_KEY @"0_autocapitlize"
 	#define AUTOCORRECTION_KEY @"0_autocorct"
 	#define TWENTYFOURHOURTIME_KEY @"0_24hrtime"
+	#define THEME_CHANGED_KEY @"themechange"
+	#define THEME_NAME_KEY @"themename"
 //
 	#ifndef kCFCoreFoundationVersionNumber_iPhoneOS_4_0
 		#define kCFCoreFoundationVersionNumber_iPhoneOS_4_0 550.32

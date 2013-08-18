@@ -18,8 +18,8 @@
 			imageName = @"as_blue";
 		else if (typ == RCActionSheetButtonTypeDestructive)
 			imageName = @"as_red";
-		[self setBackgroundImage:[[UIImage imageNamed:imageName] stretchableImageWithLeftCapWidth:8 topCapHeight:8] forState:UIControlStateNormal];
-		[self setBackgroundImage:[[UIImage imageNamed:[imageName stringByAppendingString:@"_press"]] stretchableImageWithLeftCapWidth:8 topCapHeight:8] forState:UIControlStateHighlighted];
+		[self setBackgroundImage:[[[RCSchemeManager sharedInstance] imageNamed:imageName] stretchableImageWithLeftCapWidth:8 topCapHeight:8] forState:UIControlStateNormal];
+		[self setBackgroundImage:[[[RCSchemeManager sharedInstance] imageNamed:[imageName stringByAppendingString:@"_press"]] stretchableImageWithLeftCapWidth:8 topCapHeight:8] forState:UIControlStateHighlighted];
 		[self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
 		[[self titleLabel] setFont:[UIFont boldSystemFontOfSize:17]];
 		[[self titleLabel] setShadowOffset:CGSizeMake(0, -1)];

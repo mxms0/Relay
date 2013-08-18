@@ -19,7 +19,6 @@
 @implementation RCAppDelegate
 
 @synthesize window = _window, navigationController = _navigationController;
-static BOOL isSetup = NO;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
@@ -35,43 +34,36 @@ static BOOL isSetup = NO;
 	[rcv release];
 	self.window.rootViewController = self.navigationController;
     [self.window makeKeyAndVisible];
-	[self performSelectorInBackground:@selector(_setup) withObject:nil];
+	[self _setup];
 //	[TestFlight takeOff:TEAM_TOKEN];
 	return YES;
 }
 
 - (void)_setup {
-	dispatch_async(dispatch_get_main_queue(), ^{
-		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-		[self configureUI];
-		if (!isSetup) {
-			char *hdir = getenv("HOME");
-			if (!hdir) {
-				NSLog(@"CAN'T FIND HOME DIRECTORY TO LOAD NETWORKS");
-				exit(1);
-			}
-			NSString *absol = [NSString stringWithFormat:@"%s/Documents/Networks.plist", hdir];
-			NSFileManager *manager = [NSFileManager defaultManager];
-			if (![manager fileExistsAtPath:absol]) {
-				if (![manager createFileAtPath:absol contents:(NSData *)[NSDictionary dictionary] attributes:NULL]) {
-					NSLog(@"Could not create temporary networks property list.");
-				}
-			}
-			[[RCNetworkManager sharedNetworkManager] setIsBG:NO];
-			[[RCNetworkManager sharedNetworkManager] unpack];
-			isSetup = YES;
+	char *hdir = getenv("HOME");
+	if (!hdir) {
+		NSLog(@"CAN'T FIND HOME DIRECTORY TO LOAD NETWORKS");
+		exit(1);
+	}
+	NSString *absol = [NSString stringWithFormat:@"%s/Documents/Networks.plist", hdir];
+	NSFileManager *manager = [NSFileManager defaultManager];
+	if (![manager fileExistsAtPath:absol]) {
+		if (![manager createFileAtPath:absol contents:(NSData *)[NSDictionary dictionary] attributes:NULL]) {
+			NSLog(@"Could not create temporary networks property list.");
 		}
-		[pool drain];
-	});	
+	}
+	[[RCNetworkManager sharedNetworkManager] setIsBG:NO];
+	[[RCNetworkManager sharedNetworkManager] unpack];
+	[self configureUI];
 }
 
 - (void)configureUI {
 	UINavigationBar *nb = [UINavigationBar appearance];
 	if (!isiOS7) {
-		[nb setBackgroundImage:[UIImage imageNamed:@"mainnavbarbg"] forBarMetrics:UIBarMetricsDefault];
+		[nb setBackgroundImage:[[RCSchemeManager sharedInstance] imageNamed:@"mainnavbarbg"] forBarMetrics:UIBarMetricsDefault];
 	}
 	else {
-		[nb setBackgroundImage:[UIImage imageNamed:@"dark_ios7_mainnavbarbg"] forBarMetrics:UIBarMetricsDefault];
+		[nb setBackgroundImage:[[RCSchemeManager sharedInstance] imageNamed:@"ios7_mainnavbarbg"] forBarMetrics:UIBarMetricsDefault];
 		[UIApplication sharedApplication].statusBarStyle = 1;
 	}
 }

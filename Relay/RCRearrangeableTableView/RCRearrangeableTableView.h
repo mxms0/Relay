@@ -22,5 +22,6 @@
 }
 @property (nonatomic, assign) id <RCRearrangeableTableViewDelegate> rearrangeDelegate;
 @property (nonatomic, assign) BOOL shouldImmobilizeFirstCell;
+- (BOOL)isRearranging;
 // for people who like to fake header views with cells
 @end

@@ -21,10 +21,16 @@
 
 #pragma mark - VIEW SHIT
 
+- (UIStatusBarStyle)preferredStatusBarStyle {
+	return 1; //UIStatusBarStyleLightContent
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 	[[UIApplication sharedApplication] registerForRemoteNotificationTypes:UIRemoteNotificationTypeAlert];
 	[self.navigationController setNavigationBarHidden:YES];
+	if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)])
+		[self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
 	[[RCChatController alloc] initWithRootViewController:self];
 }
 

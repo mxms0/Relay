@@ -27,6 +27,10 @@
 	return cell;
 }
 
+- (BOOL)isRearranging {
+	return isRearranging;
+}
+
 - (void)cellWasHeld:(UILongPressGestureRecognizer *)longPressGesture {
 	UITableViewCell *cell = (UITableViewCell *)[longPressGesture view];
 	if (![rearrangeDelegate tableView:self canDragCell:cell]) return;

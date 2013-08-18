@@ -15,7 +15,7 @@
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
 		[self setOpaque:YES];
-		coggearwhat = [[UIButton alloc] initWithFrame:CGRectMake(3, 0, 34, 44)];
+		coggearwhat = [[UIButton alloc] initWithFrame:CGRectMake(3, 1, 34, 44)];
 		[coggearwhat addTarget:[RCChatController sharedController] action:@selector(showNetworkOptions:) forControlEvents:UIControlEventTouchUpInside];
 		[coggearwhat setImage:[UIImage imageNamed:@"settingsbutton"] forState:UIControlStateNormal];
 		[self addSubview:coggearwhat];

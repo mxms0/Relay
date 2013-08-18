@@ -33,7 +33,7 @@ static id _nInstance = nil;
 }
 
 - (void)showAtPoint:(CGPoint)p withNames:(NSArray *)names {
-	for (UIView *v in [self subviews])
+	for (UIView *v in [[[self subviews] copy] autorelease])
 		[v removeFromSuperview];
 	int maxWidth = 250;
 	int cx = 4;
@@ -81,7 +81,7 @@ static id _nInstance = nil;
 	self.alpha = 0;
 	[UIView commitAnimations];
 	displayPoint = CGPointZero;
-	for (UIView *v in [self subviews])
+	for (UIView *v in [[[self subviews] copy] autorelease])
 		[v removeFromSuperview];
 }
 
