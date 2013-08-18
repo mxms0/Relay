@@ -81,8 +81,8 @@
 	[net setPort:6667];
 	[net setUseSSL:NO];
 	[net setSASL:NO];
-	[net setUsername:@"SupportUser"];
-	[net setRealname:@"SupportUser"];
+	[net setUsername:@"support"];
+	[net setRealname:@"Relay Support User"];
 	[net setNick:[NSString stringWithFormat:@"RelayUser%d", arc4random_uniform(200)]];
 	[net setCOL:NO];
 	[net setExpanded:YES];

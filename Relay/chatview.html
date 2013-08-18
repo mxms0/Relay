@@ -9,6 +9,7 @@
 				font-size: 12px;
 				overflow:hidden;
 				position: relative;
+                -webkit-touch-callout: none;
 			}
 			a { color:#498adb; text-decoration:none;}
 			a:active { color:#34629b; }
@@ -137,14 +138,19 @@
 			}
 
 			function switchUI(scheme) {
-				// JavaScript color scheme changer for night mode.
+                // Remove a previous style.
+                var old = document.querySelector("body style");
+                if (old) {
+                    old.parentNode.removeChild(old);
+                }
+                // JavaScript color scheme changer for night mode.
 				var css;
 				if (scheme == "dark") {
-					css = ".msg { color: #FFFFFF } \
-						   .ts { color: #999999 }";
+					css = ".msg { color: #FFFFFF; } \
+						   .ts { color: #999999; }";
 				} else if (scheme == "light") {
-					css = ".msg { color: #4c4c51 } \
-						   .ts { color: #a5a5a5 }";
+					css = ".msg { color: #4c4c51; } \
+						   .ts { color: #a5a5a5; }";
 				}
 				var style = document.createElement("style");
 				style.type = "text/css";
