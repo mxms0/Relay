@@ -8,36 +8,34 @@
                 word-wrap: break-word;
                 font-size: 12px;
 				overflow:hidden;
+                position: relative;
             }
 			a { color:#498adb; text-decoration:none;}
 			a:active { color:#34629b; }
             * { padding: 0px; margin: 0px; }
             p {
+                box-sizing: border-box;
+                min-height: 29px;
 				text-rendering: optimizeLegibility;
-				overflow:hidden;
-				color:#cccccc;
-				border-bottom-width:1px;
-				border-bottom-style:solid;
-				border-bottom-color:#6e6e6e;
-				padding-right:5px;
-				padding-left:5px;
-                padding-top:3px;
-                margin-bottom: -1px;
-				padding-bottom:3px;
-				background-color:clear;
-                overflow:auto;
+                padding-top: 8px;
+                padding-bottom: 5px;
+				box-shadow: 0 1px 0 0px #232324, 0 2px 0 0px #49494c;
+                overflow: auto;
+                line-height: 1.4;
             }
 			/* portrait. all iphones. */
-			.ts { float: left; width: 34px; color:#999999; }
-            .msg { float: left; width: 276px; white-space:pre-wrap;}
-			/* use media queries to fix these values. */
-            @media all and (min-width: 480px) {
-                .msg {width: 436px;}
+			.ts {
+                width: 50px;
+                padding-left: 9px;
+                position: absolute;
+                left: 0;
             }
-            @media all and (min-width: 568px) {
-                .msg {width: 524px;}
+            .msg {
+                white-space:pre-wrap;
+                margin-left: 50px;
+                padding-right: 9px;
             }
-			.padd { height:4px; width:100%%; }
+			/*.padd { height:4px; width:100%%; }*/
             /*
              Nickname colors
              */
@@ -136,6 +134,22 @@
 			
             function scrollToBottom() {
                 window.scrollTo(0, document.body.scrollHeight);
+            }
+        
+            function switchUI(scheme) {
+                // JavaScript color scheme changer for night mode.
+                var css;
+                if (scheme == "dark") {
+                    css = ".msg { color: #FFFFFF } \
+                           .ts { color: #999999 }";
+                } else if (scheme == "light") {
+                    css = ".msg { color: #4c4c51 } \
+                           .ts { color: #a5a5a5 }";
+                }
+                var style = document.createElement("style");
+                style.type = "text/css";
+                style.innerHTML = css;
+                document.body.appendChild(style);
             }
             </script>
     </head>

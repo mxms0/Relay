@@ -66,6 +66,8 @@ static NSString *template = nil;
 		}
 		[preloadPool release];
 		preloadPool = nil;
+        // FIX THIS WITH SCHEMES
+        [webView stringByEvaluatingJavaScriptFromString:@"switchUI('dark');"];
 	}
 }
 
