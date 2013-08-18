@@ -50,24 +50,8 @@
 		else {
 			rendr = [NSString stringWithFormat:@"%d", newMessageCount];
 		}
-		BOOL longerThanNormal = ([rendr isEqualToString:@"99+"]);
-		CGFloat radius = 5.4;;
-		CGRect ovalThing = CGRectMake((longerThanNormal ? 95 : 100), 5, (longerThanNormal ? 16 : 11), 11);
-		CGContextRef context = UIGraphicsGetCurrentContext();
-		CGContextSetRGBFillColor(context, 76, 78, 84, 0.4);
-		CGContextMoveToPoint(context, ovalThing.origin.x, ovalThing.origin.y + radius);
-		CGContextAddLineToPoint(context, ovalThing.origin.x, ovalThing.origin.y + ovalThing.size.height - radius);
-		CGContextAddArc(context, ovalThing.origin.x + radius, ovalThing.origin.y + ovalThing.size.height - radius, radius, M_PI, M_PI / 2, 1);
-		CGContextAddLineToPoint(context, ovalThing.origin.x + ovalThing.size.width - radius, ovalThing.origin.y + ovalThing.size.height);
-		CGContextAddArc(context, ovalThing.origin.x + ovalThing.size.width - radius, ovalThing.origin.y + ovalThing.size.height - radius, radius, M_PI / 2, 0.0f, 1);
-		CGContextAddLineToPoint(context, ovalThing.origin.x + ovalThing.size.width, ovalThing.origin.y + radius);
-		CGContextAddArc(context, ovalThing.origin.x + ovalThing.size.width - radius, ovalThing.origin.y + radius, radius, 0.0f, -M_PI / 2, 1);
-		CGContextAddLineToPoint(context, ovalThing.origin.x + radius, ovalThing.origin.y);
-		CGContextAddArc(context, ovalThing.origin.x + radius, ovalThing.origin.y + radius, radius, -M_PI / 2, M_PI, 1);
-		CGContextFillPath(context);
-		CGContextSetFillColorWithColor(context, (hasHighlights ? [UIColor redColor].CGColor : UIColorFromRGB(0x191A26).CGColor));
-		CGContextSetShadowWithColor(context, CGSizeMake(0, 1), 0.5, [UIColor colorWithWhite:1 alpha:0.2].CGColor);
-		[rendr drawAtPoint:CGPointMake((longerThanNormal ? 97 : (newMessageCount <= 9 ? 103 : 101)), 5) forWidth:50 withFont:[UIFont boldSystemFontOfSize:7.5] fontSize:7.5 lineBreakMode:NSLineBreakByClipping baselineAdjustment:UIBaselineAdjustmentAlignCenters];
+	//	UIImage *bubble = [UIImage imageNamed:@"highlightbadge"];
+	//	[bubble drawInRect:CGRectMake(100, 2, 10, 12)];
 	}
 }
 

@@ -56,6 +56,8 @@
 		503C6B7517C081F100342F1B /* RCSchemeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5031BE7217C07F320053C928 /* RCSchemeManager.m */; };
 		503C6B8217C087A300342F1B /* LightUI.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 503C6B8017C087A300342F1B /* LightUI.bundle */; };
 		503C6B8717C08DBE00342F1B /* DarkUI.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 503C6B8617C08DBE00342F1B /* DarkUI.bundle */; };
+		503C6B8E17C097D800342F1B /* highlightbadge.png in Resources */ = {isa = PBXBuildFile; fileRef = 503C6B8C17C097D800342F1B /* highlightbadge.png */; };
+		503C6B8F17C097D800342F1B /* highlightbadge@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 503C6B8D17C097D800342F1B /* highlightbadge@2x.png */; };
 		5045752B159570460092CB31 /* RCChannelCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5045752A159570450092CB31 /* RCChannelCell.m */; };
 		50498FA716A626BC00864ED3 /* RCPrettyButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 50498FA616A626BC00864ED3 /* RCPrettyButton.m */; };
 		504C9B6B152D1E0E00F091B2 /* RCKeychainItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 504349FC152CEEDD0037BD12 /* RCKeychainItem.m */; };
@@ -314,6 +316,8 @@
 		5038C8311583B8E4004BA602 /* RCChannelManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCChannelManager.m; sourceTree = "<group>"; };
 		503C6B8017C087A300342F1B /* LightUI.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = LightUI.bundle; sourceTree = "<group>"; };
 		503C6B8617C08DBE00342F1B /* DarkUI.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = DarkUI.bundle; sourceTree = "<group>"; };
+		503C6B8C17C097D800342F1B /* highlightbadge.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = highlightbadge.png; sourceTree = "<group>"; };
+		503C6B8D17C097D800342F1B /* highlightbadge@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "highlightbadge@2x.png"; sourceTree = "<group>"; };
 		504349FC152CEEDD0037BD12 /* RCKeychainItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCKeychainItem.m; sourceTree = "<group>"; };
 		50457529159570440092CB31 /* RCChannelCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCChannelCell.h; sourceTree = "<group>"; };
 		5045752A159570450092CB31 /* RCChannelCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCChannelCell.m; sourceTree = "<group>"; };
@@ -1041,6 +1045,8 @@
 		50EDFF4717BEDBF500456E3E /* General */ = {
 			isa = PBXGroup;
 			children = (
+				503C6B8C17C097D800342F1B /* highlightbadge.png */,
+				503C6B8D17C097D800342F1B /* highlightbadge@2x.png */,
 				50EDFF6B17C0424B00456E3E /* Default-568h@2x.png */,
 			);
 			name = General;
@@ -1407,6 +1413,8 @@
 				50EDFF6C17C0424D00456E3E /* Default-568h@2x.png in Resources */,
 				503C6B8217C087A300342F1B /* LightUI.bundle in Resources */,
 				503C6B8717C08DBE00342F1B /* DarkUI.bundle in Resources */,
+				503C6B8E17C097D800342F1B /* highlightbadge.png in Resources */,
+				503C6B8F17C097D800342F1B /* highlightbadge@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
