@@ -27,6 +27,7 @@
 - (void)setChannel:(RCPMChannel *)chan {
 	[channel release];
 	channel = [chan retain];
+	return;
 	if ([chan isKindOfClass:[RCConsoleChannel class]]) return;
 	prefix = RCUserRank(self.textLabel.text, [chan delegate]);
 	if (prefix)

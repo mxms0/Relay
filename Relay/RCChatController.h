@@ -60,6 +60,7 @@
 - (void)showNetworkAddViewController;
 - (void)showNetworkOptions:(id)ob;
 - (void)menuButtonPressed:(id)obj;
+- (void)presentActionSheetInRootView:(RCPrettyActionSheet *)pr;
 - (void)popUserListWithDefaultDuration;
 - (void)animateChannelList;
 - (void)userSwiped_specialLikeAc3xx:(id)gest;

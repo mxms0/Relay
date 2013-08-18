@@ -154,6 +154,10 @@ static id _inst = nil;
 	[sheet release];
 }
 
+- (void)presentActionSheetInRootView:(RCPrettyActionSheet *)pr {
+	[pr showInView:rootView.view];
+}
+
 - (void)keyboardWillShow:(NSNotification *)noti {
 	CGRect keyboardFrame;
 	[[[noti userInfo] valueForKey:UIKeyboardFrameEndUserInfoKey] getValue:&keyboardFrame];
@@ -169,6 +173,7 @@ static id _inst = nil;
 	_bar.frame = containerFrame;
 	[currentPanel setFrame:CGRectMake(0, currentPanel.frame.origin.y, currentPanel.frame.size.width, _bar.frame.origin.y - 43)];
 	[UIView commitAnimations];
+	[currentPanel scrollToBottom];
 }
 
 - (void)keyboardWillHide:(NSNotification *)noti {

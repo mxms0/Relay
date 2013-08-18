@@ -143,7 +143,7 @@
 	if (showingUserInfo) return;
 	if ([currentChan isKindOfClass:[RCConsoleChannel class]]) return;
 	RCPrettyActionSheet *ac = [[RCPrettyActionSheet alloc] initWithTitle:[[currentChan fullUserList] objectAtIndex:indexPath.row] delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Kick" otherButtonTitles:@"Private Message", @"User Info", @"Operator Actions", nil];
-	[ac showInView:[UIApp keyWindow]];
+	[[RCChatController sharedController] presentActionSheetInRootView:ac];
 	[ac release];
 	[_tableView deselectRowAtIndexPath:indexPath animated:NO];
 }
