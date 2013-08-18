@@ -7,11 +7,12 @@
 
 #import <UIKit/UIKit.h>
 #import "RCActionSheetButton.h"
+#import "RCActionSheetButtonView.h"
 
 @interface RCPrettyActionSheet : UIView {
 	NSMutableArray *buttons;
 	NSString *title;
-	UIView *buttonView;
+	RCActionSheetButtonView *buttonView;
 	int buttonCount;
 	id delegate;
 	CGFloat projectedOffset;
