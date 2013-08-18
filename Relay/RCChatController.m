@@ -97,7 +97,7 @@ static id _inst = nil;
 	[field setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
 	[field setKeyboardAppearance:UIKeyboardAppearanceAlert];
 	[field setReturnKeyType:UIReturnKeySend];
-	[field setTextColor:UIColorFromRGB(0x3E3F3F)];
+	[field setTextColor:[UIColor whiteColor]];
 	[field setFont:[UIFont fontWithName:@"Helvetica" size:12]];
 	[field setMinimumFontSize:17];
 	[field setAdjustsFontSizeToFitWidth:YES];
