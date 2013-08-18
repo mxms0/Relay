@@ -75,7 +75,7 @@
 	[super drawRect:rect];
 	[[UIColor clearColor] set];
 	[[UIColor clearColor] setFill];
-	UIImage *bg = [UIImage imageNamed:@"mainnavbarbg"];
+	UIImage *bg = [[RCSchemeManager sharedInstance] imageNamed:@"mainnavbarbg"];
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	[bg drawInRect:rect];
 	if ([[self subviews] count] > 2) return; // kind of fixes it. eh
