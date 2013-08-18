@@ -140,6 +140,7 @@
 - (void)switchToggled:(UISwitch *)aSwitch {
 	madeChanges = YES;
 	RCSettingsTableViewCell *cell = (RCSettingsTableViewCell *)[aSwitch superview];
+	if (isiOS7) cell = (RCSettingsTableViewCell *)[cell superview];
 	NSString *key = [keyValues objectForKey:cell.textLabel.text];
 	if ([key isEqualToString:THEME_NAME_KEY]) {
 		themeChanged = YES;
