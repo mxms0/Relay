@@ -15,7 +15,7 @@
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
-		self.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:15];
+		self.textLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:15];
 		self.textLabel.textColor = [UIColor colorWithRed:204/255.0f green:204/255.0f blue:204/255.0f alpha:1.0f];
 		self.textLabel.backgroundColor = [UIColor clearColor];
 		self.contentView.backgroundColor = [UIColor clearColor];

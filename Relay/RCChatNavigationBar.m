@@ -88,7 +88,7 @@
 	if (subtitle) {
 		CGFloat subsze = 0.0;
 		[subtitle sizeWithFont:[UIFont systemFontOfSize:11] minFontSize:10 actualFontSize:&subsze forWidth:maxWidth lineBreakMode:NSLineBreakByClipping];
-		[subtitle drawInRect:CGRectMake(50, 24, (!superSpecialLikeAc3xx2 ? maxWidth : 175), 14) withFont:[UIFont systemFontOfSize:subsze] lineBreakMode:NSLineBreakByClipping alignment:NSTextAlignmentCenter];
+		[subtitle drawInRect:CGRectMake(50, 24, (!superSpecialLikeAc3xx2 ? maxWidth-10 : 175), 14) withFont:[UIFont systemFontOfSize:subsze] lineBreakMode:NSLineBreakByClipping alignment:NSTextAlignmentCenter];
 	}
 }
 

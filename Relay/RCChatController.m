@@ -71,6 +71,9 @@ static id _inst = nil;
 	[rc.view insertSubview:chatView atIndex:1];
 	infoView = [[RCTopViewCard alloc] initWithFrame:CGRectMake(frame.width, offx, frame.width, frame.height)];
 	[rc.view insertSubview:infoView atIndex:2];
+	UITapGestureRecognizer *tapG = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(chatViewTapped)];
+	[chatView addGestureRecognizer:tapG];
+	[tapG release];
 	UIPanGestureRecognizer *pg = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(userPanned:)];
 	[chatView addGestureRecognizer:pg];
 	[pg release];
@@ -105,6 +108,17 @@ static id _inst = nil;
 	suggestLocation = [self suggestionLocation];
 	(void)[RCDateManager sharedInstance]; // make sure this exists.
 	[[NSNotificationCenter defaultCenter] postNotificationName:SETTINGS_CHANGED_KEY object:nil];
+}
+
+- (void)chatViewTapped {
+	if ([self isShowingChatListView]) {
+		[self closeWithDuration:0.3];
+	}
+	else {
+		if (infoView.frame.origin.x < infoView.frame.size.width) {
+			[self popUserListWithDefaultDuration];
+		}
+	}
 }
 
 - (void)statusWindowTapped:(UITapGestureRecognizer *)tp {
@@ -499,7 +513,6 @@ static RCNetwork *currentNetwork = nil;
 	[[infoView navigationBar] setNeedsDisplay];
 	[infoView reloadData];
 	canDragMainView = NO;
-	[self closeWithDuration:0.00];
 	[infoView prepareToBecomeVisible];
 	[chatView setLeftBarButtonItemEnabled:NO];
 	[UIView beginAnimations:nil context:nil];

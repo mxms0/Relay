@@ -59,7 +59,7 @@
 	[self.view addSubview:iconView];
 	[iconView release];
 	
-	RCAboutInfoView *infos = [[RCAboutInfoView alloc] initWithFrame:CGRectMake(0, iconHeight + 50, 320, 280)];
+	RCAboutInfoView *infos = [[RCAboutInfoView alloc] initWithFrame:CGRectMake(0, iconHeight + 30, 320, 280)];
 	[infos setBackgroundColor:[UIColor colorWithRed:53/255.0f green:53/255.0f blue:56/255.0f alpha:1.0f]];
 	[infos setAttributedString:attributedString];
 	[attributedString release];

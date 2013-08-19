@@ -76,8 +76,8 @@
 	CGContextSetShadowWithColor(ctx, CGSizeMake(0, -1), 0, [UIColor blackColor].CGColor);
 	CGContextSetFillColorWithColor(ctx, textColor.CGColor);
 	CGContextScaleCTM(ctx, [[UIScreen mainScreen] scale], [[UIScreen mainScreen] scale]);
-	[text drawInRect:CGRectMake(19, 1, 200, 40) withFont:[UIFont fontWithName:@"HelveticaNeue" size:9] lineBreakMode:NSLineBreakByCharWrapping alignment:NSTextAlignmentLeft];
-	[detail drawInRect:CGRectMake(19, 12, 200, 30) withFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:5.5]];
+	[text drawInRect:CGRectMake(19, 1, 200, 40) withFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:9] lineBreakMode:NSLineBreakByCharWrapping alignment:NSTextAlignmentLeft];
+	[detail drawInRect:CGRectMake(19, 12, 200, 30) withFont:[UIFont fontWithName:@"HelveticaNeue" size:5.5]];
 }
 
 - (void)setNetwork:(RCNetwork *)_net {
