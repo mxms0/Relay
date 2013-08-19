@@ -48,8 +48,8 @@ static id _inst = nil;
 - (void)settingsChanged {
 	NSString *shouldAutocorrect = [[RCNetworkManager sharedNetworkManager] valueForSetting:AUTOCORRECTION_KEY];
 	NSString *shouldCapitalize = [[RCNetworkManager sharedNetworkManager] valueForSetting:AUTOCAPITALIZE_KEY];
-	[field setAutocorrectionType:(shouldAutocorrect ? [shouldAutocorrect boolValue] : UITextAutocorrectionTypeYes)];
-	[field setAutocapitalizationType:(shouldCapitalize ? [shouldCapitalize boolValue] : UITextAutocapitalizationTypeSentences)];
+	[field setAutocorrectionType:(shouldAutocorrect ? ([shouldAutocorrect boolValue] ? UITextAutocorrectionTypeYes : UITextAutocorrectionTypeNo): UITextAutocorrectionTypeYes)];
+	[field setAutocapitalizationType:(shouldCapitalize ? ([shouldCapitalize boolValue] ? UITextAutocapitalizationTypeSentences : UITextAutocapitalizationTypeNone) : UITextAutocapitalizationTypeSentences)];
 }
 
 - (void)layoutWithRootViewController:(RCViewController *)rc {
