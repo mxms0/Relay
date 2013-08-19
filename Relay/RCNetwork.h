@@ -88,6 +88,7 @@ typedef enum RCSocketStatus {
 @property (nonatomic, assign) BOOL isOper;
 @property (nonatomic, assign) BOOL isAway;
 + (RCNetwork *)networkWithInfoDictionary:(NSDictionary *)dict;
+- (RCNetwork *)uniqueCopy;
 - (RCChannel *)channelWithChannelName:(NSString *)chan;
 - (NSString *)_description;
 - (void)connect;

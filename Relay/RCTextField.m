@@ -7,28 +7,17 @@
 
 #import "RCTextField.h"
 
-#if USE_PRIVATE
-@interface RCTextField (RCPrivate_)
-- (void)setInsertionPointColor:(UIColor *)color;
-@end
-#endif
-
 @implementation RCTextField
 
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
 		[self setTextColor:UIColorFromRGB(0xa5a6a7)];
 		[self setFont:[UIFont systemFontOfSize:12]];
-		[self setRightViewMode:UITextFieldViewModeWhileEditing];
 		UIButton *xx = [UIButton buttonWithType:UIButtonTypeCustom];
 		[xx setImage:[UIImage imageNamed:@"0_removr"] forState:UIControlStateNormal];
 		[xx setFrame:CGRectMake(0, 0, 32, 32)];
 		[xx addTarget:self action:@selector(clearAllText) forControlEvents:UIControlEventTouchUpInside];
 		[self setRightView:xx];
-#if USE_PRIVATE
-		if ([self respondsToSelector:@selector(setInsertionPointColor:)])
-			[self setInsertionPointColor:UIColorFromRGB(0x4F94EA)];
-#endif
 	}
 	return self;
 }
@@ -39,16 +28,17 @@
 
 - (BOOL)becomeFirstResponder {
 	BOOL ret = [super becomeFirstResponder];
-	if (ret)
+	if (ret) {
 		self.rightViewMode = UITextFieldViewModeAlways;
-	return ret ;
+	}
+	return ret;
 }
 
 - (BOOL)resignFirstResponder {
     BOOL ret = [super resignFirstResponder];
 	if (ret)
 		self.rightViewMode = UITextFieldViewModeWhileEditing;
-	return ret ;
+	return ret;
 }
 
 - (void)drawPlaceholderInRect:(CGRect)rect {

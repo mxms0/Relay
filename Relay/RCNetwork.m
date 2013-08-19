@@ -70,6 +70,30 @@
 	return [network autorelease];
 }
 
+- (RCNetwork *)uniqueCopy {
+	RCNetwork *newNet = [[RCNetwork alloc] init];
+	[newNet setSDescription:sDescription];
+	[newNet setServer:server];
+	[newNet setUsername:username];
+	[newNet setNick:nick];
+	[newNet setRealname:realname];
+	[newNet setPort:port];
+	[newNet setUseSSL:useSSL];
+	[newNet setSASL:SASL];
+	[newNet setCOL:COL];
+	[newNet setSpass:spass];
+	[newNet setNpass:npass];
+	for (RCChannel *chan in _channels) {
+		[newNet addChannel:[chan channelName] join:NO];
+	}
+	CFUUIDRef uRef = CFUUIDCreate(NULL);
+	CFStringRef uStringRef = CFUUIDCreateString(NULL, uRef);
+	CFRelease(uRef);
+	[newNet setUUID:(NSString *)uStringRef];
+	CFRelease(uStringRef);
+	return newNet;
+}
+
 - (id)infoDictionary {
 	NSMutableArray *chanArray = [[NSMutableArray alloc] init];
 	for (RCChannel *chan in _channels) {

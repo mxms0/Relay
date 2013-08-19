@@ -10,7 +10,7 @@
 @implementation RCAddCell
 
 - (void)drawRect:(CGRect)rect {
-	[UIColorFromRGB(0x393d4a) set];
+	[[UIColor colorWithRed:53/255.0f green:53/255.0f blue:56/255.0f alpha:1.0f] set];
 	UIRectFill(rect);
 }
 

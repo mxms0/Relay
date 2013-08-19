@@ -14,7 +14,6 @@
 		network = net;
 		_rEditing = NO;
 		self.tableView.allowsSelectionDuringEditing = YES;
-		self.tableView.separatorColor = UIColorFromRGB(0x393d4a);
 		[self reloadData];
 		if ([[net _channels] count] == 0) {
 			[self edit];
@@ -221,7 +220,6 @@
 		[management setDelegate:self];
 		[self.navigationController pushViewController:management animated:YES];
 		[management release];
-		NSLog(@"meh %@", chan);
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
     }   
 }

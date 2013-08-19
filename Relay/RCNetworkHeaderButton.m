@@ -58,16 +58,12 @@
 		}
 		[UIColorFromRGB(0x353538) set];
 		UIRectFill(rect);
-		UIImage *arrow = [UIImage imageNamed:@"0_arrowd"];
-		[arrow drawInRect:CGRectMake(232,14, 16, 16)];
 	}
 	else {
 		[UIColorFromRGB(0x353538) set];
 		UIRectFill(rect);
 		UIImage *ul = [UIImage imageNamed:@"0_underline"];
 		[ul drawAsPatternInRect:CGRectMake(0, 42, rect.size.width, 2)];
-		UIImage *arrow = [UIImage imageNamed:@"0_arrowr"];
-		[arrow drawInRect:CGRectMake(232, 14, 16, 16)];
 		if ([net isConnected]) {
 			textColor = [UIColor whiteColor];
 		}
@@ -80,8 +76,8 @@
 	CGContextSetShadowWithColor(ctx, CGSizeMake(0, -1), 0, [UIColor blackColor].CGColor);
 	CGContextSetFillColorWithColor(ctx, textColor.CGColor);
 	CGContextScaleCTM(ctx, [[UIScreen mainScreen] scale], [[UIScreen mainScreen] scale]);
-	[text drawInRect:CGRectMake(20, 1, 200, 40) withFont:[UIFont boldSystemFontOfSize:9] lineBreakMode:NSLineBreakByCharWrapping alignment:NSTextAlignmentLeft];
-	[detail drawInRect:CGRectMake(20, 12, 200, 30) withFont:[UIFont systemFontOfSize:5.5]];
+	[text drawInRect:CGRectMake(19, 1, 200, 40) withFont:[UIFont fontWithName:@"HelveticaNeue" size:9] lineBreakMode:NSLineBreakByCharWrapping alignment:NSTextAlignmentLeft];
+	[detail drawInRect:CGRectMake(19, 12, 200, 30) withFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:5.5]];
 }
 
 - (void)setNetwork:(RCNetwork *)_net {

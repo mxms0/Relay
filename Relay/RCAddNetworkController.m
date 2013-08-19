@@ -11,8 +11,13 @@
 @implementation RCAddNetworkController
 
 - (id)initWithNetwork:(RCNetwork *)net {
+	network = [net retain];
+	if (!net) isNew = YES;
 	if ((self = [super initWithStyle:UITableViewStylePlain])) {
-		isNew = NO;
+		UIView *pure = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 100)];
+		[self.tableView setTableHeaderView:pure];
+		[pure release];
+		[self.tableView setContentInset:UIEdgeInsetsMake(-100, 0, 0, 0)];
 		datas = nil;
 		if (!net) {
 			name = [[[UIDevice currentDevice] name] retain];
@@ -26,12 +31,10 @@
 				name = [[name substringWithRange:NSMakeRange(0, [name length]-2)] retain];
 			}
 			network = [[RCNetwork alloc] init];
-			isNew = YES;
 			datas = [[NSMutableDictionary alloc] init];
 		}
 		else {
 			name = [[net nick] retain];
-			network = [net retain];
 			datas = [[[network infoDictionary] mutableCopy] retain];
 		}
 	}
@@ -54,21 +57,9 @@
 
 - (void)loadView {
 	[super loadView];
-	float y = 44;
-	float width = 320;
-	if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
-		y = 32; width = 480;
-	}
-	if (!r_shadow) {
-		r_shadow = [[UIImageView alloc] initWithFrame:CGRectMake(0, y, width, 10)];
-		[r_shadow setImage:[UIImage imageNamed:@"0_r_shadow"]];
-		r_shadow.alpha = 0.3;
-		[self.navigationController.navigationBar addSubview:r_shadow];
-		[r_shadow release];
-	}
 	RCBarButtonItem *ct = [[RCBarButtonItem alloc] initWithFrame:CGRectMake(0, 0, 50, 44)];
 	[ct addTarget:self action:@selector(doneWithJoin) forControlEvents:UIControlEventTouchUpInside];
-	[ct setImage:[UIImage imageNamed:@"0_cnclr"] forState:UIControlStateNormal];
+	[ct setImage:[UIImage imageNamed:@"icon_close_red"] forState:UIControlStateNormal];
 	UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithCustomView:ct];
 	[self.navigationItem setLeftBarButtonItem:cancel];
 	[cancel release];
@@ -76,7 +67,7 @@
 	
 	RCBarButtonItem *bt = [[RCBarButtonItem alloc] initWithFrame:CGRectMake(0, 0, 50, 44)];
 	[bt addTarget:self action:@selector(doneConnection) forControlEvents:UIControlEventTouchUpInside];
-	[bt setImage:[UIImage imageNamed:@"0_checkr"] forState:UIControlStateNormal];
+	[bt setImage:[UIImage imageNamed:@"icon_tick"] forState:UIControlStateNormal];
 	UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithCustomView:bt];
 	[done setEnabled:!isNew];
 	[self.navigationItem setRightBarButtonItem:done];
@@ -90,7 +81,6 @@
 
 - (void)doneWithJoin {
 	reloadNetworks();
-	//	[[RCChatController sharedController] rotateToInterfaceOrientation:self.interfaceOrientation];
 	[self dismissModalViewControllerAnimated:YES];
 }
 #define IS_STRING_OR(a,b) (((!a) || [a isEqualToString:@""]) ? b : a)
@@ -242,9 +232,39 @@ _end:
 	return 0;
 }
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+	switch (section) {
+		case 0:
+			return @"    NETWORK";
+		case 1:
+			return @"    INFORMATION";
+		case 2:
+			return @"    SECURITY";
+		case 3:
+			return @"";
+		case 4:
+			return @"NOP";
+	}
+	return @"nop";
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+	UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake((isiOS7 ? 7 : 4), 8, 240, 20)];
+	label.text = [self tableView:tableView titleForHeaderInSection:section];
+	label.backgroundColor = [UIColor clearColor];
+	label.textColor = [UIColor colorWithRed:204/255.0f green:204/255.0f blue:204/255.0f alpha:1.0f];
+	label.shadowColor = [UIColor blackColor];
+	label.shadowOffset = CGSizeMake(0, 1);
+	label.font = [UIFont systemFontOfSize:14];
+	UIView *base = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 20)];
+	[base addSubview:label];
+	[label release];
+	[base setBackgroundColor:[UIColor clearColor]];
+	return [base autorelease];
+}
+
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-	if (section == 0) return 0;
-	return 15;
+	return 36;
 }
 
 - (void)showStupidWarningsRegardingMichiganUniversity {
@@ -277,7 +297,7 @@ _end:
 		fullTxt = [fullTxt stringByReplacingCharactersInRange:range withString:string];
 		self.navigationItem.rightBarButtonItem.enabled = ([fullTxt length] > 0);
 	}
-    if ([textField tag] == 2 || [textField tag] == 3/* || [textField tag] == 12343*/) {
+    if ([textField tag] == 2 || [textField tag] == 3) {
         if ([string isEqualToString:@" "]) {
             return NO;
         }
@@ -293,6 +313,7 @@ _end:
         cell = [[[RCBasicTextInputCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
 		cell.textLabel.textColor = [UIColor whiteColor];
 		cell.textLabel.font = [UIFont systemFontOfSize:14];
+		cell.selectionStyle = UITableViewCellSelectionStyleNone;
 		switch (indexPath.section) {
 			case 0:
 				switch (indexPath.row) {
@@ -441,19 +462,16 @@ _end:
 					case 1:
 						cell.textLabel.text = @"Alternate Nicknames";
 						cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-						cell.selectionStyle = UITableViewCellSelectionStyleBlue;
 						[cell setAccessoryView:nil];
 						break;
 					case 2:
 						cell.textLabel.text = @"Auto Commands";
 						cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-						cell.selectionStyle = UITableViewCellSelectionStyleBlue;
 						[cell setAccessoryView:nil];
 						break;
 					case 3:
 						cell.textLabel.text = @"Channels";
 						cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-						cell.selectionStyle = UITableViewCellSelectionStyleBlue;
 						[cell setAccessoryView:nil];
 				}
 				break;

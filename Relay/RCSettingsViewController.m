@@ -66,15 +66,23 @@
 	return [sectionalArrays[section] objectAtIndex:0];
 }
 
+- (NSInteger)tableView:(UITableView *)tableView indentationLevelForRowAtIndexPath:(NSIndexPath *)indexPath {
+	return 1.0;
+}
+
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-	UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(20, 32, 240, 20)];
+	UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake((isiOS7 ? 7 : 4), 8, 240, 20)];
 	label.text = [self tableView:tableView titleForHeaderInSection:section];
 	label.backgroundColor = [UIColor clearColor];
 	label.textColor = [UIColor colorWithRed:204/255.0f green:204/255.0f blue:204/255.0f alpha:1.0f];
 	label.shadowColor = [UIColor blackColor];
 	label.shadowOffset = CGSizeMake(0, 1);
 	label.font = [UIFont systemFontOfSize:14];
-	return [label autorelease];
+	UIView *base = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 20)];
+	[base addSubview:label];
+	[label release];
+	[base setBackgroundColor:[UIColor clearColor]];
+	return [base autorelease];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {

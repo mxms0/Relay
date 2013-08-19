@@ -46,10 +46,10 @@ static id _inst = nil;
 }
 
 - (void)settingsChanged {
-	BOOL shouldAutocorrect = [[[RCNetworkManager sharedNetworkManager] valueForSetting:AUTOCORRECTION_KEY] boolValue];
-	BOOL shouldCapitalize = [[[RCNetworkManager sharedNetworkManager] valueForSetting:AUTOCAPITALIZE_KEY] boolValue];
-	[field setAutocorrectionType:(shouldAutocorrect ? UITextAutocorrectionTypeDefault : UITextAutocorrectionTypeNo)];
-	[field setAutocapitalizationType:(shouldCapitalize ? UITextAutocapitalizationTypeSentences : UITextAutocapitalizationTypeNone)];
+	NSString *shouldAutocorrect = [[RCNetworkManager sharedNetworkManager] valueForSetting:AUTOCORRECTION_KEY];
+	NSString *shouldCapitalize = [[RCNetworkManager sharedNetworkManager] valueForSetting:AUTOCAPITALIZE_KEY];
+	[field setAutocorrectionType:(shouldAutocorrect ? [shouldAutocorrect boolValue] : UITextAutocorrectionTypeYes)];
+	[field setAutocapitalizationType:(shouldCapitalize ? [shouldCapitalize boolValue] : UITextAutocapitalizationTypeSentences)];
 }
 
 - (void)layoutWithRootViewController:(RCViewController *)rc {
@@ -62,9 +62,7 @@ static id _inst = nil;
 	// fix it max
 #warning THIS IS NECESSARY IN XCODE DP5
 	int offx = 0;
-	
-	 if (isiOS7)
-	 offx = 20; 
+	if (isiOS7)	offx = 20; 
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsChanged) name:SETTINGS_CHANGED_KEY object:nil];
 	CGSize frame = [[UIScreen mainScreen] applicationFrame].size;
 	bottomView = [[RCChatsListViewCard alloc] initWithFrame:CGRectMake(0, offx, frame.width, frame.height)];
@@ -318,7 +316,7 @@ static RCNetwork *currentNetwork = nil;
 
 - (void)showNetworkOptions:(id)arg1 {
 	currentNetwork = [[arg1 superview] net];
-	RCPrettyActionSheet *sheet = [[RCPrettyActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"What do you want to do for %@?", [currentNetwork _description]] delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Delete" otherButtonTitles:@"Edit", ([currentNetwork isTryingToConnectOrConnected] ? @"Disconnect" : @"Connect"), nil];
+	RCPrettyActionSheet *sheet = [[RCPrettyActionSheet alloc] initWithTitle:[NSString stringWithFormat:@"What do you want to do for %@?", [currentNetwork _description]] delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Delete" otherButtonTitles:@"Edit", @"Duplicate", ([currentNetwork isTryingToConnectOrConnected] ? @"Disconnect" : @"Connect"), nil];
 	[sheet setTag:RCALERR_INDVOPTIONS];
 	[sheet showInView:rootView.view];
 	[sheet release];
@@ -868,11 +866,17 @@ static RCNetwork *currentNetwork = nil;
 				// edit.
 			}
 			else if (buttonIndex == 2) {
+				RCNetwork *newNet = [currentNetwork uniqueCopy];
+				[[RCNetworkManager sharedNetworkManager] addNetwork:newNet];
+				[newNet release];
+				reloadNetworks();
+			}
+			else if (buttonIndex == 3) {
 				[currentNetwork connectOrDisconnectDependingOnCurrentStatus];
 				currentNetwork = nil;
 				//connect
 			}
-			else if (buttonIndex == 3) {
+			else if (buttonIndex == 4) {
 				// cancel.
 				// kbye
 			}
