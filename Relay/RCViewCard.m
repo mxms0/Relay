@@ -20,7 +20,7 @@
 		[self setOpaque:YES];
 		[self setExclusiveTouch:YES];
 		if (![self isKindOfClass:[RCChatsListViewCard class]]) {
-			navigationBar = [[RCChatNavigationBar alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, 44)];
+			navigationBar = [[RCChatNavigationBar alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, (isiOS7 ? 64 : 44))];
 			[self addSubview:navigationBar];
 			navigationBar.layer.zPosition = 100000;
 			[navigationBar release];
@@ -39,14 +39,14 @@
 		if ([NSStringFromClass([self class]) isEqualToString:@"RCViewCard"]) {
 			RCBarButtonItem *bs = [[RCBarButtonItem alloc] init];
 			[bs setImage:[UIImage imageNamed:@"mainhamburger"] forState:UIControlStateNormal];
-			[bs setFrame:CGRectMake(1, 0, 50, 45)];
+			[bs setFrame:CGRectMake(1, (isiOS7 ? 20 : 0), 50, 45)];
 			[bs setTag:RCChannelListButtonTag];
 			[bs addTarget:[RCChatController sharedController] action:@selector(menuButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 			[navigationBar addSubview:bs];
 			[bs release];
 			RCBarButtonItem *cs = [[RCBarButtonItem alloc] init];
 			[cs setImage:[UIImage imageNamed:@"userlistbutton"] forState:UIControlStateNormal];
-			[cs setFrame:CGRectMake(frame.size.width - 50, 0, 50, 45)];
+			[cs setFrame:CGRectMake(frame.size.width - 50, (isiOS7 ? 20 : 0), 50, 45)];
 			[cs setTag:RCUserListButtonTag];
 			[cs addTarget:[RCChatController sharedController] action:@selector(pushUserListWithDefaultDuration) forControlEvents:UIControlEventTouchUpInside];
 			[navigationBar addSubview:cs];

@@ -90,7 +90,7 @@ static id _inst = nil;
 	_bar = [[RCTextFieldBackgroundView alloc] initWithFrame:CGRectMake(0, 800, 320, 40)];
 	[_bar setOpaque:NO];
 	[_bar.layer setZPosition:1000];
-	field = [[RCTextField alloc] initWithFrame:CGRectMake(15, 6, 299, 31)];
+	field = [[RCTextField alloc] initWithFrame:CGRectMake(15, 7, 299, 31)];
 	[field setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
 	[field setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
 	[field setKeyboardAppearance:UIKeyboardAppearanceAlert];
@@ -793,7 +793,7 @@ static RCNetwork *currentNetwork = nil;
 		return;
 	}
 	RCChatPanel *panel = [chan panel];
-	[panel setFrame:CGRectMake(0, 43, 320, chatViewHeights[0]+2)];
+	[panel setFrame:CGRectMake(0, chatView.navigationBar.frame.size.height - 1, 320, chatViewHeights[0]+2)];
 	[_bar setFrame:CGRectMake(0, panel.frame.origin.y+panel.frame.size.height-2, _bar.frame.size.width, _bar.frame.size.height)];
 	currentPanel = panel;
 	[infoView setChannel:chan];

@@ -53,6 +53,7 @@
 }
 
 - (void)setFrame:(CGRect)frame {
+	BACKTRACE; NSLog(@"fds %@", NSStringFromCGRect(frame));
 	[super setFrame:frame];
 	self.layer.mask.frame = CGRectMake(0, 0, frame.size.width, frame.size.height+4);
 	UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:self.layer.mask.frame byRoundingCorners:UIRectCornerTopLeft| UIRectCornerTopRight cornerRadii:CGSizeMake(3, 3)];
@@ -75,7 +76,10 @@
 	[super drawRect:rect];
 	[[UIColor clearColor] set];
 	[[UIColor clearColor] setFill];
-	UIImage *bg = [[RCSchemeManager sharedInstance] imageNamed:@"mainnavbarbg"];
+	UIImage *bg;
+	if (isiOS7)
+		bg = [[RCSchemeManager sharedInstance] imageNamed:@"ios7_mainnavbarbg"];
+	else bg = [[RCSchemeManager sharedInstance] imageNamed:@"mainnavbarbg"];
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	[bg drawInRect:rect];
 	if ([[self subviews] count] > 2) return; // kind of fixes it. eh
@@ -84,11 +88,11 @@
 	CGFloat size = 0.0;
 	float maxWidth = (rect.size.width - 90);
 	[title sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:maxSize] minFontSize:12 actualFontSize:&size forWidth:maxWidth lineBreakMode:NSLineBreakByClipping];
-	[title drawInRect:CGRectMake((!superSpecialLikeAc3xx2 ? 45 : 22), (!!subtitle ? 1.5 + (size <= 18 ? 2 : 0) : (((rect.size.height-4)/2)-(size/2))), maxWidth, 30) withFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:size] lineBreakMode:NSLineBreakByClipping alignment:NSTextAlignmentCenter];
+	[title drawInRect:CGRectMake((!superSpecialLikeAc3xx2 ? 45 : 22), (isiOS7 ? 17 : 0) + (!!subtitle ? 1.5 + (size <= 18 ? 2 : 0) : (((rect.size.height-4)/2)-(size/2))), maxWidth, 30) withFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:size] lineBreakMode:NSLineBreakByClipping alignment:NSTextAlignmentCenter];
 	if (subtitle) {
 		CGFloat subsze = 0.0;
 		[subtitle sizeWithFont:[UIFont systemFontOfSize:11] minFontSize:10 actualFontSize:&subsze forWidth:maxWidth lineBreakMode:NSLineBreakByClipping];
-		[subtitle drawInRect:CGRectMake(50, 24, (!superSpecialLikeAc3xx2 ? maxWidth-10 : 175), 14) withFont:[UIFont systemFontOfSize:subsze] lineBreakMode:NSLineBreakByClipping alignment:NSTextAlignmentCenter];
+		[subtitle drawInRect:CGRectMake(50, 24 + (isiOS7 ? 17 : 0), (!superSpecialLikeAc3xx2 ? maxWidth-10 : 175), 14) withFont:[UIFont systemFontOfSize:subsze] lineBreakMode:NSLineBreakByClipping alignment:NSTextAlignmentCenter];
 	}
 }
 

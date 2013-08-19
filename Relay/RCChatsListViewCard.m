@@ -15,7 +15,7 @@
 
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
-		navigationBar = [[RCChatNavigationBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+		navigationBar = [[RCChatNavigationBar alloc] initWithFrame:CGRectMake(0, 0, 320, (isiOS7 ? 64 : 44))];
 		[self addSubview:navigationBar];
 		navigationBar.layer.zPosition = 100000;
 		[navigationBar release];
@@ -23,7 +23,7 @@
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadData) name:@"us.mxms.relay.reload" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeNetwork:) name:@"us.mxms.relay.del" object:nil];
 		_reloading = NO;
-		datas = [[RCSpecialTableView alloc] initWithFrame:CGRectMake(0, 44, 320, frame.size.height-44) style:UITableViewStylePlain];
+		datas = [[RCSpecialTableView alloc] initWithFrame:CGRectMake(0, navigationBar.frame.size.height, 320, frame.size.height-44) style:UITableViewStylePlain];
 		[datas setDelegate:self];
 		[datas setDataSource:self];
 		[datas setRearrangeDelegate:self];
