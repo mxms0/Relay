@@ -60,16 +60,13 @@ static id _inst = nil;
 	canDragMainView = YES;
 	// This doesn't work for views inside the RCAddNetworkController...
 	// fix it max
-#warning THIS IS NECESSARY IN XCODE DP5
-	int offx = 0;
-	if (isiOS7)	offx = 20; 
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsChanged) name:SETTINGS_CHANGED_KEY object:nil];
 	CGSize frame = [[UIScreen mainScreen] applicationFrame].size;
-	bottomView = [[RCChatsListViewCard alloc] initWithFrame:CGRectMake(0, offx, frame.width, frame.height)];
+	bottomView = [[RCChatsListViewCard alloc] initWithFrame:CGRectMake(0, 0, frame.width, frame.height)];
 	[rc.view insertSubview:bottomView atIndex:0];
-	chatView = [[RCViewCard alloc] initWithFrame:CGRectMake(0, offx, frame.width, frame.height)];
+	chatView = [[RCViewCard alloc] initWithFrame:CGRectMake(0, 0, frame.width, frame.height)];
 	[rc.view insertSubview:chatView atIndex:1];
-	infoView = [[RCTopViewCard alloc] initWithFrame:CGRectMake(frame.width, offx, frame.width, frame.height)];
+	infoView = [[RCTopViewCard alloc] initWithFrame:CGRectMake(frame.width, 0, frame.width, frame.height)];
 	[rc.view insertSubview:infoView atIndex:2];
 	UITapGestureRecognizer *tapG = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(chatViewTapped)];
 	[chatView addGestureRecognizer:tapG];
@@ -93,7 +90,7 @@ static id _inst = nil;
 	_bar = [[RCTextFieldBackgroundView alloc] initWithFrame:CGRectMake(0, 800, 320, 40)];
 	[_bar setOpaque:NO];
 	[_bar.layer setZPosition:1000];
-	field = [[RCTextField alloc] initWithFrame:CGRectMake(15, 5, 299, 31)];
+	field = [[RCTextField alloc] initWithFrame:CGRectMake(15, 6, 299, 31)];
 	[field setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
 	[field setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
 	[field setKeyboardAppearance:UIKeyboardAppearanceAlert];
@@ -258,7 +255,7 @@ static id _inst = nil;
 		}
 		else if ([personMayb length] > 1) {
 			NSArray *found = nil;
-			if ([personMayb characterAtIndex:0] == '/') {
+			if (([personMayb characterAtIndex:0] == '/') && (rr.location == 0)) {
 				found = [[RCCommandEngine sharedInstance] commandsMatchingString:[personMayb substringFromIndex:1]];
 				rr = NSMakeRange(rr.location + 1, rr.length - 1);
 			}
