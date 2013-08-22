@@ -49,26 +49,28 @@
 - (void)drawRect:(CGRect)rect {
 	[super drawRect:rect];
 	UIColor *textColor = UIColorFromRGB(0xcccccc);
-	if ([net expanded] || _pSelected) {
+	UIImage *bg = nil;
+	BOOL isSelected = ([net expanded] || _pSelected);
+	if (isSelected) {
 		if ([net isConnected]) {
 			textColor = UIColorFromRGB(0xcccccc);
 		}
 		else {
 			textColor = UIColorFromRGB(0xcccccc);
 		}
-		[UIColorFromRGB(0x353538) set];
-		UIRectFill(rect);
+		bg = [[RCSchemeManager sharedInstance] imageNamed:@"dark_net_selected"];
 	}
 	else {
-		[UIColorFromRGB(0x353538) set];
-		UIRectFill(rect);
-		UIImage *ul = [UIImage imageNamed:@"0_underline"];
-		[ul drawAsPatternInRect:CGRectMake(0, 42, rect.size.width, 2)];
+		bg = [[RCSchemeManager sharedInstance] imageNamed:@"dark_net_deselected"];
 		if ([net isConnected]) {
 			textColor = [UIColor whiteColor];
 		}
-		if (showsGlow) {
-		}
+	}
+	[bg drawInRect:rect];
+	if (isSelected) {
+		[UIColorFromRGB(0x161618) set];
+		UIRectFill(CGRectMake(0, rect.size.height-.5, rect.size.width, .5));
+		[UIColorFromRGB(0x2A2E37) set];
 	}
 	NSString *text = [net _description];
 	NSString *detail = [net server];

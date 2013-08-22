@@ -8,7 +8,7 @@
 #import "RCChannelCell.h"
 
 @implementation RCChannelCell
-@synthesize channel, white, newMessageCount, hasHighlights;
+@synthesize channel, white, newMessageCount, hasHighlights, drawUnderline;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
@@ -20,20 +20,32 @@
 - (void)drawRect:(CGRect)rect {
 	[super drawRect:rect];
 	[UIColorFromRGB(0x3d3d40) set];
-	UIRectFill(CGRectMake(0, 0, rect.size.width, rect.size.height));
-	UIImage *arrow = [UIImage imageNamed:@"0_arrowr"];
-	[arrow drawInRect:CGRectMake(232, 14, 16, 16)];
-	[UIColorFromRGB(0x2A2E37) set];
+	UIRectFill(rect);
 	if (!self.channel) return;
 	BOOL isPM = (![self.channel hasPrefix:@"#"] && ![self.channel hasPrefix:@"\x01"]);
+	UIColor *def = UIColorFromRGB(0xcfcfcf);
+	if (white || fakeWhite) {
+		def = UIColorFromRGB(0xfbf8f8);
+		[UIColorFromRGB(0x61999c) set];
+		UIRectFill(rect);
+	}
+	if (drawUnderline) {
+		[UIColorFromRGB(0x49494C) set];
+		UIRectFill(CGRectMake(0, rect.size.height-1, rect.size.width, 1));
+		[UIColorFromRGB(0x161618) set];
+		UIRectFill(CGRectMake(0, rect.size.height-1, rect.size.width, .5));
+	}
+	else {
+		[UIColorFromRGB(0x161618) set];
+		UIRectFill(CGRectMake(0, rect.size.height-.5, rect.size.width, .5));
+	}
+	[UIColorFromRGB(0x2A2E37) set];
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	CGContextSetShadowWithColor(ctx, CGSizeMake(0, -1), 0, [UIColor blackColor].CGColor);
-	UIColor *def = UIColorFromRGB(0xcfcfcf);
-	if (white || fakeWhite) def = UIColorFromRGB(0xfbf8f8);
 	CGContextSetFillColorWithColor(ctx, def.CGColor);
 	CGContextScaleCTM(ctx, [[UIScreen mainScreen] scale], [[UIScreen mainScreen] scale]);
 
-	[channel drawAtPoint:CGPointMake(20, 3.5) forWidth:(newMessageCount > 0 ? (newMessageCount > 99 ? 90 : 95) : 95) withFont:[UIFont systemFontOfSize:8] minFontSize:5 actualFontSize:NULL lineBreakMode:NSLineBreakByCharWrapping baselineAdjustment:UIBaselineAdjustmentAlignCenters];
+	[channel drawAtPoint:CGPointMake(20, 3) forWidth:(newMessageCount > 0 ? (newMessageCount > 99 ? 90 : 95) : 95) withFont:[UIFont systemFontOfSize:8] minFontSize:5 actualFontSize:NULL lineBreakMode:NSLineBreakByCharWrapping baselineAdjustment:UIBaselineAdjustmentAlignCenters];
 	UIImage *glyph = nil;
 	if (isPM) {
 		glyph = [UIImage imageNamed:@"usericon"];
@@ -41,7 +53,7 @@
 	else {
 		glyph = [UIImage imageNamed:@"channelbubble"];
 	}
-	[glyph drawInRect:CGRectMake(4, 4, 12, 12) blendMode:kCGBlendModeNormal alpha:0.5];
+	[glyph drawInRect:CGRectMake(4, 3, 12, 12) blendMode:kCGBlendModeNormal alpha:0.5];
 	if (newMessageCount > 0) {
 		NSString *rendr = @"";
 		if (newMessageCount > 99) {

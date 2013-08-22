@@ -127,9 +127,16 @@
 	[cell setNewMessageCount:[indexChannel newMessageCount]];
 	[cell setHasHighlights:[indexChannel hasHighlights]];
 	RCChannel *chan = [[[RCChatController sharedController] currentPanel] channel];
+	NSString *nextChan = nil;
+	if (indexPath.row != [[net _channels] count]-1) {
+		nextChan = [[[net _channels] objectAtIndex:(indexPath.row + 1)] channelName];
+	}
 	if ([[net uUID] isEqual:[[chan delegate] uUID]]) {
 		if ([cell.channel isEqualToString:[chan channelName]]) {
 			[cell setWhite:YES];
+		}
+		else if ([nextChan isEqualToString:[chan channelName]]) {
+			[cell setDrawUnderline:NO];
 		}
 	}
 	[cell setNeedsDisplay];

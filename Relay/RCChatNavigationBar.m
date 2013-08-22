@@ -53,7 +53,6 @@
 }
 
 - (void)setFrame:(CGRect)frame {
-	BACKTRACE; NSLog(@"fds %@", NSStringFromCGRect(frame));
 	[super setFrame:frame];
 	self.layer.mask.frame = CGRectMake(0, 0, frame.size.width, frame.size.height+4);
 	UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:self.layer.mask.frame byRoundingCorners:UIRectCornerTopLeft| UIRectCornerTopRight cornerRadii:CGSizeMake(3, 3)];

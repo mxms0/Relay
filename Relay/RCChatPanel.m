@@ -60,7 +60,7 @@ static NSString *template = nil;
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
-    @synchronized(self) {
+    @synchronized(preloadPool) {
 		for (RCMessageFormatter *ms in preloadPool) {
 			[self layoutMessage:ms];
 		}
@@ -75,8 +75,8 @@ static NSString *template = nil;
 	if (self.hidden) {
 		self.hidden = NO;
 	}
-	@synchronized(self) {
-		if (preloadPool) {
+	if (preloadPool) {
+		@synchronized(preloadPool) {
 #if LOGALL
 			NSLog(@"Adding to preload pool [%@] %@", channel, ms);
 #endif

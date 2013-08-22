@@ -79,6 +79,7 @@
 		505BF85C1634BAFC002BBED5 /* 0_underline.png in Resources */ = {isa = PBXBuildFile; fileRef = 505BF85A1634BAEE002BBED5 /* 0_underline.png */; };
 		505BF85D1634BAFC002BBED5 /* 0_underline@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 505BF85B1634BAF6002BBED5 /* 0_underline@2x.png */; };
 		505BF8601634C564002BBED5 /* RCNetworkHeaderButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 505BF85F1634C563002BBED5 /* RCNetworkHeaderButton.m */; };
+		505C329F17C43F4E0083AAA1 /* DarkUI.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 505C329E17C43F4E0083AAA1 /* DarkUI.bundle */; };
 		50728FD215E0AD66008D2630 /* 0_alertview_c.png in Resources */ = {isa = PBXBuildFile; fileRef = 50728FD015E0AD66008D2630 /* 0_alertview_c.png */; };
 		50728FD315E0AD66008D2630 /* 0_alertview_c@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50728FD115E0AD66008D2630 /* 0_alertview_c@2x.png */; };
 		50728FD615E0AD7E008D2630 /* 0_alertview_d.png in Resources */ = {isa = PBXBuildFile; fileRef = 50728FD415E0AD7E008D2630 /* 0_alertview_d.png */; };
@@ -133,7 +134,6 @@
 		50AAE7EA151AD8B900E631FD /* RCAddCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 50AAE7E9151AD8B900E631FD /* RCAddCell.m */; };
 		50AAE7ED151ADDAB00E631FD /* 0_r_shadow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50AAE7EB151ADDAB00E631FD /* 0_r_shadow@2x.png */; };
 		50AAE7EE151ADDAB00E631FD /* 0_r_shadow.png in Resources */ = {isa = PBXBuildFile; fileRef = 50AAE7EC151ADDAB00E631FD /* 0_r_shadow.png */; };
-		50B122D717C1AEFD0068FACD /* DarkUI.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 50B122D617C1AEFD0068FACD /* DarkUI.bundle */; };
 		50B659B216A39F3F00D2CF03 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50B659B116A39F3F00D2CF03 /* Twitter.framework */; };
 		50B7413C17651DAA003FD20A /* ISO8601DateFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 50B7413B17651DAA003FD20A /* ISO8601DateFormatter.m */; };
 		50C1C0EC178D2D8D00834AEA /* NSData+Instance.m in Sources */ = {isa = PBXBuildFile; fileRef = 50C1C0EB178D2A2700834AEA /* NSData+Instance.m */; };
@@ -348,6 +348,7 @@
 		505BF85B1634BAF6002BBED5 /* 0_underline@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_underline@2x.png"; sourceTree = "<group>"; };
 		505BF85E1634C562002BBED5 /* RCNetworkHeaderButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCNetworkHeaderButton.h; sourceTree = "<group>"; };
 		505BF85F1634C563002BBED5 /* RCNetworkHeaderButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCNetworkHeaderButton.m; sourceTree = "<group>"; };
+		505C329E17C43F4E0083AAA1 /* DarkUI.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = DarkUI.bundle; sourceTree = "<group>"; };
 		506944C6152813530096140C /* Relay.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Relay.entitlements; sourceTree = "<group>"; };
 		50728FD015E0AD66008D2630 /* 0_alertview_c.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_alertview_c.png; sourceTree = "<group>"; };
 		50728FD115E0AD66008D2630 /* 0_alertview_c@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_alertview_c@2x.png"; sourceTree = "<group>"; };
@@ -422,7 +423,6 @@
 		50AAE7EB151ADDAB00E631FD /* 0_r_shadow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "0_r_shadow@2x.png"; sourceTree = "<group>"; };
 		50AAE7EC151ADDAB00E631FD /* 0_r_shadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0_r_shadow.png; sourceTree = "<group>"; };
 		50B0DB21154233EB00689EDC /* RCKeychainItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCKeychainItem.h; sourceTree = "<group>"; };
-		50B122D617C1AEFD0068FACD /* DarkUI.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = DarkUI.bundle; sourceTree = "<group>"; };
 		50B659B116A39F3F00D2CF03 /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
 		50B7413A17651DAA003FD20A /* ISO8601DateFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISO8601DateFormatter.h; sourceTree = "<group>"; };
 		50B7413B17651DAA003FD20A /* ISO8601DateFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISO8601DateFormatter.m; sourceTree = "<group>"; };
@@ -1033,7 +1033,7 @@
 		50D5B52517801B4700F2A39E /* Files */ = {
 			isa = PBXGroup;
 			children = (
-				50B122D617C1AEFD0068FACD /* DarkUI.bundle */,
+				505C329E17C43F4E0083AAA1 /* DarkUI.bundle */,
 				503C6B8017C087A300342F1B /* LightUI.bundle */,
 				50E77A8C1505A28400E75C64 /* Relay-Info.plist */,
 				50A7FB8914C0F0A800ABADEA /* InfoPlist.strings */,
@@ -1414,7 +1414,7 @@
 				503C6B8217C087A300342F1B /* LightUI.bundle in Resources */,
 				503C6B8E17C097D800342F1B /* highlightbadge.png in Resources */,
 				503C6B8F17C097D800342F1B /* highlightbadge@2x.png in Resources */,
-				50B122D717C1AEFD0068FACD /* DarkUI.bundle in Resources */,
+				505C329F17C43F4E0083AAA1 /* DarkUI.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

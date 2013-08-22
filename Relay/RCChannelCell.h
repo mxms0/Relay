@@ -18,5 +18,6 @@
 @property (nonatomic, retain) NSString *channel;
 @property (nonatomic, assign) BOOL white;
 @property (nonatomic, assign) BOOL hasHighlights;
+@property (nonatomic, assign) BOOL drawUnderline;
 @property (nonatomic, assign) int newMessageCount;
 @end

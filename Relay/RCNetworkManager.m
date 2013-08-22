@@ -26,7 +26,6 @@ static NSMutableArray *networks = nil;
 	}
 	if (![_net consoleChannel]) [_net addChannel:@"\x01IRC" join:NO];
 	[networks insertObject:_net atIndex:[networks count]];
-	if ([_net COL]) [_net connect];
 	if (!isSetup) [self saveNetworks];
 }
 
@@ -101,6 +100,9 @@ static NSMutableArray *networks = nil;
 		}
 		for (NSDictionary *_info in nets) {
 			[self ircNetworkWithInfo:_info isNew:NO];
+		}
+		for (RCNetwork *net in networks) {
+			if ([net COL]) [net connect];
 		}
 	}
 	[self jumpToFirstNetworkAndConsole];
