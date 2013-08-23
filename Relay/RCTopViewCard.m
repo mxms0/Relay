@@ -19,7 +19,7 @@
 		[bt addTarget:[RCChatController sharedController] action:@selector(popUserListWithDefaultDuration) forControlEvents:UIControlEventTouchUpInside];
 		[navigationBar addSubview:bt];
 		[bt release];
-		tableView = [[RCSuperSpecialTableView alloc] initWithFrame:CGRectMake(0, 44, frame.size.width, frame.size.height-44)];
+		tableView = [[RCSuperSpecialTableView alloc] initWithFrame:CGRectMake(0, navigationBar.frame.size.height, frame.size.width, frame.size.height-navigationBar.frame.size.height)];
 		[tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 		[tableView setBackgroundColor:[UIColor colorWithRed:53/255.0f green:53/255.0f blue:56/255.0f alpha:1.0f]];
 		[tableView setShowsVerticalScrollIndicator:YES];
