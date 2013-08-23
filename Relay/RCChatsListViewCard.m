@@ -15,7 +15,8 @@
 
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
-		navigationBar = [[RCChatNavigationBar alloc] initWithFrame:CGRectMake(0, 0, 320, (isiOS7 ? 64 : 44))];
+		navigationBar = [[RCChatNavigationBar alloc] init];
+		[navigationBar setFrame:CGRectMake(0, 0, 320, (isiOS7 ? 64 : 44))];
 		[self addSubview:navigationBar];
 		navigationBar.layer.zPosition = 100000;
 		[navigationBar release];
@@ -33,12 +34,12 @@
 		[self addSubview:datas];
 		[datas release];
 		[self setOpaque:YES];
-		RCBarButtonItem *st = [[RCBarButtonItem alloc] initWithFrame:CGRectMake(0, 1, 50, 45)];
+		RCBarButtonItem *st = [[RCBarButtonItem alloc] initWithFrame:CGRectMake(0, 1, 50, (isiOS7 ? 40 : 0) + 45)];
 		[st addTarget:[RCChatController sharedController] action:@selector(showNetworkListOptions) forControlEvents:UIControlEventTouchUpInside];
 		[st setImage:[UIImage imageNamed:@"settingsbutton"] forState:UIControlStateNormal];
 		[navigationBar addSubview:st];
 		[st release];
-		RCBarButtonItem *add = [[RCBarButtonItem alloc] initWithFrame:CGRectMake(0, 1, 50, 45)];
+		RCBarButtonItem *add = [[RCBarButtonItem alloc] initWithFrame:CGRectMake(0, 1, 50, (isiOS7 ? 40 : 0) + 45)];
 		[add addTarget:[RCChatController sharedController] action:@selector(showNetworkAddViewController) forControlEvents:UIControlEventTouchUpInside];
 		[add setImage:[UIImage imageNamed:@"newnetworkbutton"] forState:UIControlStateNormal];
 		[navigationBar addSubview:add];

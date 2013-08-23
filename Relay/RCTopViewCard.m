@@ -14,7 +14,7 @@
 
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
-		RCBarButtonItem *bt = [[RCBarButtonItem alloc] initWithFrame:CGRectMake(2, 0, 50, 45)];
+		RCBarButtonItem *bt = [[RCBarButtonItem alloc] initWithFrame:CGRectMake(2, 0, 50, (isiOS7 ? 40 : 0) + 45)];
 		[bt setImage:[UIImage imageNamed:@"0_backa"] forState:UIControlStateNormal];
 		[bt addTarget:[RCChatController sharedController] action:@selector(popUserListWithDefaultDuration) forControlEvents:UIControlEventTouchUpInside];
 		[navigationBar addSubview:bt];

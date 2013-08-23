@@ -20,7 +20,8 @@
 		[self setOpaque:YES];
 		[self setExclusiveTouch:YES];
 		if (![self isKindOfClass:[RCChatsListViewCard class]]) {
-			navigationBar = [[RCChatNavigationBar alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, (isiOS7 ? 64 : 44))];
+			navigationBar = [[RCChatNavigationBar alloc] init];
+			[navigationBar setFrame:CGRectMake(0, 0, frame.size.width, (isiOS7 ? 64 : 44))];
 			[self addSubview:navigationBar];
 			navigationBar.layer.zPosition = 100000;
 			[navigationBar release];
@@ -69,7 +70,7 @@
 
 - (void)setFrame:(CGRect)frame {
 	[super setFrame:frame];
-	navigationBar.frame = CGRectMake(navigationBar.frame.origin.x,navigationBar.frame.origin.y, frame.size.width, navigationBar.frame.size.height);
+	navigationBar.frame = CGRectMake(navigationBar.frame.origin.x, navigationBar.frame.origin.y, frame.size.width, navigationBar.frame.size.height);
 	[navigationBar setNeedsDisplay];
 }
 

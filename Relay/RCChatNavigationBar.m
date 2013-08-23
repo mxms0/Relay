@@ -17,6 +17,7 @@
 		subtitle = nil;
 		maxSize = 18;
 		[self setOpaque:NO];
+		 /*
 		CALayer *hshdw = [[CALayer alloc] init];
 		UIImage *hfs = [UIImage imageNamed:@"0_vzshdw"];
 		[hshdw setContents:(id)hfs.CGImage];
@@ -26,6 +27,7 @@
 		[self.layer setMasksToBounds:NO];
 		[self.layer addSublayer:hshdw];
 		[hshdw release];
+		 */
 		UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0, 0, frame.size.width, 48) byRoundingCorners:UIRectCornerTopLeft| UIRectCornerTopRight cornerRadii:CGSizeMake(3, 3)];
 		CAShapeLayer *maskLayer = [CAShapeLayer layer];
 		maskLayer.frame = CGRectMake(0, 0, 320, 48);
