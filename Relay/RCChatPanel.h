@@ -12,6 +12,7 @@
 
 @class RCChannel;
 @interface RCChatPanel : UIWebView <UITextFieldDelegate> {
+	BOOL webViewLoaded;
 	RCChannel *channel;
 	NSMutableArray *preloadPool;
 	CGFloat suggestionLocation;
