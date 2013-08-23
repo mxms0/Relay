@@ -17,11 +17,11 @@
 		[pure release];
 		[self.tableView setContentInset:UIEdgeInsetsMake(-100, 0, 0, 0)];
 		sectionalArrays = @[
-						@[@"    DEFAULT SETTINGS", @"Nickname", @"Real Name", @"User Name", @"Quit Message"],
-						@[@"    APPEARANCE", @"Night Mode", @"Seconds In Timestamps", @"24 Hour Time"],
-						@[@"    BEHAVIOR", @"Autocorrect", @"Autocapitalize"],
-                        @[@"    ADVANCED", @"Custom Commands"],
-                        @[@"    ABOUT", @"About Relay"]
+						@[@"Nickname", @"Real Name", @"User Name", @"Quit Message"],
+						@[@"Night Mode", @"Seconds In Timestamps", @"24 Hour Time"],
+						@[@"Autocorrect", @"Autocapitalize"],
+                        @[@"Custom Commands"],
+                        @[@"About Relay"]
 		];
 		[sectionalArrays retain];
 		keyValues = [NSDictionary dictionaryWithObjectsAndKeys:AUTOCORRECTION_KEY, @"Autocorrect", AUTOCAPITALIZE_KEY, @"Autocapitalize", TWENTYFOURHOURTIME_KEY, @"24 Hour Time", TIMESECONDS_KEY, @"Seconds In Timestamps", THEME_NAME_KEY, @"Night Mode", nil];
@@ -55,15 +55,12 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+	return 0;
 	return 36;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	return [sectionalArrays[section] count] - 1;
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-	return [sectionalArrays[section] objectAtIndex:0];
+	return [sectionalArrays[section] count];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView indentationLevelForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -71,24 +68,13 @@
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-	UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake((isiOS7 ? 7 : 4), 8, 240, 20)];
-	label.text = [self tableView:tableView titleForHeaderInSection:section];
-	label.backgroundColor = [UIColor clearColor];
-	label.textColor = [UIColor colorWithRed:204/255.0f green:204/255.0f blue:204/255.0f alpha:1.0f];
-	label.shadowColor = [UIColor blackColor];
-	label.shadowOffset = CGSizeMake(0, 1);
-	label.font = [UIFont systemFontOfSize:14];
-	UIView *base = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 20)];
-	[base addSubview:label];
-	[label release];
-	[base setBackgroundColor:[UIColor clearColor]];
-	return [base autorelease];
+	return nil;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	NSString *cellIdentifier = [NSString stringWithFormat:@"0_%d_%d", indexPath.row, indexPath.section];
 	RCSettingsTableViewCell *cell = (RCSettingsTableViewCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-	NSString *text = [sectionalArrays[indexPath.section] objectAtIndex:indexPath.row + 1];
+	NSString *text = [sectionalArrays[indexPath.section] objectAtIndex:indexPath.row];
 	if (!cell) {
 		cell = [[[RCSettingsTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier] autorelease];
 		switch (indexPath.section) {

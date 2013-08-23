@@ -48,7 +48,7 @@
 	#define DEL_CONFIRM_KEY 1112
 	#define USE_PRIVATE 1
 	#define UIApp [UIApplication sharedApplication]
-	#define LOGALL 1
+	#define LOGALL 0
 	#define _DEBUG 1
 	#define isiOS7 !!(objc_getClass("UIAttachmentBehavior"))
 // alerts

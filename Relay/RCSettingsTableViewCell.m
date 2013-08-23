@@ -24,6 +24,8 @@
 	[super drawRect:rect];
 	[[UIColor colorWithRed:53/255.0f green:53/255.0f blue:56/255.0f alpha:1.0f] set];
 	UIRectFill(rect);
+	[UIColorFromRGB(0x4a4a4c) set];
+	UIRectFill(CGRectMake(0, 0, rect.size.width, 1));
 }
 
 @end
