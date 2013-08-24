@@ -39,6 +39,12 @@
 		[channels setTableHeaderView:searchBar];
 		[searchBar release];
 		[channels setContentOffset:CGPointMake(0, 44)];
+		UIImage *shdow = [[RCSchemeManager sharedInstance] imageNamed:@"listfade"];
+		imageHeight = shdow.size.height;
+		_shadow = [[UIImageView alloc] initWithImage:shdow];
+		_shadow.layer.zPosition = 1000;
+		[self insertSubview:_shadow atIndex:[[self subviews] count]];
+		[_shadow release];
 	}
 	return self;
 }
@@ -46,6 +52,7 @@
 - (void)setFrame:(CGRect)frame {
 	[super setFrame:frame];
 	[channels setFrame:CGRectMake(0, 44, frame.size.width, frame.size.height-44)];
+	[_shadow setFrame:CGRectMake(0, frame.size.height - imageHeight, frame.size.width, imageHeight)];
 }
 
 - (void)scrollToTop {

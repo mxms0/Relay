@@ -11,6 +11,7 @@
 #import "RCBasicTextInputCell.h"
 #import "RCSettingsTableViewCell.h"
 #import "RCNetworkManager.h"
+#import "RCOpaqueHeaderView.h"
 
 @interface RCSettingsViewController : RCBasicViewController {
 	NSDictionary *keyValues;

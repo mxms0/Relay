@@ -34,18 +34,25 @@
 		[self addSubview:datas];
 		[datas release];
 		[self setOpaque:YES];
-		RCBarButtonItem *st = [[RCBarButtonItem alloc] initWithFrame:CGRectMake(0, 1, 50, (isiOS7 ? 40 : 0) + 45)];
-		[st addTarget:[RCChatController sharedController] action:@selector(showNetworkListOptions) forControlEvents:UIControlEventTouchUpInside];
-		[st setImage:[UIImage imageNamed:@"settingsbutton"] forState:UIControlStateNormal];
-		[navigationBar addSubview:st];
-		[st release];
-		RCBarButtonItem *add = [[RCBarButtonItem alloc] initWithFrame:CGRectMake(0, 1, 50, (isiOS7 ? 40 : 0) + 45)];
-		[add addTarget:[RCChatController sharedController] action:@selector(showNetworkAddViewController) forControlEvents:UIControlEventTouchUpInside];
-		[add setImage:[UIImage imageNamed:@"newnetworkbutton"] forState:UIControlStateNormal];
-		[navigationBar addSubview:add];
-		[add release];
+		[self loadNavigationButtons];
     }
     return self;
+}
+
+- (void)loadNavigationButtons {
+	for (UIView *v in [[navigationBar.subviews copy] autorelease]) {
+		[v removeFromSuperview];
+	}
+	RCBarButtonItem *st = [[RCBarButtonItem alloc] initWithFrame:CGRectMake(0, 1, 50, (isiOS7 ? 40 : 0) + 45)];
+	[st addTarget:[RCChatController sharedController] action:@selector(showNetworkListOptions) forControlEvents:UIControlEventTouchUpInside];
+	[st setImage:[[RCSchemeManager sharedInstance] imageNamed:@"iconcog"] forState:UIControlStateNormal];
+	[navigationBar addSubview:st];
+	[st release];
+	RCBarButtonItem *add = [[RCBarButtonItem alloc] initWithFrame:CGRectMake(0, 1, 50, (isiOS7 ? 40 : 0) + 45)];
+	[add addTarget:[RCChatController sharedController] action:@selector(showNetworkAddViewController) forControlEvents:UIControlEventTouchUpInside];
+	[add setImage:[[RCSchemeManager sharedInstance] imageNamed:@"addicon"] forState:UIControlStateNormal];
+	[navigationBar addSubview:add];
+	[add release];
 }
 
 - (void)scrollToTop {

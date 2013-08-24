@@ -27,6 +27,7 @@
 		ctx = NULL;
 		ssl = NULL;
 		prefix = nil;
+		useNick = @"(Not Sent)";
 		_channels = [[NSMutableArray alloc] init];
 		_nicknames = [[NSMutableArray alloc] init];
 	}
@@ -461,6 +462,7 @@
 #if LOGALL
 	NSLog(@"HAI OUTGOING ((%@))",msg);
 #endif
+	
 	msg = [msg stringByAppendingString:@"\r\n"];
 	static NSMutableString *cacheLine = nil;
 	if (isRegistered && !!cacheLine) {

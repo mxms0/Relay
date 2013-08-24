@@ -12,7 +12,7 @@
 - (void)drawRect:(CGRect)rect {
 	[super drawRect:rect];
 	[[UIColor clearColor] set];
-	[[[UIImage imageNamed:@"maintextfield"] stretchableImageWithLeftCapWidth:19 topCapHeight:0] drawInRect:(CGRect){{0, 2}, self.frame.size}];
+	[[[[RCSchemeManager sharedInstance] imageNamed:@"maintextinput"] stretchableImageWithLeftCapWidth:19 topCapHeight:0] drawInRect:(CGRect){{0, 2}, self.frame.size}];
 }
 
 @end

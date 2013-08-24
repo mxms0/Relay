@@ -48,12 +48,12 @@
 	[channel drawAtPoint:CGPointMake(20, 3) forWidth:(newMessageCount > 0 ? (newMessageCount > 99 ? 90 : 95) : 95) withFont:[UIFont systemFontOfSize:8] minFontSize:5 actualFontSize:NULL lineBreakMode:NSLineBreakByCharWrapping baselineAdjustment:UIBaselineAdjustmentAlignCenters];
 	UIImage *glyph = nil;
 	if (isPM) {
-		glyph = [UIImage imageNamed:@"usericon"];
+		glyph = [[RCSchemeManager sharedInstance] imageNamed:@"usericon"];
 	}
 	else {
-		glyph = [UIImage imageNamed:@"channelbubble"];
+		glyph = [[RCSchemeManager sharedInstance] imageNamed:@"channellisticon"];
 	}
-	[glyph drawInRect:CGRectMake(4, 3, 12, 12) blendMode:kCGBlendModeNormal alpha:0.5];
+	[glyph drawInRect:CGRectMake(4, 4, glyph.size.width * 0.6, glyph.size.height * 0.6) blendMode:kCGBlendModeNormal alpha:0.5];
 	if (newMessageCount > 0) {
 		NSString *rendr = @"";
 		if (newMessageCount > 99) {

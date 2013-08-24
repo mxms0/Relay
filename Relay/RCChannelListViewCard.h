@@ -22,9 +22,11 @@
 	RCNetwork *currentNetwork;
 	NSString *searchTerm;
 	RCOperationQueue *queue;
+	UIImageView *_shadow;
 	BOOL isSearching;
 	BOOL shouldBeIterating;
 	BOOL updating;
+	CGFloat imageHeight;
 	int count;
 	int max;
 }

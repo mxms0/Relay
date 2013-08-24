@@ -195,6 +195,7 @@ static id _inst = nil;
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
 	if ([textField.text isEqualToString:@""] || textField.text == nil) return NO;
+	
 	NSString *appstore_txt = [textField.text retain];
 	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
 	dispatch_async(queue, ^ {

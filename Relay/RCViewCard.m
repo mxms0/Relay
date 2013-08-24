@@ -15,8 +15,8 @@
 @synthesize navigationBar;
 @class RCChatsListViewCard;
 
-- (id)initWithFrame:(CGRect)frame {
-	if ((self = [super initWithFrame:frame])) {
+-(id)initWithFrame:(CGRect)frame{
+	if ((self = [super initWithFrame:frame])){
 		[self setOpaque:YES];
 		[self setExclusiveTouch:YES];
 		if (![self isKindOfClass:[RCChatsListViewCard class]]) {
@@ -37,16 +37,16 @@
 			[self.layer insertSublayer:shdw atIndex:0];
 			[shdw release];
 		}
-		if ([NSStringFromClass([self class]) isEqualToString:@"RCViewCard"]) {
+		if ([NSStringFromClass([self class]) isEqualToString:@"RCViewCard"]){
 			RCBarButtonItem *bs = [[RCBarButtonItem alloc] init];
-			[bs setImage:[UIImage imageNamed:@"mainhamburger"] forState:UIControlStateNormal];
+			[bs setImage:[[RCSchemeManager sharedInstance] imageNamed:@"hamburgericon"] forState:UIControlStateNormal];
 			[bs setFrame:CGRectMake(1, (isiOS7 ? 20 : 0), 50, 45)];
 			[bs setTag:RCChannelListButtonTag];
 			[bs addTarget:[RCChatController sharedController] action:@selector(menuButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 			[navigationBar addSubview:bs];
 			[bs release];
 			RCBarButtonItem *cs = [[RCBarButtonItem alloc] init];
-			[cs setImage:[UIImage imageNamed:@"userlistbutton"] forState:UIControlStateNormal];
+			[cs setImage:[[RCSchemeManager sharedInstance] imageNamed:@"menubutton"] forState:UIControlStateNormal];
 			[cs setFrame:CGRectMake(frame.size.width - 50, (isiOS7 ? 20 : 0), 50, 45)];
 			[cs setTag:RCUserListButtonTag];
 			[cs addTarget:[RCChatController sharedController] action:@selector(pushUserListWithDefaultDuration) forControlEvents:UIControlEventTouchUpInside];
@@ -63,18 +63,18 @@
     return self;
 }
 
-- (void)setCenter:(CGPoint)ct {
+-(void)setCenter:(CGPoint)ct{
 	[super setCenter:ct];
 	[self findShadowAndDoStuffToIt];
 }
 
-- (void)setFrame:(CGRect)frame {
+-(void)setFrame:(CGRect)frame{
 	[super setFrame:frame];
 	navigationBar.frame = CGRectMake(navigationBar.frame.origin.x, navigationBar.frame.origin.y, frame.size.width, navigationBar.frame.size.height);
 	[navigationBar setNeedsDisplay];
 }
 
-- (void)setLeftBarButtonItemEnabled:(BOOL)en {
+-(void)setLeftBarButtonItemEnabled:(BOOL)en{
 	for (RCBarButtonItem *bv in [self.navigationBar subviews]) {
 		if ([bv tag] == RCChannelListButtonTag) {
 			[bv setEnabled:en];
@@ -83,7 +83,7 @@
 	}
 }
 
-- (void)findShadowAndDoStuffToIt {
+-(void)findShadowAndDoStuffToIt{
 	BOOL shouldBeVisible = (self.frame.origin.x >= 0);
 	for (CALayer *sub in [self.layer sublayers]) {
 		if ([[sub name] isEqualToString:@"0_fuckingshadow"]) {
@@ -99,7 +99,7 @@
 	}
 }
 
-- (void)drawRect:(CGRect)rect {
+-(void)drawRect:(CGRect)rect{
 	[super drawRect:rect];
 	[UIColorFromRGB(0x353538) set];
 	UIRectFill(CGRectMake(0, 10, rect.size.width, rect.size.height));

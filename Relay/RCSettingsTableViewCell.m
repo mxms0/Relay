@@ -26,6 +26,8 @@
 	UIRectFill(rect);
 	[UIColorFromRGB(0x4a4a4c) set];
 	UIRectFill(CGRectMake(0, 0, rect.size.width, 1));
+	[UIColorFromRGB(0x161618) set];
+	UIRectFill(CGRectMake(0, rect.size.height-1, rect.size.width, 1));
 }
 
 @end
