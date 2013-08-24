@@ -12,4 +12,5 @@
 @interface RCAppDelegate : UIResponder <UIApplicationDelegate>
 @property (strong, nonatomic) UIWindow *window;
 @property (strong, nonatomic) UIViewController *navigationController;
+- (void)configureUI;
 @end

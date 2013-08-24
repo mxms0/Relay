@@ -16,9 +16,9 @@ static NSString *template = nil;
 - (id)initWithChannel:(RCChannel *)chan {
 	if ((self = [super init])) {
 		[self setChannel:chan];
-		[self setBackgroundColor:UIColorFromRGB(0x353538)];
 		self.opaque = NO;
 		[self setHidden:YES];
+		[self setBackgroundColor:[UIColor clearColor]];
 		if (!template) {
 			template = [[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"chatview" ofType:@"html"] encoding:NSUTF8StringEncoding error:nil] retain];
 		}
@@ -125,6 +125,17 @@ static NSString *template = nil;
 		[message release];
 		[_message release];
 	});
+}
+
+- (void)drawRect:(CGRect)rect {
+	[super drawRect:rect];
+	if ([[RCSchemeManager sharedInstance] isDark]) {
+		[UIColorFromRGB(0x353538) set];
+	}
+	else {
+		[UIColorFromRGB(0xf0f0f0) set];
+	}
+	UIRectFill(rect);
 }
 
 - (void)dealloc {

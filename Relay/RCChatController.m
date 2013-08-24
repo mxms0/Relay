@@ -102,6 +102,7 @@ static id _inst = nil;
 }
 
 - (void)themeChanged:(id)notif {
+	[(RCAppDelegate *)[UIApp delegate] configureUI];
 	[[chatView navigationBar] setNeedsDisplay];
 	[chatView setNeedsDisplay];
 	[chatView loadNavigationButtons];

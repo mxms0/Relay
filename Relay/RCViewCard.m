@@ -33,6 +33,7 @@
 			[shdw setShouldRasterize:YES];
 			[shdw setHidden:YES];
 			[shdw setOpacity:0.7];
+			[shdw setZPosition:-10000];
 			[shdw setFrame:CGRectMake(-mfs.size.width+3, 0, mfs.size.width, self.frame.size.height)];
 			[self.layer insertSublayer:shdw atIndex:0];
 			[shdw release];
@@ -102,7 +103,12 @@
 
 -(void)drawRect:(CGRect)rect{
 	[super drawRect:rect];
-	[UIColorFromRGB(0x353538) set];
+	if ([[RCSchemeManager sharedInstance] isDark]) {
+		[UIColorFromRGB(0x353538) set];
+	}
+	else {
+		[UIColorFromRGB(0xf0f0f0) set];
+	}
 	UIRectFill(CGRectMake(0, 10, rect.size.width, rect.size.height));
 }
 

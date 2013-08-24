@@ -19,7 +19,17 @@
 
 - (void)drawRect:(CGRect)rect {
 	[super drawRect:rect];
-	[UIColorFromRGB(0x3d3d40) set];
+	// rewrite this entirely.
+	CGSize shadowSize = CGSizeMake(0, -1);
+	UIColor *shadowColor = [UIColor blackColor];
+	if ([[RCSchemeManager sharedInstance] isDark]) {
+		[UIColorFromRGB(0x3d3d40) set];
+	}
+	else {
+		[UIColorFromRGB(0xf0f0f0) set];
+		shadowSize = CGSizeZero;
+		shadowColor = [UIColor clearColor];
+	}
 	UIRectFill(rect);
 	if (!self.channel) return;
 	BOOL isPM = (![self.channel hasPrefix:@"#"] && ![self.channel hasPrefix:@"\x01"]);
@@ -28,6 +38,20 @@
 		def = UIColorFromRGB(0xfbf8f8);
 		[UIColorFromRGB(0x61999c) set];
 		UIRectFill(rect);
+		if ([[RCSchemeManager sharedInstance] isDark]) {
+			def = UIColorFromRGB(0x2A2E37);
+		}
+		else {
+			def = [UIColor whiteColor];
+		}
+	}
+	else {
+		if ([[RCSchemeManager sharedInstance] isDark]) {
+			
+		}
+		else {
+			def = UIColorFromRGB(0x666666);
+		}
 	}
 	if (drawUnderline) {
 		[UIColorFromRGB(0x49494C) set];
@@ -39,12 +63,10 @@
 		[UIColorFromRGB(0x161618) set];
 		UIRectFill(CGRectMake(0, rect.size.height-.5, rect.size.width, .5));
 	}
-	[UIColorFromRGB(0x2A2E37) set];
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
-	CGContextSetShadowWithColor(ctx, CGSizeMake(0, -1), 0, [UIColor blackColor].CGColor);
+	CGContextSetShadowWithColor(ctx, shadowSize, 0, shadowColor.CGColor);
 	CGContextSetFillColorWithColor(ctx, def.CGColor);
 	CGContextScaleCTM(ctx, [[UIScreen mainScreen] scale], [[UIScreen mainScreen] scale]);
-
 	[channel drawAtPoint:CGPointMake(20, 3) forWidth:(newMessageCount > 0 ? (newMessageCount > 99 ? 90 : 95) : 95) withFont:[UIFont systemFontOfSize:8] minFontSize:5 actualFontSize:NULL lineBreakMode:NSLineBreakByCharWrapping baselineAdjustment:UIBaselineAdjustmentAlignCenters];
 	UIImage *glyph = nil;
 	if (isPM) {
@@ -53,7 +75,7 @@
 	else {
 		glyph = [[RCSchemeManager sharedInstance] imageNamed:@"channellisticon"];
 	}
-	[glyph drawInRect:CGRectMake(4, 4, glyph.size.width * 0.6, glyph.size.height * 0.6) blendMode:kCGBlendModeNormal alpha:0.5];
+	[glyph drawInRect:CGRectMake(4, 4, glyph.size.width * .6, glyph.size.height * .6) blendMode:kCGBlendModeNormal alpha:0.5];
 	if (newMessageCount > 0) {
 		NSString *rendr = @"";
 		if (newMessageCount > 99) {

@@ -35,6 +35,7 @@ static id _managerInstance = nil;
 - (void)themeChanged:(NSNotification *)nc {
 	NSString *themeName = (NSString *)[nc object];
 	[self loadBundleNamed:themeName];
+	[[RCChatController sharedController] themeChanged:nil];
 }
 
 - (void)loadBundleNamed:(NSString *)name {
@@ -48,7 +49,6 @@ static id _managerInstance = nil;
 	NSString *absol = [[NSString alloc] initWithUTF8String:dir];
 	isDark = ([name hasPrefix:@"Dark"]);
 	currentThemeBundle = [[NSBundle alloc] initWithPath:absol];
-	[[RCChatController sharedController] themeChanged:nil];
 }
 
 - (id)imageNamed:(NSString *)image {
