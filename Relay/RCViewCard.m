@@ -53,13 +53,7 @@
 			[navigationBar addSubview:cs];
 			[cs release];
 		}
-		CALayer *bg = [[CALayer alloc] init];
-		[bg setBackgroundColor:UIColorFromRGB(0x353538).CGColor];
-		[bg setShouldRasterize:YES];
-		[bg setFrame:CGRectMake(0, 10, frame.size.height+44, frame.size.height)];
-		[self.layer insertSublayer:bg atIndex:1];
-		[bg release];
-    }
+	}
     return self;
 }
 

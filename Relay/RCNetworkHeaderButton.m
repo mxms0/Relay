@@ -17,7 +17,7 @@
 		[self setOpaque:YES];
 		coggearwhat = [[UIButton alloc] initWithFrame:CGRectMake(3, 1, 34, 44)];
 		[coggearwhat addTarget:[RCChatController sharedController] action:@selector(showNetworkOptions:) forControlEvents:UIControlEventTouchUpInside];
-		[coggearwhat setImage:[UIImage imageNamed:@"settingsbutton"] forState:UIControlStateNormal];
+		[coggearwhat setImage:[[RCSchemeManager sharedInstance] imageNamed:@"iconcog"] forState:UIControlStateNormal];
 		[self addSubview:coggearwhat];
 		[coggearwhat release];
 	}
@@ -49,23 +49,37 @@
 - (void)drawRect:(CGRect)rect {
 	[super drawRect:rect];
 	UIColor *textColor = UIColorFromRGB(0xcccccc);
+	UIColor *shadowColor = [UIColor blackColor];
+	UIColor *subtitleColor = UIColorFromRGB(0x999999);
+	CGSize shadowSize = CGSizeMake(0, -1);
 	UIImage *bg = nil;
 	BOOL isSelected = ([net expanded] || _pSelected);
-	if (isSelected) {
+	if ([[RCSchemeManager sharedInstance] isDark]) {
 		if ([net isConnected]) {
-			textColor = UIColorFromRGB(0xcccccc);
+			
 		}
 		else {
-			textColor = UIColorFromRGB(0xcccccc);
+			
 		}
-		bg = [[RCSchemeManager sharedInstance] imageNamed:@"dark_net_selected"];
 	}
 	else {
-		bg = [[RCSchemeManager sharedInstance] imageNamed:@"dark_net_deselected"];
 		if ([net isConnected]) {
-			textColor = [UIColor whiteColor];
+
 		}
+		else {
+			
+		}
+		shadowColor = [UIColor whiteColor];
+		textColor = UIColorFromRGB(0x666666);
+		shadowSize = CGSizeZero;
 	}
+	if (isSelected) {
+		bg = [[RCSchemeManager sharedInstance] imageNamed:@"net_selectedbg"];
+	}
+	else {
+		bg = [[RCSchemeManager sharedInstance] imageNamed:@"net_deselectedbg"];
+	}
+	
 	[bg drawInRect:rect];
 	if (isSelected) {
 		[UIColorFromRGB(0x161618) set];
@@ -75,10 +89,11 @@
 	NSString *text = [net _description];
 	NSString *detail = [net server];
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
-	CGContextSetShadowWithColor(ctx, CGSizeMake(0, -1), 0, [UIColor blackColor].CGColor);
+	CGContextSetShadowWithColor(ctx, shadowSize, 0, shadowColor.CGColor);
 	CGContextSetFillColorWithColor(ctx, textColor.CGColor);
 	CGContextScaleCTM(ctx, [[UIScreen mainScreen] scale], [[UIScreen mainScreen] scale]);
 	[text drawInRect:CGRectMake(19, 1, 200, 40) withFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:9] lineBreakMode:NSLineBreakByCharWrapping alignment:NSTextAlignmentLeft];
+	CGContextSetFillColorWithColor(ctx, subtitleColor.CGColor);
 	[detail drawInRect:CGRectMake(19, 12, 200, 30) withFont:[UIFont fontWithName:@"HelveticaNeue" size:5.5]];
 }
 

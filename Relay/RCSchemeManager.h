@@ -11,6 +11,7 @@
 	NSBundle *currentThemeBundle;
 	BOOL isRetina;
 }
+@property (nonatomic, readonly) BOOL isDark;
 + (id)sharedInstance;
 - (UIImage *)imageNamed:(NSString *)image;
 @end

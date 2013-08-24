@@ -61,7 +61,10 @@
 
 - (void)drawRect:(CGRect)rect {
 	[super drawRect:rect];
-	[UIColorFromRGB(0x353538) set];
+	UIColor *fillColor = UIColorFromRGB(0x353538);
+	if (![[RCSchemeManager sharedInstance] isDark])
+		fillColor = UIColorFromRGB(0xf0f0f0);
+	[fillColor set];
 	UIRectFill(rect);
 }
 

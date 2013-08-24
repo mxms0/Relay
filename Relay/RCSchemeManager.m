@@ -9,6 +9,7 @@
 #import "RCNetworkManager.h"
 
 @implementation RCSchemeManager
+@synthesize isDark;
 static id _managerInstance = nil;
 
 + (id)sharedInstance {
@@ -21,8 +22,9 @@ static id _managerInstance = nil;
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(themeChanged:) name:THEME_CHANGED_KEY object:nil];
 		isRetina = [[UIScreen mainScreen] scale] > 1.0;
 		NSString *themeName = [[RCNetworkManager sharedNetworkManager] valueForSetting:THEME_NAME_KEY];
-		if (themeName)
+		if (themeName) {
 			[self loadBundleNamed:themeName];
+		}
 		else {
 			[self loadBundleNamed:@"DarkUI"];
 		}
@@ -44,6 +46,7 @@ static id _managerInstance = nil;
 	char dir[4096];
 	sprintf(dir, "%s/Relay.app/%s.bundle", hdir, [name UTF8String]);
 	NSString *absol = [[NSString alloc] initWithUTF8String:dir];
+	isDark = ([name hasPrefix:@"Dark"]);
 	currentThemeBundle = [[NSBundle alloc] initWithPath:absol];
 }
 

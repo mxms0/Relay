@@ -84,8 +84,23 @@
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	[bg drawInRect:rect];
 	if ([[self subviews] count] > 2) return; // kind of fixes it. eh
-	CGContextSetShadowWithColor(ctx, CGSizeMake(0, -1), 0, [UIColor blackColor].CGColor);
-	CGContextSetFillColorWithColor(ctx, [UIColor whiteColor].CGColor);
+	
+	UIColor *shadowColor = nil;
+	UIColor *fillColor = nil;
+	CGSize shadowOffset = CGSizeZero;
+	if ([[RCSchemeManager sharedInstance] isDark]) {
+		shadowColor = [UIColor blackColor];
+		fillColor = [UIColor whiteColor];
+		shadowOffset = CGSizeMake(0, -1);
+	}
+	else {
+		shadowColor = [UIColor whiteColor];
+		fillColor = UIColorFromRGB(0x4c4c51);
+		shadowOffset = CGSizeMake(0, .5);
+	}
+	
+	CGContextSetShadowWithColor(ctx, shadowOffset, 1, shadowColor.CGColor);
+	CGContextSetFillColorWithColor(ctx, fillColor.CGColor);
 	CGFloat size = 0.0;
 	float maxWidth = (rect.size.width - 90);
 	[title sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:maxSize] minFontSize:12 actualFontSize:&size forWidth:maxWidth lineBreakMode:NSLineBreakByClipping];

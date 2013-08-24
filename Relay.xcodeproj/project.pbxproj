@@ -137,7 +137,8 @@
 		50B7413C17651DAA003FD20A /* ISO8601DateFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 50B7413B17651DAA003FD20A /* ISO8601DateFormatter.m */; };
 		50C1C0EC178D2D8D00834AEA /* NSData+Instance.m in Sources */ = {isa = PBXBuildFile; fileRef = 50C1C0EB178D2A2700834AEA /* NSData+Instance.m */; };
 		50C258EA17C8ED9D00F7BDF0 /* LightUI.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 50C258E817C8ED9D00F7BDF0 /* LightUI.bundle */; };
-		50C258EB17C8ED9D00F7BDF0 /* DarkUI.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 50C258E917C8ED9D00F7BDF0 /* DarkUI.bundle */; };
+		50C258EE17C8F19E00F7BDF0 /* RCSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 50C258ED17C8F19E00F7BDF0 /* RCSwitch.m */; };
+		50C258F017C8FFBA00F7BDF0 /* DarkUI.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 50C258EF17C8FFBA00F7BDF0 /* DarkUI.bundle */; };
 		50C4523E177536EF00AC843D /* RCInitialSetupView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50C4523D177536EF00AC843D /* RCInitialSetupView.m */; };
 		50C45241177538F700AC843D /* UIImage+Filters.m in Sources */ = {isa = PBXBuildFile; fileRef = 50C45240177538F700AC843D /* UIImage+Filters.m */; };
 		50C46498177FA0150025ED54 /* RCChannelListViewCard.m in Sources */ = {isa = PBXBuildFile; fileRef = 50C46497177FA0140025ED54 /* RCChannelListViewCard.m */; };
@@ -430,7 +431,9 @@
 		50C1C0EA178D2A2700834AEA /* NSData+Instance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSData+Instance.h"; sourceTree = "<group>"; };
 		50C1C0EB178D2A2700834AEA /* NSData+Instance.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSData+Instance.m"; sourceTree = "<group>"; };
 		50C258E817C8ED9D00F7BDF0 /* LightUI.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = LightUI.bundle; sourceTree = "<group>"; };
-		50C258E917C8ED9D00F7BDF0 /* DarkUI.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = DarkUI.bundle; sourceTree = "<group>"; };
+		50C258EC17C8F19E00F7BDF0 /* RCSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCSwitch.h; sourceTree = "<group>"; };
+		50C258ED17C8F19E00F7BDF0 /* RCSwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCSwitch.m; sourceTree = "<group>"; };
+		50C258EF17C8FFBA00F7BDF0 /* DarkUI.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = DarkUI.bundle; sourceTree = "<group>"; };
 		50C4523C177536EF00AC843D /* RCInitialSetupView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCInitialSetupView.h; sourceTree = "<group>"; };
 		50C4523D177536EF00AC843D /* RCInitialSetupView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCInitialSetupView.m; sourceTree = "<group>"; };
 		50C4523F177538F700AC843D /* UIImage+Filters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Filters.h"; sourceTree = "<group>"; };
@@ -728,6 +731,8 @@
 				509AF49A17716BE4004C3A68 /* RCBarButtonItem.m */,
 				A3764E62177E135E00C1615F /* RCServerChangeAlertView.h */,
 				A3764E63177E135E00C1615F /* RCServerChangeAlertView.m */,
+				50C258EC17C8F19E00F7BDF0 /* RCSwitch.h */,
+				50C258ED17C8F19E00F7BDF0 /* RCSwitch.m */,
 			);
 			name = "View Objects";
 			sourceTree = "<group>";
@@ -1038,8 +1043,8 @@
 		50D5B52517801B4700F2A39E /* Files */ = {
 			isa = PBXGroup;
 			children = (
+				50C258EF17C8FFBA00F7BDF0 /* DarkUI.bundle */,
 				50C258E817C8ED9D00F7BDF0 /* LightUI.bundle */,
-				50C258E917C8ED9D00F7BDF0 /* DarkUI.bundle */,
 				50E77A8C1505A28400E75C64 /* Relay-Info.plist */,
 				50A7FB8914C0F0A800ABADEA /* InfoPlist.strings */,
 				EAF79C3D15D867730075AF47 /* chatview.html */,
@@ -1419,7 +1424,7 @@
 				503C6B8E17C097D800342F1B /* highlightbadge.png in Resources */,
 				503C6B8F17C097D800342F1B /* highlightbadge@2x.png in Resources */,
 				50C258EA17C8ED9D00F7BDF0 /* LightUI.bundle in Resources */,
-				50C258EB17C8ED9D00F7BDF0 /* DarkUI.bundle in Resources */,
+				50C258F017C8FFBA00F7BDF0 /* DarkUI.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1521,6 +1526,7 @@
 				50EDFF6317BEE16D00456E3E /* RCActionSheetButton.m in Sources */,
 				50EDFF6F17C049A700456E3E /* RCActionSheetButtonView.m in Sources */,
 				501E7CBB17C7D29E00BF61EC /* RCOpaqueHeaderView.m in Sources */,
+				50C258EE17C8F19E00F7BDF0 /* RCSwitch.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
