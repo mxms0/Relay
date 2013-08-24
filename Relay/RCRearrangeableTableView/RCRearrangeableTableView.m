@@ -139,7 +139,7 @@
 						CGRect bounds = [self rectForSection:idx.section];
 						CGFloat offy = (cell.frame.origin.y - bounds.origin.y)/cell.frame.size.height;
 						[rearrangeDelegate tableView:self movedCellFromIndex:idx toIndex:[NSIndexPath indexPathForRow:offy inSection:idx.section]];
-						[self reloadData];
+						[self reloadData]; // theiostream was here
 						isRearranging = NO;
 						return;
 					}

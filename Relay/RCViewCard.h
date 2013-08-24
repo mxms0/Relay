@@ -20,4 +20,5 @@
 - (id)initWithFrame:(CGRect)frame;
 - (void)findShadowAndDoStuffToIt;
 - (void)setLeftBarButtonItemEnabled:(BOOL)en;
+- (void)loadNavigationButtons;
 @end

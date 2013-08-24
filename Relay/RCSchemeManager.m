@@ -48,6 +48,7 @@ static id _managerInstance = nil;
 	NSString *absol = [[NSString alloc] initWithUTF8String:dir];
 	isDark = ([name hasPrefix:@"Dark"]);
 	currentThemeBundle = [[NSBundle alloc] initWithPath:absol];
+	[[RCChatController sharedController] themeChanged:nil];
 }
 
 - (id)imageNamed:(NSString *)image {

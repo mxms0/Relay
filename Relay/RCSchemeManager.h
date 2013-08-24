@@ -6,6 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "RCChatController.h"
 
 @interface RCSchemeManager : NSObject {
 	NSBundle *currentThemeBundle;

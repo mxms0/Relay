@@ -48,6 +48,7 @@
 
 - (void)drawRect:(CGRect)rect {
 	[super drawRect:rect];
+	
 	UIColor *textColor = UIColorFromRGB(0xcccccc);
 	UIColor *shadowColor = [UIColor blackColor];
 	UIColor *subtitleColor = UIColorFromRGB(0x999999);
@@ -73,19 +74,30 @@
 		textColor = UIColorFromRGB(0x666666);
 		shadowSize = CGSizeZero;
 	}
-	if (isSelected) {
-		bg = [[RCSchemeManager sharedInstance] imageNamed:@"net_selectedbg"];
+	
+	UIColor *seperatorColor = UIColorFromRGB(0x161618);
+	if (![[RCSchemeManager sharedInstance] isDark]) {
+		bg = nil;
+		[UIColorFromRGB(0xf0f0f0) set];
+		UIRectFill(rect);
+		seperatorColor = UIColorFromRGB(0xa6a6a8);
 	}
 	else {
-		bg = [[RCSchemeManager sharedInstance] imageNamed:@"net_deselectedbg"];
+		if (!isSelected) {
+			bg = [[RCSchemeManager sharedInstance] imageNamed:@"net_deselectedbg"];
+		}
+		else {
+			bg = [[RCSchemeManager sharedInstance] imageNamed:@"net_selectedbg"];
+		}
+		seperatorColor = UIColorFromRGB(0x161618);
 	}
 	
 	[bg drawInRect:rect];
-	if (isSelected) {
-		[UIColorFromRGB(0x161618) set];
+	if (isSelected || ![[RCSchemeManager sharedInstance] isDark]) {
+		[seperatorColor set];
 		UIRectFill(CGRectMake(0, rect.size.height-.5, rect.size.width, .5));
-		[UIColorFromRGB(0x2A2E37) set];
 	}
+	[UIColorFromRGB(0x2A2E37) set];
 	NSString *text = [net _description];
 	NSString *detail = [net server];
 	CGContextRef ctx = UIGraphicsGetCurrentContext();

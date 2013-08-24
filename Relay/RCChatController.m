@@ -101,6 +101,20 @@ static id _inst = nil;
 	[[NSNotificationCenter defaultCenter] postNotificationName:SETTINGS_CHANGED_KEY object:nil];
 }
 
+- (void)themeChanged:(id)notif {
+	[[chatView navigationBar] setNeedsDisplay];
+	[chatView setNeedsDisplay];
+	[chatView loadNavigationButtons];
+	[[infoView navigationBar] setNeedsDisplay];
+	[infoView loadNavigationButtons];
+	[infoView setNeedsDisplay];
+	[[bottomView navigationBar] setNeedsDisplay];
+	[bottomView loadNavigationButtons];
+	[bottomView setNeedsDisplay];
+	[bottomView reloadData];
+	[_bar setNeedsDisplay];
+}
+
 - (void)chatViewTapped {
 	if ([self isShowingChatListView]) {
 		[self closeWithDuration:0.3];

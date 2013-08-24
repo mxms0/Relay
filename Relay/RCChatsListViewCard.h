@@ -19,4 +19,5 @@
 }
 @property (nonatomic, readonly) BOOL isRearranging;
 - (void)scrollToTop;
+- (void)reloadData;
 @end

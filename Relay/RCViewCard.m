@@ -32,29 +32,36 @@
 			[shdw setContents:(id)mfs.CGImage];
 			[shdw setShouldRasterize:YES];
 			[shdw setHidden:YES];
-			[shdw setOpacity:0.5];
+			[shdw setOpacity:0.7];
 			[shdw setFrame:CGRectMake(-mfs.size.width+3, 0, mfs.size.width, self.frame.size.height)];
 			[self.layer insertSublayer:shdw atIndex:0];
 			[shdw release];
 		}
 		if ([NSStringFromClass([self class]) isEqualToString:@"RCViewCard"]){
-			RCBarButtonItem *bs = [[RCBarButtonItem alloc] init];
-			[bs setImage:[[RCSchemeManager sharedInstance] imageNamed:@"hamburgericon"] forState:UIControlStateNormal];
-			[bs setFrame:CGRectMake(1, (isiOS7 ? 20 : 0), 50, 45)];
-			[bs setTag:RCChannelListButtonTag];
-			[bs addTarget:[RCChatController sharedController] action:@selector(menuButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-			[navigationBar addSubview:bs];
-			[bs release];
-			RCBarButtonItem *cs = [[RCBarButtonItem alloc] init];
-			[cs setImage:[[RCSchemeManager sharedInstance] imageNamed:@"menubutton"] forState:UIControlStateNormal];
-			[cs setFrame:CGRectMake(frame.size.width - 50, (isiOS7 ? 20 : 0), 50, 45)];
-			[cs setTag:RCUserListButtonTag];
-			[cs addTarget:[RCChatController sharedController] action:@selector(pushUserListWithDefaultDuration) forControlEvents:UIControlEventTouchUpInside];
-			[navigationBar addSubview:cs];
-			[cs release];
+			[self loadNavigationButtons];
 		}
 	}
     return self;
+}
+
+- (void)loadNavigationButtons {
+	for (UIView *v in [[navigationBar.subviews copy] autorelease]) {
+		[v removeFromSuperview];
+	}
+	RCBarButtonItem *bs = [[RCBarButtonItem alloc] init];
+	[bs setImage:[[RCSchemeManager sharedInstance] imageNamed:@"hamburgericon"] forState:UIControlStateNormal];
+	[bs setFrame:CGRectMake(1, (isiOS7 ? 20 : 0), 50, 45)];
+	[bs setTag:RCChannelListButtonTag];
+	[bs addTarget:[RCChatController sharedController] action:@selector(menuButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+	[navigationBar addSubview:bs];
+	[bs release];
+	RCBarButtonItem *cs = [[RCBarButtonItem alloc] init];
+	[cs setImage:[[RCSchemeManager sharedInstance] imageNamed:@"menubutton"] forState:UIControlStateNormal];
+	[cs setFrame:CGRectMake(self.frame.size.width - 50, (isiOS7 ? 20 : 0), 50, 45)];
+	[cs setTag:RCUserListButtonTag];
+	[cs addTarget:[RCChatController sharedController] action:@selector(pushUserListWithDefaultDuration) forControlEvents:UIControlEventTouchUpInside];
+	[navigationBar addSubview:cs];
+	[cs release];
 }
 
 -(void)setCenter:(CGPoint)ct{

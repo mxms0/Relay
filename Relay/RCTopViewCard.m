@@ -14,11 +14,6 @@
 
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
-		RCBarButtonItem *bt = [[RCBarButtonItem alloc] initWithFrame:CGRectMake(2, 0, 50, (isiOS7 ? 40 : 0) + 45)];
-		[bt setImage:[[RCSchemeManager sharedInstance] imageNamed:@"backarrow"] forState:UIControlStateNormal];
-		[bt addTarget:[RCChatController sharedController] action:@selector(popUserListWithDefaultDuration) forControlEvents:UIControlEventTouchUpInside];
-		[navigationBar addSubview:bt];
-		[bt release];
 		tableView = [[RCSuperSpecialTableView alloc] initWithFrame:CGRectMake(0, navigationBar.frame.size.height, frame.size.width, frame.size.height-navigationBar.frame.size.height)];
 		[tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 		[tableView setBackgroundColor:[UIColor colorWithRed:53/255.0f green:53/255.0f blue:56/255.0f alpha:1.0f]];
@@ -31,8 +26,20 @@
 		[self addGestureRecognizer:panr];
 		[panr release];
 		currentChan = nil;
+		[self loadNavigationButtons];
 	}
 	return self;
+}
+
+- (void)loadNavigationButtons {
+	for (UIView *v in [[navigationBar.subviews copy] autorelease]) {
+		[v removeFromSuperview];
+	}
+	RCBarButtonItem *bt = [[RCBarButtonItem alloc] initWithFrame:CGRectMake(2, 0, 50, (isiOS7 ? 40 : 0) + 45)];
+	[bt setImage:[[RCSchemeManager sharedInstance] imageNamed:@"backarrow"] forState:UIControlStateNormal];
+	[bt addTarget:[RCChatController sharedController] action:@selector(popUserListWithDefaultDuration) forControlEvents:UIControlEventTouchUpInside];
+	[navigationBar addSubview:bt];
+	[bt release];
 }
 
 - (void)findShadowAndDoStuffToIt {
