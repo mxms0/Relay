@@ -11,6 +11,7 @@
 
 - (id)initWithTitle:(NSString *)_title delegate:(id <UIActionSheetDelegate>)_delegate cancelButtonTitle:(NSString *)cancelButtonTitle destructiveButtonTitle:(NSString *)destructiveButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ... {
 	if ((self = [super init])) {
+		self.layer.zPosition = 100001;
 		[self setBackgroundColor:[UIColor clearColor]];
 		delegate = [_delegate retain];
 		buttons = [[NSMutableArray alloc] init];

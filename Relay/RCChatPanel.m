@@ -17,7 +17,6 @@ static NSString *template = nil;
 	if ((self = [super init])) {
 		[self setChannel:chan];
 		self.opaque = NO;
-		[self setHidden:YES];
 		[self setBackgroundColor:[UIColor clearColor]];
 		if (!template) {
 			template = [[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"chatview" ofType:@"html"] encoding:NSUTF8StringEncoding error:nil] retain];
@@ -68,14 +67,19 @@ static NSString *template = nil;
 		[preloadPool release];
 		preloadPool = nil;
         // FIX THIS WITH SCHEMES
-        [webView stringByEvaluatingJavaScriptFromString:@"switchUI('dark');"];
+		if ([[RCSchemeManager sharedInstance] isDark])
+			[self switchToUITheme:@"DarkUI"];
+		else {
+			[self switchToUITheme:@"LightUI"];
+		}
 	}
 }
 
+- (void)switchToUITheme:(NSString *)uiTheme {
+	[self stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"switchUI('%@')", uiTheme]];
+}
+
 - (void)layoutMessage:(RCMessageFormatter *)ms {
-	if (self.hidden) {
-		self.hidden = NO;
-	}
 	if (!webViewLoaded) {
 		@synchronized(preloadPool) {
 #if LOGALL

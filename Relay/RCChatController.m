@@ -114,6 +114,11 @@ static id _inst = nil;
 	[bottomView setNeedsDisplay];
 	[bottomView reloadData];
 	[_bar setNeedsDisplay];
+	for (RCNetwork *net in [[RCNetworkManager sharedNetworkManager] networks]) {
+		for (RCChannel *chan in [net _channels]) {
+			[[chan panel] switchToUITheme:[notif object]];
+		}
+	}
 }
 
 - (void)chatViewTapped {
@@ -808,6 +813,7 @@ static RCNetwork *currentNetwork = nil;
 	currentPanel = panel;
 	[infoView setChannel:chan];
 	[chatView insertSubview:panel atIndex:4];
+	[panel setNeedsDisplay]; // consider doing this at a different time.
 	[((RCChatNavigationBar *)[chatView navigationBar]) setTitle:[chan channelName]];
 	NSString *sub = [net _description];
 	if (![[net server] isEqualToString:[net _description]])

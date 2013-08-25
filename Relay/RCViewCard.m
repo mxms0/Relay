@@ -33,7 +33,6 @@
 			[shdw setShouldRasterize:YES];
 			[shdw setHidden:YES];
 			[shdw setOpacity:0.7];
-			[shdw setZPosition:-10000];
 			[shdw setFrame:CGRectMake(-mfs.size.width+3, 0, mfs.size.width, self.frame.size.height)];
 			[self.layer insertSublayer:shdw atIndex:0];
 			[shdw release];
