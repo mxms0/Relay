@@ -8,9 +8,24 @@
 #import "RCNetwork.h"
 #import "NSData+Instance.h"
 #import <objc/runtime.h>
+#include <netdb.h>
+
+SSL_CTX *RCInitContext(void) {
+	SSL_METHOD *meth;
+	SSL_CTX *_ctx;
+	OpenSSL_add_all_algorithms();
+	SSL_load_error_strings();
+	meth = (SSL_METHOD *)SSLv23_client_method();
+	_ctx = SSL_CTX_new(meth);
+	if (_ctx == NULL) {
+		NSLog(@"Error allocating SSL context.");
+		//	ERR_print_errors(stderr);
+	}
+	return _ctx;
+}
 
 @implementation RCNetwork
-@synthesize prefix, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, COL, _channels, useNick, _nicknames, shouldRequestSPass, shouldRequestNPass, listCallback, expanded, uUID, isOper, isAway, connectCommands, tagged;
+@synthesize prefix, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, _channels, useNick, _nicknames, shouldRequestSPass, shouldRequestNPass, listCallback, expanded, uUID, isOper, isAway, connectCommands, tagged, delegate, channelDelegate;
 
 - (id)init {
 	if ((self = [super init])) {
@@ -37,7 +52,6 @@
 	[network setServer:[info objectForKey:SERVR_ADDR_KEY]];
 	[network setPort:[[info objectForKey:PORT_KEY] intValue]];
 	[network setUseSSL:[[info objectForKey:SSL_KEY] boolValue]];
-	[network setCOL:[[info objectForKey:COL_KEY] boolValue]];
 	[network setUUID:[info objectForKey:UUID_KEY]];
 	[network setExpanded:[[info objectForKey:EXPANDED_KEY] boolValue]];
 //	if ([[info objectForKey:S_PASS_KEY] boolValue]) {
@@ -75,7 +89,6 @@
 	[newNet setRealname:realname];
 	[newNet setPort:port];
 	[newNet setUseSSL:useSSL];
-	[newNet setCOL:COL];
 	[newNet setSpass:spass];
 	[newNet setNpass:npass];
 	for (RCChannel *chan in _channels) {
@@ -339,35 +352,39 @@
 #pragma mark - SOCKET STUFF
 
 - (void)connect {
-	if (shouldRequestNPass || shouldRequestSPass) {
-//		RCPasswordRequestAlertType type = 0;
-//		if (shouldRequestSPass) type = RCPasswordRequestAlertTypeServer;
-//		else if (shouldRequestNPass) type = RCPasswordRequestAlertTypeNickServ;
-//		RCPasswordRequestAlert *rs = [[RCPasswordRequestAlert alloc] initWithNetwork:self type:type];
-//		[rs setTag:RCALERR_INCSPASS];
-//		[rs show];
-//		[rs release];
-		return;
-	}
-	[self performSelectorInBackground:@selector(_connect) withObject:nil];
-}
-
-- (void)_connect {
 	[disconnectTimer invalidate];
 	disconnectTimer = nil;
-	if (status == RCSocketStatusConnecting || status == RCSocketStatusConnected) return;
+	if (status == RCSocketStatusConnected || status == RCSocketStatusConnecting) return;
 	status = RCSocketStatusConnecting;
-	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
 	writebuf = [[NSMutableString alloc] init];
 	rcache = [[NSMutableData alloc] init];
 	isRegistered = NO;
 	self.useNick = nick;
-	RCChannel *chan = [self consoleChannel];
-	if (chan) {
-		RCMessage *message = [self temporaryMessageFromString:[NSString stringWithFormat:@"Connecting to %@ on port %d", server, port]];
-		[chan recievedMessage:message from:@"" time:nil type:RCMessageTypeNormal];
+	
+	sockfd = [self _connectSocket];
+	if (sockfd < 0) {
+		return;
 	}
-	sockfd = [[RCSocket sharedSocket] connectToAddr:server withSSL:useSSL andPort:port fromNetwork:self];
+	
+	[self.delegate networkConnected:self];
+
+	dispatch_source_t readSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, sockfd, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
+	dispatch_source_set_event_handler(readSource, ^ {
+		[self read];
+	});
+	
+	dispatch_source_t writeSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_WRITE, sockfd, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
+	
+	dispatch_source_set_event_handler(writeSource, ^ {
+		if (self.hasPendingBites)
+			[self write];
+	});
+	
+	dispatch_resume(readSource);
+	dispatch_resume(writeSource);
+	
 	[self sendMessage:@"CAP LS" canWait:NO];
 	if ([spass length] > 0) {
 		[self sendMessage:[@"PASS " stringByAppendingString:spass] canWait:NO];
@@ -378,7 +395,48 @@
 	}
 	[self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
 	[self sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
-	[p drain];
+	[pool drain];
+}
+
+- (int)_connectSocket {
+	struct hostent *host;
+	struct sockaddr_in addr;
+	if ((host = gethostbyname([server UTF8String])) == NULL) {
+		[self.delegate network:self connectionFailed:RCConnectionFailureObtainingHost];
+		// ERROR OBTAINING HOST
+		return -1;
+	}
+	int _sfd = socket(AF_INET, SOCK_STREAM, 0);
+	if (_sfd < 0) {
+		[self.delegate network:self connectionFailed:RCConnectionFailureEstablishingSocket];
+		// ERROR ESTABLISHING SOCKET(?)
+		return -1;
+	}
+	int set = 1;
+	setsockopt(_sfd, SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(int));
+	bzero(&addr, sizeof(addr));
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons(port);
+	addr.sin_addr.s_addr = *(in_addr_t *)(host->h_addr);
+	if (connect(_sfd, (struct sockaddr *)&addr, sizeof(addr)) != 0) {
+		[self.delegate network:self connectionFailed:RCConnectionFailureConnecting];
+		// ERROR CONNECTING
+		return -1;
+	}
+	if (useSSL) {
+		SSL_library_init();
+		SSL_CTX *rCTX = RCInitContext();
+		ctx = rCTX;
+		ssl = SSL_new(ctx);
+		SSL_set_fd(ssl, _sfd);
+		if (SSL_connect(ssl) == -1) {
+			// ERROR CONNECTING (VIA SSL?)
+			[self.delegate network:self connectionFailed:RCConnectionFailureConnectingViaSSL];
+			return -1;
+		}
+	}
+
+	return _sfd;
 }
 
 - (RCMessage *)temporaryMessageFromString:(NSString *)str {
@@ -393,13 +451,14 @@
 }
 
 - (BOOL)read {
+	NSLog(@"gds reading..");
 	static BOOL isReading;
 	if (sockfd == -1) return NO;
 	if (isReading) return YES;
 	isReading = YES;
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	char buf[4097];
-	int rc = 0;
+	ssize_t rc = 0;
 	if (useSSL)
 		rc = SSL_read(ssl, buf, 1024);
 	else

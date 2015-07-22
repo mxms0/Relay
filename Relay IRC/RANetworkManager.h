@@ -7,8 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "RCNetwork.h"
 
-@class RCNetwork;
 @interface RANetworkManager : NSObject {
 	BOOL isBG;
 	BOOL saving;

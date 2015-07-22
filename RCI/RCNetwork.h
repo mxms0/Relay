@@ -10,12 +10,55 @@
 #import "RCConsoleChannel.h"
 #import "RCPMChannel.h"
 #import "RCMessage.h"
-#import "RCSocket.h"
 #import <objc/message.h>
+#include "openssl/ssl.h"
+#include "openssl/err.h"
 #import "NSString+Utils.h"
 
+#undef LOGALL
+#define LOGALL 1
+
+typedef NS_ENUM(NSInteger, RCLineType) {
+	RCLineGlobal,
+	RCLineKill,
+	RCLineZap,
+	RCLineOperator,
+	RClineQ
+};
+
+typedef NS_ENUM(NSInteger, RCConnectionFailure) {
+	RCConnectionFailureEstablishingSocket,
+	RCConnectionFailureObtainingHost,
+	RCConnectionFailureConnecting,
+	RCConnectionFailureConnectingViaSSL
+};
+
+@protocol RCChannelDelegate <NSObject>
+- (void)channel:(RCChannel *)channel userJoined:(NSString *)user;
+- (void)channel:(RCChannel *)channel userParted:(NSString *)user;
+- (void)channel:(RCChannel *)channel userKicked:(NSString *)user;
+- (void)channel:(RCChannel *)channel userBanned:(NSString *)user;
+- (void)channel:(RCChannel *)channel userModeChanged:(NSString *)user modes:(int)modes;
+- (void)channel:(RCChannel *)channel receivedMessage:(RCMessage *)message from:(NSString *)from time:(time_t)time;
+
+@end
+
+@protocol RCNetworkDelegate <NSObject>
+- (void)networkConnected:(RCNetwork *)network;
+- (void)networkDisconnected:(RCNetwork *)network;
+- (void)network:(RCNetwork *)network connectionFailed:(RCConnectionFailure)fail;
+- (void)network:(RCNetwork *)network serverSentLine:(RCLineType)lineType;
+
+@end
+
+typedef enum RCSocketStatus {
+	RCSocketStatusConnecting,
+	RCSocketStatusConnected,
+	RCSocketStatusError,
+	RCSocketStatusClosed
+} RCSocketStatus;
+
 @interface RCNetwork : NSObject <UIAlertViewDelegate> {
-	@public
 	NSMutableArray *_channels;
 	NSMutableArray *tmpChannels;
 	NSMutableArray *_nicknames;
@@ -68,7 +111,6 @@
 @property (nonatomic, assign) int port;
 @property (nonatomic, assign) BOOL isRegistered;
 @property (nonatomic, assign) BOOL useSSL;
-@property (nonatomic, assign) BOOL COL;
 @property (nonatomic, assign) BOOL shouldRequestSPass;
 @property (nonatomic, assign) BOOL shouldRequestNPass;
 @property (nonatomic, assign) id listCallback;
@@ -76,6 +118,8 @@
 @property (nonatomic, assign) BOOL isOper;
 @property (nonatomic, assign) BOOL isAway;
 @property (nonatomic, assign) BOOL tagged;
+@property (nonatomic, assign) id <RCNetworkDelegate> delegate;
+@property (nonatomic, assign) id <RCChannelDelegate> channelDelegate;
 + (RCNetwork *)networkWithInfoDictionary:(NSDictionary *)dict;
 - (RCNetwork *)uniqueCopy;
 - (RCChannel *)channelWithChannelName:(NSString *)chan;

@@ -81,23 +81,6 @@
 	#define MARK CMLog(@"%s", __PRETTY_FUNCTION__);
 	#define BACKTRACE CMLog(@"%@", [NSThread callStackSymbols]);
 
-	typedef enum RCMessageType {
-		RCMessageTypeAction = 0,
-		RCMessageTypeNormal,
-		RCMessageTypeNotice,
-		RCMessageTypeKick,
-		RCMessageTypeBan,
-		RCMessageTypePart,
-		RCMessageTypeJoin,
-		RCMessageTypeTopic,
-		RCMessageTypeQuit,
-		RCMessageTypeMode,
-		RCMessageTypeError,
-		RCMessageTypeEvent,
-		RCMessageTypeNormalE,
-		RCMessageTypeNormalE2
-	} RCMessageType;
-
 	typedef enum RCPasswordRequestAlertType {
 		RCPasswordRequestAlertTypeNickServ,
 		RCPasswordRequestAlertTypeServer

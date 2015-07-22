@@ -26,8 +26,6 @@
 		5021D4541B5DD75D006D7F85 /* RANetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5021D4531B5DD75D006D7F85 /* RANetworkManager.m */; };
 		5021D4591B5E0BF4006D7F85 /* RCNetwork.h in Headers */ = {isa = PBXBuildFile; fileRef = 5021D4551B5E0BF4006D7F85 /* RCNetwork.h */; };
 		5021D45A1B5E0BF4006D7F85 /* RCNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 5021D4561B5E0BF4006D7F85 /* RCNetwork.m */; };
-		5021D45B1B5E0BF4006D7F85 /* RCSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 5021D4571B5E0BF4006D7F85 /* RCSocket.h */; };
-		5021D45C1B5E0BF4006D7F85 /* RCSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 5021D4581B5E0BF4006D7F85 /* RCSocket.m */; };
 		5021D4631B5E0BFF006D7F85 /* RCChannel.h in Headers */ = {isa = PBXBuildFile; fileRef = 5021D45D1B5E0BFF006D7F85 /* RCChannel.h */; };
 		5021D4641B5E0BFF006D7F85 /* RCChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 5021D45E1B5E0BFF006D7F85 /* RCChannel.m */; };
 		5021D4651B5E0BFF006D7F85 /* RCPMChannel.h in Headers */ = {isa = PBXBuildFile; fileRef = 5021D45F1B5E0BFF006D7F85 /* RCPMChannel.h */; };
@@ -129,8 +127,6 @@
 		5021D4531B5DD75D006D7F85 /* RANetworkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RANetworkManager.m; sourceTree = "<group>"; };
 		5021D4551B5E0BF4006D7F85 /* RCNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCNetwork.h; sourceTree = "<group>"; };
 		5021D4561B5E0BF4006D7F85 /* RCNetwork.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCNetwork.m; sourceTree = "<group>"; };
-		5021D4571B5E0BF4006D7F85 /* RCSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCSocket.h; sourceTree = "<group>"; };
-		5021D4581B5E0BF4006D7F85 /* RCSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCSocket.m; sourceTree = "<group>"; };
 		5021D45D1B5E0BFF006D7F85 /* RCChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCChannel.h; sourceTree = "<group>"; };
 		5021D45E1B5E0BFF006D7F85 /* RCChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCChannel.m; sourceTree = "<group>"; };
 		5021D45F1B5E0BFF006D7F85 /* RCPMChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCPMChannel.h; sourceTree = "<group>"; };
@@ -295,8 +291,6 @@
 				5021D4621B5E0BFF006D7F85 /* RCConsoleChannel.m */,
 				5021D4551B5E0BF4006D7F85 /* RCNetwork.h */,
 				5021D4561B5E0BF4006D7F85 /* RCNetwork.m */,
-				5021D4571B5E0BF4006D7F85 /* RCSocket.h */,
-				5021D4581B5E0BF4006D7F85 /* RCSocket.m */,
 				5021D4341B5DD6B7006D7F85 /* Supporting Files */,
 			);
 			path = RCI;
@@ -338,7 +332,6 @@
 				5021D4591B5E0BF4006D7F85 /* RCNetwork.h in Headers */,
 				5021D4711B5E0CB7006D7F85 /* RCMessageConstruct.h in Headers */,
 				5021D47D1B5E0CD1006D7F85 /* NSMutableAttributedString+RCAdditions.h in Headers */,
-				5021D45B1B5E0BF4006D7F85 /* RCSocket.h in Headers */,
 				5021D4371B5DD6B7006D7F85 /* RCI.h in Headers */,
 				5021D4751B5E0CC5006D7F85 /* NSString+IRCStringSupport.h in Headers */,
 				5021D4671B5E0BFF006D7F85 /* RCConsoleChannel.h in Headers */,
@@ -544,7 +537,6 @@
 				5021D4761B5E0CC5006D7F85 /* NSString+IRCStringSupport.m in Sources */,
 				5021D45A1B5E0BF4006D7F85 /* RCNetwork.m in Sources */,
 				5021D4681B5E0BFF006D7F85 /* RCConsoleChannel.m in Sources */,
-				5021D45C1B5E0BF4006D7F85 /* RCSocket.m in Sources */,
 				5021D47E1B5E0CD1006D7F85 /* NSMutableAttributedString+RCAdditions.m in Sources */,
 				5021D47C1B5E0CD1006D7F85 /* NSData+Instance.m in Sources */,
 				5021D48A1B5E0CF4006D7F85 /* RCMessage.m in Sources */,
@@ -687,6 +679,7 @@
 				CLANG_ENABLE_OBJC_ARC = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = NO;
 				GCC_WARN_UNDECLARED_SELECTOR = NO;
+				HEADER_SEARCH_PATHS = "./**";
 				INFOPLIST_FILE = "Relay IRC/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -700,6 +693,7 @@
 				CLANG_ENABLE_OBJC_ARC = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = NO;
 				GCC_WARN_UNDECLARED_SELECTOR = NO;
+				HEADER_SEARCH_PATHS = "./**";
 				INFOPLIST_FILE = "Relay IRC/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -847,6 +841,7 @@
 				5021D41E1B5DCF38006D7F85 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		5021D41F1B5DCF38006D7F85 /* Build configuration list for PBXNativeTarget "Relay IRCTests" */ = {
 			isa = XCConfigurationList;
@@ -855,6 +850,7 @@
 				5021D4211B5DCF38006D7F85 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		5021D44B1B5DD6B7006D7F85 /* Build configuration list for PBXNativeTarget "RCI" */ = {
 			isa = XCConfigurationList;
@@ -863,6 +859,7 @@
 				5021D44D1B5DD6B7006D7F85 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		5021D44F1B5DD6B7006D7F85 /* Build configuration list for PBXNativeTarget "RCITests" */ = {
 			isa = XCConfigurationList;
@@ -871,6 +868,7 @@
 				5021D4511B5DD6B7006D7F85 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -10,15 +10,6 @@
 #import "NSString+Utils.h"
 #import "RCMessageConstruct.h"
 
-@protocol RCChannelChatDelegate <NSObject>
-
-
-@end
-
-@protocol RCChannelUserListDelegate <NSObject>
-
-@end
-
 @class RCNetwork, RCChannelCell, RCMessage;
 @interface RCChannel : NSObject {
 @public

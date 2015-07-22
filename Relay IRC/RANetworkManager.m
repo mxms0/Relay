@@ -119,10 +119,8 @@ static NSMutableArray *networks = nil;
 			return;
 		}
 		for (NSDictionary *_info in nets) {
-			[self ircNetworkWithInfo:_info isNew:NO];
-		}
-		for (RCNetwork *net in networks) {
-			if ([net COL]) [net connect];
+			
+//			[self ircNetworkWithInfo:_info isNew:NO];
 		}
 	}
 //	[self jumpToFirstNetworkAndConsole];
@@ -162,8 +160,8 @@ static NSMutableArray *networks = nil;
 	}
 	[dict setObject:sav forKey:@"0_NSO"];
 	[sav release];
-	NSString *error;
-	NSData *saveData = [NSPropertyListSerialization dataFromPropertyList:dict format:NSPropertyListBinaryFormat_v1_0 errorDescription:&error];
+	NSError *error = nil;;
+	NSData *saveData = [NSPropertyListSerialization dataWithPropertyList:dict format:NSPropertyListBinaryFormat_v1_0 options:0 error:&error];
 	if (![saveData writeToFile:[self networkPreferencesPath] atomically:NO]) {
 		NSLog(@"Couldn't save.. :(%@)", error);
 	}

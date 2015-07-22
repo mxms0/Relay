@@ -43,8 +43,6 @@
 				NSArray *subArray = [comps subarrayWithRange:NSMakeRange(i, [comps count] - i)];
 				NSString *compose = [[subArray componentsJoinedByString:@" "] substringFromIndex:1];
 				[properComponents addObject:compose];
-				//ALREADY VERIFIED TO HAS COLOIN
-				//MY COLON HURTS
 				break;
 			}
 		}

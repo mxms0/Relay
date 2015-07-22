@@ -61,7 +61,7 @@ static uint32_t internalColors[] = {
 	int pos = 0;
 	NSData *d = [message dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:YES];
 	const char *buf = d.bytes;
-	int32_t len = [d length];
+	int32_t len = (int32_t)[d length];
 	UChar32 codepoint;
 	int ii = 0; // in index
 	while (ii < len) {
