@@ -18,19 +18,17 @@ static NSMutableArray *networks = nil;
 //	[self addNetwork:network];
 //}
 //
-//- (void)addNetwork:(RCNetwork *)_net {
-//	for (RCNetwork *net in networks) {
-//		if ([[net uUID] isEqualToString:[_net uUID]]) {
-//			return;
-//		}
-//	}
-//	if (![_net consoleChannel]) [_net addChannel:CONSOLECHANNEL join:NO];
-//	int original = [networks count];
-//	[networks insertObject:_net atIndex:[networks count]];
-//	// Why the fuck do I have to do this
-//	if (original == 0) [[RCChatController sharedController] selectChannel:CONSOLECHANNEL fromNetwork:_net];
-//	if (!isSettingUp) [self saveNetworks];
-//}
+- (void)addNetwork:(RCNetwork *)_net {
+	for (RCNetwork *net in networks) {
+		if ([[net uUID] isEqualToString:[_net uUID]]) {
+			return;
+		}
+	}
+	@synchronized(networks) {
+		[networks addObject:_net];
+	}
+	if (!isSettingUp) [self saveNetworks];
+}
 
 //- (BOOL)replaceNetwork:(RCNetwork *)orig withNetwork:(RCNetwork *)anew {
 //	for (int i = 0; i < [networks count]; i++) {
@@ -118,10 +116,10 @@ static NSMutableArray *networks = nil;
 			isSettingUp = NO;
 			return;
 		}
-		for (NSDictionary *_info in nets) {
-			
+//		for (NSDictionary *_info in nets) {
+//			
 //			[self ircNetworkWithInfo:_info isNew:NO];
-		}
+//		}
 	}
 //	[self jumpToFirstNetworkAndConsole];
 //	reloadNetworks();

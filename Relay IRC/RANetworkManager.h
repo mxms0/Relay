@@ -23,13 +23,13 @@
 //- (void)jumpToFirstNetworkAndConsole;
 //- (void)receivedMemoryWarning;
 //- (void)dispatchChanges;
-//- (void)addNetwork:(RCNetwork *)net;
+- (void)addNetwork:(RCNetwork *)net;
 //- (void)saveSettingsDictionary:(NSDictionary *)dict dispatchChanges:(BOOL)n;
 //- (NSDictionary *)settingsDictionary;
 //- (id)valueForSetting:(NSString *)set;
 //- (void)setValue:(id)val forSetting:(NSString *)set;
 //- (NSString *)networkPreferencesPath;
-//- (NSMutableArray *)networks;
+- (NSMutableArray *)networks;
 //- (void)removeNet:(RCNetwork *)net;
 //- (void)saveNetworks;
 - (void)unpack;

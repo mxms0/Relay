@@ -83,7 +83,6 @@ typedef enum RCSocketStatus {
 	BOOL saslWasSuccessful;
 	BOOL isRegistered;
 	BOOL useSSL;
-	BOOL COL;
 	BOOL canSend;
 	BOOL expanded;
 	BOOL shouldRequestSPass;
@@ -93,10 +92,13 @@ typedef enum RCSocketStatus {
     BOOL isAway;
 	BOOL tagged;
 	id listCallback;
+	dispatch_source_t readSource;
+	dispatch_source_t writeSource;
+	
 	NSDictionary *prefix;
 }
 @property (nonatomic, retain) NSDictionary *prefix;
-@property (nonatomic, readonly) NSMutableArray *_channels;
+@property (nonatomic, readonly) NSMutableArray *channels;
 @property (nonatomic, readonly) NSMutableArray *_nicknames;
 @property (nonatomic, retain) NSString *sDescription;
 @property (nonatomic, retain) NSString *server;

@@ -25,7 +25,7 @@ SSL_CTX *RCInitContext(void) {
 }
 
 @implementation RCNetwork
-@synthesize prefix, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, _channels, useNick, _nicknames, shouldRequestSPass, shouldRequestNPass, listCallback, expanded, uUID, isOper, isAway, connectCommands, tagged, delegate, channelDelegate;
+@synthesize prefix, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, channels, useNick, _nicknames, shouldRequestSPass, shouldRequestNPass, listCallback, expanded, uUID, isOper, isAway, connectCommands, tagged, delegate, channelDelegate;
 
 - (id)init {
 	if ((self = [super init])) {
@@ -149,7 +149,6 @@ SSL_CTX *RCInitContext(void) {
 			(expanded ? (id)kCFBooleanTrue : (id)kCFBooleanFalse), EXPANDED_KEY,
 			[NSNumber numberWithInt:port], PORT_KEY,
 			[NSNumber numberWithBool:useSSL], SSL_KEY,
-			[NSNumber numberWithBool:COL], COL_KEY,
 			chanArray, CHANNELS_KEY,
 			nil];
 	// why don't i just use +[NSNumber numberWithBool:(BOOL)([pass length] > 0)] ..
@@ -370,12 +369,12 @@ SSL_CTX *RCInitContext(void) {
 	
 	[self.delegate networkConnected:self];
 
-	dispatch_source_t readSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, sockfd, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
+	readSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, sockfd, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
 	dispatch_source_set_event_handler(readSource, ^ {
 		[self read];
 	});
 	
-	dispatch_source_t writeSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_WRITE, sockfd, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
+	writeSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_WRITE, sockfd, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
 	
 	dispatch_source_set_event_handler(writeSource, ^ {
 		if (self.hasPendingBites)
@@ -635,7 +634,16 @@ SSL_CTX *RCInitContext(void) {
 
 - (void)disconnectCleanupWithMessage:(NSString *)msg {
 	if (status == RCSocketStatusClosed) return;
+	
 	status = RCSocketStatusClosed;
+	
+	dispatch_suspend(readSource);
+	dispatch_suspend(writeSource);
+	dispatch_release(readSource);
+	dispatch_release(writeSource);
+	readSource = nil;
+	writeSource = nil;
+	
 	close(sockfd);
 	[rcache release];
 	rcache = nil;

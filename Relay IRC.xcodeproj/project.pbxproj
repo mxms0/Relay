@@ -9,8 +9,7 @@
 /* Begin PBXBuildFile section */
 		5021D3FF1B5DCF37006D7F85 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5021D3FE1B5DCF37006D7F85 /* main.m */; };
 		5021D4021B5DCF38006D7F85 /* RAAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5021D4011B5DCF38006D7F85 /* RAAppDelegate.m */; };
-		5021D4051B5DCF38006D7F85 /* RAViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5021D4041B5DCF38006D7F85 /* RAViewController.m */; };
-		5021D4081B5DCF38006D7F85 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5021D4061B5DCF38006D7F85 /* Main.storyboard */; };
+		5021D4051B5DCF38006D7F85 /* RAMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5021D4041B5DCF38006D7F85 /* RAMainViewController.m */; };
 		5021D40A1B5DCF38006D7F85 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5021D4091B5DCF38006D7F85 /* Images.xcassets */; };
 		5021D4191B5DCF38006D7F85 /* Relay_IRCTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5021D4181B5DCF38006D7F85 /* Relay_IRCTests.m */; };
 		5021D4231B5DD0DD006D7F85 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5021D4221B5DD0DD006D7F85 /* Default-568h@2x.png */; };
@@ -51,6 +50,16 @@
 		5021D48C1B5E0DA7006D7F85 /* openssl in Resources */ = {isa = PBXBuildFile; fileRef = 5021D48B1B5E0DA7006D7F85 /* openssl */; };
 		5021D48F1B5E1E47006D7F85 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5021D48D1B5E1E47006D7F85 /* libcrypto.a */; };
 		5021D4901B5E1E47006D7F85 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5021D48E1B5E1E47006D7F85 /* libssl.a */; };
+		50F418591B60432E008492F6 /* RAChatView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50F418581B60432E008492F6 /* RAChatView.m */; };
+		50F4185C1B604BA7008492F6 /* RATableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50F4185B1B604BA7008492F6 /* RATableView.m */; };
+		50F4185F1B605164008492F6 /* RATableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50F4185E1B605164008492F6 /* RATableHeaderView.m */; };
+		50F418621B605B9E008492F6 /* ios7_mainnavbarbg.png in Resources */ = {isa = PBXBuildFile; fileRef = 50F418601B605B9E008492F6 /* ios7_mainnavbarbg.png */; };
+		50F418631B605B9E008492F6 /* ios7_mainnavbarbg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50F418611B605B9E008492F6 /* ios7_mainnavbarbg@2x.png */; };
+		50F418661B605D4E008492F6 /* RANavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 50F418651B605D4E008492F6 /* RANavigationBar.m */; };
+		50F418691B606089008492F6 /* RANavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50F418681B606089008492F6 /* RANavigationController.m */; };
+		50F4186C1B60825C008492F6 /* RANavigationBarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 50F4186B1B60825C008492F6 /* RANavigationBarButton.m */; };
+		50F4186F1B609126008492F6 /* RANetworkSelectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50F4186E1B609126008492F6 /* RANetworkSelectionView.m */; };
+		50F418721B609198008492F6 /* RAChatController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50F418711B609198008492F6 /* RAChatController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -104,9 +113,8 @@
 		5021D3FE1B5DCF37006D7F85 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		5021D4001B5DCF38006D7F85 /* RAAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RAAppDelegate.h; sourceTree = "<group>"; };
 		5021D4011B5DCF38006D7F85 /* RAAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RAAppDelegate.m; sourceTree = "<group>"; };
-		5021D4031B5DCF38006D7F85 /* RAViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RAViewController.h; sourceTree = "<group>"; };
-		5021D4041B5DCF38006D7F85 /* RAViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RAViewController.m; sourceTree = "<group>"; };
-		5021D4071B5DCF38006D7F85 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		5021D4031B5DCF38006D7F85 /* RAMainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RAMainViewController.h; sourceTree = "<group>"; };
+		5021D4041B5DCF38006D7F85 /* RAMainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RAMainViewController.m; sourceTree = "<group>"; };
 		5021D4091B5DCF38006D7F85 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		5021D4121B5DCF38006D7F85 /* Relay IRCTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Relay IRCTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5021D4171B5DCF38006D7F85 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -152,6 +160,24 @@
 		5021D48B1B5E0DA7006D7F85 /* openssl */ = {isa = PBXFileReference; lastKnownFileType = folder; path = openssl; sourceTree = "<group>"; };
 		5021D48D1B5E1E47006D7F85 /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libcrypto.a; sourceTree = "<group>"; };
 		5021D48E1B5E1E47006D7F85 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libssl.a; sourceTree = "<group>"; };
+		50F418571B60432E008492F6 /* RAChatView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RAChatView.h; sourceTree = "<group>"; };
+		50F418581B60432E008492F6 /* RAChatView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RAChatView.m; sourceTree = "<group>"; };
+		50F4185A1B604BA7008492F6 /* RATableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RATableView.h; sourceTree = "<group>"; };
+		50F4185B1B604BA7008492F6 /* RATableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RATableView.m; sourceTree = "<group>"; };
+		50F4185D1B605164008492F6 /* RATableHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RATableHeaderView.h; sourceTree = "<group>"; };
+		50F4185E1B605164008492F6 /* RATableHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RATableHeaderView.m; sourceTree = "<group>"; };
+		50F418601B605B9E008492F6 /* ios7_mainnavbarbg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ios7_mainnavbarbg.png; sourceTree = "<group>"; };
+		50F418611B605B9E008492F6 /* ios7_mainnavbarbg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ios7_mainnavbarbg@2x.png"; sourceTree = "<group>"; };
+		50F418641B605D4E008492F6 /* RANavigationBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RANavigationBar.h; sourceTree = "<group>"; };
+		50F418651B605D4E008492F6 /* RANavigationBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RANavigationBar.m; sourceTree = "<group>"; };
+		50F418671B606089008492F6 /* RANavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RANavigationController.h; sourceTree = "<group>"; };
+		50F418681B606089008492F6 /* RANavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RANavigationController.m; sourceTree = "<group>"; };
+		50F4186A1B60825C008492F6 /* RANavigationBarButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RANavigationBarButton.h; sourceTree = "<group>"; };
+		50F4186B1B60825C008492F6 /* RANavigationBarButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RANavigationBarButton.m; sourceTree = "<group>"; };
+		50F4186D1B609126008492F6 /* RANetworkSelectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RANetworkSelectionView.h; sourceTree = "<group>"; };
+		50F4186E1B609126008492F6 /* RANetworkSelectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RANetworkSelectionView.m; sourceTree = "<group>"; };
+		50F418701B609198008492F6 /* RAChatController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RAChatController.h; sourceTree = "<group>"; };
+		50F418711B609198008492F6 /* RAChatController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RAChatController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -216,13 +242,28 @@
 		5021D3FB1B5DCF37006D7F85 /* Relay IRC */ = {
 			isa = PBXGroup;
 			children = (
+				50F4186A1B60825C008492F6 /* RANavigationBarButton.h */,
+				50F4186B1B60825C008492F6 /* RANavigationBarButton.m */,
+				50F4185D1B605164008492F6 /* RATableHeaderView.h */,
+				50F4185E1B605164008492F6 /* RATableHeaderView.m */,
+				50F4185A1B604BA7008492F6 /* RATableView.h */,
+				50F4185B1B604BA7008492F6 /* RATableView.m */,
+				50F418571B60432E008492F6 /* RAChatView.h */,
+				50F418581B60432E008492F6 /* RAChatView.m */,
 				5021D4001B5DCF38006D7F85 /* RAAppDelegate.h */,
 				5021D4011B5DCF38006D7F85 /* RAAppDelegate.m */,
-				5021D4031B5DCF38006D7F85 /* RAViewController.h */,
-				5021D4041B5DCF38006D7F85 /* RAViewController.m */,
+				50F418641B605D4E008492F6 /* RANavigationBar.h */,
+				50F418651B605D4E008492F6 /* RANavigationBar.m */,
+				5021D4031B5DCF38006D7F85 /* RAMainViewController.h */,
+				5021D4041B5DCF38006D7F85 /* RAMainViewController.m */,
 				5021D4521B5DD75D006D7F85 /* RANetworkManager.h */,
 				5021D4531B5DD75D006D7F85 /* RANetworkManager.m */,
-				5021D4061B5DCF38006D7F85 /* Main.storyboard */,
+				50F418671B606089008492F6 /* RANavigationController.h */,
+				50F418681B606089008492F6 /* RANavigationController.m */,
+				50F418701B609198008492F6 /* RAChatController.h */,
+				50F418711B609198008492F6 /* RAChatController.m */,
+				50F4186D1B609126008492F6 /* RANetworkSelectionView.h */,
+				50F4186E1B609126008492F6 /* RANetworkSelectionView.m */,
 				5021D4091B5DCF38006D7F85 /* Images.xcassets */,
 				5021D3FC1B5DCF37006D7F85 /* Supporting Files */,
 			);
@@ -239,6 +280,8 @@
 				5021D4221B5DD0DD006D7F85 /* Default-568h@2x.png */,
 				5021D3FD1B5DCF37006D7F85 /* Info.plist */,
 				5021D3FE1B5DCF37006D7F85 /* main.m */,
+				50F418601B605B9E008492F6 /* ios7_mainnavbarbg.png */,
+				50F418611B605B9E008492F6 /* ios7_mainnavbarbg@2x.png */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -267,6 +310,8 @@
 				5021D48E1B5E1E47006D7F85 /* libssl.a */,
 				5021D48B1B5E0DA7006D7F85 /* openssl */,
 				5021D4361B5DD6B7006D7F85 /* RCI.h */,
+				5021D4551B5E0BF4006D7F85 /* RCNetwork.h */,
+				5021D4561B5E0BF4006D7F85 /* RCNetwork.m */,
 				5021D4771B5E0CD1006D7F85 /* NSData+Instance.h */,
 				5021D4781B5E0CD1006D7F85 /* NSData+Instance.m */,
 				5021D4791B5E0CD1006D7F85 /* NSMutableAttributedString+RCAdditions.h */,
@@ -289,8 +334,6 @@
 				5021D4601B5E0BFF006D7F85 /* RCPMChannel.m */,
 				5021D4611B5E0BFF006D7F85 /* RCConsoleChannel.h */,
 				5021D4621B5E0BFF006D7F85 /* RCConsoleChannel.m */,
-				5021D4551B5E0BF4006D7F85 /* RCNetwork.h */,
-				5021D4561B5E0BF4006D7F85 /* RCNetwork.m */,
 				5021D4341B5DD6B7006D7F85 /* Supporting Files */,
 			);
 			path = RCI;
@@ -472,12 +515,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5021D4081B5DCF38006D7F85 /* Main.storyboard in Resources */,
 				5021D42A1B5DD0EB006D7F85 /* Default6@2x.png in Resources */,
 				5021D40A1B5DCF38006D7F85 /* Images.xcassets in Resources */,
 				5021D42B1B5DD0EB006D7F85 /* Default6p@3x.png in Resources */,
 				5021D4291B5DD0EB006D7F85 /* Default@2x.png in Resources */,
 				5021D4231B5DD0DD006D7F85 /* Default-568h@2x.png in Resources */,
+				50F418621B605B9E008492F6 /* ios7_mainnavbarbg.png in Resources */,
+				50F418631B605B9E008492F6 /* ios7_mainnavbarbg@2x.png in Resources */,
 				5021D4281B5DD0EB006D7F85 /* Default.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -511,10 +555,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5021D4051B5DCF38006D7F85 /* RAViewController.m in Sources */,
+				50F4186C1B60825C008492F6 /* RANavigationBarButton.m in Sources */,
+				50F4185C1B604BA7008492F6 /* RATableView.m in Sources */,
+				5021D4051B5DCF38006D7F85 /* RAMainViewController.m in Sources */,
 				5021D4541B5DD75D006D7F85 /* RANetworkManager.m in Sources */,
+				50F418721B609198008492F6 /* RAChatController.m in Sources */,
+				50F418691B606089008492F6 /* RANavigationController.m in Sources */,
+				50F418591B60432E008492F6 /* RAChatView.m in Sources */,
+				50F418661B605D4E008492F6 /* RANavigationBar.m in Sources */,
 				5021D4021B5DCF38006D7F85 /* RAAppDelegate.m in Sources */,
+				50F4185F1B605164008492F6 /* RATableHeaderView.m in Sources */,
 				5021D3FF1B5DCF37006D7F85 /* main.m in Sources */,
+				50F4186F1B609126008492F6 /* RANetworkSelectionView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -577,17 +629,6 @@
 			targetProxy = 5021D4471B5DD6B7006D7F85 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
-
-/* Begin PBXVariantGroup section */
-		5021D4061B5DCF38006D7F85 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				5021D4071B5DCF38006D7F85 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		5021D41A1B5DCF38006D7F85 /* Debug */ = {

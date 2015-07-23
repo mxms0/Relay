@@ -88,9 +88,9 @@
 }
 
 - (void)requestWhoisInformation {
-	thirstyForWhois = YES;
-	// remember: override users WHOIS command and do remote WHOIS, similar to this below.
-	[delegate sendMessage:[NSString stringWithFormat:@"WHOIS %@ %@", channelName, channelName]];
+//	thirstyForWhois = YES;
+//	// remember: override users WHOIS command and do remote WHOIS, similar to this below.
+//	[delegate sendMessage:[NSString stringWithFormat:@"WHOIS %@ %@", channelName, channelName]];
 }
 
 - (void)recievedWHOISInformation {

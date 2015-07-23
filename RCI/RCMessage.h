@@ -16,7 +16,6 @@
 @property (nonatomic, retain) NSString *sender;
 @property (nonatomic, retain) NSDictionary *tags;
 - (id)initWithString:(NSString *)string;
-- (void)parseIRCV3MessageTags;
 - (void)parse;
 - (id)parameterAtIndex:(int)index;
 @end

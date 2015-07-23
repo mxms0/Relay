@@ -8,6 +8,9 @@
 
 #import "RAAppDelegate.h"
 #import "RANetworkManager.h"
+#import "RAMainViewController.h"
+#import "RANavigationBar.h"
+#import "RANavigationController.h"
 
 @implementation RAAppDelegate
 
@@ -15,6 +18,16 @@
 	// Override point for customization after application launch.
 	[self setupApplicationData];
 	[self configureUI];
+	
+	self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
+	RAMainViewController *rcv = [[RAMainViewController alloc] init];
+	self.navigationController = [[[RANavigationController alloc] initWithNavigationBarClass:[RANavigationBar class] toolbarClass:[UIToolbar class]] autorelease];
+	[self.navigationController setViewControllers:@[rcv]];
+	
+	[rcv release];
+	self.window.rootViewController = self.navigationController;
+	[self.window makeKeyAndVisible];
+	return YES;
 	
 	return YES;
 }
@@ -37,9 +50,11 @@
 }
 
 - (void)configureUI {
+	[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+	
 	UINavigationBar *nb = [UINavigationBar appearance];
 	
-	[nb setBackgroundImage:[UIImage imageNamed:@"ios7_mainnavbarbg"] forBarMetrics:UIBarMetricsDefault];
+	[nb setBackgroundImage:[UIImage imageNamed:@"ios7_mainnavbarbg"] forBarPosition:UIBarPositionTop barMetrics:UIBarMetricsDefault];
 	[UIApplication sharedApplication].statusBarStyle = 1;
 	[[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
 	[[UISwitch appearance] setOnTintColor:UIColorFromRGB(0x65999d)];

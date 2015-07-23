@@ -233,7 +233,7 @@ char RCUserHash(NSString *from) {
 
 - (void)recievedMessage:(id)_message from:(NSString *)from time:(NSString *)time_ type:(RCMessageType)type {
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
-	NSString *time = nil;
+//	NSString *time = nil;
 	NSString *message = nil;
 	if ([_message isKindOfClass:[RCMessage class]]) {
 //		time = ([[_message tags] objectForKey:@"time"] ?: [[RCDateManager sharedInstance] currentDateAsString]);
@@ -345,15 +345,6 @@ char RCUserHash(NSString *from) {
 	[construct formatWithHighlight:isHighlight];
 	[pool addObject:construct];
 	[construct release];
-	
-	if (panel) {
-		dispatch_async(dispatch_get_main_queue(), ^ {
-			[panel reloadData];
-			if (![panel isTracking]) {
-				[panel scrollToBottom];
-			}
-		});
-	}
 	
 	if (type == RCMessageTypeNormal || type == RCMessageTypeNormalE || type == RCMessageTypeAction)
 		[self shouldPost:isHighlight withMessage:[NSString stringWithFormat:@"%@: %@", from, [msg stringByStrippingIRCMetadata]]];
@@ -697,7 +688,7 @@ for (int a = 0; a < [partialLen length]; a++) {\
 				NSString *send = [NSString stringWithFormat:@"PRIVMSG %@ :%@", channelName, message];
 				if (send.length > 510) {
 					int cmd = 8;
-					int cLength = channelName.length + 4;
+					int cLength = (int)channelName.length + 4;
 					int max = ((510 - cmd) - cLength);
 					NSMutableString *tmp = [message mutableCopy];
 					while ([tmp length] > 0) {
