@@ -52,8 +52,6 @@
 	[[UIColor colorWithRed:42/255.0 green:57/255.0 blue:71/255.0 alpha:1.0] set];
 	UIRectFill(CGRectMake(0, rect.size.height - 5, rect.size.width, 5));
 	
-	
-	
 	CGFloat cardWidth = rect.size.width;
 
 	CGFloat buttonWidth = 45.f; // fallback.

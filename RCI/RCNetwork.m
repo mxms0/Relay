@@ -9,7 +9,10 @@
 #import "NSData+Instance.h"
 #import <objc/runtime.h>
 #include <netdb.h>
+#include <openssl/ssl.h>
+#include <openssl/err.h>
 
+SSL_CTX *RCInitContext(void);
 SSL_CTX *RCInitContext(void) {
 	SSL_METHOD *meth;
 	SSL_CTX *_ctx;
@@ -23,6 +26,51 @@ SSL_CTX *RCInitContext(void) {
 	}
 	return _ctx;
 }
+
+@interface RCNetwork () {
+		NSMutableArray *_channels;
+		NSMutableArray *tmpChannels;
+		NSMutableArray *_nicknames;
+		NSString *sDescription;
+		NSString *server;
+		NSString *nick;
+		NSString *username;
+		NSString *realname;
+		NSString *useNick;
+		NSString *spass;
+		NSString *npass;
+		NSString *uUID;
+		NSMutableString *writebuf;
+		NSMutableData *rcache;
+		NSArray *connectCommands;
+		SSL_CTX *ctx;
+		SSL *ssl;
+		RCSocketStatus status;
+		NSTimer *disconnectTimer;
+		int port;
+		int sockfd;
+		BOOL saslWasSuccessful;
+		BOOL isRegistered;
+		BOOL useSSL;
+		BOOL canSend;
+		BOOL expanded;
+		BOOL shouldRequestSPass;
+		BOOL shouldRequestNPass;
+		BOOL isWriting;
+		BOOL isOper;
+		BOOL isAway;
+		BOOL tagged;
+		id listCallback;
+		dispatch_source_t readSource;
+		dispatch_source_t writeSource;
+		
+		NSDictionary *prefix;
+}
+
+@end
+
+
+
 
 @implementation RCNetwork
 @synthesize prefix, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, channels, useNick, _nicknames, shouldRequestSPass, shouldRequestNPass, listCallback, expanded, uUID, isOper, isAway, connectCommands, tagged, delegate, channelDelegate;

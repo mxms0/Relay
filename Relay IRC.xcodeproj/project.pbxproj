@@ -11,15 +11,12 @@
 		5021D4021B5DCF38006D7F85 /* RAAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5021D4011B5DCF38006D7F85 /* RAAppDelegate.m */; };
 		5021D4051B5DCF38006D7F85 /* RAMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5021D4041B5DCF38006D7F85 /* RAMainViewController.m */; };
 		5021D40A1B5DCF38006D7F85 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5021D4091B5DCF38006D7F85 /* Images.xcassets */; };
-		5021D4191B5DCF38006D7F85 /* Relay_IRCTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5021D4181B5DCF38006D7F85 /* Relay_IRCTests.m */; };
 		5021D4231B5DD0DD006D7F85 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5021D4221B5DD0DD006D7F85 /* Default-568h@2x.png */; };
 		5021D4281B5DD0EB006D7F85 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 5021D4241B5DD0EB006D7F85 /* Default.png */; };
 		5021D4291B5DD0EB006D7F85 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5021D4251B5DD0EB006D7F85 /* Default@2x.png */; };
 		5021D42A1B5DD0EB006D7F85 /* Default6@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5021D4261B5DD0EB006D7F85 /* Default6@2x.png */; };
 		5021D42B1B5DD0EB006D7F85 /* Default6p@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5021D4271B5DD0EB006D7F85 /* Default6p@3x.png */; };
 		5021D4371B5DD6B7006D7F85 /* RCI.h in Headers */ = {isa = PBXBuildFile; fileRef = 5021D4361B5DD6B7006D7F85 /* RCI.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		5021D43D1B5DD6B7006D7F85 /* RCI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5021D4321B5DD6B7006D7F85 /* RCI.framework */; };
-		5021D4461B5DD6B7006D7F85 /* RCITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5021D4451B5DD6B7006D7F85 /* RCITests.m */; };
 		5021D4491B5DD6B7006D7F85 /* RCI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5021D4321B5DD6B7006D7F85 /* RCI.framework */; };
 		5021D44A1B5DD6B7006D7F85 /* RCI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 5021D4321B5DD6B7006D7F85 /* RCI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		5021D4541B5DD75D006D7F85 /* RANetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5021D4531B5DD75D006D7F85 /* RANetworkManager.m */; };
@@ -50,6 +47,7 @@
 		5021D48C1B5E0DA7006D7F85 /* openssl in Resources */ = {isa = PBXBuildFile; fileRef = 5021D48B1B5E0DA7006D7F85 /* openssl */; };
 		5021D48F1B5E1E47006D7F85 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5021D48D1B5E1E47006D7F85 /* libcrypto.a */; };
 		5021D4901B5E1E47006D7F85 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5021D48E1B5E1E47006D7F85 /* libssl.a */; };
+		507794C41B65E61E003AFAE1 /* RAChannelProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 507794C31B65E61E003AFAE1 /* RAChannelProxy.m */; };
 		50F418591B60432E008492F6 /* RAChatView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50F418581B60432E008492F6 /* RAChatView.m */; };
 		50F4185C1B604BA7008492F6 /* RATableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50F4185B1B604BA7008492F6 /* RATableView.m */; };
 		50F4185F1B605164008492F6 /* RATableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50F4185E1B605164008492F6 /* RATableHeaderView.m */; };
@@ -63,27 +61,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		5021D4131B5DCF38006D7F85 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5021D3F11B5DCF37006D7F85 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 5021D3F81B5DCF37006D7F85;
-			remoteInfo = "Relay IRC";
-		};
-		5021D43E1B5DD6B7006D7F85 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5021D3F11B5DCF37006D7F85 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 5021D4311B5DD6B7006D7F85;
-			remoteInfo = RCI;
-		};
-		5021D4401B5DD6B7006D7F85 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5021D3F11B5DCF37006D7F85 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 5021D3F81B5DCF37006D7F85;
-			remoteInfo = "Relay IRC";
-		};
 		5021D4471B5DD6B7006D7F85 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5021D3F11B5DCF37006D7F85 /* Project object */;
@@ -116,9 +93,6 @@
 		5021D4031B5DCF38006D7F85 /* RAMainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RAMainViewController.h; sourceTree = "<group>"; };
 		5021D4041B5DCF38006D7F85 /* RAMainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RAMainViewController.m; sourceTree = "<group>"; };
 		5021D4091B5DCF38006D7F85 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		5021D4121B5DCF38006D7F85 /* Relay IRCTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Relay IRCTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		5021D4171B5DCF38006D7F85 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		5021D4181B5DCF38006D7F85 /* Relay_IRCTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Relay_IRCTests.m; sourceTree = "<group>"; };
 		5021D4221B5DD0DD006D7F85 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		5021D4241B5DD0EB006D7F85 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		5021D4251B5DD0EB006D7F85 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
@@ -128,9 +102,6 @@
 		5021D4321B5DD6B7006D7F85 /* RCI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RCI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5021D4351B5DD6B7006D7F85 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5021D4361B5DD6B7006D7F85 /* RCI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCI.h; sourceTree = "<group>"; };
-		5021D43C1B5DD6B7006D7F85 /* RCITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RCITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		5021D4441B5DD6B7006D7F85 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		5021D4451B5DD6B7006D7F85 /* RCITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCITests.m; sourceTree = "<group>"; };
 		5021D4521B5DD75D006D7F85 /* RANetworkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RANetworkManager.h; sourceTree = "<group>"; };
 		5021D4531B5DD75D006D7F85 /* RANetworkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RANetworkManager.m; sourceTree = "<group>"; };
 		5021D4551B5E0BF4006D7F85 /* RCNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCNetwork.h; sourceTree = "<group>"; };
@@ -160,6 +131,8 @@
 		5021D48B1B5E0DA7006D7F85 /* openssl */ = {isa = PBXFileReference; lastKnownFileType = folder; path = openssl; sourceTree = "<group>"; };
 		5021D48D1B5E1E47006D7F85 /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libcrypto.a; sourceTree = "<group>"; };
 		5021D48E1B5E1E47006D7F85 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libssl.a; sourceTree = "<group>"; };
+		507794C21B65E61E003AFAE1 /* RAChannelProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RAChannelProxy.h; sourceTree = "<group>"; };
+		507794C31B65E61E003AFAE1 /* RAChannelProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RAChannelProxy.m; sourceTree = "<group>"; };
 		50F418571B60432E008492F6 /* RAChatView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RAChatView.h; sourceTree = "<group>"; };
 		50F418581B60432E008492F6 /* RAChatView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RAChatView.m; sourceTree = "<group>"; };
 		50F4185A1B604BA7008492F6 /* RATableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RATableView.h; sourceTree = "<group>"; };
@@ -189,27 +162,12 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		5021D40F1B5DCF38006D7F85 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		5021D42E1B5DD6B7006D7F85 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				5021D4901B5E1E47006D7F85 /* libssl.a in Frameworks */,
 				5021D48F1B5E1E47006D7F85 /* libcrypto.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		5021D4391B5DD6B7006D7F85 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				5021D43D1B5DD6B7006D7F85 /* RCI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -221,9 +179,7 @@
 			children = (
 				5021D42C1B5DD5E4006D7F85 /* Relay.h */,
 				5021D3FB1B5DCF37006D7F85 /* Relay IRC */,
-				5021D4151B5DCF38006D7F85 /* Relay IRCTests */,
 				5021D4331B5DD6B7006D7F85 /* RCI */,
-				5021D4421B5DD6B7006D7F85 /* RCITests */,
 				5021D3FA1B5DCF37006D7F85 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -232,9 +188,7 @@
 			isa = PBXGroup;
 			children = (
 				5021D3F91B5DCF37006D7F85 /* Relay IRC.app */,
-				5021D4121B5DCF38006D7F85 /* Relay IRCTests.xctest */,
 				5021D4321B5DD6B7006D7F85 /* RCI.framework */,
-				5021D43C1B5DD6B7006D7F85 /* RCITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -264,6 +218,8 @@
 				50F418711B609198008492F6 /* RAChatController.m */,
 				50F4186D1B609126008492F6 /* RANetworkSelectionView.h */,
 				50F4186E1B609126008492F6 /* RANetworkSelectionView.m */,
+				507794C21B65E61E003AFAE1 /* RAChannelProxy.h */,
+				507794C31B65E61E003AFAE1 /* RAChannelProxy.m */,
 				5021D4091B5DCF38006D7F85 /* Images.xcassets */,
 				5021D3FC1B5DCF37006D7F85 /* Supporting Files */,
 			);
@@ -282,23 +238,6 @@
 				5021D3FE1B5DCF37006D7F85 /* main.m */,
 				50F418601B605B9E008492F6 /* ios7_mainnavbarbg.png */,
 				50F418611B605B9E008492F6 /* ios7_mainnavbarbg@2x.png */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		5021D4151B5DCF38006D7F85 /* Relay IRCTests */ = {
-			isa = PBXGroup;
-			children = (
-				5021D4181B5DCF38006D7F85 /* Relay_IRCTests.m */,
-				5021D4161B5DCF38006D7F85 /* Supporting Files */,
-			);
-			path = "Relay IRCTests";
-			sourceTree = "<group>";
-		};
-		5021D4161B5DCF38006D7F85 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				5021D4171B5DCF38006D7F85 /* Info.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -343,23 +282,6 @@
 			isa = PBXGroup;
 			children = (
 				5021D4351B5DD6B7006D7F85 /* Info.plist */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		5021D4421B5DD6B7006D7F85 /* RCITests */ = {
-			isa = PBXGroup;
-			children = (
-				5021D4451B5DD6B7006D7F85 /* RCITests.m */,
-				5021D4431B5DD6B7006D7F85 /* Supporting Files */,
-			);
-			path = RCITests;
-			sourceTree = "<group>";
-		};
-		5021D4431B5DD6B7006D7F85 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				5021D4441B5DD6B7006D7F85 /* Info.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -409,24 +331,6 @@
 			productReference = 5021D3F91B5DCF37006D7F85 /* Relay IRC.app */;
 			productType = "com.apple.product-type.application";
 		};
-		5021D4111B5DCF38006D7F85 /* Relay IRCTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 5021D41F1B5DCF38006D7F85 /* Build configuration list for PBXNativeTarget "Relay IRCTests" */;
-			buildPhases = (
-				5021D40E1B5DCF38006D7F85 /* Sources */,
-				5021D40F1B5DCF38006D7F85 /* Frameworks */,
-				5021D4101B5DCF38006D7F85 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				5021D4141B5DCF38006D7F85 /* PBXTargetDependency */,
-			);
-			name = "Relay IRCTests";
-			productName = "Relay IRCTests";
-			productReference = 5021D4121B5DCF38006D7F85 /* Relay IRCTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 		5021D4311B5DD6B7006D7F85 /* RCI */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5021D44B1B5DD6B7006D7F85 /* Build configuration list for PBXNativeTarget "RCI" */;
@@ -445,47 +349,20 @@
 			productReference = 5021D4321B5DD6B7006D7F85 /* RCI.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		5021D43B1B5DD6B7006D7F85 /* RCITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 5021D44F1B5DD6B7006D7F85 /* Build configuration list for PBXNativeTarget "RCITests" */;
-			buildPhases = (
-				5021D4381B5DD6B7006D7F85 /* Sources */,
-				5021D4391B5DD6B7006D7F85 /* Frameworks */,
-				5021D43A1B5DD6B7006D7F85 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				5021D43F1B5DD6B7006D7F85 /* PBXTargetDependency */,
-				5021D4411B5DD6B7006D7F85 /* PBXTargetDependency */,
-			);
-			name = RCITests;
-			productName = RCITests;
-			productReference = 5021D43C1B5DD6B7006D7F85 /* RCITests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		5021D3F11B5DCF37006D7F85 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0640;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = Mxms;
 				TargetAttributes = {
 					5021D3F81B5DCF37006D7F85 = {
 						CreatedOnToolsVersion = 6.4;
 					};
-					5021D4111B5DCF38006D7F85 = {
-						CreatedOnToolsVersion = 6.4;
-						TestTargetID = 5021D3F81B5DCF37006D7F85;
-					};
 					5021D4311B5DD6B7006D7F85 = {
 						CreatedOnToolsVersion = 6.4;
-					};
-					5021D43B1B5DD6B7006D7F85 = {
-						CreatedOnToolsVersion = 6.4;
-						TestTargetID = 5021D3F81B5DCF37006D7F85;
 					};
 				};
 			};
@@ -503,9 +380,7 @@
 			projectRoot = "";
 			targets = (
 				5021D3F81B5DCF37006D7F85 /* Relay IRC */,
-				5021D4111B5DCF38006D7F85 /* Relay IRCTests */,
 				5021D4311B5DD6B7006D7F85 /* RCI */,
-				5021D43B1B5DD6B7006D7F85 /* RCITests */,
 			);
 		};
 /* End PBXProject section */
@@ -526,25 +401,11 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		5021D4101B5DCF38006D7F85 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		5021D4301B5DD6B7006D7F85 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				5021D48C1B5E0DA7006D7F85 /* openssl in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		5021D43A1B5DD6B7006D7F85 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -561,20 +422,13 @@
 				5021D4541B5DD75D006D7F85 /* RANetworkManager.m in Sources */,
 				50F418721B609198008492F6 /* RAChatController.m in Sources */,
 				50F418691B606089008492F6 /* RANavigationController.m in Sources */,
+				507794C41B65E61E003AFAE1 /* RAChannelProxy.m in Sources */,
 				50F418591B60432E008492F6 /* RAChatView.m in Sources */,
 				50F418661B605D4E008492F6 /* RANavigationBar.m in Sources */,
 				5021D4021B5DCF38006D7F85 /* RAAppDelegate.m in Sources */,
 				50F4185F1B605164008492F6 /* RATableHeaderView.m in Sources */,
 				5021D3FF1B5DCF37006D7F85 /* main.m in Sources */,
 				50F4186F1B609126008492F6 /* RANetworkSelectionView.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		5021D40E1B5DCF38006D7F85 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				5021D4191B5DCF38006D7F85 /* Relay_IRCTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -597,32 +451,9 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		5021D4381B5DD6B7006D7F85 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				5021D4461B5DD6B7006D7F85 /* RCITests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		5021D4141B5DCF38006D7F85 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 5021D3F81B5DCF37006D7F85 /* Relay IRC */;
-			targetProxy = 5021D4131B5DCF38006D7F85 /* PBXContainerItemProxy */;
-		};
-		5021D43F1B5DD6B7006D7F85 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 5021D4311B5DD6B7006D7F85 /* RCI */;
-			targetProxy = 5021D43E1B5DD6B7006D7F85 /* PBXContainerItemProxy */;
-		};
-		5021D4411B5DD6B7006D7F85 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 5021D3F81B5DCF37006D7F85 /* Relay IRC */;
-			targetProxy = 5021D4401B5DD6B7006D7F85 /* PBXContainerItemProxy */;
-		};
 		5021D4481B5DD6B7006D7F85 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 5021D4311B5DD6B7006D7F85 /* RCI */;
@@ -653,6 +484,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -671,7 +503,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = iphoneos;
+				SDKROOT = iphoneos9.0;
 			};
 			name = Debug;
 		};
@@ -708,7 +540,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				SDKROOT = iphoneos;
+				SDKROOT = iphoneos9.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -720,9 +552,10 @@
 				CLANG_ENABLE_OBJC_ARC = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = NO;
 				GCC_WARN_UNDECLARED_SELECTOR = NO;
-				HEADER_SEARCH_PATHS = "./**";
+				HEADER_SEARCH_PATHS = .;
 				INFOPLIST_FILE = "Relay IRC/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "pw.mxms.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -734,44 +567,11 @@
 				CLANG_ENABLE_OBJC_ARC = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = NO;
 				GCC_WARN_UNDECLARED_SELECTOR = NO;
-				HEADER_SEARCH_PATHS = "./**";
+				HEADER_SEARCH_PATHS = .;
 				INFOPLIST_FILE = "Relay IRC/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "pw.mxms.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
-		5021D4201B5DCF38006D7F85 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "Relay IRCTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Relay IRC.app/Relay IRC";
-			};
-			name = Debug;
-		};
-		5021D4211B5DCF38006D7F85 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "Relay IRCTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Relay IRC.app/Relay IRC";
 			};
 			name = Release;
 		};
@@ -788,7 +588,7 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				HEADER_SEARCH_PATHS = "./**";
+				HEADER_SEARCH_PATHS = .;
 				INFOPLIST_FILE = RCI/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -796,7 +596,8 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/RCI",
 				);
-				OTHER_CFLAGS = "";
+				OTHER_CFLAGS = "-I/Users/max/Desktop/Relay/RCI/";
+				PRODUCT_BUNDLE_IDENTIFIER = "pw.mxms.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -814,7 +615,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				HEADER_SEARCH_PATHS = "./**";
+				HEADER_SEARCH_PATHS = .;
 				INFOPLIST_FILE = RCI/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -822,44 +623,13 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/RCI",
 				);
-				OTHER_CFLAGS = "";
+				OTHER_CFLAGS = "-I/Users/max/Desktop/Relay/RCI/";
+				PRODUCT_BUNDLE_IDENTIFIER = "pw.mxms.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
-		5021D4501B5DD6B7006D7F85 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = RCITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Relay IRC.app/Relay IRC";
-			};
-			name = Debug;
-		};
-		5021D4511B5DD6B7006D7F85 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = RCITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Relay IRC.app/Relay IRC";
 			};
 			name = Release;
 		};
@@ -884,29 +654,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		5021D41F1B5DCF38006D7F85 /* Build configuration list for PBXNativeTarget "Relay IRCTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				5021D4201B5DCF38006D7F85 /* Debug */,
-				5021D4211B5DCF38006D7F85 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		5021D44B1B5DD6B7006D7F85 /* Build configuration list for PBXNativeTarget "RCI" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5021D44C1B5DD6B7006D7F85 /* Debug */,
 				5021D44D1B5DD6B7006D7F85 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		5021D44F1B5DD6B7006D7F85 /* Build configuration list for PBXNativeTarget "RCITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				5021D4501B5DD6B7006D7F85 /* Debug */,
-				5021D4511B5DD6B7006D7F85 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

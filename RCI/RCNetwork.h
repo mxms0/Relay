@@ -11,8 +11,6 @@
 #import "RCPMChannel.h"
 #import "RCMessage.h"
 #import <objc/message.h>
-#include "openssl/ssl.h"
-#include "openssl/err.h"
 #import "NSString+Utils.h"
 
 #undef LOGALL
@@ -58,45 +56,7 @@ typedef enum RCSocketStatus {
 	RCSocketStatusClosed
 } RCSocketStatus;
 
-@interface RCNetwork : NSObject <UIAlertViewDelegate> {
-	NSMutableArray *_channels;
-	NSMutableArray *tmpChannels;
-	NSMutableArray *_nicknames;
-	NSString *sDescription;
-	NSString *server;
-	NSString *nick;
-	NSString *username;
-	NSString *realname;
-	NSString *useNick;
-	NSString *spass;
-	NSString *npass;
-	NSString *uUID;
-	NSMutableString *writebuf;
-	NSMutableData *rcache;
-	NSArray *connectCommands;
-	SSL_CTX *ctx;
-	SSL *ssl;
-	RCSocketStatus status;
-	NSTimer *disconnectTimer;
-	int port;
-	int sockfd;
-	BOOL saslWasSuccessful;
-	BOOL isRegistered;
-	BOOL useSSL;
-	BOOL canSend;
-	BOOL expanded;
-	BOOL shouldRequestSPass;
-	BOOL shouldRequestNPass;
-	BOOL isWriting;
-	BOOL isOper;
-    BOOL isAway;
-	BOOL tagged;
-	id listCallback;
-	dispatch_source_t readSource;
-	dispatch_source_t writeSource;
-	
-	NSDictionary *prefix;
-}
+@interface RCNetwork : NSObject <UIAlertViewDelegate>
 @property (nonatomic, retain) NSDictionary *prefix;
 @property (nonatomic, readonly) NSMutableArray *channels;
 @property (nonatomic, readonly) NSMutableArray *_nicknames;
@@ -155,6 +115,5 @@ typedef enum RCSocketStatus {
 - (void)savePasswords;
 @end
 
-SSL_CTX *RCInitContext(void);
 char *RCIPForURL(NSString *URL);
 void RCParseUserMask(NSString *mask, NSString **nick, NSString **user, NSString **hostmask);

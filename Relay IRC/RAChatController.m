@@ -8,6 +8,8 @@
 
 #import "RAChatController.h"
 #import "RANavigationBar.h"
+#import "RCChannel.h"
+#import "RCNetwork.h"
 
 @implementation RAChatController
 
@@ -19,6 +21,45 @@
 		instance = [[self alloc] init];
 	});
 	return instance;
+}
+
+- (void)channel:(RCChannel *)channel userJoined:(NSString *)user {
+	
+}
+
+- (void)channel:(RCChannel *)channel userParted:(NSString *)user {
+	
+}
+
+- (void)channel:(RCChannel *)channel userKicked:(NSString *)user {
+	
+}
+
+- (void)channel:(RCChannel *)channel userBanned:(NSString *)user {
+	
+}
+
+- (void)channel:(RCChannel *)channel userModeChanged:(NSString *)user modes:(int)modes {
+	
+}
+
+- (void)channel:(RCChannel *)channel receivedMessage:(RCMessage *)message from:(NSString *)from time:(time_t)time {
+}
+
+- (void)networkConnected:(RCNetwork *)network {
+	
+}
+
+- (void)networkDisconnected:(RCNetwork *)network {
+	
+}
+
+- (void)network:(RCNetwork *)network serverSentLine:(RCLineType)lineType {
+	
+}
+
+- (void)network:(RCNetwork *)network connectionFailed:(RCConnectionFailure)fail {
+	
 }
 
 - (void)layoutInterfaceWithViewController:(UINavigationController *)vc {
