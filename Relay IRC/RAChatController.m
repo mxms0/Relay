@@ -9,33 +9,37 @@
 #import "RAChatController.h"
 #import "RANavigationBar.h"
 #import "RCChannel.h"
+#import "RAChannelProxy.h"
 #import "RCNetwork.h"
 
 @implementation RAChatController
 
-+ (instancetype)sharedInstance {
-	static id instance = nil;
-	static dispatch_once_t token;
-	
-	dispatch_once(&token, ^ {
-		instance = [[self alloc] init];
-	});
-	return instance;
+- (RAChannelProxy *)proxyForChannel:(RCChannel *)channel {
+	static char RAChannelProxyAssociationKey;
+	RAChannelProxy *proxy = objc_getAssociatedObject(channel, &RAChannelProxyAssociationKey);
+	if (!proxy) {
+		proxy = [[RAChannelProxy alloc] initWithChannel:channel];
+		objc_setAssociatedObject(channel, &RAChannelProxyAssociationKey, proxy, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+	}
+	return proxy;
 }
 
 - (void)channel:(RCChannel *)channel userJoined:(NSString *)user {
+//	RAChannelProxy *proxy = [self proxyForChannel:channel];
 	
 }
 
-- (void)channel:(RCChannel *)channel userParted:(NSString *)user {
+- (void)channel:(RCChannel *)channel userParted:(NSString *)user message:(NSString *)message {
+//	RAChannelProxy *proxy = [self proxyForChannel:channel];
 	
 }
 
-- (void)channel:(RCChannel *)channel userKicked:(NSString *)user {
-	
+- (void)channel:(RCChannel *)channel userKicked:(NSString *)user reason:(NSString *)message {
+//	RAChannelProxy *proxy = [self proxyForChannel:channel];
 }
 
-- (void)channel:(RCChannel *)channel userBanned:(NSString *)user {
+- (void)channel:(RCChannel *)channel userBanned:(NSString *)user reason:(NSString *)reason {
+//	RAChannelProxy *proxy = [self proxyForChannel:channel];
 	
 }
 
@@ -43,7 +47,8 @@
 	
 }
 
-- (void)channel:(RCChannel *)channel receivedMessage:(RCMessage *)message from:(NSString *)from time:(time_t)time {
+- (void)channel:(RCChannel *)channel receivedMessage:(NSString *)message from:(NSString *)from time:(time_t)time {
+	
 }
 
 - (void)networkConnected:(RCNetwork *)network {
@@ -60,14 +65,6 @@
 
 - (void)network:(RCNetwork *)network connectionFailed:(RCConnectionFailure)fail {
 	
-}
-
-- (void)layoutInterfaceWithViewController:(UINavigationController *)vc {
-	[(RANavigationBar *)[vc navigationBar] setTapDelegate:self];
-}
-
-- (void)navigationBarButtonWasPressed:(RANavigationBarButton *)btn {
-	// bring down RANetworkSelectionView
 }
 
 @end

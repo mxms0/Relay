@@ -9,9 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "RATableView.h"
 #import "RCNetwork.h"
+#import "RANavigationBar.h"
 
-@interface RAMainViewController : UIViewController <RCChannelDelegate, RCNetworkDelegate, UITableViewDataSource, UITableViewDelegate, UIToolbarDelegate> {
+@class RAChatController;
+@interface RAMainViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIToolbarDelegate, RANavigationBarButtonDelegate> {
 	RATableView *networks;
+	RAChatController *controller;
 }
 
 

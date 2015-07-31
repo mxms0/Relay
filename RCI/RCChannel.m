@@ -7,7 +7,6 @@
 
 #import "RCChannel.h"
 #import "RCNetwork.h"
-#import "NSString+IRCStringSupport.h"
 
 #define M_COLOR 20
 @implementation RCChannel
@@ -342,12 +341,12 @@ char RCUserHash(NSString *from) {
 	RCMessageConstruct *construct = [[RCMessageConstruct alloc] initWithMessage:msg];
 	[construct setSender:from];
 	[construct setColor:uhash];
-	[construct formatWithHighlight:isHighlight];
+//	[construct formatWithHighlight:isHighlight];
 	[pool addObject:construct];
 	[construct release];
 	
 	if (type == RCMessageTypeNormal || type == RCMessageTypeNormalE || type == RCMessageTypeAction)
-		[self shouldPost:isHighlight withMessage:[NSString stringWithFormat:@"%@: %@", from, [msg stringByStrippingIRCMetadata]]];
+		[self shouldPost:isHighlight withMessage:[NSString stringWithFormat:@"%@: %@", from, RCStripIRCMetadataFromString(msg)]];
 	[p drain];
 }
 

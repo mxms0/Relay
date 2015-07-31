@@ -7,7 +7,15 @@
 //
 
 #import "RAChannelProxy.h"
+#import "RCChannel.h"
 
 @implementation RAChannelProxy
+
+- (instancetype)initWithChannel:(RCChannel *)channel {
+	if ((self = [super init])) {
+		
+	}
+	return self;
+}
 
 @end

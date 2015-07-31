@@ -32,22 +32,22 @@
 		5021D46E1B5E0C85006D7F85 /* NSString+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 5021D46C1B5E0C85006D7F85 /* NSString+Utils.m */; };
 		5021D4711B5E0CB7006D7F85 /* RCMessageConstruct.h in Headers */ = {isa = PBXBuildFile; fileRef = 5021D46F1B5E0CB7006D7F85 /* RCMessageConstruct.h */; };
 		5021D4721B5E0CB7006D7F85 /* RCMessageConstruct.m in Sources */ = {isa = PBXBuildFile; fileRef = 5021D4701B5E0CB7006D7F85 /* RCMessageConstruct.m */; };
-		5021D4751B5E0CC5006D7F85 /* NSString+IRCStringSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 5021D4731B5E0CC5006D7F85 /* NSString+IRCStringSupport.h */; };
-		5021D4761B5E0CC5006D7F85 /* NSString+IRCStringSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 5021D4741B5E0CC5006D7F85 /* NSString+IRCStringSupport.m */; };
-		5021D47B1B5E0CD1006D7F85 /* NSData+Instance.h in Headers */ = {isa = PBXBuildFile; fileRef = 5021D4771B5E0CD1006D7F85 /* NSData+Instance.h */; };
-		5021D47C1B5E0CD1006D7F85 /* NSData+Instance.m in Sources */ = {isa = PBXBuildFile; fileRef = 5021D4781B5E0CD1006D7F85 /* NSData+Instance.m */; };
+		5021D47B1B5E0CD1006D7F85 /* NSData+RCNewLineSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 5021D4771B5E0CD1006D7F85 /* NSData+RCNewLineSet.h */; };
+		5021D47C1B5E0CD1006D7F85 /* NSData+RCNewLineSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 5021D4781B5E0CD1006D7F85 /* NSData+RCNewLineSet.m */; };
 		5021D47D1B5E0CD1006D7F85 /* NSMutableAttributedString+RCAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5021D4791B5E0CD1006D7F85 /* NSMutableAttributedString+RCAdditions.h */; };
 		5021D47E1B5E0CD1006D7F85 /* NSMutableAttributedString+RCAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5021D47A1B5E0CD1006D7F85 /* NSMutableAttributedString+RCAdditions.m */; };
-		5021D4851B5E0CF4006D7F85 /* RCAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 5021D47F1B5E0CF4006D7F85 /* RCAttribute.h */; };
-		5021D4861B5E0CF4006D7F85 /* RCAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 5021D4801B5E0CF4006D7F85 /* RCAttribute.m */; };
-		5021D4871B5E0CF4006D7F85 /* RCColorAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 5021D4811B5E0CF4006D7F85 /* RCColorAttribute.h */; };
-		5021D4881B5E0CF4006D7F85 /* RCColorAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 5021D4821B5E0CF4006D7F85 /* RCColorAttribute.m */; };
 		5021D4891B5E0CF4006D7F85 /* RCMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 5021D4831B5E0CF4006D7F85 /* RCMessage.h */; };
 		5021D48A1B5E0CF4006D7F85 /* RCMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 5021D4841B5E0CF4006D7F85 /* RCMessage.m */; };
 		5021D48C1B5E0DA7006D7F85 /* openssl in Resources */ = {isa = PBXBuildFile; fileRef = 5021D48B1B5E0DA7006D7F85 /* openssl */; };
 		5021D48F1B5E1E47006D7F85 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5021D48D1B5E1E47006D7F85 /* libcrypto.a */; };
 		5021D4901B5E1E47006D7F85 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5021D48E1B5E1E47006D7F85 /* libssl.a */; };
 		507794C41B65E61E003AFAE1 /* RAChannelProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 507794C31B65E61E003AFAE1 /* RAChannelProxy.m */; };
+		50C7777E1B6B0D64009AA233 /* RCAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 50C777781B6B0D64009AA233 /* RCAttribute.h */; };
+		50C7777F1B6B0D64009AA233 /* RCAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 50C777791B6B0D64009AA233 /* RCAttribute.m */; };
+		50C777801B6B0D64009AA233 /* RCColorAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 50C7777A1B6B0D64009AA233 /* RCColorAttribute.h */; };
+		50C777811B6B0D64009AA233 /* RCColorAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 50C7777B1B6B0D64009AA233 /* RCColorAttribute.m */; };
+		50C777821B6B0D64009AA233 /* RCMIRCParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 50C7777C1B6B0D64009AA233 /* RCMIRCParser.h */; };
+		50C777831B6B0D64009AA233 /* RCMIRCParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 50C7777D1B6B0D64009AA233 /* RCMIRCParser.m */; };
 		50F418591B60432E008492F6 /* RAChatView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50F418581B60432E008492F6 /* RAChatView.m */; };
 		50F4185C1B604BA7008492F6 /* RATableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50F4185B1B604BA7008492F6 /* RATableView.m */; };
 		50F4185F1B605164008492F6 /* RATableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50F4185E1B605164008492F6 /* RATableHeaderView.m */; };
@@ -116,16 +116,10 @@
 		5021D46C1B5E0C85006D7F85 /* NSString+Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Utils.m"; sourceTree = "<group>"; };
 		5021D46F1B5E0CB7006D7F85 /* RCMessageConstruct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCMessageConstruct.h; sourceTree = "<group>"; };
 		5021D4701B5E0CB7006D7F85 /* RCMessageConstruct.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCMessageConstruct.m; sourceTree = "<group>"; };
-		5021D4731B5E0CC5006D7F85 /* NSString+IRCStringSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+IRCStringSupport.h"; sourceTree = "<group>"; };
-		5021D4741B5E0CC5006D7F85 /* NSString+IRCStringSupport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+IRCStringSupport.m"; sourceTree = "<group>"; };
-		5021D4771B5E0CD1006D7F85 /* NSData+Instance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Instance.h"; sourceTree = "<group>"; };
-		5021D4781B5E0CD1006D7F85 /* NSData+Instance.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Instance.m"; sourceTree = "<group>"; };
+		5021D4771B5E0CD1006D7F85 /* NSData+RCNewLineSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+RCNewLineSet.h"; sourceTree = "<group>"; };
+		5021D4781B5E0CD1006D7F85 /* NSData+RCNewLineSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+RCNewLineSet.m"; sourceTree = "<group>"; };
 		5021D4791B5E0CD1006D7F85 /* NSMutableAttributedString+RCAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableAttributedString+RCAdditions.h"; sourceTree = "<group>"; };
 		5021D47A1B5E0CD1006D7F85 /* NSMutableAttributedString+RCAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableAttributedString+RCAdditions.m"; sourceTree = "<group>"; };
-		5021D47F1B5E0CF4006D7F85 /* RCAttribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCAttribute.h; sourceTree = "<group>"; };
-		5021D4801B5E0CF4006D7F85 /* RCAttribute.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCAttribute.m; sourceTree = "<group>"; };
-		5021D4811B5E0CF4006D7F85 /* RCColorAttribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCColorAttribute.h; sourceTree = "<group>"; };
-		5021D4821B5E0CF4006D7F85 /* RCColorAttribute.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCColorAttribute.m; sourceTree = "<group>"; };
 		5021D4831B5E0CF4006D7F85 /* RCMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCMessage.h; sourceTree = "<group>"; };
 		5021D4841B5E0CF4006D7F85 /* RCMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCMessage.m; sourceTree = "<group>"; };
 		5021D48B1B5E0DA7006D7F85 /* openssl */ = {isa = PBXFileReference; lastKnownFileType = folder; path = openssl; sourceTree = "<group>"; };
@@ -133,6 +127,12 @@
 		5021D48E1B5E1E47006D7F85 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libssl.a; sourceTree = "<group>"; };
 		507794C21B65E61E003AFAE1 /* RAChannelProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RAChannelProxy.h; sourceTree = "<group>"; };
 		507794C31B65E61E003AFAE1 /* RAChannelProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RAChannelProxy.m; sourceTree = "<group>"; };
+		50C777781B6B0D64009AA233 /* RCAttribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCAttribute.h; sourceTree = "<group>"; };
+		50C777791B6B0D64009AA233 /* RCAttribute.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCAttribute.m; sourceTree = "<group>"; };
+		50C7777A1B6B0D64009AA233 /* RCColorAttribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCColorAttribute.h; sourceTree = "<group>"; };
+		50C7777B1B6B0D64009AA233 /* RCColorAttribute.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCColorAttribute.m; sourceTree = "<group>"; };
+		50C7777C1B6B0D64009AA233 /* RCMIRCParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCMIRCParser.h; sourceTree = "<group>"; };
+		50C7777D1B6B0D64009AA233 /* RCMIRCParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCMIRCParser.m; sourceTree = "<group>"; };
 		50F418571B60432E008492F6 /* RAChatView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RAChatView.h; sourceTree = "<group>"; };
 		50F418581B60432E008492F6 /* RAChatView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RAChatView.m; sourceTree = "<group>"; };
 		50F4185A1B604BA7008492F6 /* RATableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RATableView.h; sourceTree = "<group>"; };
@@ -208,12 +208,12 @@
 				5021D4011B5DCF38006D7F85 /* RAAppDelegate.m */,
 				50F418641B605D4E008492F6 /* RANavigationBar.h */,
 				50F418651B605D4E008492F6 /* RANavigationBar.m */,
-				5021D4031B5DCF38006D7F85 /* RAMainViewController.h */,
-				5021D4041B5DCF38006D7F85 /* RAMainViewController.m */,
 				5021D4521B5DD75D006D7F85 /* RANetworkManager.h */,
 				5021D4531B5DD75D006D7F85 /* RANetworkManager.m */,
 				50F418671B606089008492F6 /* RANavigationController.h */,
 				50F418681B606089008492F6 /* RANavigationController.m */,
+				5021D4031B5DCF38006D7F85 /* RAMainViewController.h */,
+				5021D4041B5DCF38006D7F85 /* RAMainViewController.m */,
 				50F418701B609198008492F6 /* RAChatController.h */,
 				50F418711B609198008492F6 /* RAChatController.m */,
 				50F4186D1B609126008492F6 /* RANetworkSelectionView.h */,
@@ -245,24 +245,17 @@
 		5021D4331B5DD6B7006D7F85 /* RCI */ = {
 			isa = PBXGroup;
 			children = (
-				5021D48D1B5E1E47006D7F85 /* libcrypto.a */,
-				5021D48E1B5E1E47006D7F85 /* libssl.a */,
-				5021D48B1B5E0DA7006D7F85 /* openssl */,
 				5021D4361B5DD6B7006D7F85 /* RCI.h */,
+				50C777841B6B0E0F009AA233 /* MIRC Colors */,
+				5021D48B1B5E0DA7006D7F85 /* openssl */,
 				5021D4551B5E0BF4006D7F85 /* RCNetwork.h */,
 				5021D4561B5E0BF4006D7F85 /* RCNetwork.m */,
-				5021D4771B5E0CD1006D7F85 /* NSData+Instance.h */,
-				5021D4781B5E0CD1006D7F85 /* NSData+Instance.m */,
+				5021D4771B5E0CD1006D7F85 /* NSData+RCNewLineSet.h */,
+				5021D4781B5E0CD1006D7F85 /* NSData+RCNewLineSet.m */,
 				5021D4791B5E0CD1006D7F85 /* NSMutableAttributedString+RCAdditions.h */,
 				5021D47A1B5E0CD1006D7F85 /* NSMutableAttributedString+RCAdditions.m */,
-				5021D4731B5E0CC5006D7F85 /* NSString+IRCStringSupport.h */,
-				5021D4741B5E0CC5006D7F85 /* NSString+IRCStringSupport.m */,
 				5021D46B1B5E0C85006D7F85 /* NSString+Utils.h */,
 				5021D46C1B5E0C85006D7F85 /* NSString+Utils.m */,
-				5021D47F1B5E0CF4006D7F85 /* RCAttribute.h */,
-				5021D4801B5E0CF4006D7F85 /* RCAttribute.m */,
-				5021D4811B5E0CF4006D7F85 /* RCColorAttribute.h */,
-				5021D4821B5E0CF4006D7F85 /* RCColorAttribute.m */,
 				5021D4831B5E0CF4006D7F85 /* RCMessage.h */,
 				5021D4841B5E0CF4006D7F85 /* RCMessage.m */,
 				5021D46F1B5E0CB7006D7F85 /* RCMessageConstruct.h */,
@@ -281,9 +274,24 @@
 		5021D4341B5DD6B7006D7F85 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				5021D48D1B5E1E47006D7F85 /* libcrypto.a */,
+				5021D48E1B5E1E47006D7F85 /* libssl.a */,
 				5021D4351B5DD6B7006D7F85 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		50C777841B6B0E0F009AA233 /* MIRC Colors */ = {
+			isa = PBXGroup;
+			children = (
+				50C777781B6B0D64009AA233 /* RCAttribute.h */,
+				50C777791B6B0D64009AA233 /* RCAttribute.m */,
+				50C7777A1B6B0D64009AA233 /* RCColorAttribute.h */,
+				50C7777B1B6B0D64009AA233 /* RCColorAttribute.m */,
+				50C7777C1B6B0D64009AA233 /* RCMIRCParser.h */,
+				50C7777D1B6B0D64009AA233 /* RCMIRCParser.m */,
+			);
+			name = "MIRC Colors";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -293,19 +301,19 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5021D4851B5E0CF4006D7F85 /* RCAttribute.h in Headers */,
+				50C7777E1B6B0D64009AA233 /* RCAttribute.h in Headers */,
 				5021D4591B5E0BF4006D7F85 /* RCNetwork.h in Headers */,
 				5021D4711B5E0CB7006D7F85 /* RCMessageConstruct.h in Headers */,
 				5021D47D1B5E0CD1006D7F85 /* NSMutableAttributedString+RCAdditions.h in Headers */,
 				5021D4371B5DD6B7006D7F85 /* RCI.h in Headers */,
-				5021D4751B5E0CC5006D7F85 /* NSString+IRCStringSupport.h in Headers */,
 				5021D4671B5E0BFF006D7F85 /* RCConsoleChannel.h in Headers */,
-				5021D47B1B5E0CD1006D7F85 /* NSData+Instance.h in Headers */,
+				5021D47B1B5E0CD1006D7F85 /* NSData+RCNewLineSet.h in Headers */,
 				5021D4651B5E0BFF006D7F85 /* RCPMChannel.h in Headers */,
 				5021D46D1B5E0C85006D7F85 /* NSString+Utils.h in Headers */,
 				5021D4631B5E0BFF006D7F85 /* RCChannel.h in Headers */,
-				5021D4871B5E0CF4006D7F85 /* RCColorAttribute.h in Headers */,
 				5021D4891B5E0CF4006D7F85 /* RCMessage.h in Headers */,
+				50C777801B6B0D64009AA233 /* RCColorAttribute.h in Headers */,
+				50C777821B6B0D64009AA233 /* RCMIRCParser.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -437,17 +445,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				5021D4721B5E0CB7006D7F85 /* RCMessageConstruct.m in Sources */,
-				5021D4881B5E0CF4006D7F85 /* RCColorAttribute.m in Sources */,
+				50C777811B6B0D64009AA233 /* RCColorAttribute.m in Sources */,
 				5021D4641B5E0BFF006D7F85 /* RCChannel.m in Sources */,
+				50C777831B6B0D64009AA233 /* RCMIRCParser.m in Sources */,
 				5021D46E1B5E0C85006D7F85 /* NSString+Utils.m in Sources */,
-				5021D4761B5E0CC5006D7F85 /* NSString+IRCStringSupport.m in Sources */,
 				5021D45A1B5E0BF4006D7F85 /* RCNetwork.m in Sources */,
 				5021D4681B5E0BFF006D7F85 /* RCConsoleChannel.m in Sources */,
 				5021D47E1B5E0CD1006D7F85 /* NSMutableAttributedString+RCAdditions.m in Sources */,
-				5021D47C1B5E0CD1006D7F85 /* NSData+Instance.m in Sources */,
+				5021D47C1B5E0CD1006D7F85 /* NSData+RCNewLineSet.m in Sources */,
 				5021D48A1B5E0CF4006D7F85 /* RCMessage.m in Sources */,
 				5021D4661B5E0BFF006D7F85 /* RCPMChannel.m in Sources */,
-				5021D4861B5E0CF4006D7F85 /* RCAttribute.m in Sources */,
+				50C7777F1B6B0D64009AA233 /* RCAttribute.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

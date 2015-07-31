@@ -6,7 +6,6 @@
 //
 
 #import "RCPMChannel.h"
-#import "NSString+IRCStringSupport.h"
 
 @implementation RCPMChannel
 @synthesize ipInfo, chanInfos, thirstyForWhois, hasWhois, connectionInfo;

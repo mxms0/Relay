@@ -6,9 +6,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <MediaPlayer/MediaPlayer.h>
 #import "NSString+Utils.h"
 #import "RCMessageConstruct.h"
+#import "RCI.h"
 
 @class RCNetwork, RCChannelCell, RCMessage;
 @interface RCChannel : NSObject {

@@ -8,8 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
+@class RCChannel;
 @interface RAChannelProxy : NSObject {
 //	NSArray<NSString *> *messages;
 }
+- (instancetype)initWithChannel:(RCChannel *)channel;
 
 @end

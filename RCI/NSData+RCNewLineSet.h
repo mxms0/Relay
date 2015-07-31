@@ -1,5 +1,5 @@
 //
-//  NSData+Instance.h
+//  NSData+RCNewLineSet.h
 //  Relay
 //
 //  Created by Max Shavrick on 7/10/13.

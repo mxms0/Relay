@@ -1,11 +1,11 @@
 //
-//  NSData+Instance.m
+//  NSData+RCNewLineSet.m
 //  Relay
 //
 //  Created by Max Shavrick on 7/10/13.
 //
 
-#import "NSData+Instance.h"
+#import "NSData+RCNewLineSet.h"
 
 @implementation NSData (RCNewLineSet)
 

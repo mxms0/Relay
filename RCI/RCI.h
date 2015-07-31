@@ -14,14 +14,7 @@ FOUNDATION_EXPORT double RCIVersionNumber;
 //! Project version string for RCI.
 FOUNDATION_EXPORT const unsigned char RCIVersionString[];
 
-typedef enum RCIRCAttribute {
-	RCIRCAttributeColor = 0x03,
-	RCIRCAttributeBold = 0x02,
-	RCIRCAttributeReset = 0x0F,
-	RCIRCAttributeItalic = 0x16,
-	RCIRCAttributeUnderline = 0x1F,
-	RCIRCAttributeInternalNickname = 0x04, // turns out 0x04 is EOF (^D)
-} RCIRCAttribute;
+#import "RCMIRCParser.h"
 
 typedef enum RCMessageType {
 	RCMessageTypeAction = 0,

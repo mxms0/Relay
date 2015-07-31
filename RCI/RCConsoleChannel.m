@@ -7,7 +7,7 @@
 
 #import "RCConsoleChannel.h"
 #import "RCNetwork.h"
-#import "NSString+IRCStringSupport.h"
+#import "RCI.h"
 
 @implementation RCConsoleChannel
 

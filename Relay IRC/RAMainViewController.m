@@ -17,8 +17,8 @@ static const CGFloat RANetworkHeaderViewHeight = 40.0f;
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
-	
-	[[RAChatController sharedInstance] layoutInterfaceWithViewController:self.navigationController];
+
+	[(RANavigationBar *)self.navigationController.navigationBar setTapDelegate:self];
 	
 	CALayer *statusBarFix = [CALayer layer];
 	[statusBarFix setBackgroundColor:[[UIColor colorWithRed:49/255.0 green:67/255.0 blue:82/255.0 alpha:1.0] CGColor]];
@@ -36,12 +36,12 @@ static const CGFloat RANetworkHeaderViewHeight = 40.0f;
 	for (NSString *str in nets) {
 		RCNetwork *net = [[RCNetwork alloc] init];
 		[net setServer:str];
+		[net setDelegate:controller];
+		[net setChannelDelegate:controller];
 		[net setPort:6667];
 		[net setUsername:@"Maximus"];
 		[net setNick:@"Maximus"];
 		[net setRealname:@"Maximus"];
-		[net setDelegate:self];
-		[net setChannelDelegate:self];
 		[[RANetworkManager sharedNetworkManager] addNetwork:net];
 		[net release];
 	}
@@ -56,43 +56,8 @@ static const CGFloat RANetworkHeaderViewHeight = 40.0f;
 	NSLog(@"FDs %@", [[RANetworkManager sharedNetworkManager] networks]);
 }
 
-- (void)channel:(RCChannel *)channel userJoined:(NSString *)user {
-	
-}
-
-- (void)channel:(RCChannel *)channel userParted:(NSString *)user {
-	
-}
-
-- (void)channel:(RCChannel *)channel userKicked:(NSString *)user {
-	
-}
-
-- (void)channel:(RCChannel *)channel userBanned:(NSString *)user {
-	
-}
-
-- (void)channel:(RCChannel *)channel userModeChanged:(NSString *)user modes:(int)modes {
-	
-}
-
-- (void)channel:(RCChannel *)channel receivedMessage:(RCMessage *)message from:(NSString *)from time:(time_t)time {
-}
-
-- (void)networkConnected:(RCNetwork *)network {
-	
-}
-
-- (void)networkDisconnected:(RCNetwork *)network {
-	
-}
-
-- (void)network:(RCNetwork *)network serverSentLine:(RCLineType)lineType {
-	
-}
-
-- (void)network:(RCNetwork *)network connectionFailed:(RCConnectionFailure)fail {
-	
+- (void)navigationBarButtonWasPressed:(RANavigationBarButton *)btn {
+	// bring down RANetworkSelectionView
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {

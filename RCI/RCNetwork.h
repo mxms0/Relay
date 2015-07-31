@@ -21,7 +21,7 @@ typedef NS_ENUM(NSInteger, RCLineType) {
 	RCLineKill,
 	RCLineZap,
 	RCLineOperator,
-	RClineQ
+	RCLineQ
 };
 
 typedef NS_ENUM(NSInteger, RCConnectionFailure) {
@@ -33,9 +33,9 @@ typedef NS_ENUM(NSInteger, RCConnectionFailure) {
 
 @protocol RCChannelDelegate <NSObject>
 - (void)channel:(RCChannel *)channel userJoined:(NSString *)user;
-- (void)channel:(RCChannel *)channel userParted:(NSString *)user;
-- (void)channel:(RCChannel *)channel userKicked:(NSString *)user;
-- (void)channel:(RCChannel *)channel userBanned:(NSString *)user;
+- (void)channel:(RCChannel *)channel userParted:(NSString *)user message:(NSString *)message;
+- (void)channel:(RCChannel *)channel userKicked:(NSString *)user reason:(NSString *)message;
+- (void)channel:(RCChannel *)channel userBanned:(NSString *)user reason:(NSString *)reason;
 - (void)channel:(RCChannel *)channel userModeChanged:(NSString *)user modes:(int)modes;
 - (void)channel:(RCChannel *)channel receivedMessage:(RCMessage *)message from:(NSString *)from time:(time_t)time;
 

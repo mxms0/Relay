@@ -6,7 +6,7 @@
 //
 
 #import "RCNetwork.h"
-#import "NSData+Instance.h"
+#import "NSData+RCNewLineSet.h"
 #import <objc/runtime.h>
 #include <netdb.h>
 #include <openssl/ssl.h>
@@ -28,48 +28,47 @@ SSL_CTX *RCInitContext(void) {
 }
 
 @interface RCNetwork () {
-		NSMutableArray *_channels;
-		NSMutableArray *tmpChannels;
-		NSMutableArray *_nicknames;
-		NSString *sDescription;
-		NSString *server;
-		NSString *nick;
-		NSString *username;
-		NSString *realname;
-		NSString *useNick;
-		NSString *spass;
-		NSString *npass;
-		NSString *uUID;
-		NSMutableString *writebuf;
-		NSMutableData *rcache;
-		NSArray *connectCommands;
-		SSL_CTX *ctx;
-		SSL *ssl;
-		RCSocketStatus status;
-		NSTimer *disconnectTimer;
-		int port;
-		int sockfd;
-		BOOL saslWasSuccessful;
-		BOOL isRegistered;
-		BOOL useSSL;
-		BOOL canSend;
-		BOOL expanded;
-		BOOL shouldRequestSPass;
-		BOOL shouldRequestNPass;
-		BOOL isWriting;
-		BOOL isOper;
-		BOOL isAway;
-		BOOL tagged;
-		id listCallback;
-		dispatch_source_t readSource;
-		dispatch_source_t writeSource;
-		
-		NSDictionary *prefix;
+	NSMutableArray *_channels;
+	NSMutableArray *tmpChannels;
+	NSMutableArray *_nicknames;
+	NSString *sDescription;
+	NSString *server;
+	NSString *nick;
+	NSString *username;
+	NSString *realname;
+	NSString *useNick;
+	NSString *spass;
+	NSString *npass;
+	NSString *uUID;
+	NSMutableString *writebuf;
+	NSMutableData *rcache;
+	NSArray *connectCommands;
+	SSL_CTX *ctx;
+	SSL *ssl;
+	RCSocketStatus status;
+	NSTimer *disconnectTimer;
+	int port;
+	int sockfd;
+	BOOL saslWasSuccessful;
+	BOOL isRegistered;
+	BOOL useSSL;
+	BOOL canSend;
+	BOOL expanded;
+	BOOL shouldRequestSPass;
+	BOOL shouldRequestNPass;
+	BOOL isWriting;
+	BOOL isOper;
+	BOOL isAway;
+	BOOL tagged;
+	id listCallback;
+	dispatch_queue_t socketQueue;
+	dispatch_source_t readSource;
+	dispatch_source_t writeSource;
+	
+	NSDictionary *prefix;
 }
 
 @end
-
-
 
 
 @implementation RCNetwork
@@ -149,24 +148,6 @@ SSL_CTX *RCInitContext(void) {
 	[newNet setUUID:(NSString *)uStringRef];
 	CFRelease(uStringRef);
 	return [newNet autorelease];
-}
-
-- (void)performCopyoverWithNetwork:(RCNetwork *)net {
-	BOOL connected = NO;
-	if ([net isConnected])
-		connected = TRUE;
-	if (connected)
-		[self disconnectWithMessage:@"Merging Changes."];
-	for (RCChannel *chan in [net _channels]) {
-		for (RCChannel *chan2 in _channels) {
-			if ([chan isEqual:chan2]) {
-				[chan setPanel:[chan2 panel]];
-			}
-		}
-	}
-	
-	if (connected)
-		[net connect];
 }
 
 - (id)infoDictionary {
@@ -417,13 +398,14 @@ SSL_CTX *RCInitContext(void) {
 	
 	[self.delegate networkConnected:self];
 
-	readSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, sockfd, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
+	socketQueue = dispatch_queue_create([self.uUID UTF8String], 0);
+	
+	readSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, sockfd, 0, socketQueue);
 	dispatch_source_set_event_handler(readSource, ^ {
 		[self read];
 	});
 	
-	writeSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_WRITE, sockfd, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
-	
+	writeSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_WRITE, sockfd, 0, socketQueue);
 	dispatch_source_set_event_handler(writeSource, ^ {
 		if (self.hasPendingBites)
 			[self write];
@@ -552,12 +534,12 @@ SSL_CTX *RCInitContext(void) {
 		return NO;
 	}
 	isWriting = YES;
-	int written = 0;
+	ssize_t written = 0;
 	if (useSSL) {
-		written = SSL_write(ssl, [writebuf UTF8String], strlen([writebuf UTF8String]));
+		written = SSL_write(ssl, [writebuf UTF8String], (int)strlen([writebuf UTF8String]));
 	}
 	else {
-		written = write(sockfd, [writebuf UTF8String], strlen([writebuf UTF8String]));
+		written = write(sockfd, [writebuf UTF8String], (ssize_t)strlen([writebuf UTF8String]));
 	}
 	const char *buf = [writebuf UTF8String];
 	buf = buf + written;
@@ -689,6 +671,9 @@ SSL_CTX *RCInitContext(void) {
 	dispatch_suspend(writeSource);
 	dispatch_release(readSource);
 	dispatch_release(writeSource);
+	
+	dispatch_release(socketQueue);
+	
 	readSource = nil;
 	writeSource = nil;
 	
@@ -1335,7 +1320,7 @@ SSL_CTX *RCInitContext(void) {
 		extra = @"CLIENTINFO VERSION CLIENTINFO USERINFO PING TIME UPTIME";
 	else if ([command isEqualToString:@"IRCCAT"]) {
 		NSArray *ary = @[@"irccat best op evar", @"irccat #1", @"irccat master op 2013", @"irccat ftw", @"irccat > longcat", @"no support without irccat", @"(╯°□°）╯︵ ┻━┻ T H I S  I S  R I D I C U L O U S"];
-		extra = ary[(arc4random_uniform([ary count]))];
+		extra = ary[(arc4random_uniform((uint32_t)[ary count]))];
 	}
 	else
 		NSLog(@"WTF?!?!! %@", command);

@@ -9,8 +9,17 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "RANavigationBar.h"
+#import "RAMainViewController.h"
+#import "RCNetwork.h"
 
-@interface RAChatController : NSObject <UINavigationBarDelegate, RANavigationBarButtonDelegate>
-+ (instancetype)sharedInstance;
-- (void)layoutInterfaceWithViewController:(UINavigationController *)vc;
+@class RAChannelProxy, RAChatController;
+@protocol RCChatControllerDelegate <NSObject>
+- (RAChannelProxy *)currentChannelProxy;
+- (void)chatControllerWantsUpdateUI:(RAChatController *)controller;
+
+@end
+
+@interface RAChatController : NSObject <UINavigationBarDelegate, RCChannelDelegate, RCNetworkDelegate> {
+
+}
 @end

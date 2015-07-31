@@ -7,10 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "NSString+IRCStringSupport.h"
 #import "NSMutableAttributedString+RCAdditions.h"
-#import "RCAttribute.h"
-#import "RCColorAttribute.h"
 
 @interface RCMessageConstruct : NSObject
 @property (nonatomic, retain) NSString *message;
@@ -22,5 +19,4 @@
 @property (nonatomic, readonly) CGFloat nameWidth;
 
 - (id)initWithMessage:(NSString *)message;
-- (void)formatWithHighlight:(BOOL)hi;
 @end
