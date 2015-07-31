@@ -9,6 +9,7 @@
 #import "NSString+Utils.h"
 #import "RCMessageConstruct.h"
 #import "RCI.h"
+#import "RCCommandEngine.h"
 
 @class RCNetwork, RCChannelCell, RCMessage;
 @interface RCChannel : NSObject {

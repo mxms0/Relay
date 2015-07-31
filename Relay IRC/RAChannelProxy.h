@@ -12,6 +12,7 @@
 @interface RAChannelProxy : NSObject {
 	NSMutableArray<NSString *> *messages;
 }
+@property (nonatomic, unsafe_unretained) RCChannel *channel;
 - (instancetype)initWithChannel:(RCChannel *)channel;
 - (void)addMessage:(NSString *)message;
 - (NSMutableArray<NSString *> *)messages;

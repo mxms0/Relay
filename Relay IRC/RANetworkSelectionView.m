@@ -7,15 +7,54 @@
 //
 
 #import "RANetworkSelectionView.h"
+#import "RATableView.h"
+#import "RANetworkManager.h"
 
 @implementation RANetworkSelectionView
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
+- (instancetype)init {
+	if ((self = [super init])) {
+		networkListing = [[RATableView alloc] init];
+		[self addSubview:networkListing];
+		[networkListing setDelegate:self];
+		[networkListing setDataSource:self];
+	}
+	return self;
 }
-*/
+
+- (void)setFrame:(CGRect)frame {
+	[super setFrame:frame];
+	[networkListing setFrame:self.bounds];
+}
+
+- (void)layoutSubviews {
+	[super layoutSubviews];
+	[networkListing reloadData];
+}
+
+- (NSInteger)numberOfSectionsInTableView:(nonnull UITableView *)tableView {
+	return [[[RANetworkManager sharedNetworkManager] networks] count];;
+}
+
+- (NSInteger)tableView:(nonnull UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+	RCNetwork *net = [[[RANetworkManager sharedNetworkManager] networks] objectAtIndex:section];
+	return [[net channels] count];
+}
+
+- (UITableViewCell *)tableView:(nonnull UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
+	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cc"];
+	if (!cell) {
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cc"];
+	}
+	RCNetwork *net = [[[RANetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.section];
+	NSArray *channels = [net channels];
+	cell.textLabel.text = [[channels objectAtIndex:indexPath.row] channelName];
+	return cell;
+}
+
+- (void)tableView:(nonnull UITableView *)tableView didSelectRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
+	RCChannel *channel = [[[[[RANetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.section] channels] objectAtIndex:indexPath.row];
+	[self.delegate networkSelectionView:self userSelectedChannel:channel];
+}
 
 @end

@@ -12,7 +12,7 @@
 #import "RAChannelProxy.h"
 #import "RCNetwork.h"
 
-inline RAChannelProxy *RAChannelProxyForChannel(RCChannel *channel) {
+RAChannelProxy *RAChannelProxyForChannel(RCChannel *channel) {
 	if (!channel) return nil;
 	static NSString *RAChannelProxyAssociationKey = @"RAChannelProxyAssociationKey";
 	RAChannelProxy *proxy = objc_getAssociatedObject(channel, RAChannelProxyAssociationKey);
@@ -49,7 +49,11 @@ inline RAChannelProxy *RAChannelProxyForChannel(RCChannel *channel) {
 }
 
 - (void)channel:(RCChannel *)channel receivedMessage:(NSString *)message from:(NSString *)from time:(time_t)time {
-	
+	RAChannelProxy *proxy = RAChannelProxyForChannel(channel);
+	[proxy addMessage:[NSString stringWithFormat:@"%@: %@", from, message]];
+	if ([[self.delegate currentChannelProxy] isEqual:proxy]) {
+		[self.delegate chatControllerWantsUpdateUI:self];
+	}
 }
 
 - (void)networkConnected:(RCNetwork *)network {

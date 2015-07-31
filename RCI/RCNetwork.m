@@ -28,7 +28,7 @@ SSL_CTX *RCInitContext(void) {
 }
 
 @interface RCNetwork () {
-	NSMutableArray *_channels;
+	NSMutableArray *channels;
 	NSMutableArray *tmpChannels;
 	NSMutableArray *_nicknames;
 	NSString *sDescription;
@@ -72,7 +72,7 @@ SSL_CTX *RCInitContext(void) {
 
 
 @implementation RCNetwork
-@synthesize prefix, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, channels, useNick, _nicknames, shouldRequestSPass, shouldRequestNPass, listCallback, expanded, uUID, isOper, isAway, connectCommands, tagged, delegate, channelDelegate;
+@synthesize prefix, sDescription, server, nick, username, realname, spass, npass, port, isRegistered, useSSL, channels=_channels, useNick, _nicknames, shouldRequestSPass, shouldRequestNPass, listCallback, expanded, uUID, isOper, isAway, connectCommands, tagged, delegate, channelDelegate;
 
 - (id)init {
 	if ((self = [super init])) {
@@ -392,8 +392,8 @@ SSL_CTX *RCInitContext(void) {
 		[self sendMessage:[@"PASS " stringByAppendingString:spass] canWait:NO];
 	}
 	if (!nick || [nick isEqualToString:@""]) {
-		[self setNick:@"0__GUEST"];
-		[self setUseNick:@"__GUEST"];
+		[self setNick:@"RelayUser"];
+		[self setUseNick:@"RelayUser"];
 	}
 	[self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@", (username ? username : nick), nick, nick, (realname ? realname : nick)] canWait:NO];
 	[self sendMessage:[@"NICK " stringByAppendingString:nick] canWait:NO];
@@ -453,7 +453,7 @@ SSL_CTX *RCInitContext(void) {
 }
 
 - (BOOL)read {
-	static BOOL isReading;
+	static BOOL isReading = NO;
 	if (sockfd == -1) return NO;
 	if (isReading) return YES;
 	isReading = YES;
@@ -461,9 +461,9 @@ SSL_CTX *RCInitContext(void) {
 	char buf[4097];
 	ssize_t rc = 0;
 	if (useSSL)
-		rc = SSL_read(ssl, buf, 1024);
+		rc = SSL_read(ssl, buf, 2048);
 	else
-		rc = read(sockfd, buf, 1024);
+		rc = read(sockfd, buf, 2048);
 	if (rc <= 0) {
 		[pool drain];
 		return NO;
@@ -639,8 +639,8 @@ SSL_CTX *RCInitContext(void) {
 	
 	status = RCSocketStatusClosed;
 	
-	dispatch_suspend(readSource);
-	dispatch_suspend(writeSource);
+//	dispatch_suspend(readSource);
+//	dispatch_suspend(writeSource);
 	dispatch_release(readSource);
 	dispatch_release(writeSource);
 	

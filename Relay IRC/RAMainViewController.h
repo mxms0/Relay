@@ -12,13 +12,17 @@
 #import "RANavigationBar.h"
 #import "RAChannelProxy.h"
 #import "RAChatController.h"
+#import "RANetworkSelectionView.h"
+#import "RATextField.h"
 
 @class RAChatController;
 @protocol RAChatControllerDelegate;
-@interface RAMainViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, RANavigationBarButtonDelegate, RAChatControllerDelegate> {
+@interface RAMainViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, RANavigationBarButtonDelegate, RAChatControllerDelegate, RANetworkSelectionViewDelegate> {
 	RATableView *conversationView;
 	RAChatController *controller;
 	RAChannelProxy *currentChannel;
+	RANetworkSelectionView *selectionView;
+	RATextField *inputField;
 }
 
 @end

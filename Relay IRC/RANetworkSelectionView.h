@@ -8,6 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-@interface RANetworkSelectionView : UIView
+@class RANetworkSelectionView, RCChannel;
+@protocol RANetworkSelectionViewDelegate <NSObject>
+- (void)networkSelectionView:(RANetworkSelectionView *)view userSelectedChannel:(RCChannel *)channel;
+@end
 
+@interface RANetworkSelectionView : UIView <UITableViewDataSource, UITableViewDelegate> {
+	UITableView *networkListing;
+}
+@property (nonatomic, unsafe_unretained) id <RANetworkSelectionViewDelegate> delegate;
 @end

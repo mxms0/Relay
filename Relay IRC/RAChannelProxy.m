@@ -13,6 +13,7 @@
 
 - (instancetype)initWithChannel:(RCChannel *)channel {
 	if ((self = [super init])) {
+		self.channel = channel;
 		messages = [[NSMutableArray alloc] init];
 	}
 	return self;
@@ -26,6 +27,11 @@
 
 - (NSMutableArray<NSString *> *)messages {
 	return messages;
+}
+
+- (BOOL)isEqual:(RAChannelProxy *)object {
+	if (![object isKindOfClass:[RAChannelProxy class]]) return;
+	return ([self.channel isEqual:[object channel]]);
 }
 
 @end

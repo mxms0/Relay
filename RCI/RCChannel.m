@@ -231,6 +231,7 @@ char RCUserHash(NSString *from) {
 }
 
 - (void)recievedMessage:(id)_message from:(NSString *)from time:(NSString *)time_ type:(RCMessageType)type {
+	
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 //	NSString *time = nil;
 	NSString *message = nil;
@@ -244,6 +245,9 @@ char RCUserHash(NSString *from) {
 	if (!time_) {
 //		time = [[RCDateManager sharedInstance] currentDateAsString];
 	}
+	[self.delegate.channelDelegate channel:self receivedMessage:message from:from time:time_];
+	
+	[p drain];return;
 	NSString *msg = @"";
 	char uhash = ([from isEqualToString:[delegate useNick]]) ? 1 : RCUserHash(from);
 	BOOL isHighlight = NO;
@@ -715,12 +719,12 @@ for (int a = 0; a < [partialLen length]; a++) {\
 }
 
 - (void)parseAndHandleSlashCommand:(NSString *)msg {	
-//	if ([msg hasPrefix:@"/"]) {
-//		if ([delegate sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", channelName, msg]])
-//			[self recievedMessage:msg from:[delegate useNick] time:nil type:RCMessageTypeNormal];
-//		return;
-//	}
-//	[[RCCommandEngine sharedInstance] handleCommand:msg fromNetwork:[self delegate] forChannel:self];
+	if ([msg hasPrefix:@"/"]) {
+		if ([delegate sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", channelName, msg]])
+			[self recievedMessage:msg from:[delegate useNick] time:nil type:RCMessageTypeNormal];
+		return;
+	}
+	[[RCCommandEngine sharedInstance] handleCommand:msg fromNetwork:[self delegate] forChannel:self];
 }
 
 - (BOOL)isPrivate {

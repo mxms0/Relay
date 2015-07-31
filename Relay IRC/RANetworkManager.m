@@ -146,23 +146,23 @@ static NSMutableArray *networks = nil;
 }
 
 - (void)saveNetworks {
-	if (isSettingUp) return;
-#if IGNORE_SAVE
-	return;
-#endif
-	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-	NSMutableArray *sav = [[NSMutableArray alloc] init];
-	for (RCNetwork *net in networks) {
-		[net savePasswords];
-		if ([net uUID]) [sav addObject:[net infoDictionary]];
-	}
-	[dict setObject:sav forKey:@"0_NSO"];
-	[sav release];
-	NSError *error = nil;;
-	NSData *saveData = [NSPropertyListSerialization dataWithPropertyList:dict format:NSPropertyListBinaryFormat_v1_0 options:0 error:&error];
-	if (![saveData writeToFile:[self networkPreferencesPath] atomically:NO]) {
-		NSLog(@"Couldn't save.. :(%@)", error);
-	}
+//	if (isSettingUp) return;
+//#if IGNORE_SAVE
+//	return;
+//#endif
+//	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+//	NSMutableArray *sav = [[NSMutableArray alloc] init];
+//	for (RCNetwork *net in networks) {
+//		[net savePasswords];
+//		if ([net uUID]) [sav addObject:[net infoDictionary]];
+//	}
+//	[dict setObject:sav forKey:@"0_NSO"];
+//	[sav release];
+//	NSError *error = nil;;
+//	NSData *saveData = [NSPropertyListSerialization dataWithPropertyList:dict format:NSPropertyListBinaryFormat_v1_0 options:0 error:&error];
+//	if (![saveData writeToFile:[self networkPreferencesPath] atomically:NO]) {
+//		NSLog(@"Couldn't save.. :(%@)", error);
+//	}
 }
 
 + (instancetype)sharedNetworkManager {

@@ -42,6 +42,11 @@
 		5021D48F1B5E1E47006D7F85 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5021D48D1B5E1E47006D7F85 /* libcrypto.a */; };
 		5021D4901B5E1E47006D7F85 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5021D48E1B5E1E47006D7F85 /* libssl.a */; };
 		507794C41B65E61E003AFAE1 /* RAChannelProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 507794C31B65E61E003AFAE1 /* RAChannelProxy.m */; };
+		507A9BC51B6C252F00CD47CF /* RATextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 507A9BC41B6C252F00CD47CF /* RATextField.m */; };
+		507A9BC81B6C27D300CD47CF /* RCCommandEngine.h in Headers */ = {isa = PBXBuildFile; fileRef = 507A9BC61B6C27D300CD47CF /* RCCommandEngine.h */; };
+		507A9BC91B6C27D300CD47CF /* RCCommandEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 507A9BC71B6C27D300CD47CF /* RCCommandEngine.m */; };
+		507A9BCC1B6C27DB00CD47CF /* RCBasicCommands.h in Headers */ = {isa = PBXBuildFile; fileRef = 507A9BCA1B6C27DB00CD47CF /* RCBasicCommands.h */; };
+		507A9BCD1B6C27DB00CD47CF /* RCBasicCommands.m in Sources */ = {isa = PBXBuildFile; fileRef = 507A9BCB1B6C27DB00CD47CF /* RCBasicCommands.m */; };
 		50C7777E1B6B0D64009AA233 /* RCAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 50C777781B6B0D64009AA233 /* RCAttribute.h */; };
 		50C7777F1B6B0D64009AA233 /* RCAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 50C777791B6B0D64009AA233 /* RCAttribute.m */; };
 		50C777801B6B0D64009AA233 /* RCColorAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 50C7777A1B6B0D64009AA233 /* RCColorAttribute.h */; };
@@ -127,6 +132,12 @@
 		5021D48E1B5E1E47006D7F85 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libssl.a; sourceTree = "<group>"; };
 		507794C21B65E61E003AFAE1 /* RAChannelProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RAChannelProxy.h; sourceTree = "<group>"; };
 		507794C31B65E61E003AFAE1 /* RAChannelProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RAChannelProxy.m; sourceTree = "<group>"; };
+		507A9BC31B6C252F00CD47CF /* RATextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RATextField.h; sourceTree = "<group>"; };
+		507A9BC41B6C252F00CD47CF /* RATextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RATextField.m; sourceTree = "<group>"; };
+		507A9BC61B6C27D300CD47CF /* RCCommandEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCCommandEngine.h; sourceTree = "<group>"; };
+		507A9BC71B6C27D300CD47CF /* RCCommandEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCCommandEngine.m; sourceTree = "<group>"; };
+		507A9BCA1B6C27DB00CD47CF /* RCBasicCommands.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCBasicCommands.h; sourceTree = "<group>"; };
+		507A9BCB1B6C27DB00CD47CF /* RCBasicCommands.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCBasicCommands.m; sourceTree = "<group>"; };
 		50C777781B6B0D64009AA233 /* RCAttribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCAttribute.h; sourceTree = "<group>"; };
 		50C777791B6B0D64009AA233 /* RCAttribute.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCAttribute.m; sourceTree = "<group>"; };
 		50C7777A1B6B0D64009AA233 /* RCColorAttribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCColorAttribute.h; sourceTree = "<group>"; };
@@ -196,10 +207,10 @@
 		5021D3FB1B5DCF37006D7F85 /* Relay IRC */ = {
 			isa = PBXGroup;
 			children = (
-				5021D4001B5DCF38006D7F85 /* RAAppDelegate.h */,
-				5021D4011B5DCF38006D7F85 /* RAAppDelegate.m */,
 				5021D4791B5E0CD1006D7F85 /* NSMutableAttributedString+RCAdditions.h */,
 				5021D47A1B5E0CD1006D7F85 /* NSMutableAttributedString+RCAdditions.m */,
+				5021D4001B5DCF38006D7F85 /* RAAppDelegate.h */,
+				5021D4011B5DCF38006D7F85 /* RAAppDelegate.m */,
 				50F4186A1B60825C008492F6 /* RANavigationBarButton.h */,
 				50F4186B1B60825C008492F6 /* RANavigationBarButton.m */,
 				50F4185D1B605164008492F6 /* RATableHeaderView.h */,
@@ -222,6 +233,8 @@
 				50F4186E1B609126008492F6 /* RANetworkSelectionView.m */,
 				507794C21B65E61E003AFAE1 /* RAChannelProxy.h */,
 				507794C31B65E61E003AFAE1 /* RAChannelProxy.m */,
+				507A9BC31B6C252F00CD47CF /* RATextField.h */,
+				507A9BC41B6C252F00CD47CF /* RATextField.m */,
 				5021D4091B5DCF38006D7F85 /* Images.xcassets */,
 				5021D3FC1B5DCF37006D7F85 /* Supporting Files */,
 			);
@@ -250,6 +263,10 @@
 				5021D4361B5DD6B7006D7F85 /* RCI.h */,
 				5021D4551B5E0BF4006D7F85 /* RCNetwork.h */,
 				5021D4561B5E0BF4006D7F85 /* RCNetwork.m */,
+				507A9BC61B6C27D300CD47CF /* RCCommandEngine.h */,
+				507A9BC71B6C27D300CD47CF /* RCCommandEngine.m */,
+				507A9BCA1B6C27DB00CD47CF /* RCBasicCommands.h */,
+				507A9BCB1B6C27DB00CD47CF /* RCBasicCommands.m */,
 				50C777841B6B0E0F009AA233 /* MIRC Colors */,
 				507A9BC21B6B70FA00CD47CF /* Utilities */,
 				507A9BC11B6B70EE00CD47CF /* Messages */,
@@ -325,7 +342,9 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				507A9BCC1B6C27DB00CD47CF /* RCBasicCommands.h in Headers */,
 				50C7777E1B6B0D64009AA233 /* RCAttribute.h in Headers */,
+				507A9BC81B6C27D300CD47CF /* RCCommandEngine.h in Headers */,
 				5021D4591B5E0BF4006D7F85 /* RCNetwork.h in Headers */,
 				5021D4711B5E0CB7006D7F85 /* RCMessageConstruct.h in Headers */,
 				5021D47D1B5E0CD1006D7F85 /* NSMutableAttributedString+RCAdditions.h in Headers */,
@@ -450,6 +469,7 @@
 			files = (
 				50F4186C1B60825C008492F6 /* RANavigationBarButton.m in Sources */,
 				50F4185C1B604BA7008492F6 /* RATableView.m in Sources */,
+				507A9BC51B6C252F00CD47CF /* RATextField.m in Sources */,
 				5021D4051B5DCF38006D7F85 /* RAMainViewController.m in Sources */,
 				5021D4541B5DD75D006D7F85 /* RANetworkManager.m in Sources */,
 				50F418721B609198008492F6 /* RAChatController.m in Sources */,
@@ -469,6 +489,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5021D4721B5E0CB7006D7F85 /* RCMessageConstruct.m in Sources */,
+				507A9BCD1B6C27DB00CD47CF /* RCBasicCommands.m in Sources */,
 				50C777811B6B0D64009AA233 /* RCColorAttribute.m in Sources */,
 				5021D4641B5E0BFF006D7F85 /* RCChannel.m in Sources */,
 				50C777831B6B0D64009AA233 /* RCMIRCParser.m in Sources */,
@@ -480,6 +501,7 @@
 				5021D48A1B5E0CF4006D7F85 /* RCMessage.m in Sources */,
 				5021D4661B5E0BFF006D7F85 /* RCPMChannel.m in Sources */,
 				50C7777F1B6B0D64009AA233 /* RCAttribute.m in Sources */,
+				507A9BC91B6C27D300CD47CF /* RCCommandEngine.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
