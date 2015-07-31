@@ -18,7 +18,12 @@ static const CGFloat RANetworkHeaderViewHeight = 40.0f;
 - (void)viewDidLoad {
 	[super viewDidLoad];
 
+	currentChannel = nil;
+	
 	[(RANavigationBar *)self.navigationController.navigationBar setTapDelegate:self];
+	
+	controller = [[RAChatController alloc] init];
+	[controller setDelegate:self];
 	
 	CALayer *statusBarFix = [CALayer layer];
 	[statusBarFix setBackgroundColor:[[UIColor colorWithRed:49/255.0 green:67/255.0 blue:82/255.0 alpha:1.0] CGColor]];
@@ -33,6 +38,7 @@ static const CGFloat RANetworkHeaderViewHeight = 40.0f;
 					  @"irc.rizon.net"
 					  ];
 	
+	
 	for (NSString *str in nets) {
 		RCNetwork *net = [[RCNetwork alloc] init];
 		[net setServer:str];
@@ -42,18 +48,43 @@ static const CGFloat RANetworkHeaderViewHeight = 40.0f;
 		[net setUsername:@"Maximus"];
 		[net setNick:@"Maximus"];
 		[net setRealname:@"Maximus"];
+		[net setChannelCreationHandler:^(RCChannel *channel) {
+			static NSString *RAChannelProxyAssociationKey = @"RAChannelProxyAssociationKey";
+			RAChannelProxy *proxy = objc_getAssociatedObject(channel, RAChannelProxyAssociationKey);
+			if (!proxy) {
+				proxy = [[RAChannelProxy alloc] initWithChannel:channel];
+				objc_setAssociatedObject(channel, RAChannelProxyAssociationKey, proxy, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+			}
+		}];
+		
+		[net createConsoleChannel];
+		[net connect];
 		[[RANetworkManager sharedNetworkManager] addNetwork:net];
 		[net release];
 	}
 	
-	networks = [[RATableView alloc] init];
-	[self.view addSubview:networks];
-	networks.delegate = self;
-	networks.dataSource = self;
-	networks.sectionHeaderHeight = RANetworkHeaderViewHeight;
-	networks.frame = CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height - 20);
+	currentChannel = RAChannelProxyForChannel([[[RANetworkManager sharedNetworkManager] networks][2] consoleChannel]);
+	NSLog(@"Fds %@", currentChannel);
+	
+	conversationView = [[RATableView alloc] init];
+	[self.view addSubview:conversationView];
+	conversationView.delegate = self;
+	conversationView.dataSource = self;
+//	conversationView.sectionHeaderHeight = RANetworkHeaderViewHeight;
+	conversationView.frame = CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height - 20);
+	
+	[conversationView performSelector:@selector(reloadData) withObject:nil afterDelay:2];
+	
 	
 	NSLog(@"FDs %@", [[RANetworkManager sharedNetworkManager] networks]);
+}
+
+- (RAChannelProxy *)currentChannelProxy {
+	return currentChannel;
+}
+
+- (void)chatControllerWantsUpdateUI:(RAChatController *)controller {
+	
 }
 
 - (void)navigationBarButtonWasPressed:(RANavigationBarButton *)btn {
@@ -61,19 +92,11 @@ static const CGFloat RANetworkHeaderViewHeight = 40.0f;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-	return [[[RANetworkManager sharedNetworkManager] networks] count];
+	return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	return [[[[[RANetworkManager sharedNetworkManager] networks] objectAtIndex:section] channels] count];
-}
-
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-	RCNetwork *network = [[[RANetworkManager sharedNetworkManager] networks] objectAtIndex:section];
-	RATableHeaderView *header = [[RATableHeaderView alloc] init];
-	header.textLabel.text = [network _description];
-	header.detailTextLabel.text = [network server];
-	return [header autorelease];
+	return [[currentChannel messages] count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -81,7 +104,7 @@ static const CGFloat RANetworkHeaderViewHeight = 40.0f;
 	if (!cell) {
 		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"f"];
 	}
-
+	cell.textLabel.text = [[currentChannel messages] objectAtIndex:indexPath.row];
 //	cell.textLabel.text = [channelMessages objectAtIndex:indexPath.row];
 	
 	return cell;

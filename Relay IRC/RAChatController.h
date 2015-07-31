@@ -9,11 +9,13 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "RANavigationBar.h"
-#import "RAMainViewController.h"
 #import "RCNetwork.h"
 
-@class RAChannelProxy, RAChatController;
-@protocol RCChatControllerDelegate <NSObject>
+@class RAChannelProxy, RAChatController, RCChannel;
+
+RAChannelProxy *RAChannelProxyForChannel(RCChannel *channel);
+
+@protocol RAChatControllerDelegate <NSObject>
 - (RAChannelProxy *)currentChannelProxy;
 - (void)chatControllerWantsUpdateUI:(RAChatController *)controller;
 
@@ -22,4 +24,5 @@
 @interface RAChatController : NSObject <UINavigationBarDelegate, RCChannelDelegate, RCNetworkDelegate> {
 
 }
+@property (unsafe_unretained) id <RAChatControllerDelegate> delegate;
 @end

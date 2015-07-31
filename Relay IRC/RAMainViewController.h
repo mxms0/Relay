@@ -10,13 +10,15 @@
 #import "RATableView.h"
 #import "RCNetwork.h"
 #import "RANavigationBar.h"
+#import "RAChannelProxy.h"
+#import "RAChatController.h"
 
 @class RAChatController;
-@interface RAMainViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIToolbarDelegate, RANavigationBarButtonDelegate> {
-	RATableView *networks;
+@protocol RAChatControllerDelegate;
+@interface RAMainViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, RANavigationBarButtonDelegate, RAChatControllerDelegate> {
+	RATableView *conversationView;
 	RAChatController *controller;
+	RAChannelProxy *currentChannel;
 }
 
-
 @end
-

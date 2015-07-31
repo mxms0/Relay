@@ -71,9 +71,7 @@ typedef enum RCMessageType {
 #define EXPANDED_KEY @"expanded"
 #define SHOULD_AWAY_KEY @"awaykeycykey"
 //
-#ifndef kCFCoreFoundationVersionNumber_iPhoneOS_4_0
-#define kCFCoreFoundationVersionNumber_iPhoneOS_4_0 550.32
-#endif
+
 #define RCCurrentNetKey @"0_CURRENTNET"
 #define DEFAULT_NICK @"Guest"
 #define RCCurrentChanKey @"0_CURRENTCHAN"
@@ -81,19 +79,5 @@ typedef enum RCMessageType {
 #define CMLog(format, ...) NSLog(@"(%s) in [%s:%d] ::: %@", __PRETTY_FUNCTION__, __FILE__, __LINE__, [NSString stringWithFormat:format, ## __VA_ARGS__])
 #define MARK CMLog(@"%s", __PRETTY_FUNCTION__);
 #define BACKTRACE CMLog(@"%@", [NSThread callStackSymbols]);
-
-// alerts
-#define RCALERR_INCNICK 666
-#define RCALERR_INCUNAME 667
-#define RCALERR_INCSPASS 668
-#define RCALERR_SERVCHNGE 669
-// actions sheets
-#define	RCALERR_GLOPTIONS 200
-#define RCALERR_INDVOPTIONS 201
-// buttons
-#define RCChannelListButtonTag 101
-#define RCUserListButtonTag 102
-
-// In this header, you should import all the public headers of your framework using statements like #import <RCI/PublicHeader.h>
 
 

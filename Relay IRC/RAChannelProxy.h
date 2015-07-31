@@ -10,8 +10,9 @@
 
 @class RCChannel;
 @interface RAChannelProxy : NSObject {
-//	NSArray<NSString *> *messages;
+	NSMutableArray<NSString *> *messages;
 }
 - (instancetype)initWithChannel:(RCChannel *)channel;
-
+- (void)addMessage:(NSString *)message;
+- (NSMutableArray<NSString *> *)messages;
 @end

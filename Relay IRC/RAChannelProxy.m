@@ -13,9 +13,19 @@
 
 - (instancetype)initWithChannel:(RCChannel *)channel {
 	if ((self = [super init])) {
-		
+		messages = [[NSMutableArray alloc] init];
 	}
 	return self;
+}
+
+- (void)addMessage:(NSString *)message {
+	@synchronized(messages) {
+		[messages addObject:message];
+	}
+}
+
+- (NSMutableArray<NSString *> *)messages {
+	return messages;
 }
 
 @end

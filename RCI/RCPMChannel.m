@@ -6,6 +6,7 @@
 //
 
 #import "RCPMChannel.h"
+#import "RCNetwork.h"
 
 @implementation RCPMChannel
 @synthesize ipInfo, chanInfos, thirstyForWhois, hasWhois, connectionInfo;
@@ -40,7 +41,7 @@
 	dispatch_async(dispatch_get_main_queue(), ^ {
 		@synchronized(self) {
 			if ([old isEqualToString:[self channelName]]) {
-				if ([[self delegate] channelWithChannelName: new_]) {
+				if ([(RCNetwork *)[self delegate] channelWithChannelName: new_]) {
 					id nself = [[self delegate] channelWithChannelName: new_];
 					[self recievedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" time:nil type:RCMessageTypeNormalE];
 					[nself recievedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" time:nil type:RCMessageTypeNormalE];

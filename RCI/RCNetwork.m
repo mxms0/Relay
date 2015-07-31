@@ -90,43 +90,6 @@ SSL_CTX *RCInitContext(void) {
 	return self;
 }
 
-+ (RCNetwork *)networkWithInfoDictionary:(NSDictionary *)info {
-	RCNetwork *network = [[RCNetwork alloc] init];
-	[network setUsername:[info objectForKey:USER_KEY]];
-	[network setNick:[info objectForKey:NICK_KEY]];
-	[network setRealname:[info objectForKey:NAME_KEY]];
-	[network setSDescription:[info objectForKey:DESCRIPTION_KEY]];
-	[network setServer:[info objectForKey:SERVR_ADDR_KEY]];
-	[network setPort:[[info objectForKey:PORT_KEY] intValue]];
-	[network setUseSSL:[[info objectForKey:SSL_KEY] boolValue]];
-	[network setUUID:[info objectForKey:UUID_KEY]];
-	[network setExpanded:[[info objectForKey:EXPANDED_KEY] boolValue]];
-//	if ([[info objectForKey:S_PASS_KEY] boolValue]) {
-//		RCKeychainItem *item = [RCKeychainItem sharedKeychain];
-//		[network setSpass:[item objectForKey:[NSString stringWithFormat:@"%@spass", [network uUID]]]];
-//		if ([network spass] == nil || [[network spass] length] == 0) {
-//			[network setShouldRequestSPass:YES];
-//		}
-//	}
-//	if ([[info objectForKey:N_PASS_KEY] boolValue]) {
-//		RCKeychainItem *item = [RCKeychainItem sharedKeychain];
-//		[network setNpass:[item objectForKey:[NSString stringWithFormat:@"%@npass", [network uUID]]]];
-//		if ([network npass] == nil || [[network npass] length] == 0) {
-//			[network setShouldRequestNPass:YES];
-//		}
-//	}
-	NSMutableArray *channels = [[[info objectForKey:CHANNELS_KEY] mutableCopy] autorelease];
-	if (!channels) {
-		[network addChannel:CONSOLECHANNEL join:NO];
-	}
-	else {
-        NSOrderedSet *set = [NSOrderedSet orderedSetWithArray:channels];
-        channels = [[[set array] mutableCopy] autorelease];
-    }
-	[network _setupChannels:channels];
-	return [network autorelease];
-}
-
 - (RCNetwork *)uniqueCopy {
 	RCNetwork *newNet = [[RCNetwork alloc] init];
 	[newNet setSDescription:sDescription];
@@ -246,14 +209,16 @@ SSL_CTX *RCInitContext(void) {
 }
 
 - (RCChannel *)consoleChannel {
+	RCConsoleChannel *ret = nil;
 	@synchronized(_channels) {
 		for (RCChannel *chan in _channels) {
 			if ([[chan channelName] isEqualToString:CONSOLECHANNEL] && [chan isKindOfClass:[RCConsoleChannel class]]) {
-				return chan;
+				ret = (RCConsoleChannel *)chan;
+				break;
 			}
 		}
-		return nil;
 	}
+	return ret;
 }
 
 - (void)connectOrDisconnectDependingOnCurrentStatus {
@@ -299,7 +264,9 @@ SSL_CTX *RCInitContext(void) {
 		if ([_chan hasPrefix:@" "]) {
 			_chan = [_chan stringByReplacingOccurrencesOfString:@" " withString:@""];
 		}
-		if (![self channelWithChannelName:_chan ifNilCreate:NO]) {
+		RCChannel *ret = [self channelWithChannelName:_chan ifNilCreate:NO];
+		
+		if (!ret) {
 			RCChannel *chan = nil;
 			if ([_chan isEqualToString:CONSOLECHANNEL]) chan = [[RCConsoleChannel alloc] initWithChannelName:_chan];
 			else if ([_chan hasPrefix:@"#"] || [_chan hasPrefix:@"&"]) chan = [[RCChannel alloc] initWithChannelName:_chan];
@@ -317,13 +284,19 @@ SSL_CTX *RCInitContext(void) {
 //				[[RCNetworkManager sharedNetworkManager] saveNetworks];
 //				reloadNetworks();
 			}
+			if (self.channelCreationHandler)
+				self.channelCreationHandler(chan);
+			
 			return [chan autorelease];
 		}
 		else {
-			RCChannel *chan = [self channelWithChannelName:_chan];
-			return chan;
+			return ret;
 		}
 	}
+}
+
+- (void)createConsoleChannel {
+	(void)[self addChannel:CONSOLECHANNEL join:YES];
 }
 
 - (RCChannel *)addTemporaryChannelListingIfItDoesntAlreadyExist:(NSString *)_chan {
@@ -480,7 +453,6 @@ SSL_CTX *RCInitContext(void) {
 }
 
 - (BOOL)read {
-	NSLog(@"gds reading..");
 	static BOOL isReading;
 	if (sockfd == -1) return NO;
 	if (isReading) return YES;
@@ -505,14 +477,14 @@ SSL_CTX *RCInitContext(void) {
 		NSData *data = [rcache subdataWithRange:NSMakeRange(0, rr.location + 2)];
 		NSString *recd = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 		if (recd) {
-			[self recievedMessage:recd];
+			[self receivedMessage:recd];
 		}
 		else {
 			recd = [[NSString alloc] initWithData:data encoding:NSISOLatin1StringEncoding];
 			if (!recd) {
 				// perhaps mac os roman, seems to work for all.
 			}
-			[self recievedMessage:recd];
+			[self receivedMessage:recd];
 		}
 		[recd autorelease];
 		[rcache replaceBytesInRange:NSMakeRange(0, rr.location + 2) withBytes:NULL length:0];
@@ -579,7 +551,7 @@ SSL_CTX *RCInitContext(void) {
 	NSLog(@"Error: [%@]", [error localizedDescription]);
 }
 
-- (void)recievedMessage:(NSString *)msg {
+- (void)receivedMessage:(NSString *)msg {
 #if LOGALL
 	NSLog(@"Recieved: [%@]", msg);
 #endif
@@ -1401,6 +1373,9 @@ SSL_CTX *RCInitContext(void) {
 	if (!isRegistered) return;
 	NSString *from = nil;
 	RCParseUserMask(message.sender, &from, nil, nil);
+	
+	[delegate network:self receivedNotice:[message parameterAtIndex:1] user:from];
+	
 //	if ([[[[RCChatController sharedController] currentChannel] delegate] isEqual:self]) {
 //		[[[RCChatController sharedController] currentChannel] recievedMessage:[message parameterAtIndex:1] from:from time:nil type:RCMessageTypeNotice];
 //	}

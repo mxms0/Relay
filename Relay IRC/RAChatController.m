@@ -12,17 +12,18 @@
 #import "RAChannelProxy.h"
 #import "RCNetwork.h"
 
-@implementation RAChatController
-
-- (RAChannelProxy *)proxyForChannel:(RCChannel *)channel {
-	static char RAChannelProxyAssociationKey;
-	RAChannelProxy *proxy = objc_getAssociatedObject(channel, &RAChannelProxyAssociationKey);
+inline RAChannelProxy *RAChannelProxyForChannel(RCChannel *channel) {
+	if (!channel) return nil;
+	static NSString *RAChannelProxyAssociationKey = @"RAChannelProxyAssociationKey";
+	RAChannelProxy *proxy = objc_getAssociatedObject(channel, RAChannelProxyAssociationKey);
 	if (!proxy) {
 		proxy = [[RAChannelProxy alloc] initWithChannel:channel];
-		objc_setAssociatedObject(channel, &RAChannelProxyAssociationKey, proxy, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+		objc_setAssociatedObject(channel, RAChannelProxyAssociationKey, proxy, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 	}
-	return proxy;
+	return [[proxy retain] autorelease];
 }
+
+@implementation RAChatController
 
 - (void)channel:(RCChannel *)channel userJoined:(NSString *)user {
 //	RAChannelProxy *proxy = [self proxyForChannel:channel];
@@ -65,6 +66,11 @@
 
 - (void)network:(RCNetwork *)network connectionFailed:(RCConnectionFailure)fail {
 	
+}
+
+- (void)network:(RCNetwork *)network receivedNotice:(NSString *)notice user:(NSString *)user {
+	RAChannelProxy *proxy = RAChannelProxyForChannel([network consoleChannel]);
+	[proxy addMessage:notice];
 }
 
 @end

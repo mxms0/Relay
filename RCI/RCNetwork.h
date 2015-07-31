@@ -46,6 +46,7 @@ typedef NS_ENUM(NSInteger, RCConnectionFailure) {
 - (void)networkDisconnected:(RCNetwork *)network;
 - (void)network:(RCNetwork *)network connectionFailed:(RCConnectionFailure)fail;
 - (void)network:(RCNetwork *)network serverSentLine:(RCLineType)lineType;
+- (void)network:(RCNetwork *)network receivedNotice:(NSString *)notice user:(NSString *)user;
 
 @end
 
@@ -82,11 +83,11 @@ typedef enum RCSocketStatus {
 @property (nonatomic, assign) BOOL tagged;
 @property (nonatomic, assign) id <RCNetworkDelegate> delegate;
 @property (nonatomic, assign) id <RCChannelDelegate> channelDelegate;
-+ (RCNetwork *)networkWithInfoDictionary:(NSDictionary *)dict;
+@property (nonatomic, copy) void (^channelCreationHandler)(RCChannel *);
 - (RCNetwork *)uniqueCopy;
 - (RCChannel *)channelWithChannelName:(NSString *)chan;
 - (NSString *)_description;
-- (void)performCopyoverWithNetwork:(RCNetwork *)net;
+- (void)createConsoleChannel;
 - (void)connect;
 - (BOOL)disconnect;
 - (void)disconnectCleanupWithMessage:(NSString *)msg;
@@ -95,10 +96,9 @@ typedef enum RCSocketStatus {
 - (void)connectOrDisconnectDependingOnCurrentStatus;
 - (BOOL)sendMessage:(NSString *)msg;
 - (BOOL)sendMessage:(NSString *)msg canWait:(BOOL)canWait;
-- (void)recievedMessage:(NSString *)msg;
+- (void)receivedMessage:(NSString *)msg;
 - (void)errorOccured:(NSError *)error;
 - (void)_setupChannels:(NSArray *)rooms;
-- (void)setupRooms:(NSArray *)rooms;
 - (void)moveChannelAtIndex:(int)idx toIndex:(int)newIdx;
 - (RCChannel *)addChannel:(NSString *)_chan join:(BOOL)join;
 - (RCPMChannel *)pmChannelWithChannelName:(NSString *)chan;
@@ -111,7 +111,6 @@ typedef enum RCSocketStatus {
 - (BOOL)read;
 - (BOOL)write;
 - (BOOL)hasPendingBites; //nom
-- (NSDictionary *)infoDictionary;
 - (void)savePasswords;
 @end
 
