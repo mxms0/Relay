@@ -245,7 +245,7 @@ char RCUserHash(NSString *from) {
 	if (!time_) {
 //		time = [[RCDateManager sharedInstance] currentDateAsString];
 	}
-	[self.delegate.channelDelegate channel:self receivedMessage:message from:from time:time_];
+	[self.delegate.channelDelegate channel:self receivedMessage:message from:from time:0];
 	
 	[p drain];return;
 	NSString *msg = @"";

@@ -56,12 +56,10 @@ SSL_CTX *RCInitContext(void) {
 	BOOL expanded;
 	BOOL shouldRequestSPass;
 	BOOL shouldRequestNPass;
-	BOOL isWriting;
 	BOOL isOper;
 	BOOL isAway;
 	BOOL tagged;
 	id listCallback;
-	dispatch_queue_t socketQueue;
 	dispatch_source_t readSource;
 	dispatch_source_t writeSource;
 	
@@ -370,18 +368,19 @@ SSL_CTX *RCInitContext(void) {
 	}
 	
 	[self.delegate networkConnected:self];
-
-	socketQueue = dispatch_queue_create([self.uUID UTF8String], 0);
+	if (!socketQueue)
+		socketQueue = dispatch_queue_create([self.uUID UTF8String], 0);
 	
 	readSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, sockfd, 0, socketQueue);
+	writeSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_WRITE, sockfd, 0, socketQueue);
+	
 	dispatch_source_set_event_handler(readSource, ^ {
 		[self read];
 	});
 	
-	writeSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_WRITE, sockfd, 0, socketQueue);
+
 	dispatch_source_set_event_handler(writeSource, ^ {
-		if (self.hasPendingBites)
-			[self write];
+		[self write];
 	});
 	
 	dispatch_resume(readSource);
@@ -438,6 +437,8 @@ SSL_CTX *RCInitContext(void) {
 		}
 	}
 
+	int flags = fcntl(_sfd, F_GETFL, 0);
+	fcntl(_sfd, F_SETFL, flags | O_NONBLOCK);
 	return _sfd;
 }
 
@@ -457,6 +458,7 @@ SSL_CTX *RCInitContext(void) {
 	if (sockfd == -1) return NO;
 	if (isReading) return YES;
 	isReading = YES;
+	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	char buf[4097];
 	ssize_t rc = 0;
@@ -493,18 +495,13 @@ SSL_CTX *RCInitContext(void) {
 	
 	[pool release];
 	isReading = NO;
-	return NO;
+	return YES;
 }
 
 - (BOOL)write {
-	if (sockfd == -1) {
-		MARK;
-		return NO;
-	}
-	if (isWriting) {
-		MARK;
-		return NO;
-	}
+	static BOOL isWriting = NO;
+	if (sockfd == -1) return NO;
+	if (isWriting) return NO;
 	isWriting = YES;
 	ssize_t written = 0;
 	if (useSSL) {
@@ -545,10 +542,6 @@ SSL_CTX *RCInitContext(void) {
 		[cacheLine appendString:cacheLine];
 	}
 	return YES;
-}
-
-- (void)errorOccured:(NSError *)error {
-	NSLog(@"Error: [%@]", [error localizedDescription]);
 }
 
 - (void)receivedMessage:(NSString *)msg {
@@ -1144,25 +1137,25 @@ SSL_CTX *RCInitContext(void) {
 	// type /nick for example.
 	// wether you hit change or cancel, it disconnects you
 	// its stupid.
-	if (isRegistered) {
-		dispatch_async(dispatch_get_main_queue(), ^{
+//	if (isRegistered) {
+//		dispatch_async(dispatch_get_main_queue(), ^{
 //			RCPrettyAlertView *ac = [[RCPrettyAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Invalid Username (%@)", [self _description]] message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Change", nil];
 //			[ac setTag:RCALERR_INCUNAME];
 //			[ac setAlertViewStyle:UIAlertViewStylePlainTextInput];
 //			[ac show];
 //			[ac release];
-		});
-	}
+//		});
+//	}
 }
 
 - (void)handle464:(RCMessage *)message {
-	dispatch_async(dispatch_get_main_queue(), ^{
+//	dispatch_async(dispatch_get_main_queue(), ^{
 //		RCPrettyAlertView *ac = [[RCPrettyAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Invalid Server Password (%@)", [self _description]] message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Change", nil];
 //		[ac setTag:RCALERR_INCSPASS];
 //		[ac setAlertViewStyle:UIAlertViewStyleSecureTextInput];
 //		[ac show];
 //		[ac release];
-	});
+//	});
 }
 
 - (void)handle473:(RCMessage *)message {

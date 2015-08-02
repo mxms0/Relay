@@ -33,6 +33,8 @@ typedef enum RCMessageType {
 	RCMessageTypeNormalE2
 } RCMessageType;
 
+static dispatch_queue_t socketQueue = nil;
+
 #define USER_KEY @"0_USER"
 #define NICK_KEY @"0_NICK"
 #define NAME_KEY @"0_NAME"
