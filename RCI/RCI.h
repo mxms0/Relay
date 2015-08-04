@@ -29,8 +29,7 @@ typedef enum RCMessageType {
 	RCMessageTypeMode,
 	RCMessageTypeError,
 	RCMessageTypeEvent,
-	RCMessageTypeNormalE,
-	RCMessageTypeNormalE2
+	RCMessageTypeNormalEx
 } RCMessageType;
 
 static dispatch_queue_t socketQueue = nil;

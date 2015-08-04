@@ -13,24 +13,18 @@
 
 - (id)initWithChannelName:(NSString *)_name {
 	if ((self = [super initWithChannelName:_name])) {
-		joined = YES;
+		self.joined = YES;
 	}
 	return self;
 }
 
-- (BOOL)joined {
-	return YES;
-}
+- (void)setSuccessfullyJoined:(BOOL)success {}
 
-- (void)storePassword {
-}
+- (void)join {}
 
-- (void)retrievePassword {
-}
+- (void)part {}
 
-- (void)setSuccessfullyJoined:(BOOL)success {
-	joined = YES;
-}
+- (void)partWithMessage:(NSString *)message {}
 
 - (void)userWouldLikeToPartakeInThisConversation:(NSString *)message {
 	@autoreleasepool {
@@ -40,7 +34,7 @@
 		}
 		else {
 			[(RCNetwork *)delegate sendMessage:message];
-			[self recievedMessage:message from:@"" time:nil type:RCMessageTypeNormalE];
+			[self recievedMessage:message from:@"" time:nil type:RCMessageTypeNormalEx];
 		}
 	}
 }

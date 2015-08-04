@@ -16,19 +16,16 @@
 		partnerIsOnline = NO;
 		ipInfo = nil;
 		chanInfos = nil;
+		channelName = [_name retain];
+		joinOnConnect = YES;
+		cellRepresentation = nil;
+		self.joined = YES;
+		newMessageCount = 0;
+		userRanksAdv = [NSMutableDictionary new];
+		fullUserList = [[NSMutableArray alloc] init];
+		[fullUserList addObject:_name];
 	}
 	return self;
-}
-
-- (void)initialize_me:(NSString *)chan {
-	channelName = [chan retain];
-	joinOnConnect = YES;
-	cellRepresentation = nil;
-	joined = NO;
-	newMessageCount = 0;
-	userRanksAdv = [NSMutableDictionary new];
-	fullUserList = [[NSMutableArray alloc] init];
-	[fullUserList addObject:chan];
 }
 
 - (void)storePassword {
@@ -43,48 +40,15 @@
 			if ([old isEqualToString:[self channelName]]) {
 				if ([(RCNetwork *)[self delegate] channelWithChannelName: new_]) {
 					id nself = [[self delegate] channelWithChannelName: new_];
-					[self recievedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" time:nil type:RCMessageTypeNormalE];
-					[nself recievedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" time:nil type:RCMessageTypeNormalE];
+					[self recievedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" time:nil type:RCMessageTypeNormalEx];
+					[nself recievedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" time:nil type:RCMessageTypeNormalEx];
 					return;
 				}
 				[self setChannelName:new_];
 			}
-			[self recievedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" time:nil type:RCMessageTypeNormalE];
+			[self recievedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" time:nil type:RCMessageTypeNormalEx];
 		}
 	});
-}
-
-- (void)shouldPost:(BOOL)isHighlight withMessage:(NSString *)msg {
-//	[self setUserJoined:[self channelName]];
-//	[self setUserJoined:[delegate useNick]];
-//	if (isHighlight) {
-//		if ([[RCNetworkManager sharedNetworkManager] isBG]) {
-//			UILocalNotification *nc = [[UILocalNotification alloc] init];
-//			[nc setFireDate:[NSDate date]];
-//			[nc setAlertBody:[msg stringByStrippingIRCMetadata]];
-//			[nc setSoundName:UILocalNotificationDefaultSoundName];
-//			[nc setUserInfo:[NSDictionary dictionaryWithObjectsAndKeys:[delegate uUID], RCCurrentNetKey, [self channelName], RCCurrentChanKey, nil]];
-//			[[UIApplication sharedApplication] scheduleLocalNotification:nc];
-//			[nc release];
-//		}
-//	}
-//	if (![[[RCChatController sharedController] currentChannel] isEqual:self]) {
-//		newMessageCount++;
-//		if ([[RCChatController sharedController] isShowingChatListView]) {
-//			if (newMessageCount > 101) return;
-//			// if it's at 100, it will stop drawing anything new anyways. since the 99+ thing. so k
-//			[cellRepresentation setNewMessageCount:newMessageCount];
-//			[cellRepresentation performSelectorOnMainThread:@selector(setNeedsDisplay) withObject:nil waitUntilDone:NO];
-//		}
-//	}
-}
-
-- (NSNumber *)heightForString:(NSString *)str {
-	return 0;
-//    return @([str boundingRectWithSize:CGSizeMake([RCTopViewCard cardWidth] - 20, CGFLOAT_MAX)
-//                                options:NSStringDrawingUsesLineFragmentOrigin
-//                             attributes:@{ NSFontAttributeName: [UIFont systemFontOfSize:14] }
-//                                context:nil].size.height+20);
 }
 
 - (void)requestWhoisInformation {
@@ -94,12 +58,12 @@
 }
 
 - (void)recievedWHOISInformation {
-	thirstyForWhois = NO;
-	hasWhois = YES;
-    self.cellHeights = @[[self heightForString:self.ipInfo], [self heightForString:self.chanInfos], [self heightForString:self.connectionInfo]];
+//	thirstyForWhois = NO;
+//	hasWhois = YES;
+//    self.cellHeights = @[[self heightForString:self.ipInfo], [self heightForString:self.chanInfos], [self heightForString:self.connectionInfo]];
 //	self.finalWhoisInfoString = [NSString stringWithFormat:@"%@\r\n\r\n%@\r\n\r\n%@", self.ipInfo, self.chanInfos, self.connectionInfo];
 //	NSLog(@"meh %@", usersPanel);
-	[usersPanel reloadData];
+//	[usersPanel reloadData];
 }
 
 - (void)setPartnerIsOnline:(BOOL)partnerIsOnline {
@@ -117,8 +81,7 @@
 	
 }
 
-- (void)setJoined:(BOOL)joind {
-}
+- (void)setJoined:(BOOL)joind {}
 
 - (BOOL)joined {
 	return YES;

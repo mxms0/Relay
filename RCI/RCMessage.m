@@ -116,6 +116,11 @@
 	return [messageParameters objectAtIndex:index];
 }
 
+- (NSString *)humanReadableString {
+	// do complex string stuff from RCChannel here
+	return @"";
+}
+
 - (id)description {
 	return [@[(tags ?: [NSNull null]), (sender ?: [NSNull null]), (numeric ?: @"-1"), (message ?: @"wat, no message?")] description];
 }

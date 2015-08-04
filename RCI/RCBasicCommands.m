@@ -282,7 +282,7 @@
 }
 
 - (void)handleCLEARALL:(NSString *)omg net:(RCNetwork *)net {
-	for (id channel in [net _channels]) {
+	for (id channel in [net channels]) {
 		[channel clearAllMessages];
 	}
 }
@@ -473,7 +473,7 @@
 
 - (void)handlePART:(NSString *)part net:(RCNetwork *)net channel:(RCChannel *)aChan {
 	if (!part) {
-		[aChan setJoined:NO withArgument:@"Relay 1.0"];
+		[aChan partWithMessage:@"Relay 1.0"];
 	}
 	else {
 		NSScanner *scanr = [[NSScanner alloc] initWithString:part];
@@ -481,13 +481,13 @@
 		NSString *reason = nil;
 		[scanr scanUpToString:@" " intoString:&chan];
 		if (![chan hasPrefix:@"#"]) {
-			[aChan setJoined:NO withArgument:part];
+			[aChan partWithMessage:part];
 			[scanr release];
 			return;
 		}
 		if (![chan isEqualToString:part]) {
 			[scanr scanUpToString:@"" intoString:&reason];
-			[aChan setJoined:NO withArgument:reason];
+			[aChan partWithMessage:reason];
 			[scanr release];
 			return;
 		}

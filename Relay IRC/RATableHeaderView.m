@@ -12,8 +12,12 @@
 
 - (instancetype)init {
 	if ((self = [super init])) {
-		self.textLabel = [[UILabel alloc] init];
-		self.detailTextLabel = [[UILabel alloc] init];
+		UILabel *textLabel = [[UILabel alloc] init];
+		self.textLabel = textLabel;
+		UILabel *detailLabel = [[UILabel alloc] init];
+		self.detailTextLabel = detailLabel;
+		[detailLabel release];
+		[textLabel release];
 		[self addSubview:self.textLabel];
 		[self addSubview:self.detailTextLabel];
 	}

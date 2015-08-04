@@ -41,7 +41,7 @@
 		5021D48C1B5E0DA7006D7F85 /* openssl in Resources */ = {isa = PBXBuildFile; fileRef = 5021D48B1B5E0DA7006D7F85 /* openssl */; };
 		5021D48F1B5E1E47006D7F85 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5021D48D1B5E1E47006D7F85 /* libcrypto.a */; };
 		5021D4901B5E1E47006D7F85 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5021D48E1B5E1E47006D7F85 /* libssl.a */; };
-		507794C41B65E61E003AFAE1 /* RAChannelProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 507794C31B65E61E003AFAE1 /* RAChannelProxy.m */; };
+		50406CEB1B70C8FA00646FFB /* RAChannelProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 50406CEA1B70C8FA00646FFB /* RAChannelProxy.m */; };
 		507A9BC51B6C252F00CD47CF /* RATextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 507A9BC41B6C252F00CD47CF /* RATextField.m */; };
 		507A9BC81B6C27D300CD47CF /* RCCommandEngine.h in Headers */ = {isa = PBXBuildFile; fileRef = 507A9BC61B6C27D300CD47CF /* RCCommandEngine.h */; };
 		507A9BC91B6C27D300CD47CF /* RCCommandEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 507A9BC71B6C27D300CD47CF /* RCCommandEngine.m */; };
@@ -130,8 +130,8 @@
 		5021D48B1B5E0DA7006D7F85 /* openssl */ = {isa = PBXFileReference; lastKnownFileType = folder; path = openssl; sourceTree = "<group>"; };
 		5021D48D1B5E1E47006D7F85 /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libcrypto.a; sourceTree = "<group>"; };
 		5021D48E1B5E1E47006D7F85 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libssl.a; sourceTree = "<group>"; };
-		507794C21B65E61E003AFAE1 /* RAChannelProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RAChannelProxy.h; sourceTree = "<group>"; };
-		507794C31B65E61E003AFAE1 /* RAChannelProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RAChannelProxy.m; sourceTree = "<group>"; };
+		50406CE91B70C8FA00646FFB /* RAChannelProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RAChannelProxy.h; sourceTree = "<group>"; };
+		50406CEA1B70C8FA00646FFB /* RAChannelProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RAChannelProxy.m; sourceTree = "<group>"; };
 		507A9BC31B6C252F00CD47CF /* RATextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RATextField.h; sourceTree = "<group>"; };
 		507A9BC41B6C252F00CD47CF /* RATextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RATextField.m; sourceTree = "<group>"; };
 		507A9BC61B6C27D300CD47CF /* RCCommandEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCCommandEngine.h; sourceTree = "<group>"; };
@@ -231,8 +231,8 @@
 				50F418711B609198008492F6 /* RAChatController.m */,
 				50F4186D1B609126008492F6 /* RANetworkSelectionView.h */,
 				50F4186E1B609126008492F6 /* RANetworkSelectionView.m */,
-				507794C21B65E61E003AFAE1 /* RAChannelProxy.h */,
-				507794C31B65E61E003AFAE1 /* RAChannelProxy.m */,
+				50406CE91B70C8FA00646FFB /* RAChannelProxy.h */,
+				50406CEA1B70C8FA00646FFB /* RAChannelProxy.m */,
 				507A9BC31B6C252F00CD47CF /* RATextField.h */,
 				507A9BC41B6C252F00CD47CF /* RATextField.m */,
 				5021D4091B5DCF38006D7F85 /* Images.xcassets */,
@@ -474,7 +474,7 @@
 				5021D4541B5DD75D006D7F85 /* RANetworkManager.m in Sources */,
 				50F418721B609198008492F6 /* RAChatController.m in Sources */,
 				50F418691B606089008492F6 /* RANavigationController.m in Sources */,
-				507794C41B65E61E003AFAE1 /* RAChannelProxy.m in Sources */,
+				50406CEB1B70C8FA00646FFB /* RAChannelProxy.m in Sources */,
 				50F418591B60432E008492F6 /* RAChatView.m in Sources */,
 				50F418661B605D4E008492F6 /* RANavigationBar.m in Sources */,
 				5021D4021B5DCF38006D7F85 /* RAAppDelegate.m in Sources */,

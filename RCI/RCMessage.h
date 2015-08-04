@@ -17,5 +17,6 @@
 @property (nonatomic, retain) NSDictionary *tags;
 - (id)initWithString:(NSString *)string;
 - (void)parse;
-- (id)parameterAtIndex:(int)index;
+- (NSString *)parameterAtIndex:(int)index;
+- (NSString *)humanReadableString;
 @end

@@ -18,7 +18,6 @@
 	NSString *password;
 	id panel;
 	id usersPanel;
-	BOOL joined;
 	BOOL joinOnConnect;
 	BOOL temporaryJoinOnConnect;
 	BOOL holdUserListUpdates;
@@ -31,17 +30,17 @@
     NSMutableDictionary *userRanksAdv;
 	NSMutableArray *pool;
 }
-@property (nonatomic, retain) NSString *channelName;
+@property (nonatomic, copy) NSString *channelName;
 @property (nonatomic, assign) BOOL joinOnConnect;
 @property (nonatomic, assign) BOOL temporaryJoinOnConnect;
 @property (nonatomic, assign) BOOL hasHighlights;
+@property (nonatomic, assign) BOOL joined;
 @property (nonatomic, assign) id panel;
 @property (nonatomic, retain) NSString *password;
 @property (nonatomic, assign) id usersPanel;
 @property (nonatomic, readonly) NSMutableArray *fullUserList;
 @property (nonatomic, retain) RCChannelCell *cellRepresentation;
 @property (nonatomic, assign) unsigned newMessageCount;
-@property (nonatomic, readonly) NSMutableArray *pool;
 - (void)disconnected:(NSString *)msg;
 - (void)changeNick:(NSString *)old toNick:(NSString *)new_;
 - (id)initWithChannelName:(NSString *)_name;
@@ -53,14 +52,14 @@
 - (void)setSuccessfullyJoined:(BOOL)success;
 - (void)setUserLeft:(NSString *)left;
 - (void)setMode:(NSString *)modes forUser:(NSString *)user;
-- (void)setJoined:(BOOL)joind withArgument:(NSString *)arg1;
 - (void)userWouldLikeToPartakeInThisConversation:(NSString *)message;
-- (BOOL)joined;
-- (void)storePassword;
-- (void)retrievePassword;
 - (NSMutableArray *)usersMatchingWord:(NSString *)word;
 - (void)parseAndHandleSlashCommand:(NSString *)cmd;
 - (void)setMyselfParted;
+
+- (void)join;
+- (void)part;
+- (void)partWithMessage:(NSString *)message;
 - (BOOL)isUserInChannel:(NSString *)user;
 - (BOOL)isPrivate;
 - (void)clearAllMessages;
@@ -68,6 +67,7 @@
 - (void)kickUserAtIndex:(int)index;
 - (void)banUserAtIndex:(int)index;
 - (void)setShouldHoldUserListUpdates:(BOOL)bn;
+- (NSArray *)allMessages;
 NSString *RCUserRank(NSString *user, RCNetwork *network);
 int RCUserIntegerRank(NSString *prefix, RCNetwork *network);
 NSString *RCNickWithoutRank(NSString *nick, RCNetwork *self);

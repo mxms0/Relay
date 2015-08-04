@@ -93,12 +93,9 @@ typedef enum RCSocketStatus {
 - (void)disconnectCleanupWithMessage:(NSString *)msg;
 - (RCChannel *)consoleChannel;
 - (BOOL)isConnected;
-- (void)connectOrDisconnectDependingOnCurrentStatus;
 - (BOOL)sendMessage:(NSString *)msg;
 - (BOOL)sendMessage:(NSString *)msg canWait:(BOOL)canWait;
 - (void)receivedMessage:(NSString *)msg;
-- (void)errorOccured:(NSError *)error;
-- (void)_setupChannels:(NSArray *)rooms;
 - (void)moveChannelAtIndex:(int)idx toIndex:(int)newIdx;
 - (RCChannel *)addChannel:(NSString *)_chan join:(BOOL)join;
 - (RCPMChannel *)pmChannelWithChannelName:(NSString *)chan;
@@ -111,7 +108,6 @@ typedef enum RCSocketStatus {
 - (BOOL)read;
 - (BOOL)write;
 - (BOOL)hasPendingBites; //nom
-- (void)savePasswords;
 @end
 
 char *RCIPForURL(NSString *URL);

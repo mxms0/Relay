@@ -23,5 +23,4 @@
 - (BOOL)isPrivate;
 - (void)requestWhoisInformation;
 - (void)recievedWHOISInformation;
-- (NSNumber*)heightForString:(NSString*)str;
 @end

@@ -11,7 +11,7 @@
 #define M_COLOR 20
 @implementation RCChannel
 
-@synthesize channelName, joinOnConnect, panel, usersPanel, password, temporaryJoinOnConnect, fullUserList, newMessageCount, cellRepresentation, hasHighlights, pool;
+@synthesize channelName, joinOnConnect, panel, usersPanel, password, temporaryJoinOnConnect, fullUserList, newMessageCount, cellRepresentation, hasHighlights;
 
 NSString *RCUserRank(NSString *user, RCNetwork *network) {
 	if (![network prefix]) {
@@ -96,47 +96,26 @@ NSInteger RCRankSort(id u1, id u2, RCNetwork *network) {
 	}
 }
 
-- (void)initialize_me:(NSString *)chan {
-	channelName = [chan retain];
-	joinOnConnect = YES;
-	cellRepresentation = nil;
-	joined = NO;
-	newMessageCount = 0;
-	userRanksAdv = [NSMutableDictionary new];
-	fullUserList = [[NSMutableArray alloc] init];
-	pool = [[NSMutableArray alloc] init];
+char RCUserHash(NSString *from) {
+	int uhash = 0;
+	@synchronized([[UIApplication sharedApplication] delegate]) {
+		uhash = ([from hash] % (M_COLOR-2)) + 2;
+	}
+	return uhash % 0xFF;
 }
 
 - (id)initWithChannelName:(NSString *)_chan {
 	if ((self = [super init])) {
-		// i don't feel too comfortable about all of this.
-		if (![NSThread isMainThread]) {
-			[self performSelectorOnMainThread:@selector(initialize_me:) withObject:_chan waitUntilDone:NO];
-		//	NSLog(@"ERRROR CALLING FROM NOT MAIN THREAD");
-		}
-		else {
-			[self initialize_me:_chan];
-		}
-		// this is awfully dangerous.
-		/*
-		 dispatch_sync(dispatch_get_main_queue(), ^(void) {
-				[self initialize_me:_chan];
-		 });
-		 */
+		self.channelName = _chan;
+		joinOnConnect = YES;
+		cellRepresentation = nil;
+		self.joined = NO;
+		newMessageCount = 0;
+		userRanksAdv = [NSMutableDictionary new];
+		fullUserList = [[NSMutableArray alloc] init];
+		pool = [[NSMutableArray alloc] init];
 	}
 	return self;
-}
-
-- (void)storePassword {
-	if (!password || [password isEqualToString:@""]) return;
-//	RCKeychainItem *item = [RCKeychainItem sharedKeychain];
-//	[item setObject:password forKey:[NSString stringWithFormat:@"%@%@rpass", [delegate uUID], channelName]];
-}
-
-- (void)retrievePassword {
-	if (![delegate uUID]) return;
-//	RCKeychainItem *item = [RCKeychainItem sharedKeychain];
-//	[self setPassword:[item objectForKey:[NSString stringWithFormat:@"%@%@rpass", [delegate uUID], channelName]]];
 }
 
 - (void)setShouldHoldUserListUpdates:(BOOL)hld {
@@ -184,14 +163,6 @@ NSInteger RCRankSort(id u1, id u2, RCNetwork *network) {
 	return [NSString stringWithFormat:@"<%@ %@>", [super description], channelName];
 }
 
-char RCUserHash(NSString *from) {
-	int uhash = 0;
-	@synchronized([[UIApplication sharedApplication] delegate]) {
-		uhash = ([from hash] % (M_COLOR-2)) + 2;
-	}
-	return uhash % 0xFF;
-}
-
 - (BOOL)performHighlightCheck:(NSString **)message {
 	BOOL is_highlight = NO;
 	for (NSString *uname in [fullUserList sortedArrayUsingComparator:^ NSComparisonResult(id obj1, id obj2) {
@@ -217,6 +188,10 @@ char RCUserHash(NSString *from) {
 	return is_highlight;
 }
 
+- (NSArray *)allMessages {
+	return pool;
+}
+
 - (void)changeNick:(NSString *)old toNick:(NSString *)new_ {
 	if (new_) {
 		NSString *full_old = [self nickAndRankForNick:old];
@@ -224,7 +199,7 @@ char RCUserHash(NSString *from) {
 		if (old && full_old) {
 			if (!old_rank) old_rank = @"";
 			[self setUserLeft:old];
-			[self recievedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" time:nil type:RCMessageTypeNormalE2];
+			[self recievedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" time:nil type:RCMessageTypeNormalEx];
 			[self setUserJoinedForFixingPurposesOnly:[old_rank stringByAppendingString:new_] cnt:0];
 		}
 	}
@@ -324,7 +299,7 @@ char RCUserHash(NSString *from) {
 				msg = [NSString stringWithFormat:@"%@", message];
 			}
 			else {
-				type = RCMessageTypeNormalE;
+				type = RCMessageTypeNormalEx;
 			}
 			break;
 		case RCMessageTypeNotice:
@@ -332,11 +307,9 @@ char RCUserHash(NSString *from) {
 			msg = [NSString stringWithFormat:@"-%c%02d%@%c-%@", RCIRCAttributeInternalNickname, uhash, from, RCIRCAttributeInternalNickname, message];
 			from = @"";
 			break;
-		case RCMessageTypeNormalE:
+		case RCMessageTypeNormalEx:
 			msg = message;
 			break;
-		case RCMessageTypeNormalE2:
-			msg = message;
 			break;
 		default:
 			msg = @"unk_event";
@@ -349,7 +322,7 @@ char RCUserHash(NSString *from) {
 	[pool addObject:construct];
 	[construct release];
 	
-	if (type == RCMessageTypeNormal || type == RCMessageTypeNormalE || type == RCMessageTypeAction)
+	if (type == RCMessageTypeNormal || type == RCMessageTypeNormalEx || type == RCMessageTypeAction)
 		[self shouldPost:isHighlight withMessage:[NSString stringWithFormat:@"%@: %@", from, RCStripIRCMetadataFromString(msg)]];
 	[p drain];
 }
@@ -368,31 +341,6 @@ char RCUserHash(NSString *from) {
 		}
 	}
 	return NO;
-}
-
-- (void)shouldPost:(BOOL)isHighlight withMessage:(NSString *)msg {
-//	if (isHighlight) {
-//		if ([[RCNetworkManager sharedNetworkManager] isBG]) {
-//			UILocalNotification *nc = [[UILocalNotification alloc] init];
-//			[nc setFireDate:[NSDate date]];
-//			[nc setAlertBody:[msg stringByStrippingIRCMetadata]];
-//			[nc setSoundName:UILocalNotificationDefaultSoundName];
-//			[nc setUserInfo:[NSDictionary dictionaryWithObjectsAndKeys:[delegate uUID], RCCurrentNetKey, [self channelName], RCCurrentChanKey, nil]];
-//			[[UIApplication sharedApplication] scheduleLocalNotification:nc];
-//			[nc release];
-//		}
-//	}
-//	if (![[[RCChatController sharedController] currentChannel] isEqual:self]) {
-//		if (isHighlight) hasHighlights = YES;
-//		newMessageCount++;
-//		if ([[RCChatController sharedController] isShowingChatListView]) {
-//			if (newMessageCount > 100) return;
-//			// if it's at 100, it will stop drawing anything new anyways. since the 99+ thing. so k
-//			[cellRepresentation setNewMessageCount:newMessageCount];
-//			[cellRepresentation setHasHighlights:hasHighlights];
-//			[cellRepresentation performSelectorOnMainThread:@selector(setNeedsDisplay) withObject:nil waitUntilDone:NO];
-//		}
-//	}
 }
 
 - (NSMutableArray *)usersMatchingWord:(NSString *)word {
@@ -418,14 +366,14 @@ char RCUserHash(NSString *from) {
 	return nick;
 }
 
-- (void)setUserJoined:(NSString *)_joined {
-	if (_joined && ![_joined isEqualToString:@""]) {
-		if (holdUserListUpdates) [self setUserJoinedBatch:_joined cnt:0];
-		else [self setUserJoined:_joined cnt:0];
+- (void)setUserJoined:(NSString *)user {
+	if (user && ![user isEqualToString:@""]) {
+		if (holdUserListUpdates) [self setUserJoinedBatch:user cnt:0];
+		else [self setUserJoined:user cnt:0];
 	}
 }
 
-- (void)setUserJoinedBatch:(NSString *)_joined cnt:(int)cnt {
+- (void)setUserJoinedBatch:(NSString *)user cnt:(int)cnt {
 	if (cnt > 10) {
 		if (![delegate prefix])
 			[delegate setPrefix:[[NSDictionary new] autorelease]];
@@ -434,21 +382,21 @@ char RCUserHash(NSString *from) {
 		double delayInSeconds = 0.1;
 		dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
 		dispatch_after(popTime, dispatch_get_main_queue(), ^ {
-			[self setUserJoinedBatch:_joined cnt:(cnt + 1)];
+			[self setUserJoinedBatch:user cnt:(cnt + 1)];
 		});
 		return;
 	}
 	@synchronized(fakeUserList) {
-		if (_joined && ![_joined isEqualToString:@""] && ![self isUserInChannel:_joined]) {
-			NSUInteger newIndex = [fakeUserList indexOfObject:_joined inSortedRange:(NSRange){0, [fakeUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^ NSComparisonResult(id obj1, id obj2) {
+		if (user && ![user isEqualToString:@""] && ![self isUserInChannel:user]) {
+			NSUInteger newIndex = [fakeUserList indexOfObject:user inSortedRange:(NSRange){0, [fakeUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^ NSComparisonResult(id obj1, id obj2) {
 					return RCRankSort(obj1, obj2, [self delegate]);
 			}];
-			[fakeUserList insertObject:_joined atIndex:newIndex];
+			[fakeUserList insertObject:user atIndex:newIndex];
 		}
 	}
 }
 
-- (void)setUserJoinedForFixingPurposesOnly:(NSString *)_joined cnt:(int)cnt_ {
+- (void)setUserJoinedForFixingPurposesOnly:(NSString *)user cnt:(int)cnt_ {
 	if (cnt_ > 10) {
 		if (![delegate prefix])
 			[delegate setPrefix:[[NSDictionary new] autorelease]];
@@ -457,28 +405,28 @@ char RCUserHash(NSString *from) {
 		double delayInSeconds = 0.1;
 		dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
 		dispatch_after(popTime, dispatch_get_main_queue(), ^ {
-			[self setUserJoinedForFixingPurposesOnly:_joined cnt:cnt_+1];
+			[self setUserJoinedForFixingPurposesOnly:user cnt:cnt_+1];
 		});
 		return;
 	}
 	if (![NSThread isMainThread]) {
-		[self performSelectorOnMainThread:@selector(setUserJoinedForFixingPurposesOnly:cnt:) withObject:_joined waitUntilDone:NO];
+		[self performSelectorOnMainThread:@selector(setUserJoinedForFixingPurposesOnly:cnt:) withObject:user waitUntilDone:NO];
 		return;
 	}
 	@synchronized(fullUserList) {
-		if (_joined && ![_joined isEqualToString:@""] && ![self isUserInChannel:_joined]) {
+		if (user && ![user isEqualToString:@""] && ![self isUserInChannel:user]) {
 			[usersPanel reloadData];
-			NSUInteger newIndex = [fullUserList indexOfObject:_joined inSortedRange:(NSRange){0, [fullUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^NSComparisonResult(id obj1, id obj2) {
+			NSUInteger newIndex = [fullUserList indexOfObject:user inSortedRange:(NSRange){0, [fullUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^NSComparisonResult(id obj1, id obj2) {
 				return RCRankSort(obj1, obj2, [self delegate]);
 			}];
-			[fullUserList insertObject:_joined atIndex:newIndex];
+			[fullUserList insertObject:user atIndex:newIndex];
 	//		[[RCChatController sharedController] reloadUserCount];
 			[usersPanel reloadData];
 		}
 	}
 }
 
-- (void)setUserJoined:(NSString *)_joined cnt:(int)cnt_ {
+- (void)setUserJoined:(NSString *)user cnt:(int)cnt_ {
 	if (cnt_ > 10) {
 		if (![delegate prefix])
 			[delegate setPrefix:[[NSDictionary new] autorelease]];
@@ -487,24 +435,24 @@ char RCUserHash(NSString *from) {
 		double delayInSeconds = 0.1;
 		dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
 		dispatch_after(popTime, dispatch_get_main_queue(), ^ {
-			[self setUserJoined:_joined cnt:cnt_+1];
+			[self setUserJoined:user cnt:cnt_+1];
 		});
 		return;
 	}
 	if (![NSThread isMainThread]) {
-		[self performSelectorOnMainThread:@selector(setUserJoined:) withObject:_joined waitUntilDone:NO];
+		[self performSelectorOnMainThread:@selector(setUserJoined:) withObject:user waitUntilDone:NO];
 		return;
 	}
 	@synchronized(fullUserList) {
-		if (_joined && ![_joined isEqualToString:@""] && ![self isUserInChannel:_joined]) {
+		if (user && ![user isEqualToString:@""] && ![self isUserInChannel:user]) {
 			[usersPanel reloadData];
-			NSUInteger newIndex = [fullUserList indexOfObject:_joined inSortedRange:(NSRange){0, [fullUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^NSComparisonResult(id obj1, id obj2) {
+			NSUInteger newIndex = [fullUserList indexOfObject:user inSortedRange:(NSRange){0, [fullUserList count]} options:NSBinarySearchingInsertionIndex usingComparator:^NSComparisonResult(id obj1, id obj2) {
 				return RCRankSort(obj1, obj2, [self delegate]);
 			}];
-			[fullUserList insertObject:_joined atIndex:newIndex];
+			[fullUserList insertObject:user atIndex:newIndex];
 		//	[[RCChatController sharedController] reloadUserCount];
 			[usersPanel reloadData];
-			[self recievedMessage:nil from:_joined time:nil type:RCMessageTypeJoin];
+			[self recievedMessage:nil from:user time:nil type:RCMessageTypeJoin];
 		}
 	}
 }
@@ -538,7 +486,7 @@ char RCUserHash(NSString *from) {
 - (void)setMyselfParted {
 	[fullUserList removeAllObjects];
 	[self recievedMessage:@"You left the channel." from:@"" time:nil type:RCMessageTypeEvent];
-	joined = NO;
+	self.joined = NO;
 }
 
 - (void)clearAllMessages {
@@ -556,7 +504,7 @@ char RCUserHash(NSString *from) {
 	else {
 		[self recievedMessage:[@"Disconnected: " stringByAppendingString:msg] from:@"" time:nil type:RCMessageTypeEvent];
 	}
-	joined = NO;
+	self.joined = NO;
 }
 
 #define SET_MODE \
@@ -629,29 +577,20 @@ for (int a = 0; a < [partialLen length]; a++) {\
 	}
 }
 
-- (void)setJoined:(BOOL)joind {
-	[self setJoined:joind withArgument:@""];
+- (void)join {
+	if (self.joined) return;
+	if ([[self password] length] > 0) {
+		[delegate sendMessage:[NSString stringWithFormat:@"JOIN %@ %@", channelName, password]];
+	}
+	else [delegate sendMessage:[@"JOIN " stringByAppendingString:channelName]];
 }
 
-- (void)setJoined:(BOOL)joind withArgument:(NSString *)arg1 {
-	if (joined == joind) {
-		NSLog(@"State the same. Canceling request..");
-		return;
-	}
-	if ([[self channelName] hasPrefix:@"#"]) {
-		if (joind) {
-			if ([[self password] length] > 0) {
-				[delegate sendMessage:[NSString stringWithFormat:@"JOIN %@ %@", channelName, password]];
-			}
-			else [delegate sendMessage:[@"JOIN " stringByAppendingString:channelName]];
-		}
-		else {
-			[delegate sendMessage:[NSString stringWithFormat:@"PART %@ :%@", channelName, (arg1 ?: @"Leaving...")]];
-		}
-	}
-	joined = joind;
-	// this is fine and dandy, however i should unset it on the case that the actual
-	// channel join fails.
+- (void)part {
+	[self partWithMessage:@"Leaving..."];
+}
+
+- (void)partWithMessage:(NSString *)message {
+	[delegate sendMessage:[NSString stringWithFormat:@"PART %@ :%@", channelName, message]];
 }
 
 - (void)setSuccessfullyJoined:(BOOL)success {
@@ -659,25 +598,15 @@ for (int a = 0; a < [partialLen length]; a++) {\
 		if (success) {
 			[self recievedMessage:nil from:[delegate useNick] time:nil type:RCMessageTypeJoin];
 		}
-		joined = success;
+		self.joined = success;
 	}
 }
 
 - (BOOL)isEqual:(id)obj {
-	if (![NSStringFromClass([self class]) isEqualToString:NSStringFromClass([obj class])]) {
-		return NO;
-	}
-	if (![[delegate uUID] isEqualToString:[[obj delegate] uUID]]) {
-		return NO;
-	}
-	if ([channelName isEqualToString:[obj channelName]]) {
-		return YES;
+	if ([obj isKindOfClass:[RCChannel class]]) {
+		return ([self.channelName isEqual:[obj channelName]] && [[self delegate] isEqual:[obj delegate]]);
 	}
 	return NO;
-}
-
-- (BOOL)joined {
-	return joined;
 }
 
 - (void)userWouldLikeToPartakeInThisConversation:(NSString *)message {
