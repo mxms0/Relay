@@ -27,7 +27,6 @@
     NSMutableArray *fullUserList;
 	NSMutableArray *fakeUserList;
     NSMutableDictionary *userRanksAdv;
-	NSMutableArray *pool;
 }
 @property (nonatomic, copy) NSString *channelName;
 @property (nonatomic, assign) BOOL joinOnConnect;
@@ -45,7 +44,8 @@
 - (id)initWithChannelName:(NSString *)_name;
 - (void)setDelegate:(RCNetwork *)delegate;
 - (RCNetwork *)delegate;
-- (void)recievedMessage:(id)_message from:(NSString *)from time:(NSString *)time_ type:(RCMessageType)type;
+- (void)receivedMessage:(id)_message from:(NSString *)from time:(NSString *)time_ type:(RCMessageType)type;
+- (void)receivedMessage:(RCMessage *)message;
 - (void)setUserJoined:(NSString *)joined;
 - (void)setUserJoinedBatch:(NSString *)join cnt:(int)ct;
 - (void)setSuccessfullyJoined:(BOOL)success;

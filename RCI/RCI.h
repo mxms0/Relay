@@ -71,4 +71,3 @@ static uint32_t internalColors[] = {
 #define MARK CMLog(@"%s", __PRETTY_FUNCTION__);
 #define BACKTRACE CMLog(@"%@", [NSThread callStackSymbols]);
 
-

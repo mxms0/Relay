@@ -132,7 +132,7 @@
 	}
 	seconds = (int)uptime;
 	NSString *send = [NSString stringWithFormat:@"System Uptime: %d Weeks, %d Days, %d Hours, %d Minutes, %d Seconds", (int)weeks, (int)days, (int)hours, (int)minutes, (int)seconds];
-	[chan recievedMessage:send from:[net nickname] time:nil type:RCMessageTypeNormal];
+	[chan receivedMessage:send from:[net nickname] time:nil type:RCMessageTypeNormal];
 	[net sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", chan, send]];
 }
 
@@ -265,7 +265,7 @@
 //		if([network isOper]) olineCount++;
 //	}
 //	NSString *message = [NSString stringWithFormat:@"I am in %d channels while connected to %d networks. I have %d o:lines, %d ops, %d halfops, and %d voices with power over %d individual users.", chanCount, netCount, olineCount, opsCount, hopsCount, voiceCount, powerCount];
-//	[chan recievedMessage:message from:[net useNick] time:nil type:RCMessageTypeNormal];
+//	[chan receivedMessage:message from:[net useNick] time:nil type:RCMessageTypeNormal];
 //	[net sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", chan, message]];
 }
 
@@ -289,7 +289,7 @@
 
 - (void)handleMYVERSION:(NSString *)vs net:(RCNetwork *)_net channel:(RCChannel *)_chan {
 	NSString *vsr = @"Current Version: Relay 1.0 (Build NaNaNaNaNaNaN)";
-	[_chan recievedMessage:vsr from:[_net nickname] time:nil type:RCMessageTypeNormal];
+	[_chan receivedMessage:vsr from:[_net nickname] time:nil type:RCMessageTypeNormal];
 	[_net sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", _chan, vsr]];
 }
 
@@ -306,7 +306,7 @@
 	// fix time zone stufffs.
 	NSString *date = [@"The date & time is currently: " stringByAppendingString:[fmt stringFromDate:[NSDate date]]];
 	[net sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", chan, date]];
-	[chan recievedMessage:date from:[net nickname] time:nil type:RCMessageTypeNormal];
+	[chan receivedMessage:date from:[net nickname] time:nil type:RCMessageTypeNormal];
 	[fmt release];
 }
 
@@ -322,14 +322,14 @@
 		}
 	}
 	else {
-		[chan recievedMessage:@"This feature requires iOS6+" from:@"" time:nil type:RCMessageTypeError];
+		[chan receivedMessage:@"This feature requires iOS6+" from:@"" time:nil type:RCMessageTypeError];
 	}
 }
 
 - (void)_wut:(NSString *)wut net:(RCNetwork *)net channel:(RCChannel *)chan {
 	NSString *str = [NSString stringWithFormat:@"PRIVMSG %@ :\u0CA0_\u0CA0", chan];
 	[net sendMessage:str];
-	[chan recievedMessage:@"\u0CA0_\u0CA0" from:[net nickname] time:nil type:RCMessageTypeNormal];
+	[chan receivedMessage:@"\u0CA0_\u0CA0" from:[net nickname] time:nil type:RCMessageTypeNormal];
 }
 
 - (void)handleREVS:(NSString *)rev net:(RCNetwork *)net channel:(RCChannel *)chan {
@@ -338,7 +338,7 @@
 		[revd appendString:[NSString stringWithFormat:@"%C", [rev characterAtIndex:[rev length]-(i+1)]]];
 	}
 	[net sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", chan, revd]];
-	[chan recievedMessage:revd from:[net nickname] time:nil type:RCMessageTypeNormal];
+	[chan receivedMessage:revd from:[net nickname] time:nil type:RCMessageTypeNormal];
 	[revd release];
 }
 
@@ -388,7 +388,7 @@
 //		chan_ = [net addChannel:usrchanetc join:NO];
 //	}
 //	if (!!rmsg && [net sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", usrchanetc, rmsg]]) {
-//		[chan_ recievedMessage:rmsg from:[net useNick] time:nil type:RCMessageTypeNormal];
+//		[chan_ receivedMessage:rmsg from:[net useNick] time:nil type:RCMessageTypeNormal];
 //	}
 //	if (![[[RCChatController sharedController] currentChannel] isEqual:chan_]) {
 //		[[RCChatController sharedController] selectChannel:usrchanetc fromNetwork:net];
@@ -430,7 +430,7 @@
 	if (!me) return;
 	NSString *msg = [NSString stringWithFormat:@"PRIVMSG %@ :%c%@ %@%c", chan, 0x01, @"ACTION", me, 0x01];
 	if ([net sendMessage:msg])
-		[chan recievedMessage:me from:[net nickname] time:nil type:RCMessageTypeAction];
+		[chan receivedMessage:me from:[net nickname] time:nil type:RCMessageTypeAction];
 }
 
 - (void)handleJOIN:(NSString *)aJ net:(RCNetwork *)net channel:(RCChannel *)aChan {

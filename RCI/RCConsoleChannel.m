@@ -39,16 +39,16 @@
 //	}
 //}
 
-- (void)recievedMessage:(RCMessage *)_message from:(NSString *)from time:(NSString *)time_ type:(RCMessageType)type {
-	if ([_message respondsToSelector:@selector(numeric)]) {
-		int numeric = [[_message numeric] intValue];
-		switch (numeric) {
-			case 004:
-				[super recievedMessage:_message->message from:@"" time:time_ type:type];
-				return;
-		}
-	}
-	[super recievedMessage:_message from:from time:time_ type:type];
-}
+//- (void)receivedMessage:(RCMessage *)_message from:(NSString *)from time:(NSString *)time_ type:(RCMessageType)type {
+//	if ([_message respondsToSelector:@selector(numeric)]) {
+//		int numeric = [[_message numeric] intValue];
+//		switch (numeric) {
+//			case 004:
+//				[super receivedMessage:_message.message from:@"" time:time_ type:type];
+//				return;
+//		}
+//	}
+//	[super receivedMessage:_message from:from time:time_ type:type];
+//}
 
 @end

@@ -29,7 +29,9 @@
 	[self setSeparatorInset:UIEdgeInsetsZero];
 	self.channel = _channel;
 	[pool release];
-	pool = [[self.channel pool] retain];
+	
+//	RAca RAChannelProxyForChannel(
+	
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {

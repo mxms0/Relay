@@ -48,16 +48,17 @@ RAChannelProxy *RAChannelProxyForChannel(RCChannel *channel) {
 	
 }
 
-- (void)channel:(RCChannel *)channel receivedMessage:(NSString *)message from:(NSString *)from time:(time_t)time {
+- (void)channel:(RCChannel *)channel receivedMessage:(RCMessage *)message {
 	RAChannelProxy *proxy = RAChannelProxyForChannel(channel);
-	[proxy addMessage:[NSString stringWithFormat:@"%@: %@", from, message]];
+	[proxy addMessage:[NSString stringWithFormat:@"%@: %@", [message sender], message.message]];
 	if ([[self.delegate currentChannelProxy] isEqual:proxy]) {
 		[self.delegate chatControllerWantsUpdateUI:self];
 	}
 }
 
 - (void)networkConnected:(RCNetwork *)network {
-	
+	NSLog(@"Fds %@", network);
+	[network addChannel:@"#fdsd__" join:YES];
 }
 
 - (void)networkDisconnected:(RCNetwork *)network {

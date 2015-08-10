@@ -37,7 +37,7 @@ typedef NS_ENUM(NSInteger, RCConnectionFailure) {
 - (void)channel:(RCChannel *)channel userKicked:(NSString *)user reason:(NSString *)message;
 - (void)channel:(RCChannel *)channel userBanned:(NSString *)user reason:(NSString *)reason;
 - (void)channel:(RCChannel *)channel userModeChanged:(NSString *)user modes:(int)modes;
-- (void)channel:(RCChannel *)channel receivedMessage:(RCMessage *)message from:(NSString *)from time:(time_t)time;
+- (void)channel:(RCChannel *)channel receivedMessage:(RCMessage *)message;
 
 @end
 

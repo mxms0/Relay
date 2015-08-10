@@ -10,18 +10,26 @@
 #import "RCI.h"
 
 @implementation RCMessageFormatter
-@synthesize message, sender, color, attributedString, height, nameWidth, landscapeHeight;
+@synthesize message;
 
-- (id)initWithMessage:(NSString *)_message {
+- (id)initWithMessage:(RCMessage *)_message {
 	if ((self = [super init])) {
 		self.message = _message;
 	}
 	return self;
 }
+
+- (void)formatMessage {
+	int numeric = [[self.message numeric] intValue];
+	
+	switch (numeric) {
+		
+			
+	}
+}
+
 - (void)dealloc {
-	self.attributedString = nil;
 	self.message = nil;
-	self.sender = nil;
 	[super dealloc];
 }
 
