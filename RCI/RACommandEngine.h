@@ -1,5 +1,5 @@
 //
-//  RCCommandEngine.h
+//  RACommandEngine.h
 //  Relay
 //
 //  Created by Max Shavrick on 10/15/12.
@@ -10,7 +10,7 @@
 #import "RCChannel.h"
 
 @class RCNetwork, RCChannel;
-@interface RCCommandEngine : NSObject {
+@interface RACommandEngine : NSObject {
 	NSMutableDictionary *cmds;
 }
 + (id)sharedInstance;

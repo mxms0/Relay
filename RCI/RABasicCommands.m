@@ -1,16 +1,16 @@
 //
-//  RCBasicCommands.m
+//  RABasicCommands.m
 //  Relay
 //
 //  Created by Max Shavrick on 10/15/12.
 //
 
-#import "RCBasicCommands.h"
+#import "RABasicCommands.h"
 
-@implementation RCBasicCommands
+@implementation RABasicCommands
 
 + (void)load {
-	RCCommandEngine *e = [RCCommandEngine sharedInstance];
+	RACommandEngine *e = [RACommandEngine sharedInstance];
 	[e registerSelector:@selector(handleME:net:channel:) forCommands:@"me" usingClass:self];
 	[e registerSelector:@selector(handleJOIN:net:channel:) forCommands:@"join" usingClass:self];
 	[e registerSelector:@selector(handlePART:net:channel:) forCommands:@"part" usingClass:self];
@@ -132,7 +132,7 @@
 	}
 	seconds = (int)uptime;
 	NSString *send = [NSString stringWithFormat:@"System Uptime: %d Weeks, %d Days, %d Hours, %d Minutes, %d Seconds", (int)weeks, (int)days, (int)hours, (int)minutes, (int)seconds];
-	[chan recievedMessage:send from:[net useNick] time:nil type:RCMessageTypeNormal];
+	[chan recievedMessage:send from:[net nickname] time:nil type:RCMessageTypeNormal];
 	[net sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", chan, send]];
 }
 
@@ -289,7 +289,7 @@
 
 - (void)handleMYVERSION:(NSString *)vs net:(RCNetwork *)_net channel:(RCChannel *)_chan {
 	NSString *vsr = @"Current Version: Relay 1.0 (Build NaNaNaNaNaNaN)";
-	[_chan recievedMessage:vsr from:[_net useNick] time:nil type:RCMessageTypeNormal];
+	[_chan recievedMessage:vsr from:[_net nickname] time:nil type:RCMessageTypeNormal];
 	[_net sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", _chan, vsr]];
 }
 
@@ -306,7 +306,7 @@
 	// fix time zone stufffs.
 	NSString *date = [@"The date & time is currently: " stringByAppendingString:[fmt stringFromDate:[NSDate date]]];
 	[net sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", chan, date]];
-	[chan recievedMessage:date from:[net useNick] time:nil type:RCMessageTypeNormal];
+	[chan recievedMessage:date from:[net nickname] time:nil type:RCMessageTypeNormal];
 	[fmt release];
 }
 
@@ -329,7 +329,7 @@
 - (void)_wut:(NSString *)wut net:(RCNetwork *)net channel:(RCChannel *)chan {
 	NSString *str = [NSString stringWithFormat:@"PRIVMSG %@ :\u0CA0_\u0CA0", chan];
 	[net sendMessage:str];
-	[chan recievedMessage:@"\u0CA0_\u0CA0" from:[net useNick] time:nil type:RCMessageTypeNormal];
+	[chan recievedMessage:@"\u0CA0_\u0CA0" from:[net nickname] time:nil type:RCMessageTypeNormal];
 }
 
 - (void)handleREVS:(NSString *)rev net:(RCNetwork *)net channel:(RCChannel *)chan {
@@ -338,7 +338,7 @@
 		[revd appendString:[NSString stringWithFormat:@"%C", [rev characterAtIndex:[rev length]-(i+1)]]];
 	}
 	[net sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", chan, revd]];
-	[chan recievedMessage:revd from:[net useNick] time:nil type:RCMessageTypeNormal];
+	[chan recievedMessage:revd from:[net nickname] time:nil type:RCMessageTypeNormal];
 	[revd release];
 }
 
@@ -430,7 +430,7 @@
 	if (!me) return;
 	NSString *msg = [NSString stringWithFormat:@"PRIVMSG %@ :%c%@ %@%c", chan, 0x01, @"ACTION", me, 0x01];
 	if ([net sendMessage:msg])
-		[chan recievedMessage:me from:[net useNick] time:nil type:RCMessageTypeAction];
+		[chan recievedMessage:me from:[net nickname] time:nil type:RCMessageTypeAction];
 }
 
 - (void)handleJOIN:(NSString *)aJ net:(RCNetwork *)net channel:(RCChannel *)aChan {

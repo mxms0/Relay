@@ -14,11 +14,11 @@
 @synthesize channelName, joinOnConnect, panel, usersPanel, password, temporaryJoinOnConnect, fullUserList, newMessageCount, cellRepresentation, hasHighlights;
 
 NSString *RCUserRank(NSString *user, RCNetwork *network) {
-	if (![network prefix]) {
+	if (![network prefixes]) {
 		return nil;
 	}
-	for (id karr in [[network prefix] allKeys]) {
-		NSArray *arr = [[network prefix] objectForKey:karr];
+	for (id karr in [[network prefixes] allKeys]) {
+		NSArray *arr = [[network prefixes] objectForKey:karr];
 		if ([arr count] == 2) {
 			if ([[arr objectAtIndex:1] characterAtIndex:0] == [user characterAtIndex:0]) {
 				return [arr objectAtIndex:1];
@@ -29,11 +29,11 @@ NSString *RCUserRank(NSString *user, RCNetwork *network) {
 }
 
 int RCUserIntegerRank(NSString *prefix, RCNetwork *network) {
-	if (![network prefix]) {
+	if (![network prefixes]) {
 		return -1;
 	}
-	for (int i = 0; i < [[[network prefix] allKeys] count]; i++) {
-		NSArray *ary = [[network prefix] objectForKey:[[[network prefix] allKeys] objectAtIndex:i]];
+	for (int i = 0; i < [[[network prefixes] allKeys] count]; i++) {
+		NSArray *ary = [[network prefixes] objectForKey:[[[network prefixes] allKeys] objectAtIndex:i]];
 		if ([ary count] == 2) {
 			if ([[ary objectAtIndex:1] characterAtIndex:0] == [prefix characterAtIndex:0]) {
 				return i;
@@ -68,7 +68,7 @@ void RCRefreshTable(NSString *ord, NSString *nnr, NSArray *current, RCChannel *s
 }
 
 NSInteger RCRankToNumber(unichar rank, RCNetwork *network) {
-	for (NSArray *arr in [[network prefix] allValues]) {
+	for (NSArray *arr in [[network prefixes] allValues]) {
 		if ([arr count] == 2) {
 			if ([[arr objectAtIndex:1] characterAtIndex:0] == rank) {
 				return [[arr objectAtIndex:0] intValue];
@@ -174,7 +174,7 @@ char RCUserHash(NSString *from) {
 		if (!cmp) return NO;
 		NSString *rank = RCUserRank(uname, [self delegate]);
 		NSString *nameOrRank = [uname substringFromIndex:[rank length]];
-		int hhash = ([nameOrRank isEqualToString:[[self delegate] useNick]]) ? 1 : RCUserHash(nameOrRank);
+		int hhash = ([nameOrRank isEqualToString:[[self delegate] nickname]]) ? 1 : RCUserHash(nameOrRank);
 		
 		NSString *patternuno = [NSString stringWithFormat:@"(^|\\s)([^A-Za-z0-9#]*)(\\Q%@\\E)([^A-Za-z0-9]*)($|\\s)", nameOrRank];
 		NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:patternuno options:NSRegularExpressionCaseInsensitive error:nil];
@@ -224,7 +224,7 @@ char RCUserHash(NSString *from) {
 	
 	[p drain];return;
 	NSString *msg = @"";
-	char uhash = ([from isEqualToString:[delegate useNick]]) ? 1 : RCUserHash(from);
+	char uhash = ([from isEqualToString:[delegate nickname]]) ? 1 : RCUserHash(from);
 	BOOL isHighlight = NO;
 	switch (type) {
 		case RCMessageTypeKick: {
@@ -315,15 +315,15 @@ char RCUserHash(NSString *from) {
 			msg = @"unk_event";
 			break;
 	}
-	RCMessageConstruct *construct = [[RCMessageConstruct alloc] initWithMessage:msg];
+	RCMessageFormatter *construct = [[RCMessageFormatter alloc] initWithMessage:msg];
 	[construct setSender:from];
 	[construct setColor:uhash];
 //	[construct formatWithHighlight:isHighlight];
 	[pool addObject:construct];
 	[construct release];
 	
-	if (type == RCMessageTypeNormal || type == RCMessageTypeNormalEx || type == RCMessageTypeAction)
-		[self shouldPost:isHighlight withMessage:[NSString stringWithFormat:@"%@: %@", from, RCStripIRCMetadataFromString(msg)]];
+//	if (type == RCMessageTypeNormal || type == RCMessageTypeNormalEx || type == RCMessageTypeAction)
+//		[self shouldPost:isHighlight withMessage:[NSString stringWithFormat:@"%@: %@", from, RCStripIRCMetadataFromString(msg)]];
 	[p drain];
 }
 
@@ -375,10 +375,10 @@ char RCUserHash(NSString *from) {
 
 - (void)setUserJoinedBatch:(NSString *)user cnt:(int)cnt {
 	if (cnt > 10) {
-		if (![delegate prefix])
-			[delegate setPrefix:[[NSDictionary new] autorelease]];
+		if (![delegate prefixes])
+			[delegate setPrefixes:[[NSDictionary new] autorelease]];
 	}
-	if (![delegate prefix]) {
+	if (![delegate prefixes]) {
 		double delayInSeconds = 0.1;
 		dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
 		dispatch_after(popTime, dispatch_get_main_queue(), ^ {
@@ -398,10 +398,10 @@ char RCUserHash(NSString *from) {
 
 - (void)setUserJoinedForFixingPurposesOnly:(NSString *)user cnt:(int)cnt_ {
 	if (cnt_ > 10) {
-		if (![delegate prefix])
-			[delegate setPrefix:[[NSDictionary new] autorelease]];
+		if (![delegate prefixes])
+			[delegate setPrefixes:[[NSDictionary new] autorelease]];
 	}
-	if (![delegate prefix]) {
+	if (![delegate prefixes]) {
 		double delayInSeconds = 0.1;
 		dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
 		dispatch_after(popTime, dispatch_get_main_queue(), ^ {
@@ -428,10 +428,10 @@ char RCUserHash(NSString *from) {
 
 - (void)setUserJoined:(NSString *)user cnt:(int)cnt_ {
 	if (cnt_ > 10) {
-		if (![delegate prefix])
-			[delegate setPrefix:[[NSDictionary new] autorelease]];
+		if (![delegate prefixes])
+			[delegate setPrefixes:[[NSDictionary new] autorelease]];
 	}
-	if (![delegate prefix]) {
+	if (![delegate prefixes]) {
 		double delayInSeconds = 0.1;
 		dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
 		dispatch_after(popTime, dispatch_get_main_queue(), ^ {
@@ -511,7 +511,7 @@ char RCUserHash(NSString *from) {
 partialLen = [modes substringWithRange:NSMakeRange(stptr, endptr-stptr)];\
 for (int a = 0; a < [partialLen length]; a++) {\
 	if (adding) {\
-		NSString *rankf = [[[delegate prefix] objectForKey:[partialLen substringWithRange:NSMakeRange(a, 1)]] objectAtIndex:1];\
+		NSString *rankf = [[[delegate prefixes] objectForKey:[partialLen substringWithRange:NSMakeRange(a, 1)]] objectAtIndex:1];\
 		if (rankf) {\
 			NSString *full_user = [self nickAndRankForNick:[users objectAtIndex:modecnt]]; NSString* or = RCUserRank(full_user,[self delegate]);\
 			NSString *nnr = RCNickWithoutRank(full_user, [self delegate]);\
@@ -523,7 +523,7 @@ for (int a = 0; a < [partialLen length]; a++) {\
 		}\
 	}\
 	else if (subtracting) {\
-		NSString *rankf = [[[delegate prefix] objectForKey:[partialLen substringWithRange:NSMakeRange(a, 1)]] objectAtIndex:1];\
+		NSString *rankf = [[[delegate prefixes] objectForKey:[partialLen substringWithRange:NSMakeRange(a, 1)]] objectAtIndex:1];\
 		if (rankf) {\
 			NSString *full_user = [self nickAndRankForNick:[users objectAtIndex:modecnt]];\
 			NSString *or = RCUserRank(full_user, [self delegate]);\
@@ -596,7 +596,7 @@ for (int a = 0; a < [partialLen length]; a++) {\
 - (void)setSuccessfullyJoined:(BOOL)success {
 	@synchronized(self) {
 		if (success) {
-			[self recievedMessage:nil from:[delegate useNick] time:nil type:RCMessageTypeJoin];
+			[self recievedMessage:nil from:[delegate nickname] time:nil type:RCMessageTypeJoin];
 		}
 		self.joined = success;
 	}
@@ -609,52 +609,52 @@ for (int a = 0; a < [partialLen length]; a++) {\
 	return NO;
 }
 
-- (void)userWouldLikeToPartakeInThisConversation:(NSString *)message {
-	@autoreleasepool {
-		if (message) {
-			if ([message hasPrefix:@"/"]) {
-				[self parseAndHandleSlashCommand:[message substringFromIndex:1]];
-				return;
-			}
-			else {
-				NSString *send = [NSString stringWithFormat:@"PRIVMSG %@ :%@", channelName, message];
-				if (send.length > 510) {
-					int cmd = 8;
-					int cLength = (int)channelName.length + 4;
-					int max = ((510 - cmd) - cLength);
-					NSMutableString *tmp = [message mutableCopy];
-					while ([tmp length] > 0) {
-						NSString *msg = [tmp substringWithRange:NSMakeRange(0, (tmp.length > max ? max : tmp.length))];
-						if ([tmp respondsToSelector:@selector(deleteCharactersInRange:)])
-							[tmp deleteCharactersInRange:NSMakeRange(0, (tmp.length > max ? max : tmp.length))];
-						else {
-							tmp = [tmp mutableCopy];
-							// This is silly. Please fix.
-							continue;
-						}
-						if ([delegate sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", channelName, msg]]) {
-							[self recievedMessage:msg from:[delegate useNick] time:nil type:RCMessageTypeNormal];
-						}
-					}
-					[tmp autorelease];
-				}
-				else {
-					if ([delegate sendMessage:send])
-						[self recievedMessage:message from:[delegate useNick] time:nil type:RCMessageTypeNormal];
-				}
-			}
-		}
-	}
-}
-
-- (void)parseAndHandleSlashCommand:(NSString *)msg {	
-	if ([msg hasPrefix:@"/"]) {
-		if ([delegate sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", channelName, msg]])
-			[self recievedMessage:msg from:[delegate useNick] time:nil type:RCMessageTypeNormal];
-		return;
-	}
-	[[RCCommandEngine sharedInstance] handleCommand:msg fromNetwork:[self delegate] forChannel:self];
-}
+//- (void)userWouldLikeToPartakeInThisConversation:(NSString *)message {
+//	@autoreleasepool {
+//		if (message) {
+//			if ([message hasPrefix:@"/"]) {
+//				[self parseAndHandleSlashCommand:[message substringFromIndex:1]];
+//				return;
+//			}
+//			else {
+//				NSString *send = [NSString stringWithFormat:@"PRIVMSG %@ :%@", channelName, message];
+//				if (send.length > 510) {
+//					int cmd = 8;
+//					int cLength = (int)channelName.length + 4;
+//					int max = ((510 - cmd) - cLength);
+//					NSMutableString *tmp = [message mutableCopy];
+//					while ([tmp length] > 0) {
+//						NSString *msg = [tmp substringWithRange:NSMakeRange(0, (tmp.length > max ? max : tmp.length))];
+//						if ([tmp respondsToSelector:@selector(deleteCharactersInRange:)])
+//							[tmp deleteCharactersInRange:NSMakeRange(0, (tmp.length > max ? max : tmp.length))];
+//						else {
+//							tmp = [tmp mutableCopy];
+//							// This is silly. Please fix.
+//							continue;
+//						}
+//						if ([delegate sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", channelName, msg]]) {
+//							[self recievedMessage:msg from:[delegate nickname] time:nil type:RCMessageTypeNormal];
+//						}
+//					}
+//					[tmp autorelease];
+//				}
+//				else {
+//					if ([delegate sendMessage:send])
+//						[self recievedMessage:message from:[delegate nickname] time:nil type:RCMessageTypeNormal];
+//				}
+//			}
+//		}
+//	}
+//}
+//
+//- (void)parseAndHandleSlashCommand:(NSString *)msg {	
+//	if ([msg hasPrefix:@"/"]) {
+//		if ([delegate sendMessage:[NSString stringWithFormat:@"PRIVMSG %@ :%@", channelName, msg]])
+//			[self recievedMessage:msg from:[delegate nickname] time:nil type:RCMessageTypeNormal];
+//		return;
+//	}
+//	[[RCCommandEngine sharedInstance] handleCommand:msg fromNetwork:[self delegate] forChannel:self];
+//}
 
 - (BOOL)isPrivate {
 	return NO;

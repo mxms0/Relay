@@ -88,7 +88,7 @@
 }
 
 - (BOOL)isUserInChannel:(NSString *)user {
-	return [user isEqualToString:channelName] || [user isEqualToString:[[self delegate] useNick]];
+	return [user isEqualToString:channelName] || [user isEqualToString:[[self delegate] nickname]];
 }
 
 - (BOOL)isPrivate {

@@ -57,36 +57,36 @@ typedef enum RCSocketStatus {
 	RCSocketStatusClosed
 } RCSocketStatus;
 
-@interface RCNetwork : NSObject <UIAlertViewDelegate>
-@property (nonatomic, retain) NSDictionary *prefix;
+@interface RCNetwork : NSObject
+@property (nonatomic, retain) NSDictionary *prefixes;
 @property (nonatomic, readonly) NSMutableArray *channels;
-@property (nonatomic, readonly) NSMutableArray *_nicknames;
-@property (nonatomic, retain) NSString *sDescription;
-@property (nonatomic, retain) NSString *server;
-@property (nonatomic, retain) NSString *nick;
+@property (nonatomic, retain) NSString *stringDescription;
+@property (nonatomic, retain) NSString *serverAddress;
+@property (nonatomic, retain) NSString *nickname;
 @property (nonatomic, retain) NSString *username;
 @property (nonatomic, retain) NSString *realname;
-@property (nonatomic, retain) NSString *spass;
-@property (nonatomic, retain) NSString *npass;
-@property (nonatomic, retain) NSString *useNick;
+@property (nonatomic, retain) NSString *serverPassword;
+@property (nonatomic, retain) NSString *nickServPassword;
 @property (nonatomic, retain) NSString *uUID;
 @property (nonatomic, retain) NSArray *connectCommands;
-@property (nonatomic, assign) int port;
-@property (nonatomic, assign) BOOL isRegistered;
-@property (nonatomic, assign) BOOL useSSL;
-@property (nonatomic, assign) BOOL shouldRequestSPass;
-@property (nonatomic, assign) BOOL shouldRequestNPass;
+@property (nonatomic, assign) uint16_t port;
+@property (atomic, assign) BOOL isRegistered;
+
 @property (nonatomic, assign) id listCallback;
 @property (nonatomic, assign) BOOL expanded;
 @property (nonatomic, assign) BOOL isOper;
 @property (nonatomic, assign) BOOL isAway;
-@property (nonatomic, assign) BOOL tagged;
 @property (nonatomic, assign) id <RCNetworkDelegate> delegate;
 @property (nonatomic, assign) id <RCChannelDelegate> channelDelegate;
 @property (nonatomic, copy) void (^channelCreationHandler)(RCChannel *);
+// Settings go here
+@property (nonatomic, readonly) NSMutableArray *alternateNicknames;
+@property (nonatomic, assign) BOOL useSSL;
+@property (nonatomic, assign) BOOL handleMOTD;
+
+
 - (RCNetwork *)uniqueCopy;
 - (RCChannel *)channelWithChannelName:(NSString *)chan;
-- (NSString *)_description;
 - (void)createConsoleChannel;
 - (void)connect;
 - (BOOL)disconnect;

@@ -26,18 +26,18 @@
 
 - (void)partWithMessage:(NSString *)message {}
 
-- (void)userWouldLikeToPartakeInThisConversation:(NSString *)message {
-	@autoreleasepool {
-		if ([message hasPrefix:@"/"]) {
-			[self parseAndHandleSlashCommand:[message substringFromIndex:1]];
-			return;
-		}
-		else {
-			[(RCNetwork *)delegate sendMessage:message];
-			[self recievedMessage:message from:@"" time:nil type:RCMessageTypeNormalEx];
-		}
-	}
-}
+//- (void)userWouldLikeToPartakeInThisConversation:(NSString *)message {
+//	@autoreleasepool {
+//		if ([message hasPrefix:@"/"]) {
+//			[self parseAndHandleSlashCommand:[message substringFromIndex:1]];
+//			return;
+//		}
+//		else {
+//			[(RCNetwork *)delegate sendMessage:message];
+//			[self recievedMessage:message from:@"" time:nil type:RCMessageTypeNormalEx];
+//		}
+//	}
+//}
 
 - (void)recievedMessage:(RCMessage *)_message from:(NSString *)from time:(NSString *)time_ type:(RCMessageType)type {
 	if ([_message respondsToSelector:@selector(numeric)]) {

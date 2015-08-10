@@ -1,15 +1,15 @@
 //
-//  RCCommandEngine.m
+//  RACommandEngine.m
 //  Relay
 //
 //  Created by Max Shavrick on 10/15/12.
 //
 
-#import "RCCommandEngine.h"
+#import "RACommandEngine.h"
 #import "RCNetwork.h"
 #include <objc/message.h>
 
-@implementation RCCommandEngine
+@implementation RACommandEngine
 static id _eInstance = nil;
 
 + (id)sharedInstance {

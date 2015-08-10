@@ -43,13 +43,13 @@
 	
 	for (NSString *str in nets) {
 		RCNetwork *net = [[RCNetwork alloc] init];
-		[net setServer:str];
+		[net setServerAddress:str];
 		[net setDelegate:controller];
 		[net setChannelDelegate:controller];
 		[net setPort:6697];
 		[net setUseSSL:YES];
 		[net setUsername:@"Maximus"];
-		[net setNick:@"Maximus"];
+		[net setNickname:@"Maximus"];
 		[net setRealname:@"Maximus"];
 		[net setChannelCreationHandler:^(RCChannel *channel) {
 			static NSString *RAChannelProxyAssociationKey = @"RAChannelProxyAssociationKey";

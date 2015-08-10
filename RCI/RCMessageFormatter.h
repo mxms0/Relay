@@ -1,5 +1,5 @@
 //
-//  RCMessageConstruct.h
+//  RCMessageFormatter.h
 //  Relay
 //
 //  Created by Siberia on 6/10/14.
@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "NSMutableAttributedString+RCAdditions.h"
 
-@interface RCMessageConstruct : NSObject
+@interface RCMessageFormatter : NSObject
 @property (nonatomic, retain) NSString *message;
 @property (nonatomic, retain) NSString *sender;
 @property (nonatomic, retain) NSAttributedString *attributedString;

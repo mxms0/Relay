@@ -7,9 +7,8 @@
 
 #import <Foundation/Foundation.h>
 #import "NSString+Utils.h"
-#import "RCMessageConstruct.h"
+#import "RCMessageFormatter.h"
 #import "RCI.h"
-#import "RCCommandEngine.h"
 
 @class RCNetwork, RCChannelCell, RCMessage;
 @interface RCChannel : NSObject {
@@ -52,9 +51,7 @@
 - (void)setSuccessfullyJoined:(BOOL)success;
 - (void)setUserLeft:(NSString *)left;
 - (void)setMode:(NSString *)modes forUser:(NSString *)user;
-- (void)userWouldLikeToPartakeInThisConversation:(NSString *)message;
 - (NSMutableArray *)usersMatchingWord:(NSString *)word;
-- (void)parseAndHandleSlashCommand:(NSString *)cmd;
 - (void)setMyselfParted;
 
 - (void)join;
