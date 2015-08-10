@@ -29,10 +29,13 @@ typedef enum RCMessageType {
 	RCMessageTypeMode,
 	RCMessageTypeError,
 	RCMessageTypeEvent,
-	RCMessageTypeNormalEx
+	RCMessageTypeUnknown
 } RCMessageType;
 
 static dispatch_queue_t socketQueue = nil;
+
+void RCParseUserMask(NSString *mask, NSString **nick, NSString **user, NSString **hostmask);
+BOOL RCIRCStringIsValid(NSString *string);
 
 static uint32_t mIRCColors[] = {
 	0xFFFFFF, // white

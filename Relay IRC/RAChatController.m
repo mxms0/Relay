@@ -10,6 +10,7 @@
 #import "RANavigationBar.h"
 #import "RCChannel.h"
 #import "RAChannelProxy.h"
+#import "RCDefaultMessageFormatter.h"
 #import "RCNetwork.h"
 
 RAChannelProxy *RAChannelProxyForChannel(RCChannel *channel) {
@@ -50,7 +51,9 @@ RAChannelProxy *RAChannelProxyForChannel(RCChannel *channel) {
 
 - (void)channel:(RCChannel *)channel receivedMessage:(RCMessage *)message {
 	RAChannelProxy *proxy = RAChannelProxyForChannel(channel);
-	[proxy addMessage:[NSString stringWithFormat:@"%@: %@", [message sender], message.message]];
+	RCDefaultMessageFormatter *formatter = [[RCDefaultMessageFormatter alloc] initWithMessage:message];
+	NSString *formatted = [formatter formattedMessage];
+	[proxy addMessage:formatted];
 	if ([[self.delegate currentChannelProxy] isEqual:proxy]) {
 		[self.delegate chatControllerWantsUpdateUI:self];
 	}

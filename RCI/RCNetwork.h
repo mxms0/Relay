@@ -13,9 +13,6 @@
 #import <objc/message.h>
 #import "NSString+Utils.h"
 
-#undef LOGALL
-#define LOGALL 1
-
 typedef NS_ENUM(NSInteger, RCLineType) {
 	RCLineGlobal,
 	RCLineKill,

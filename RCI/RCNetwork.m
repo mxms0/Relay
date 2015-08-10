@@ -14,6 +14,10 @@
 
 static NSString *const RCConsoleChannelName = @"\x01IRC";
 
+inline BOOL RCIRCStringIsValid(NSString *string) {
+	return (string) && (![string isEqualToString:@""]) && (![string isEqualToString:@"\r\n"]);
+}
+
 void RCParseUserMask(NSString *mask, NSString **_nick, NSString **user, NSString **hostmask) {
 	// this is experimental. ;P
 	// well, not really anymore. ;P ~Maximus
@@ -70,7 +74,6 @@ SSL_CTX *RCInitContext(void) {
 	BOOL _isAway;
 	id <RCNetworkDelegate> delegate;
 	id <RCChannelDelegate> channelDelegate;
-	
 	
 	NSMutableArray *channels;
 	NSMutableArray *tmpChannels;
@@ -232,7 +235,7 @@ SSL_CTX *RCInitContext(void) {
 			if ([_chan isEqualToString:RCConsoleChannelName]) chan = [[RCConsoleChannel alloc] initWithChannelName:_chan];
 			else if ([_chan hasPrefix:@"#"] || [_chan hasPrefix:@"&"]) chan = [[RCChannel alloc] initWithChannelName:_chan];
 			else chan = [[RCPMChannel alloc] initWithChannelName:_chan];
-			[chan setDelegate:self];
+			[chan setNetwork:self];
 
 			if ([chan isKindOfClass:[RCConsoleChannel class]]) {
 				[_channels insertObject:chan atIndex:0];
@@ -267,7 +270,7 @@ SSL_CTX *RCInitContext(void) {
 		RCPMChannel *chan = [self pmChannelWithChannelName:_chan];
 		if (!chan) {
 			chan = [[RCPMChannel alloc] initWithChannelName:_chan];
-			[chan setDelegate:self];
+			[chan setNetwork:self];
 			[tmpChannels addObject:chan];
 			[chan release];
 		}
@@ -407,9 +410,8 @@ SSL_CTX *RCInitContext(void) {
 }
 
 - (void)receivedMessage:(NSString *)msg {
-	if (!msg || [msg isEqualToString:@""] || [msg isEqualToString:@"\r\n"]) return;
-	msg = [msg stringByReplacingOccurrencesOfString:@"\r\n" withString:@""];
-	
+	if (!RCIRCStringIsValid(msg)) return;
+	msg = [msg substringToIndex:[msg length] - 2];
 #if LOGALL
 	NSLog(@"received: [%@]", msg);
 #endif
@@ -606,12 +608,6 @@ SSL_CTX *RCInitContext(void) {
 	[self sendMessage:[NSString stringWithFormat:@"AUTHENTICATE %@", b64] canWait:NO];
 }
 
-- (void)handleNotHandledMessage:(RCMessage *)message {
-	RCChannel *chan = [self consoleChannel];
-	[chan receivedMessage:message from:@"" time:nil type:RCMessageTypeNormal];
-	NSLog(@"PLZ IMPLEMENT handle%@:%@", [message numeric], message.message);
-}
-
 - (void)handle001:(RCMessage *)message {
 	// RPL_WELCOME
 	// :Welcome to the Internet Relay Network <nick>!<user>@<host>
@@ -620,49 +616,45 @@ SSL_CTX *RCInitContext(void) {
 	[self.delegate networkConnected:self];
 	
 	self.isRegistered = YES;
-	RCChannel *chan = [self consoleChannel];
+//	RCChannel *chan = [self consoleChannel];
 //	if (chan) [chan receivedMessage:@"Connected to host." from:@"" time:nil type:RCMessageTypeNormal];
 	if (_saslWasSuccessful)
 		if ([self.nickServPassword length] > 0)
 			[self sendMessage:[@"PRIVMSG NickServ :IDENTIFY " stringByAppendingString:self.nickServPassword]];
 	
-	NSMutableString *joinList = [[NSMutableString alloc] initWithString:@"JOIN "];
-	if ([_channels count] > 1) {
-		for (RCChannel *chan in _channels) {
-			if (![chan isKindOfClass:[RCConsoleChannel class]] && ![chan isKindOfClass:[RCPMChannel class]]) {
-				if ([chan joinOnConnect]) {
-					[joinList appendFormat:@"%@,", chan];
-				}
-			}
-		}
-		if ([joinList hasSuffix:@","]) {
-			[joinList deleteCharactersInRange:NSMakeRange([joinList length]-1, 1)];
-		}
-		[self sendMessage:joinList];
-	}
-	[joinList release];
-	NSLog(@"Ffff %@", message);
-	[chan receivedMessage:message from:@"" time:nil type:RCMessageTypeNormal];
+	// framework implementor should join all channels at this point
+//	NSMutableString *joinList = [[NSMutableString alloc] initWithString:@"JOIN "];
+//	if ([_channels count] > 1) {
+//		for (RCChannel *chan in _channels) {
+//			if (![chan isKindOfClass:[RCConsoleChannel class]] && ![chan isKindOfClass:[RCPMChannel class]]) {
+//				if ([chan joinOnConnect]) {
+//					[joinList appendFormat:@"%@,", chan];
+//				}
+//			}
+//		}
+//		if ([joinList hasSuffix:@","]) {
+//			[joinList deleteCharactersInRange:NSMakeRange([joinList length]-1, 1)];
+//		}
+//		[self sendMessage:joinList];
+//	}
+//	[joinList release];
+//	[chan receivedMessage:message from:@"" time:nil type:RCMessageTypeNormal];
 //	reloadNetworks();
 }
 
-- (void)handle002:(RCMessage *)message {
-	// RPL_YOURHOST
-	RCChannel *chan = [self consoleChannel];
-	[chan receivedMessage:message from:@"" time:nil type:RCMessageTypeNormal];
-}
-
-- (void)handle003:(RCMessage *)message {
-	// RPL_CREATED
-	RCChannel *chan = [self consoleChannel];
-	[chan receivedMessage:message from:@"" time:nil type:RCMessageTypeNormal];
-}
-
-- (void)handle004:(RCMessage *)message {
-	// RPL_MYINFO
-	RCChannel *chan = [self consoleChannel];
-	[chan receivedMessage:message from:@"" time:nil type:RCMessageTypeNormal];
-}
+// 002 RPL_YOURHOST
+// 003 RPL_CREATED
+// 004 RPL_MYINFO
+// 328 RPL_CHANNEL_URL
+// 331 RPL_NOTOPIC
+// 332 RPL_TOPIC
+// 366 RPL_ENDOFNAMES
+// 396 RPL_HOSTHIDDEN
+// 404 ERR_CANNOTSENDTOCHAN
+// 473 ERR_INVITEONLYCHAN
+// 474 ERR_BANNEDFROMCHANNEL
+// 475 ERR_BANNEDFROMCHANNNEL
+// 482 ERR_BANNEDFROMCHANNEL
 
 - (void)handle005:(RCMessage *)message {
 	// RPL_ISUPPORT
@@ -905,26 +897,6 @@ SSL_CTX *RCInitContext(void) {
 //	listCallback = nil;
 }
 
-- (void)handle328:(RCMessage *)message {
-	// RPL_CHANNEL_URL
-	NSString *channel = [message parameterAtIndex:1];
-	NSString *website = [message parameterAtIndex:2];
-	[[self channelWithChannelName:channel] receivedMessage:[NSString stringWithFormat:@"Website is %@", website] from:@"" time:nil type:RCMessageTypeEvent];
-}
-
-- (void)handle331:(RCMessage *)message {
-	// RPL_NOTOPIC
-	NSString *channel = [message parameterAtIndex:1];
-	[[self channelWithChannelName:channel ifNilCreate:YES] receivedMessage:@"No topic set." from:@"" time:nil type:RCMessageTypeTopic];
-}
-
-- (void)handle332:(RCMessage *)message {
-	// RPL_TOPIC
-	NSString *channel = [message parameterAtIndex:1];
-	NSString *topic = [message parameterAtIndex:2];
-	[[self channelWithChannelName:channel ifNilCreate:YES] receivedMessage:topic from:nil time:nil type:RCMessageTypeTopic];
-}
-
 - (void)handle333:(RCMessage *)message {
 	// RPL_TOPICWHOTIME(?)
 	NSString *channel = [message parameterAtIndex:1];
@@ -935,7 +907,7 @@ SSL_CTX *RCInitContext(void) {
 	[dateFormatter setDateFormat:@"MMMM dd, yyyy hh:mm:ss a"];
 	NSString *time = [dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:ts]];
 	[dateFormatter release];
-	[[self channelWithChannelName:channel] receivedMessage:[NSString stringWithFormat:@"Set by %c%@%c on %@", RCIRCAttributeBold, setter, RCIRCAttributeBold, time] from:@"" time:nil type:RCMessageTypeNormalEx];
+	[[self channelWithChannelName:channel] receivedMessage:[NSString stringWithFormat:@"Set by %c%@%c on %@", RCIRCAttributeBold, setter, RCIRCAttributeBold, time] from:@"" time:nil type:RCMessageTypeNormal];
 }
 
 - (void)handle353:(RCMessage *)message {
@@ -952,12 +924,6 @@ SSL_CTX *RCInitContext(void) {
 			}
 		}
 	}
-}
-- (void)handle366:(RCMessage *)message {
-	// RPL_ENDOFNAMES
-	NSString *chan = [message parameterAtIndex:1];
-	RCChannel *channel = [self channelWithChannelName:chan];
-	[channel setShouldHoldUserListUpdates:NO];
 }
 
 - (void)handle372:(RCMessage *)message {
@@ -992,14 +958,6 @@ SSL_CTX *RCInitContext(void) {
 	self.isOper = YES;
 }
 
-- (void)handle396:(RCMessage *)message {
-	// RPL_HOSTHIDDEN
-	NSString *host = [message parameterAtIndex:1];
-	NSString *info = [message parameterAtIndex:2];
-	RCChannel *chan = [self consoleChannel];
-	[chan receivedMessage:[NSString stringWithFormat:@"%@ %@", host, info] from:@"" time:nil type:RCMessageTypeEvent];
-}
-
 - (void)handle401:(RCMessage *)message {
 	// no such nick/channel
     // Please don't hate me Maximus
@@ -1012,13 +970,6 @@ SSL_CTX *RCInitContext(void) {
 
 - (void)handle403:(RCMessage *)message {
 	// no such channel
-}
-
-- (void)handle404:(RCMessage *)message {
-	// ERR_CANNOTSENDTOCHAN
-	NSString *channel = [message parameterAtIndex:1];
-	NSString *reason = [message parameterAtIndex:2];
-	[[self channelWithChannelName:channel ifNilCreate:YES] receivedMessage:reason from:@"" time:nil type:RCMessageTypeError];
 }
 
 - (void)handle421:(RCMessage *)message {
@@ -1054,14 +1005,14 @@ SSL_CTX *RCInitContext(void) {
 }
 
 - (void)handle437:(RCMessage *)message {
-	[[self consoleChannel] receivedMessage:[message parameterAtIndex:2] from:nil time:nil type:RCMessageTypeNormal];
-	dispatch_async(dispatch_get_main_queue(), ^{
+//	[[self consoleChannel] receivedMessage:[message parameterAtIndex:2] from:nil time:nil type:RCMessageTypeNormal];
+//	dispatch_async(dispatch_get_main_queue(), ^{
 //		RCPrettyAlertView *ac = [[RCPrettyAlertView alloc] initWithTitle:@"Nickname Unavailable" message:[NSString stringWithFormat:@"Please input another nickname for %@ below.", [self _description]] delegate:self cancelButtonTitle:@"Disconnect" otherButtonTitles:@"Retry", nil];
 //		[ac setTag:RCALERR_INCUNAME];
 //		[ac setAlertViewStyle:UIAlertViewStylePlainTextInput];
 //		[ac show];
 //		[ac release];
-	});
+//	});
 }
 
 - (void)handle461:(RCMessage *)message {
@@ -1088,35 +1039,6 @@ SSL_CTX *RCInitContext(void) {
 //		[ac show];
 //		[ac release];
 //	});
-}
-
-- (void)handle473:(RCMessage *)message {
-	// ERR_INVITEONLYCHAN
-	NSString *channel = [message parameterAtIndex:1];
-	NSString *reason = [message parameterAtIndex:2];
-	// perhaps implement a KNOCK prompt here sometime
-//	[[[RCChatController sharedController] currentChannel] receivedMessage:[NSString stringWithFormat:@"\x02%@\x02: %@", channel, reason] from:@"" time:nil type:RCMessageTypeError];
-}
-
-- (void)handle474:(RCMessage *)message {
-	// ERR_BANNEDFROMCHANNEL
-	NSString *channel = [message parameterAtIndex:1];
-	NSString *reason = [message parameterAtIndex:2];
-//	[[[RCChatController sharedController] currentChannel] receivedMessage:[NSString stringWithFormat:@"\x02%@\x02: %@", channel, reason] from:@"" time:nil type:RCMessageTypeError];
-}
-
-- (void)handle475:(RCMessage *)message {
-	// ERR_BANNEDFROMCHANNEL
-	NSString *channel = [message parameterAtIndex:1];
-	NSString *reason = [message parameterAtIndex:2];
-//	[[[RCChatController sharedController] currentChannel] receivedMessage:[NSString stringWithFormat:@"\x02%@\x02: %@", channel, reason] from:@"" time:nil type:RCMessageTypeError];
-}
-
-- (void)handle482:(RCMessage *)message {
-	// ERR_BANNEDFROMCHANNEL
-	NSString *channel = [message parameterAtIndex:1];
-	NSString *reason = [message parameterAtIndex:2];
-//	[[[RCChatController sharedController] currentChannel] receivedMessage:[NSString stringWithFormat:@"\x02%@\x02: %@", channel, reason] from:@"" time:nil type:RCMessageTypeError];
 }
 
 - (void)handle900:(RCMessage *)message {

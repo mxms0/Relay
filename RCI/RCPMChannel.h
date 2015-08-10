@@ -17,8 +17,7 @@
 @property (nonatomic, retain) NSString *ipInfo;
 @property (nonatomic, retain) NSString *chanInfos;
 @property (nonatomic, retain) NSString *connectionInfo;
-@property (nonatomic, retain) NSArray *cellHeights;
-@property (nonatomic, assign) BOOL thirstyForWhois;
+@property (nonatomic, assign) BOOL wantsWhois;
 @property (nonatomic, assign) BOOL hasWhois;
 - (BOOL)isPrivate;
 - (void)requestWhoisInformation;

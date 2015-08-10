@@ -10,7 +10,7 @@
 int strntoi(const char *restrict s, size_t maxlen, char **restrict endp) {
 	int i = 0;
 	int n = 0;
-	while(isdigit(*s) && i < maxlen) {
+	while (isdigit(*s) && i < maxlen) {
 		n *= 10;
 		n += *s - '0';
 		++i;
@@ -121,6 +121,7 @@ NSArray *RCMIRCAttributesFromString(NSString *message) {
 			}
 		}
 	}
+	
 	for (RCAttribute *a in [openAttrs allValues]) {
 		a.end = pos;
 	}

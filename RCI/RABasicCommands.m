@@ -278,13 +278,13 @@
 }
 
 - (void)handleCLEAR:(NSString *)cle net:(RCNetwork *)net channel:(RCChannel *)chan {
-	[chan clearAllMessages];
+//	[chan clearAllMessages];
 }
 
 - (void)handleCLEARALL:(NSString *)omg net:(RCNetwork *)net {
-	for (id channel in [net channels]) {
-		[channel clearAllMessages];
-	}
+//	for (id channel in [net channels]) {
+//		[channel clearAllMessages];
+//	}
 }
 
 - (void)handleMYVERSION:(NSString *)vs net:(RCNetwork *)_net channel:(RCChannel *)_chan {

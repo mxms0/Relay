@@ -6,6 +6,7 @@
 //	no correlation to RCMessageFormatter
 
 #import <Foundation/Foundation.h>
+#import "RCI.h"
 
 @interface RCMessage : NSObject {
 	NSString *_numeric;
@@ -17,6 +18,7 @@
 @property (nonatomic, retain) NSString *sender;
 @property (nonatomic, retain) NSString *destination;
 @property (nonatomic, retain) NSString *message;
+@property (nonatomic, assign) RCMessageType messageType;
 // message is the segment after the ":" character
 @property (nonatomic, retain) NSDictionary *messageTags;
 - (id)initWithString:(NSString *)string;

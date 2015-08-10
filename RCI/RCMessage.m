@@ -12,7 +12,7 @@
 	NSString *_givenMessage;
 	NSArray *_arguments;
 }
-@synthesize messageTags=_messageTags, sender=_sender, numeric=_numeric, destination=_destination, message=_message;
+@synthesize messageTags=_messageTags, sender=_sender, numeric=_numeric, destination=_destination, message=_message, messageType=_messageType;
 
 - (id)initWithString:(NSString *)string {
 	if ((self = [super init])) {
@@ -20,6 +20,7 @@
 		if ([_givenMessage characterAtIndex:0] == '@') {
 			[self parseIRCV3MessageTags];
 		}
+		self.messageType = RCMessageTypeUnknown;
 	}
 	return self;
 }
@@ -98,6 +99,7 @@
 			[tagsDictionary setObject:(id)kCFBooleanTrue forKey:[flags objectAtIndex:0]];
 		}
 		else {
+			// setup dictionary mapping so can switch/case
 			NSString *key = [flags objectAtIndex:0];
 			if ([key isEqualToString:@"time"]) {
 				//	NSString *properTime = [[RCDateManager sharedInstance] properlyFormattedTimeFromISO8601DateString:[flags objectAtIndex:1]];
@@ -128,7 +130,7 @@
 }
 
 - (id)description {
-	return [@[(self.messageTags ?: [NSNull null]), (self.sender ?: [NSNull null]), (self.numeric ?: @"-1"), (self.message ?: @"wat, no message?")] description];
+	return [@[(self.messageTags ?: [NSNull null]), (self.sender ?: [NSNull null]), (self.numeric ?: @"-1"), (self.message ?: @"no message?")] description];
 }
 
 - (void)dealloc {

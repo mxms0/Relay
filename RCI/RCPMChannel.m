@@ -9,16 +9,13 @@
 #import "RCNetwork.h"
 
 @implementation RCPMChannel
-@synthesize ipInfo, chanInfos, thirstyForWhois, hasWhois, connectionInfo;
+@synthesize ipInfo, chanInfos, wantsWhois, hasWhois, connectionInfo;
 
 - (id)initWithChannelName:(NSString *)_name {
 	if ((self = [super initWithChannelName:_name])) {
 		partnerIsOnline = NO;
 		ipInfo = nil;
 		chanInfos = nil;
-		channelName = [_name retain];
-		joinOnConnect = YES;
-		cellRepresentation = nil;
 		self.joined = YES;
 		newMessageCount = 0;
 		userRanksAdv = [NSMutableDictionary new];
@@ -28,25 +25,19 @@
 	return self;
 }
 
-- (void)storePassword {
-}
-
-- (void)retrievePassword {
-}
-
 - (void)changeNick:(NSString *)old toNick:(NSString *)new_ {
 	dispatch_async(dispatch_get_main_queue(), ^ {
 		@synchronized(self) {
 			if ([old isEqualToString:[self channelName]]) {
-				if ([(RCNetwork *)[self delegate] channelWithChannelName: new_]) {
-					id nself = [[self delegate] channelWithChannelName: new_];
-					[self receivedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" time:nil type:RCMessageTypeNormalEx];
-					[nself receivedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" time:nil type:RCMessageTypeNormalEx];
+				if ([(RCNetwork *)[self network] channelWithChannelName: new_]) {
+					id nself = [[self network] channelWithChannelName: new_];
+					[self receivedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" time:nil type:RCMessageTypeNormal];
+					[nself receivedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" time:nil type:RCMessageTypeNormal];
 					return;
 				}
 				[self setChannelName:new_];
 			}
-			[self receivedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" time:nil type:RCMessageTypeNormalEx];
+			[self receivedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" time:nil type:RCMessageTypeNormal];
 		}
 	});
 }
@@ -70,16 +61,11 @@
 	
 }
 
-- (void)setJoined:(BOOL)joind withArgument:(NSString *)arg1 {
-	if (joind) {
-		partnerIsOnline = YES;
-	}
-	return;
-} 
+- (void)setSuccessfullyJoined:(BOOL)success {}
 
-- (void)setSuccessfullyJoined:(BOOL)success {
-	
-}
+- (void)join {}
+
+- (void)part {}
 
 - (void)setJoined:(BOOL)joind {}
 
@@ -88,7 +74,7 @@
 }
 
 - (BOOL)isUserInChannel:(NSString *)user {
-	return [user isEqualToString:channelName] || [user isEqualToString:[[self delegate] nickname]];
+	return [user isEqualToString:_channelName] || [user isEqualToString:[[self network] nickname]];
 }
 
 - (BOOL)isPrivate {

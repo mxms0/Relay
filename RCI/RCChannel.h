@@ -7,43 +7,31 @@
 
 #import <Foundation/Foundation.h>
 #import "NSString+Utils.h"
-#import "RCMessageFormatter.h"
 #import "RCI.h"
 
-@class RCNetwork, RCChannelCell, RCMessage;
+@class RCNetwork, RCMessage;
 @interface RCChannel : NSObject {
 @public
-	NSString *channelName;
-	NSString *password;
-	id panel;
-	id usersPanel;
-	BOOL joinOnConnect;
-	BOOL temporaryJoinOnConnect;
+	NSString *_channelName;
+	NSString *_password;
 	BOOL holdUserListUpdates;
 	BOOL hasHighlights;
 	unsigned newMessageCount;
-	RCNetwork *delegate;
-	RCChannelCell *cellRepresentation;
+	RCNetwork *_network;
     NSMutableArray *fullUserList;
 	NSMutableArray *fakeUserList;
     NSMutableDictionary *userRanksAdv;
 }
-@property (nonatomic, copy) NSString *channelName;
-@property (nonatomic, assign) BOOL joinOnConnect;
-@property (nonatomic, assign) BOOL temporaryJoinOnConnect;
+@property (nonatomic, retain) NSString *channelName;
 @property (nonatomic, assign) BOOL hasHighlights;
 @property (nonatomic, assign) BOOL joined;
-@property (nonatomic, assign) id panel;
 @property (nonatomic, retain) NSString *password;
-@property (nonatomic, assign) id usersPanel;
 @property (nonatomic, readonly) NSMutableArray *fullUserList;
-@property (nonatomic, retain) RCChannelCell *cellRepresentation;
 @property (nonatomic, assign) unsigned newMessageCount;
+@property (nonatomic, assign) RCNetwork *network;
 - (void)disconnected:(NSString *)msg;
 - (void)changeNick:(NSString *)old toNick:(NSString *)new_;
 - (id)initWithChannelName:(NSString *)_name;
-- (void)setDelegate:(RCNetwork *)delegate;
-- (RCNetwork *)delegate;
 - (void)receivedMessage:(id)_message from:(NSString *)from time:(NSString *)time_ type:(RCMessageType)type;
 - (void)receivedMessage:(RCMessage *)message;
 - (void)setUserJoined:(NSString *)joined;
@@ -52,19 +40,16 @@
 - (void)setUserLeft:(NSString *)left;
 - (void)setMode:(NSString *)modes forUser:(NSString *)user;
 - (NSMutableArray *)usersMatchingWord:(NSString *)word;
-- (void)setMyselfParted;
 
 - (void)join;
 - (void)part;
 - (void)partWithMessage:(NSString *)message;
 - (BOOL)isUserInChannel:(NSString *)user;
 - (BOOL)isPrivate;
-- (void)clearAllMessages;
 - (void)setJoined:(BOOL)joind;
 - (void)kickUserAtIndex:(int)index;
 - (void)banUserAtIndex:(int)index;
 - (void)setShouldHoldUserListUpdates:(BOOL)bn;
-- (NSArray *)allMessages;
 NSString *RCUserRank(NSString *user, RCNetwork *network);
 int RCUserIntegerRank(NSString *prefix, RCNetwork *network);
 NSString *RCNickWithoutRank(NSString *nick, RCNetwork *self);
