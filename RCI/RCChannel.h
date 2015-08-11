@@ -11,19 +11,16 @@
 
 @class RCNetwork, RCMessage;
 @interface RCChannel : NSObject {
-@public
+	BOOL _joined;
 	NSString *_channelName;
 	NSString *_password;
 	BOOL holdUserListUpdates;
-	BOOL hasHighlights;
-	unsigned newMessageCount;
 	RCNetwork *_network;
     NSMutableArray *fullUserList;
 	NSMutableArray *fakeUserList;
     NSMutableDictionary *userRanksAdv;
 }
 @property (nonatomic, retain) NSString *channelName;
-@property (nonatomic, assign) BOOL hasHighlights;
 @property (nonatomic, assign) BOOL joined;
 @property (nonatomic, retain) NSString *password;
 @property (nonatomic, readonly) NSMutableArray *fullUserList;
@@ -50,12 +47,14 @@
 - (void)kickUserAtIndex:(int)index;
 - (void)banUserAtIndex:(int)index;
 - (void)setShouldHoldUserListUpdates:(BOOL)bn;
+
 NSString *RCUserRank(NSString *user, RCNetwork *network);
-int RCUserIntegerRank(NSString *prefix, RCNetwork *network);
-NSString *RCNickWithoutRank(NSString *nick, RCNetwork *self);
+NSString *RCNickWithoutRank(NSString *nick, RCNetwork *network);
 NSInteger RCRankToNumber(unichar rank, RCNetwork *network);
 NSInteger RCRankSort(id u1, id u2, RCNetwork *network);
+NSInteger RCUserIntegerRank(NSString *prefix, RCNetwork *network);
 void RCRefreshTable(NSString *or, NSString *nnr, NSArray *current, RCChannel *self);
 BOOL RCIsRankHigher(NSString *rank, NSString *rank2, RCNetwork *network);
 char RCUserHash(NSString *from);
+
 @end

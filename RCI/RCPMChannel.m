@@ -9,17 +9,11 @@
 #import "RCNetwork.h"
 
 @implementation RCPMChannel
-@synthesize ipInfo, chanInfos, wantsWhois, hasWhois, connectionInfo;
+@synthesize ipInfo=_ipInfo, chanInfos=_chanInfos, wantsWhois=_wantsWhois, hasWhois=_hasWhois, connectionInfo=_connectionInfo;
 
 - (id)initWithChannelName:(NSString *)_name {
 	if ((self = [super initWithChannelName:_name])) {
-		partnerIsOnline = NO;
-		ipInfo = nil;
-		chanInfos = nil;
 		self.joined = YES;
-		newMessageCount = 0;
-		userRanksAdv = [NSMutableDictionary new];
-		fullUserList = [[NSMutableArray alloc] init];
 		[fullUserList addObject:_name];
 	}
 	return self;

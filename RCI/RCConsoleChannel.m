@@ -18,6 +18,10 @@
 	return self;
 }
 
+- (BOOL)joined {
+	return YES;
+}
+
 - (void)setSuccessfullyJoined:(BOOL)success {}
 
 - (void)join {}

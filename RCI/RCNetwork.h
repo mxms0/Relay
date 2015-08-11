@@ -44,15 +44,17 @@ typedef NS_ENUM(NSInteger, RCConnectionFailure) {
 - (void)network:(RCNetwork *)network connectionFailed:(RCConnectionFailure)fail;
 - (void)network:(RCNetwork *)network serverSentLine:(RCLineType)lineType;
 - (void)network:(RCNetwork *)network receivedNotice:(NSString *)notice user:(NSString *)user;
-
+@optional
+- (NSString *)defaultQuitMessageForNetwork:(RCNetwork *)network;
+- (void)network:(RCNetwork *)network receivedMOTDMessage:(NSString *)message;
 @end
 
-typedef enum RCSocketStatus {
+typedef NS_ENUM(NSInteger, RCSocketStatus) {
 	RCSocketStatusConnecting,
 	RCSocketStatusConnected,
 	RCSocketStatusError,
 	RCSocketStatusClosed
-} RCSocketStatus;
+};
 
 @interface RCNetwork : NSObject
 @property (nonatomic, retain) NSDictionary *prefixes;
@@ -65,12 +67,9 @@ typedef enum RCSocketStatus {
 @property (nonatomic, retain) NSString *serverPassword;
 @property (nonatomic, retain) NSString *nickServPassword;
 @property (nonatomic, retain) NSString *uUID;
-@property (nonatomic, retain) NSArray *connectCommands;
 @property (nonatomic, assign) uint16_t port;
 @property (atomic, assign) BOOL isRegistered;
 
-@property (nonatomic, assign) id listCallback;
-@property (nonatomic, assign) BOOL expanded;
 @property (nonatomic, assign) BOOL isOper;
 @property (nonatomic, assign) BOOL isAway;
 @property (nonatomic, assign) id <RCNetworkDelegate> delegate;
@@ -81,30 +80,21 @@ typedef enum RCSocketStatus {
 @property (nonatomic, assign) BOOL useSSL;
 @property (nonatomic, assign) BOOL handleMOTD;
 
-
-- (RCNetwork *)uniqueCopy;
-- (RCChannel *)channelWithChannelName:(NSString *)chan;
-- (void)createConsoleChannel;
 - (void)connect;
 - (BOOL)disconnect;
 - (void)disconnectCleanupWithMessage:(NSString *)msg;
-- (RCChannel *)consoleChannel;
 - (BOOL)isConnected;
+- (BOOL)isTryingToConnectOrConnected;
 - (BOOL)sendMessage:(NSString *)msg;
 - (BOOL)sendMessage:(NSString *)msg canWait:(BOOL)canWait;
-- (void)receivedMessage:(NSString *)msg;
-- (void)moveChannelAtIndex:(int)idx toIndex:(int)newIdx;
+- (void)createConsoleChannel;
+- (RCChannel *)consoleChannel;
 - (RCChannel *)addChannel:(NSString *)_chan join:(BOOL)join;
 - (RCPMChannel *)pmChannelWithChannelName:(NSString *)chan;
-- (RCChannel *)addTemporaryChannelListingIfItDoesntAlreadyExist:(NSString *)_chan;
+- (RCChannel *)channelWithChannelName:(NSString *)chan;
+- (void)moveChannelAtIndex:(NSUInteger)idx toIndex:(NSUInteger)newIdx;
 - (void)removeChannel:(RCChannel *)chan;
-- (void)handlePING:(id)pong;
-- (void)handleCTCPRequest:(NSString *)request from:(NSString *)from;
-- (BOOL)isTryingToConnectOrConnected;
-- (NSString *)defaultQuitMessage;
-- (BOOL)read;
-- (BOOL)write;
-- (BOOL)hasPendingBites; //nom
+- (void)enumerateOverChannelsWithBlock:(void (^)(RCChannel *channel, BOOL *stop))block;
 @end
 
 char *RCIPForURL(NSString *URL);

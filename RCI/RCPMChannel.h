@@ -8,11 +8,11 @@
 #import "RCChannel.h"
 
 @interface RCPMChannel : RCChannel {
-	NSString *ipInfo;
-	NSString *chanInfos;
-	NSString *connectionInfo;
-	NSString *finalWhoisInfoString;
-	BOOL partnerIsOnline;
+	NSString *_ipInfo;
+	NSString *_chanInfos;
+	NSString *_connectionInfo;
+	NSString *_finalWhoisInfoString;
+	BOOL _partnerIsOnline;
 }
 @property (nonatomic, retain) NSString *ipInfo;
 @property (nonatomic, retain) NSString *chanInfos;

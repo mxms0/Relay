@@ -64,23 +64,20 @@ SSL_CTX *RCInitContext(void) {
 	NSString *_serverPassword;
 	NSString *_nickServPassword;
 	NSString *_uUID;
-	NSArray *_connectCommands;
 	uint16_t _port;
 	BOOL _isRegistered;
 	BOOL _useSSL;
-	id _listCallback;
-	BOOL _expanded;
+
 	BOOL _isOper;
 	BOOL _isAway;
 	id <RCNetworkDelegate> delegate;
 	id <RCChannelDelegate> channelDelegate;
 	
-	NSMutableArray *channels;
+	NSMutableArray *_channels;
 	NSMutableArray *tmpChannels;
 	NSMutableArray *alternateNicknames;
 	NSMutableString *writebuf;
 	NSTimer *disconnectTimer;
-	BOOL canSend;
 	
 	NSDictionary *prefixes;
 	
@@ -96,57 +93,32 @@ SSL_CTX *RCInitContext(void) {
 	SSL_CTX *ctx;
 	SSL *ssl;
 	RCSocketStatus status;
+	BOOL reading;
+	BOOL writing;
 }
 
-@synthesize stringDescription=_stringDescription, serverAddress=_serverAddress, nickname=_nicknames, username=_username, realname=_realname, serverPassword=_serverPassword, nickServPassword=_nickServPassword, uUID=_uUID, connectCommands=_connectCommands, port=_port, isRegistered=_isRegistered, useSSL=_useSSL, delegate=_delegate, channels=_channels, channelDelegate=_channelDelegate, alternateNicknames=_alternateNicknames, prefixes=_prefixes;
-
+@synthesize stringDescription=_stringDescription, serverAddress=_serverAddress, nickname=_nicknames, username=_username, realname=_realname, serverPassword=_serverPassword, nickServPassword=_nickServPassword, uUID=_uUID, port=_port, isRegistered=_isRegistered, useSSL=_useSSL, delegate=_delegate, channels=_channels, channelDelegate=_channelDelegate, alternateNicknames=_alternateNicknames, prefixes=_prefixes;
 
 #pragma mark Object Management
 
-- (id)init {
+- (instancetype)init {
 	if ((self = [super init])) {
 		status = RCSocketStatusClosed;
 		sockfd = -1;
 		ctx = NULL;
 		ssl = NULL;
-		self.prefixes = nil;
 		self.nickname = @"(Not Sent)";
 		_channels = [[NSMutableArray alloc] init];
 		_alternateNicknames = [[NSMutableArray alloc] init];
 		tmpChannels = [[NSMutableArray alloc] init];
-		self.connectCommands = [[[NSArray alloc] init] autorelease];
 		
 		CFUUIDRef uRef = CFUUIDCreate(NULL);
 		CFStringRef uStringRef = CFUUIDCreateString(NULL, uRef);
 		CFRelease(uRef);
 		[self setUUID:(NSString *)uStringRef];
 		CFRelease(uStringRef);
-		
 	}
 	return self;
-}
-
-- (RCNetwork *)uniqueCopy {
-	RCNetwork *newNet = [[RCNetwork alloc] init];
-	[newNet setStringDescription:self.stringDescription];
-	[newNet setServerAddress:self.serverAddress];
-	[newNet setUsername:self.username];
-	[newNet setNickname:self.nickname];
-	[newNet setRealname:self.realname];
-	[newNet setPort:self.port];
-	[newNet setUseSSL:self.useSSL];
-	[newNet setServerPassword:self.serverPassword];
-	[newNet setNickServPassword:self.nickServPassword];
-	for (RCChannel *chan in _channels) {
-		RCChannel *nChan = [newNet addChannel:[chan channelName] join:NO];
-		[nChan setPassword:[chan password]];
-	}
-	CFUUIDRef uRef = CFUUIDCreate(NULL);
-	CFStringRef uStringRef = CFUUIDCreateString(NULL, uRef);
-	CFRelease(uRef);
-	[newNet setUUID:(NSString *)uStringRef];
-	CFRelease(uStringRef);
-	return [newNet autorelease];
 }
 
 - (void)dealloc {
@@ -168,7 +140,6 @@ SSL_CTX *RCInitContext(void) {
 	[writebuf release];
 	[tmpChannels release];
 	[self setPrefixes:nil];
-	[self setConnectCommands:nil];
 	[super dealloc];
 }
 
@@ -197,22 +168,20 @@ SSL_CTX *RCInitContext(void) {
 	return [self channelWithChannelName:chan ifNilCreate:NO];
 }
 
-- (RCChannel *)channelWithChannelName:(NSString *)chan ifNilCreate:(BOOL)cr {
-	if ([chan isKindOfClass:[RCChannel class]]) {
-		NSLog(@"what is happening here this should never happen %@", [NSThread callStackSymbols]);
-		return (RCChannel *)chan; // ???
-	}
-	@synchronized(_channels) {
-		for (RCChannel *chann in _channels) {
-			if ([[chann channelName] isEqualToStringNoCase:chan])
-				return chann;
+- (RCChannel *)channelWithChannelName:(NSString *)chan ifNilCreate:(BOOL)create {
+	__block RCChannel *target = nil;
+	[self enumerateOverChannelsWithBlock:^(RCChannel *channel, BOOL *stop) {
+		if ([[channel channelName] isEqualToStringNoCase:chan]) {
+			target = channel;
+			*stop = YES;
 		}
-		if (cr) {
-			RCChannel *newChan = [self addChannel:chan join:NO];
-			return newChan;
-		}
-		return nil;
+	}];
+	
+	if (!target && create) {
+		target = [self addChannel:chan join:NO];
 	}
+	
+	return target;
 }
 
 - (RCChannel *)pmChannelWithChannelName:(NSString *)chan {
@@ -232,18 +201,30 @@ SSL_CTX *RCInitContext(void) {
 		
 		if (!ret) {
 			RCChannel *chan = nil;
-			if ([_chan isEqualToString:RCConsoleChannelName]) chan = [[RCConsoleChannel alloc] initWithChannelName:_chan];
-			else if ([_chan hasPrefix:@"#"] || [_chan hasPrefix:@"&"]) chan = [[RCChannel alloc] initWithChannelName:_chan];
-			else chan = [[RCPMChannel alloc] initWithChannelName:_chan];
+			
+			if ([_chan isEqualToString:RCConsoleChannelName])
+				chan = [[RCConsoleChannel alloc] initWithChannelName:_chan];
+			
+			else if ([_chan hasPrefix:@"#"] || [_chan hasPrefix:@"&"])
+				chan = [[RCChannel alloc] initWithChannelName:_chan];
+			
+			else
+				chan = [[RCPMChannel alloc] initWithChannelName:_chan];
+			
 			[chan setNetwork:self];
-
-			if ([chan isKindOfClass:[RCConsoleChannel class]]) {
-				[_channels insertObject:chan atIndex:0];
+			NSUInteger index = 0;
+			
+			if (![chan isKindOfClass:[RCConsoleChannel class]]) {
+				index = [_channels count];
 			}
-			else {
-				[_channels addObject:chan];
+			
+			@synchronized(_channels) {
+				[_channels insertObject:chan atIndex:index];
 			}
-			if (join) [chan join];
+			
+			if (join)
+				[chan join];
+			
 			if (self.isRegistered) {
 //				[[RCNetworkManager sharedNetworkManager] saveNetworks];
 //				reloadNetworks();
@@ -265,21 +246,6 @@ SSL_CTX *RCInitContext(void) {
 	(void)[self addChannel:RCConsoleChannelName join:YES];
 }
 
-- (RCChannel *)addTemporaryChannelListingIfItDoesntAlreadyExist:(NSString *)_chan {
-	@synchronized(self) {
-		RCPMChannel *chan = [self pmChannelWithChannelName:_chan];
-		if (!chan) {
-			chan = [[RCPMChannel alloc] initWithChannelName:_chan];
-			[chan setNetwork:self];
-			[tmpChannels addObject:chan];
-			[chan release];
-		}
-		// if channel not found, create it and place it.
-		return chan;
-	}
-	return nil;
-}
-
 - (void)removeChannel:(RCChannel *)chan {
 	[self removeChannel:chan withMessage:@"Relay Chat."];
 }
@@ -288,19 +254,36 @@ SSL_CTX *RCInitContext(void) {
 	@synchronized(self) {
 		if (!chan) return;
 		[chan partWithMessage:quitter];
-		[_channels removeObject:chan];
+		@synchronized(_channels) {
+			[_channels removeObject:chan];
+		}
 //		[[RCNetworkManager sharedNetworkManager] saveNetworks];
 //		reloadNetworks();
 	}
 }
 
-- (void)moveChannelAtIndex:(int)idx toIndex:(int)newIdx; {
-	RCChannel *ctrlChan = [_channels objectAtIndex:idx];
-	[ctrlChan retain];
-	[_channels removeObjectAtIndex:idx];
-	[_channels insertObject:ctrlChan atIndex:newIdx-1];
-	[ctrlChan release];
+- (void)moveChannelAtIndex:(NSUInteger)idx toIndex:(NSUInteger)newIdx; {
+	@synchronized(_channels) {
+		RCChannel *ctrlChan = [_channels objectAtIndex:idx];
+		[ctrlChan retain];
+		[_channels removeObjectAtIndex:idx];
+		[_channels insertObject:ctrlChan atIndex:newIdx-1];
+		[ctrlChan release];
+	}
 //	[[RCNetworkManager sharedNetworkManager] saveNetworks];
+}
+
+
+- (void)enumerateOverChannelsWithBlock:(void (^)(RCChannel *channel, BOOL *stop))block {
+	@synchronized(_channels) {
+		for (RCChannel *chan in _channels) {
+			BOOL shouldStop = NO;
+			block(chan, &shouldStop);
+			if (shouldStop) {
+				break;
+			}
+		}
+	}
 }
 
 #pragma mark Socket Handling
@@ -311,21 +294,17 @@ SSL_CTX *RCInitContext(void) {
 }
 
 - (BOOL)read {
-	static BOOL isReading = NO;
-	
 	
 	if (sockfd == -1) return NO;
-	if (isReading) return YES;
+	if (reading) return YES;
 	
-	
-	isReading = YES;
+	reading = YES;
 	// do this in a thread safe manner
 	if (!readCache)
 		readCache = [[NSMutableData alloc] init];
 	
-	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	char buf[4097];
+	char buf[2049];
 	ssize_t rc = 0;
 	if (self.useSSL)
 		rc = SSL_read(ssl, buf, 2048);
@@ -336,22 +315,20 @@ SSL_CTX *RCInitContext(void) {
 		return NO;
 	}
 	
-	if (![self isTryingToConnectOrConnected]) return NO;
 	[readCache appendBytes:buf length:rc];
 	NSRange rr = [readCache rangeOfData:[NSData nlCharacterDataSet] options:0 range:NSMakeRange(0, [readCache length])];
 	while (rr.location != NSNotFound) {
-		if (rr.location == 0) break;
 		NSData *data = [readCache subdataWithRange:NSMakeRange(0, rr.location + 2)];
 		NSString *recd = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 		if (recd) {
-			[self receivedMessage:recd];
+			[self _handleMessage:recd];
 		}
 		else {
 			recd = [[NSString alloc] initWithData:data encoding:NSISOLatin1StringEncoding];
 			if (!recd) {
 				// perhaps mac os roman, seems to work for all.
 			}
-			[self receivedMessage:recd];
+			[self _handleMessage:recd];
 		}
 		[recd autorelease];
 		[readCache replaceBytesInRange:NSMakeRange(0, rr.location + 2) withBytes:NULL length:0];
@@ -359,15 +336,15 @@ SSL_CTX *RCInitContext(void) {
 	}
 	
 	[pool release];
-	isReading = NO;
+	reading = NO;
 	return YES;
 }
 
 - (BOOL)write {
-	static BOOL isWriting = NO;
+	
 	if (sockfd == -1) return NO;
-	if (isWriting) return NO;
-	isWriting = YES;
+	if (writing) return NO;
+	writing = YES;
 	ssize_t written = 0;
 	if (self.useSSL) {
 		written = SSL_write(ssl, [writebuf UTF8String], (int)strlen([writebuf UTF8String]));
@@ -380,7 +357,7 @@ SSL_CTX *RCInitContext(void) {
 	[writebuf release];
 	writebuf = [[NSMutableString alloc] initWithCString:buf encoding:NSUTF8StringEncoding];
 	// this math works. But there must be a more sensible way.
-	isWriting = NO;
+	writing = NO;
 	return YES;
 }
 
@@ -409,14 +386,14 @@ SSL_CTX *RCInitContext(void) {
 	return YES;
 }
 
-- (void)receivedMessage:(NSString *)msg {
-	if (!RCIRCStringIsValid(msg)) return;
-	msg = [msg substringToIndex:[msg length] - 2];
+- (void)_handleMessage:(NSString *)messageString {
+	if (!RCIRCStringIsValid(messageString)) return;
+	messageString = [messageString substringToIndex:[messageString length] - 2];
 #if LOGALL
 	NSLog(@"received: [%@]", msg);
 #endif
 	
-	RCMessage *message = [[RCMessage alloc] initWithString:msg];
+	RCMessage *message = [[RCMessage alloc] initWithString:messageString];
 	[message parse];
 	
 	NSString *selName = [NSString stringWithFormat:@"handle%@:", [message numeric]];
@@ -487,19 +464,19 @@ SSL_CTX *RCInitContext(void) {
 		// ERROR OBTAINING HOST
 		return -1;
 	}
-	int _sfd = socket(AF_INET, SOCK_STREAM, 0);
-	if (_sfd < 0) {
+	int _sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	if (_sockfd < 0) {
 		[self.delegate network:self connectionFailed:RCConnectionFailureEstablishingSocket];
 		// ERROR ESTABLISHING SOCKET(?)
 		return -1;
 	}
 	int set = 1;
-	setsockopt(_sfd, SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(int));
+	setsockopt(_sockfd, SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(int));
 	bzero(&addr, sizeof(addr));
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(self.port);
 	addr.sin_addr.s_addr = *(in_addr_t *)(host->h_addr);
-	if (connect(_sfd, (struct sockaddr *)&addr, sizeof(addr)) != 0) {
+	if (connect(_sockfd, (struct sockaddr *)&addr, sizeof(addr)) != 0) {
 		[self.delegate network:self connectionFailed:RCConnectionFailureConnecting];
 		// ERROR CONNECTING
 		return -1;
@@ -509,7 +486,7 @@ SSL_CTX *RCInitContext(void) {
 		SSL_CTX *rCTX = RCInitContext();
 		ctx = rCTX;
 		ssl = SSL_new(ctx);
-		SSL_set_fd(ssl, _sfd);
+		SSL_set_fd(ssl, _sockfd);
 		if (SSL_connect(ssl) == -1) {
 			// ERROR CONNECTING (VIA SSL?)
 			[self.delegate network:self connectionFailed:RCConnectionFailureConnectingViaSSL];
@@ -517,9 +494,10 @@ SSL_CTX *RCInitContext(void) {
 		}
 	}
 	
-	int flags = fcntl(_sfd, F_GETFL, 0);
-	fcntl(_sfd, F_SETFL, flags | O_NONBLOCK);
-	return _sfd;
+	int flags = fcntl(_sockfd, F_GETFL, 0);
+	fcntl(_sockfd, F_SETFL, flags | O_NONBLOCK);
+	
+	return _sockfd;
 }
 
 - (BOOL)isTryingToConnectOrConnected {
@@ -527,8 +505,11 @@ SSL_CTX *RCInitContext(void) {
 }
 
 - (NSString *)defaultQuitMessage {
-	// return user defined property here
-	return @"Ciao!";
+	NSString *ret = nil;
+	if ([self.delegate respondsToSelector:@selector(defaultQuitMessageForNetwork:)]) {
+		ret = [self.delegate defaultQuitMessageForNetwork:self];
+	}
+	return ret ?: @"Ciao!";
 }
 
 - (BOOL)disconnectWithMessage:(NSString *)msg {
@@ -541,9 +522,9 @@ SSL_CTX *RCInitContext(void) {
 		if (self.useSSL)
 			SSL_CTX_free(ctx);
 		self.isRegistered = NO;
-		for	(RCChannel *_chan in _channels) {
-			[_chan disconnected:msg];
-		}
+		[self enumerateOverChannelsWithBlock:^(RCChannel *channel, BOOL *stop) {
+			[channel disconnected:msg];
+		}];
 	}
 	else if (status == RCSocketStatusConnected) {
 		// also unset away (znc)
@@ -580,10 +561,10 @@ SSL_CTX *RCInitContext(void) {
 		SSL_CTX_free(ctx);
 	self.isRegistered = NO;
 	[[self consoleChannel] disconnected:msg];
-	for	(RCChannel *_chan in _channels) {
-		if (![_chan isKindOfClass:[RCConsoleChannel class]])
-			[_chan disconnected:@"Disconnected."];
-	}
+	[self enumerateOverChannelsWithBlock:^(RCChannel *channel, BOOL *stop) {
+		if (![channel isKindOfClass:[RCConsoleChannel class]])
+			[channel disconnected:@"Disconnected."];
+	}];
 //	reloadNetworks();
 }
 
@@ -596,12 +577,6 @@ SSL_CTX *RCInitContext(void) {
 }
 
 #pragma mark IRC Protocol
-
-- (RCMessage *)temporaryMessageFromString:(NSString *)str {
-	RCMessage *msg = [[RCMessage alloc] init];
-	msg.message = [str retain];
-	return [msg autorelease];
-}
 
 - (void)sendB64SASLAuth {
 	NSString *b64 = [[NSString stringWithFormat:@"%@%C%@%C%@", self.nickname, (unsigned short)0x00, self.nickname, (unsigned short)0x00, self.nickServPassword] base64];
@@ -1213,10 +1188,10 @@ SSL_CTX *RCInitContext(void) {
 	if ([person isEqualToString:self.nickname]) {
 		self.nickname = newNick;
 	}
-	for (RCChannel *chan in _channels) {
+	[self enumerateOverChannelsWithBlock:^(RCChannel *chan, BOOL *stop) {
 		if ([chan isUserInChannel:person])
 			[chan changeNick:person toNick:newNick];
-	}
+	}];
 }
 
 - (void)handleNOTICE:(RCMessage *)message {
@@ -1307,9 +1282,9 @@ SSL_CTX *RCInitContext(void) {
 - (void)handleQUIT:(RCMessage *)message {
 	NSString *from = message.sender;
 	RCParseUserMask(from, &from, nil, nil);
-	for (RCChannel *chan in _channels) {
+	[self enumerateOverChannelsWithBlock:^(RCChannel *chan, BOOL *stop) {
 		[chan receivedMessage:message.message from:from time:nil type:RCMessageTypeQuit];
-	}
+	}];
 }
 
 - (void)handleTOPIC:(RCMessage *)message {

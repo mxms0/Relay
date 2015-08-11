@@ -42,8 +42,6 @@
 		NSString *string = components[argIndex];
 		if ([string hasPrefix:@":"]) {
 			dataSegment = [[components subarrayWithRange:NSMakeRange(argIndex, [components count] - argIndex)] componentsJoinedByString:@" "];
-			if ([dataSegment containsString:@"\x01"]) {
-			}
 			break;
 		}
 		else {
@@ -136,6 +134,7 @@
 - (void)dealloc {
 	[_arguments release];
 	self.messageTags = nil;
+	self.destination = nil;
 	self.message = nil;
 	self.numeric = nil;
 	self.sender = nil;

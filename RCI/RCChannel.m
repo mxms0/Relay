@@ -11,7 +11,7 @@
 #define M_COLOR 20
 @implementation RCChannel
 
-@synthesize channelName=_channelName, fullUserList, newMessageCount, hasHighlights, network=_network;
+@synthesize channelName=_channelName, joined=_joined, fullUserList, network=_network;
 
 NSString *RCUserRank(NSString *user, RCNetwork *network) {
 	if (![network prefixes]) {
@@ -28,7 +28,7 @@ NSString *RCUserRank(NSString *user, RCNetwork *network) {
 	return nil;
 }
 
-int RCUserIntegerRank(NSString *prefix, RCNetwork *network) {
+NSInteger RCUserIntegerRank(NSString *prefix, RCNetwork *network) {
 	if (![network prefixes]) {
 		return -1;
 	}
@@ -107,9 +107,7 @@ char RCUserHash(NSString *from) {
 - (id)initWithChannelName:(NSString *)_chan {
 	if ((self = [super init])) {
 		self.channelName = _chan;
-		self.joined = NO;
-		newMessageCount = 0;
-		userRanksAdv = [NSMutableDictionary new];
+		userRanksAdv = [[NSMutableDictionary alloc] init];
 		fullUserList = [[NSMutableArray alloc] init];
 	}
 	return self;
@@ -430,7 +428,7 @@ char RCUserHash(NSString *from) {
 //}
 
 - (void)join {
-	if (self.joined) return;
+	if ([self joined]) return;
 //	if ([[self password] length] > 0) {
 //		[self.network sendMessage:[NSString stringWithFormat:@"JOIN %@ %@", self.channelName, password]];
 //	}
