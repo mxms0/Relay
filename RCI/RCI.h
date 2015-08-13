@@ -37,7 +37,7 @@ static dispatch_queue_t socketQueue = nil;
 void RCParseUserMask(NSString *mask, NSString **nick, NSString **user, NSString **hostmask);
 BOOL RCIRCStringIsValid(NSString *string);
 
-static uint32_t mIRCColors[] = {
+static const int32_t mIRCColors[] = {
 	0xFFFFFF, // white
 	0x000000, // black
 	0x000080, // navy/blue
@@ -57,7 +57,7 @@ static uint32_t mIRCColors[] = {
 	0xFF1493, // superman ice cream
 };
 
-static uint32_t internalColors[] = {
+static const int32_t internalColors[] = {
 	0x000000, 0x65999d, 0xa03244, 0xd7424c,
 	0xb66277, 0xcf5528, 0xb1a433, 0x74bd4b,
 	0x0CE887, 0x00D6FF, 0x007EFF, 0x6B7FFF,

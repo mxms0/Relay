@@ -65,21 +65,20 @@ SSL_CTX *RCInitContext(void) {
 	NSString *_nickServPassword;
 	NSString *_uUID;
 	uint16_t _port;
-	BOOL _isRegistered;
+	BOOL _registered;
 	BOOL _useSSL;
 
-	BOOL _isOper;
-	BOOL _isAway;
+	BOOL _networkOperator;
+	BOOL _away;
 	id <RCNetworkDelegate> delegate;
 	id <RCChannelDelegate> channelDelegate;
 	
 	NSMutableArray *_channels;
-	NSMutableArray *tmpChannels;
 	NSMutableArray *alternateNicknames;
 	NSMutableString *writebuf;
 	NSTimer *disconnectTimer;
 	
-	NSDictionary *prefixes;
+	NSDictionary *operatorModes;
 	
 	BOOL _saslWasSuccessful;
 }
@@ -97,7 +96,7 @@ SSL_CTX *RCInitContext(void) {
 	BOOL writing;
 }
 
-@synthesize stringDescription=_stringDescription, serverAddress=_serverAddress, nickname=_nicknames, username=_username, realname=_realname, serverPassword=_serverPassword, nickServPassword=_nickServPassword, uUID=_uUID, port=_port, isRegistered=_isRegistered, useSSL=_useSSL, delegate=_delegate, channels=_channels, channelDelegate=_channelDelegate, alternateNicknames=_alternateNicknames, prefixes=_prefixes;
+@synthesize stringDescription=_stringDescription, serverAddress=_serverAddress, nickname=_nicknames, username=_username, realname=_realname, serverPassword=_serverPassword, nickServPassword=_nickServPassword, uUID=_uUID, port=_port, registered=_registered, useSSL=_useSSL, delegate=_delegate, channels=_channels, channelDelegate=_channelDelegate, alternateNicknames=_alternateNicknames, operatorModes=operatorModes;
 
 #pragma mark Object Management
 
@@ -110,7 +109,6 @@ SSL_CTX *RCInitContext(void) {
 		self.nickname = @"(Not Sent)";
 		_channels = [[NSMutableArray alloc] init];
 		_alternateNicknames = [[NSMutableArray alloc] init];
-		tmpChannels = [[NSMutableArray alloc] init];
 		
 		CFUUIDRef uRef = CFUUIDCreate(NULL);
 		CFStringRef uStringRef = CFUUIDCreateString(NULL, uRef);
@@ -138,8 +136,7 @@ SSL_CTX *RCInitContext(void) {
 	[_channels release];
 	[_nicknames release];
 	[writebuf release];
-	[tmpChannels release];
-	[self setPrefixes:nil];
+	[self setOperatorModes:nil];
 	[super dealloc];
 }
 
@@ -185,14 +182,7 @@ SSL_CTX *RCInitContext(void) {
 }
 
 - (RCChannel *)pmChannelWithChannelName:(NSString *)chan {
-	RCChannel *_chan = [self channelWithChannelName:chan];
-	if (_chan) return _chan;
-	for (RCPMChannel *achan in tmpChannels) {
-		if ([[achan channelName] isEqualToString:chan]) {
-			return achan;
-		}
-	}
-	return nil;
+	return [self channelWithChannelName:chan];
 }
 
 - (RCChannel *)addChannel:(NSString *)_chan join:(BOOL)join {
@@ -222,17 +212,13 @@ SSL_CTX *RCInitContext(void) {
 				[_channels insertObject:chan atIndex:index];
 			}
 			
-			if (join)
-				[chan join];
-			
-			if (self.isRegistered) {
-//				[[RCNetworkManager sharedNetworkManager] saveNetworks];
-//				reloadNetworks();
-			}
-			[chan release];
-			
 			if (self.channelCreationHandler)
 				self.channelCreationHandler(chan);
+			
+			if (join)
+				[chan join];
+
+			[chan release];
 			
 			return [[chan retain] autorelease];
 		}
@@ -257,8 +243,6 @@ SSL_CTX *RCInitContext(void) {
 		@synchronized(_channels) {
 			[_channels removeObject:chan];
 		}
-//		[[RCNetworkManager sharedNetworkManager] saveNetworks];
-//		reloadNetworks();
 	}
 }
 
@@ -420,7 +404,7 @@ SSL_CTX *RCInitContext(void) {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	writebuf = [[NSMutableString alloc] init];
-	self.isRegistered = NO;
+	_registered = NO;
 	
 	sockfd = [self _connectSocket];
 	if (sockfd < 0) {
@@ -521,7 +505,7 @@ SSL_CTX *RCInitContext(void) {
 		writebuf = nil;
 		if (self.useSSL)
 			SSL_CTX_free(ctx);
-		self.isRegistered = NO;
+		_registered = NO;
 		[self enumerateOverChannelsWithBlock:^(RCChannel *channel, BOOL *stop) {
 			[channel disconnected:msg];
 		}];
@@ -556,16 +540,15 @@ SSL_CTX *RCInitContext(void) {
 	sockfd = -1;
 	[writebuf release];
 	writebuf = nil;
-	_isAway = NO;
+	self.away = NO;
 	if (self.useSSL)
 		SSL_CTX_free(ctx);
-	self.isRegistered = NO;
+	_registered = NO;
 	[[self consoleChannel] disconnected:msg];
 	[self enumerateOverChannelsWithBlock:^(RCChannel *channel, BOOL *stop) {
 		if (![channel isKindOfClass:[RCConsoleChannel class]])
 			[channel disconnected:@"Disconnected."];
 	}];
-//	reloadNetworks();
 }
 
 - (BOOL)disconnect {
@@ -590,7 +573,7 @@ SSL_CTX *RCInitContext(void) {
 	
 	[self.delegate networkConnected:self];
 	
-	self.isRegistered = YES;
+	_registered = YES;
 //	RCChannel *chan = [self consoleChannel];
 //	if (chan) [chan receivedMessage:@"Connected to host." from:@"" time:nil type:RCMessageTypeNormal];
 	if (_saslWasSuccessful)
@@ -656,7 +639,7 @@ SSL_CTX *RCInitContext(void) {
 						NSString *theMode = [modes substringWithRange:NSMakeRange(i, 1)];
 						[prefixDict setObject:[NSArray arrayWithObjects:[NSNumber numberWithInt:i], thePrefix, nil] forKey:theMode];
 					}
-					self.prefixes = [[prefixDict copy] autorelease];
+					self.operatorModes = [[prefixDict copy] autorelease];
 					[prefixDict release];
 				}
 				[message appendString:[NSString stringWithFormat:@"\x02%@\x02=%@ ", [capabArr objectAtIndex:0], [capabArr objectAtIndex:1]]];
@@ -741,12 +724,12 @@ SSL_CTX *RCInitContext(void) {
 
 - (void)handle305:(RCMessage *)message {
 	// RPL_UNAWAY
-	self.isAway = NO;
+	self.away = NO;
 }
 
 - (void)handle306:(RCMessage *)message {
 	// RPL_NOWAWAY
-	self.isAway = YES;
+	self.away = YES;
 }
 
 /*
@@ -930,7 +913,7 @@ SSL_CTX *RCInitContext(void) {
 }
 
 - (void)handle381:(RCMessage *)message {
-	self.isOper = YES;
+	_networkOperator = YES;
 }
 
 - (void)handle401:(RCMessage *)message {
@@ -1190,7 +1173,7 @@ SSL_CTX *RCInitContext(void) {
 	}
 	[self enumerateOverChannelsWithBlock:^(RCChannel *chan, BOOL *stop) {
 		if ([chan isUserInChannel:person])
-			[chan changeNick:person toNick:newNick];
+			[chan changeNickForUser:person toNick:newNick];
 	}];
 }
 

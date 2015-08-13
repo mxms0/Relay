@@ -14,11 +14,11 @@
 @synthesize channelName=_channelName, joined=_joined, fullUserList, network=_network;
 
 NSString *RCUserRank(NSString *user, RCNetwork *network) {
-	if (![network prefixes]) {
+	if (![network operatorModes]) {
 		return nil;
 	}
-	for (id karr in [[network prefixes] allKeys]) {
-		NSArray *arr = [[network prefixes] objectForKey:karr];
+	for (id karr in [[network operatorModes] allKeys]) {
+		NSArray *arr = [[network operatorModes] objectForKey:karr];
 		if ([arr count] == 2) {
 			if ([[arr objectAtIndex:1] characterAtIndex:0] == [user characterAtIndex:0]) {
 				return [arr objectAtIndex:1];
@@ -29,11 +29,11 @@ NSString *RCUserRank(NSString *user, RCNetwork *network) {
 }
 
 NSInteger RCUserIntegerRank(NSString *prefix, RCNetwork *network) {
-	if (![network prefixes]) {
+	if (![network operatorModes]) {
 		return -1;
 	}
-	for (int i = 0; i < [[[network prefixes] allKeys] count]; i++) {
-		NSArray *ary = [[network prefixes] objectForKey:[[[network prefixes] allKeys] objectAtIndex:i]];
+	for (int i = 0; i < [[[network operatorModes] allKeys] count]; i++) {
+		NSArray *ary = [[network operatorModes] objectForKey:[[[network operatorModes] allKeys] objectAtIndex:i]];
 		if ([ary count] == 2) {
 			if ([[ary objectAtIndex:1] characterAtIndex:0] == [prefix characterAtIndex:0]) {
 				return i;
@@ -68,7 +68,7 @@ void RCRefreshTable(NSString *ord, NSString *nnr, NSArray *current, RCChannel *s
 }
 
 NSInteger RCRankToNumber(unichar rank, RCNetwork *network) {
-	for (NSArray *arr in [[network prefixes] allValues]) {
+	for (NSArray *arr in [[network operatorModes] allValues]) {
 		if ([arr count] == 2) {
 			if ([[arr objectAtIndex:1] characterAtIndex:0] == rank) {
 				return [[arr objectAtIndex:0] intValue];
@@ -167,15 +167,15 @@ char RCUserHash(NSString *from) {
 	return is_highlight;
 }
 
-- (void)changeNick:(NSString *)old toNick:(NSString *)new_ {
-	if (new_) {
-		NSString *full_old = [self nickAndRankForNick:old];
+- (void)changeNickForUser:(NSString *)user toNick:(NSString *)nick {
+	if (nick) {
+		NSString *full_old = [self nickAndRankForNick:user];
 		NSString *old_rank = RCUserRank(full_old, [self network]);
-		if (old && full_old) {
+		if (user && full_old) {
 			if (!old_rank) old_rank = @"";
-			[self setUserLeft:old];
-			[self receivedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, old, RCIRCAttributeBold, RCIRCAttributeBold, new_, RCIRCAttributeBold] from:@"" time:nil type:RCMessageTypeNormal];
-			[self setUserJoinedForFixingPurposesOnly:[old_rank stringByAppendingString:new_] cnt:0];
+			[self setUserLeft:user];
+			[self receivedMessage:[NSString stringWithFormat:@"%c\u2022 %@%c is now known as %c%@%c", RCIRCAttributeBold, user, RCIRCAttributeBold, RCIRCAttributeBold, nick, RCIRCAttributeBold] from:@"" time:nil type:RCMessageTypeNormal];
+			[self setUserJoinedForFixingPurposesOnly:[old_rank stringByAppendingString:nick] cnt:0];
 		}
 	}
 }

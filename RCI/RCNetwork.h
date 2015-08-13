@@ -28,6 +28,13 @@ typedef NS_ENUM(NSInteger, RCConnectionFailure) {
 	RCConnectionFailureConnectingViaSSL
 };
 
+typedef NS_ENUM(NSInteger, RCSocketStatus) {
+	RCSocketStatusConnecting,
+	RCSocketStatusConnected,
+	RCSocketStatusError,
+	RCSocketStatusClosed
+};
+
 @protocol RCChannelDelegate <NSObject>
 - (void)channel:(RCChannel *)channel userJoined:(NSString *)user;
 - (void)channel:(RCChannel *)channel userParted:(NSString *)user message:(NSString *)message;
@@ -49,15 +56,8 @@ typedef NS_ENUM(NSInteger, RCConnectionFailure) {
 - (void)network:(RCNetwork *)network receivedMOTDMessage:(NSString *)message;
 @end
 
-typedef NS_ENUM(NSInteger, RCSocketStatus) {
-	RCSocketStatusConnecting,
-	RCSocketStatusConnected,
-	RCSocketStatusError,
-	RCSocketStatusClosed
-};
-
 @interface RCNetwork : NSObject
-@property (nonatomic, retain) NSDictionary *prefixes;
+@property (nonatomic, retain) NSDictionary *operatorModes;
 @property (nonatomic, readonly) NSMutableArray *channels;
 @property (nonatomic, retain) NSString *stringDescription;
 @property (nonatomic, retain) NSString *serverAddress;
@@ -68,17 +68,18 @@ typedef NS_ENUM(NSInteger, RCSocketStatus) {
 @property (nonatomic, retain) NSString *nickServPassword;
 @property (nonatomic, retain) NSString *uUID;
 @property (nonatomic, assign) uint16_t port;
-@property (atomic, assign) BOOL isRegistered;
+@property (nonatomic, readonly, getter=isRegistered) BOOL registered;
 
-@property (nonatomic, assign) BOOL isOper;
-@property (nonatomic, assign) BOOL isAway;
+@property (nonatomic, readonly, getter=isNetworkOperator) BOOL networkOperator;
+@property (nonatomic, assign, getter=isAway) BOOL away;
 @property (nonatomic, assign) id <RCNetworkDelegate> delegate;
 @property (nonatomic, assign) id <RCChannelDelegate> channelDelegate;
 @property (nonatomic, copy) void (^channelCreationHandler)(RCChannel *);
 // Settings go here
-@property (nonatomic, readonly) NSMutableArray *alternateNicknames;
+@property (nonatomic, retain) NSMutableArray *alternateNicknames;
 @property (nonatomic, assign) BOOL useSSL;
 @property (nonatomic, assign) BOOL handleMOTD;
+@property (nonatomic, retain) NSDictionary *numericStringFormatOverride;
 
 - (void)connect;
 - (BOOL)disconnect;
