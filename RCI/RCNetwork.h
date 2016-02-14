@@ -58,7 +58,7 @@ typedef NS_ENUM(NSInteger, RCSocketStatus) {
 
 @interface RCNetwork : NSObject
 @property (nonatomic, retain) NSDictionary *operatorModes;
-@property (nonatomic, readonly) NSMutableOrderedSet *channels;
+@property (nonatomic, readonly) NSMutableOrderedSet *channels; // pls dont mutate
 @property (nonatomic, retain) NSString *stringDescription;
 @property (nonatomic, retain) NSURL *serverAddress;
 @property (nonatomic, retain) NSString *nickname;
@@ -68,17 +68,15 @@ typedef NS_ENUM(NSInteger, RCSocketStatus) {
 @property (nonatomic, retain) NSString *nickServPassword;
 @property (readonly, retain) NSString *uniqueIdentifier;
 @property (nonatomic, assign) uint16_t port;
+@property (nonatomic, assign) BOOL useSSL;
+@property (nonatomic, assign) BOOL handleMOTD;
 @property (nonatomic, readonly, getter=isRegistered) BOOL registered;
-
 @property (nonatomic, readonly, getter=isNetworkOperator) BOOL networkOperator;
-@property (nonatomic, assign, getter=isAway) BOOL away;
+@property (nonatomic, assign, getter=isAway, setter=setAway:) BOOL away;
 @property (nonatomic, assign) id <RCNetworkDelegate> delegate;
 @property (nonatomic, assign) id <RCChannelDelegate> channelDelegate;
 @property (nonatomic, copy) void (^channelCreationHandler)(RCChannel *);
-// Settings go here
 @property (nonatomic, retain) NSMutableArray *alternateNicknames;
-@property (nonatomic, assign) BOOL useSSL;
-@property (nonatomic, assign) BOOL handleMOTD;
 @property (nonatomic, retain) NSDictionary *numericStringFormatOverride;
 
 - (void)connect;
@@ -88,7 +86,6 @@ typedef NS_ENUM(NSInteger, RCSocketStatus) {
 - (BOOL)isTryingToConnectOrConnected;
 - (BOOL)sendMessage:(NSString *)msg;
 - (BOOL)sendMessage:(NSString *)msg canWait:(BOOL)canWait;
-- (void)createConsoleChannel;
 - (RCChannel *)consoleChannel;
 - (RCChannel *)addChannel:(NSString *)_chan join:(BOOL)join;
 - (RCPMChannel *)pmChannelWithChannelName:(NSString *)chan;

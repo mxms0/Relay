@@ -62,14 +62,12 @@
 			}
 		}];
 		
-		[net createConsoleChannel];
 		[net connect];
 		[[RANetworkManager sharedNetworkManager] addNetwork:net];
 		[net release];
 	}
 	
 	currentChannel = RAChannelProxyForChannel([[[RANetworkManager sharedNetworkManager] networks][0] consoleChannel]);
-	NSLog(@"Fds %@", currentChannel);
 	
 	conversationView = [[RATableView alloc] init];
 	[self.view addSubview:conversationView];

@@ -73,6 +73,8 @@ SSL_CTX *RCInitContext(void) {
 	BOOL _saslWasSuccessful;
 	
 	NSTimer *disconnectTimer;
+	
+	RCConsoleChannel *consoleChannel;
 }
 
 #pragma mark Object Management
@@ -113,6 +115,9 @@ SSL_CTX *RCInitContext(void) {
 	[writebuf release];
 	writebuf = nil;
 	
+	[consoleChannel release];
+	consoleChannel = nil;
+	
 	self.operatorModes = nil;
 	
 	[super dealloc];
@@ -130,21 +135,14 @@ SSL_CTX *RCInitContext(void) {
 #pragma mark Channel Management
 
 - (RCChannel *)consoleChannel {
-	static RCChannel *consoleChannel = nil;
 	
 	static dispatch_once_t token;
 	
 	dispatch_once(&token, ^ {
-		RCChannel *channel = [self channelWithChannelName:RCConsoleChannelName];
-		if ([channel isKindOfClass:[RCConsoleChannel class]]) {
-			consoleChannel = channel;
-
-		}
+		consoleChannel = [[RCConsoleChannel alloc] initWithChannelName:RCConsoleChannelName];
 	});
 	
-	if (consoleChannel) return consoleChannel;
-
-	return nil;
+	return consoleChannel;
 }
 
 - (RCChannel *)channelWithChannelName:(NSString *)chan {
@@ -201,10 +199,6 @@ SSL_CTX *RCInitContext(void) {
 	return [[chan retain] autorelease];
 }
 
-- (void)createConsoleChannel {
-	(void)[self addChannel:RCConsoleChannelName join:YES];
-}
-
 - (void)removeChannel:(RCChannel *)chan {
 	[self removeChannel:chan withMessage:@"Relay Chat."];
 }
@@ -250,9 +244,17 @@ SSL_CTX *RCInitContext(void) {
 	return [writebuf length] > 0;
 }
 
+- (void)setUseSSL:(BOOL)useSSL {
+	if ([self isTryingToConnectOrConnected]) {
+		assert(NO && "setting SSL while connected is superbad");
+	}
+	_useSSL = useSSL;
+}
+
 - (BOOL)read {
 	
 	if (sockfd == -1) return NO;
+
 	if (reading) return YES;
 	
 	reading = YES;
@@ -260,15 +262,14 @@ SSL_CTX *RCInitContext(void) {
 	if (!readCache)
 		readCache = [[NSMutableData alloc] init];
 	
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	char buf[2049];
 	ssize_t rc = 0;
+	
 	if (self.useSSL)
 		rc = SSL_read(ssl, buf, 2048);
 	else
 		rc = read(sockfd, buf, 2048);
 	if (rc <= 0) {
-		[pool drain];
 		return NO;
 	}
 	
@@ -277,22 +278,19 @@ SSL_CTX *RCInitContext(void) {
 	while (rr.location != NSNotFound) {
 		NSData *data = [readCache subdataWithRange:NSMakeRange(0, rr.location + 2)];
 		NSString *recd = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-		if (recd) {
-			[self _handleMessage:recd];
-		}
-		else {
+		if (!recd) {
 			recd = [[NSString alloc] initWithData:data encoding:NSISOLatin1StringEncoding];
 			if (!recd) {
 				// perhaps mac os roman, seems to work for all.
 			}
-			[self _handleMessage:recd];
 		}
+		[self _handleMessage:recd];
+		
 		[recd autorelease];
 		[readCache replaceBytesInRange:NSMakeRange(0, rr.location + 2) withBytes:NULL length:0];
 		rr = [readCache rangeOfData:[NSData nlCharacterDataSet] options:0 range:NSMakeRange(0, [readCache length])];
 	}
 	
-	[pool release];
 	reading = NO;
 	return YES;
 }
@@ -324,7 +322,7 @@ SSL_CTX *RCInitContext(void) {
 
 - (BOOL)sendMessage:(NSString *)msg canWait:(BOOL)canWait {
 #if LOGALL
-	NSLog(@"Sending: [%@]", msg);
+	NSLog(@"Sending: %@:[%@]", self, msg);
 #endif
 	msg = [msg stringByAppendingString:@"\r\n"];
 	static NSMutableString *cacheLine = nil;
@@ -347,7 +345,7 @@ SSL_CTX *RCInitContext(void) {
 	if (!RCIRCStringIsValid(messageString)) return;
 	messageString = [messageString substringToIndex:[messageString length] - 2];
 #if LOGALL
-	NSLog(@"received: [%@]", msg);
+	NSLog(@"received: %@:[%@]", self, messageString);
 #endif
 	
 	RCMessage *message = [[RCMessage alloc] initWithString:messageString];
@@ -389,12 +387,9 @@ SSL_CTX *RCInitContext(void) {
 		socketQueue = dispatch_queue_create([self.uniqueIdentifier UTF8String], 0);
 	
 	readSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, sockfd, 0, socketQueue);
-	
+
 	dispatch_source_set_event_handler(readSource, ^ {
 		[self read];
-		// create write source and resume/suspend depending if there's data
-		// if always in write monitoring, CPU is spiked 10000%
-		// abusing the fact that modern systes have indespensible resources
 		if ([self hasPendingBites])
 			[self write];
 	});
@@ -454,8 +449,8 @@ SSL_CTX *RCInitContext(void) {
 		}
 	}
 	
-	int flags = fcntl(_sockfd, F_GETFL, 0);
-	fcntl(_sockfd, F_SETFL, flags | O_NONBLOCK);
+//	int flags = fcntl(_sockfd, F_GETFL, 0);
+//	fcntl(_sockfd, F_SETFL, flags | O_NONBLOCK);
 	
 	return _sockfd;
 }
@@ -546,10 +541,9 @@ SSL_CTX *RCInitContext(void) {
 	// RPL_WELCOME
 	// :Welcome to the Internet Relay Network <nick>!<user>@<host>
 	status = RCSocketStatusConnected;
+	_registered = YES;
 	
 	[self.delegate networkConnected:self];
-	
-	_registered = YES;
 //	RCChannel *chan = [self consoleChannel];
 //	if (chan) [chan receivedMessage:@"Connected to host." from:@"" time:nil type:RCMessageTypeNormal];
 	if (_saslWasSuccessful)
@@ -1081,7 +1075,7 @@ SSL_CTX *RCInitContext(void) {
 }
 
 - (void)handleERROR:(RCMessage *)message {
-	NSLog(@"ERROR ENCOUNTERED. %@", message);
+	NSLog(@"ERROR ENCOUNTERED. %@:%@", self, message);
 }
 
 - (void)handleINVITE:(RCMessage *)message {
@@ -1166,6 +1160,12 @@ SSL_CTX *RCInitContext(void) {
 //	else {
 //		[[self consoleChannel] receivedMessage:[message parameterAtIndex:1] from:from time:nil type:RCMessageTypeNotice];
 //	}
+//	else {
+//		NSString *from = [(RCMessage *)pong sender];
+//		NSString *user = nil;
+//		RCParseUserMask(from, &user, nil, nil);
+//		[self sendMessage:[@"NOTICE " stringByAppendingFormat:@"%@ %@", user, [(RCMessage *)pong parameterAtIndex:0]]];
+//	}
 }
 
 - (void)handlePART:(RCMessage *)message {
@@ -1183,17 +1183,7 @@ SSL_CTX *RCInitContext(void) {
 - (void)handlePING:(id)pong {
 	// RCMessage when read from buffer.
 	// NSString when passed from CTCP call
-	if (![pong isKindOfClass:[RCMessage class]]) {
-		if ([pong hasPrefix:@"PING "]) {
-			[self sendMessage:[@"PONG " stringByAppendingString:[pong substringFromIndex:5]] canWait:NO];
-		}
-	}
-	else {
-		NSString *from = [(RCMessage *)pong sender];
-		NSString *user = nil;
-		RCParseUserMask(from, &user, nil, nil);
-		[self sendMessage:[@"NOTICE " stringByAppendingFormat:@"%@ %@", user, [(RCMessage *)pong parameterAtIndex:0]]];
-	}
+	[self sendMessage:[@"PONG :" stringByAppendingString:[(RCMessage *)pong message]] canWait:NO];
 }
 
 - (void)handlePRIVMSG:(RCMessage *)message {

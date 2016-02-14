@@ -47,7 +47,7 @@
 		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cc"];
 	}
 	RCNetwork *net = [[[RANetworkManager sharedNetworkManager] networks] objectAtIndex:indexPath.section];
-	NSArray *channels = [net channels];
+	NSOrderedSet *channels = [net channels];
 	cell.textLabel.text = [[channels objectAtIndex:indexPath.row] channelName];
 	return cell;
 }
