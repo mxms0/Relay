@@ -11,7 +11,9 @@
 #import "RAChatController.h"
 #import "RATableHeaderView.h"
 
-@implementation RAMainViewController
+@implementation RAMainViewController {
+	BOOL showingChannelSelectionView;
+}
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
@@ -43,7 +45,7 @@
 	
 	for (NSString *str in nets) {
 		RCNetwork *net = [[RCNetwork alloc] init];
-		[net setServerAddress:str];
+		[net setServerAddress:[NSURL URLWithString:str]];
 		[net setDelegate:controller];
 		[net setChannelDelegate:controller];
 		[net setPort:6697];
@@ -89,10 +91,10 @@
 
 - (void)networkSelectionView:(RANetworkSelectionView *)view userSelectedChannel:(RCChannel *)channel {
 	currentChannel = RAChannelProxyForChannel(channel);
+	
+	[self dismissChannelSelectionView];
+	
 	[conversationView reloadData];
-	[UIView beginAnimations:nil context:nil];
-	[selectionView setFrame:CGRectMake(0, 44, self.view.frame.size.width, 0)];
-	[UIView commitAnimations];
 }
 
 - (void)keyboardWillShow:(NSNotification *)noti {
@@ -164,14 +166,32 @@
 		[selectionView setBackgroundColor:[UIColor whiteColor]];
 		[selectionView setDelegate:self];
 	}
+	if (!showingChannelSelectionView) {
+		[self presentChannelSelectionView];
+	}
+	else {
+		[self dismissChannelSelectionView];
+	}
+}
+
+- (void)presentChannelSelectionView {
 	[selectionView setFrame:CGRectMake(0, 64, self.view.frame.size.width, 0)];
 	[self.view addSubview:selectionView];
 	[self.view bringSubviewToFront:selectionView];
 	[UIView beginAnimations:nil context:nil];
 	[selectionView setFrame:CGRectMake(0, 64, self.view.frame.size.width, 400)];
 	[UIView commitAnimations];
-	
+	showingChannelSelectionView = YES;
 }
+
+- (void)dismissChannelSelectionView {
+	[UIView beginAnimations:nil context:nil];
+	[selectionView setFrame:CGRectMake(0, 44, self.view.frame.size.width, 0)];
+	[UIView commitAnimations];
+	showingChannelSelectionView = NO;
+}
+
+
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 	return 1;

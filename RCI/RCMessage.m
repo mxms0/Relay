@@ -128,7 +128,7 @@
 }
 
 - (id)description {
-	return [@[(self.messageTags ?: [NSNull null]), (self.sender ?: [NSNull null]), (self.numeric ?: @"-1"), (self.message ?: @"no message?")] description];
+	return [@[(self.messageTags ? self.messageTags : [NSNull null]), (self.sender ? self.sender : [NSNull null]), (self.numeric ? self.numeric: @"-1"), (self.message ? self.message: @"no message?")] description];
 }
 
 - (void)dealloc {

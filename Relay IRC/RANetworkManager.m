@@ -20,7 +20,7 @@ static NSMutableArray *networks = nil;
 //
 - (void)addNetwork:(RCNetwork *)_net {
 	for (RCNetwork *net in networks) {
-		if ([[net uUID] isEqualToString:[_net uUID]]) {
+		if ([[net uniqueIdentifier] isEqualToString:[_net uniqueIdentifier]]) {
 			return;
 		}
 	}
@@ -128,7 +128,7 @@ static NSMutableArray *networks = nil;
 
 - (RCNetwork *)networkWithDescription:(NSString *)_desc {
 	for (RCNetwork *net in networks) {
-		if ([[net uUID] isEqualToString:_desc]) return net;
+		if ([[net uniqueIdentifier] isEqualToString:_desc]) return net;
 	}
 	return nil;
 }

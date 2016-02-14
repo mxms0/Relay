@@ -36,11 +36,11 @@ RAChannelProxy *RAChannelProxyForChannel(RCChannel *channel) {
 	
 }
 
-- (void)channel:(RCChannel *)channel userKicked:(NSString *)user reason:(NSString *)message {
+- (void)channel:(RCChannel *)channel userKicked:(NSString *)user kicker:(NSString *)kicker reason:(NSString *)message {
 //	RAChannelProxy *proxy = [self proxyForChannel:channel];
 }
 
-- (void)channel:(RCChannel *)channel userBanned:(NSString *)user reason:(NSString *)reason {
+- (void)channel:(RCChannel *)channel userBanned:(NSString *)user banner:(NSString *)banner reason:(NSString *)reason {
 //	RAChannelProxy *proxy = [self proxyForChannel:channel];
 	
 }

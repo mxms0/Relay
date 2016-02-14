@@ -397,13 +397,23 @@
 }
 
 - (NSString *)nowPlayingInfo {
-	MPMusicPlayerController *musicPlayer = [MPMusicPlayerController iPodMusicPlayer];
+	MPMusicPlayerController *musicPlayer = [MPMusicPlayerController systemMusicPlayer];
 	if (!musicPlayer) return nil;
 	MPMediaItem *currentItem = [musicPlayer nowPlayingItem];
 	if (!currentItem || [musicPlayer playbackState] == MPMusicPlaybackStatePaused) {
 		return nil;
 	}
-	NSString *finalStr = [NSString stringWithFormat:@"is listening to %@ by %@, from %@", ([currentItem valueForProperty:MPMediaItemPropertyTitle] ?: @"Unknown Title"), ([currentItem valueForProperty:MPMediaItemPropertyArtist] ?: @"Unknown Artist"), ([currentItem valueForProperty:MPMediaItemPropertyAlbumTitle] ?: @"Unknown Album")];
+	NSString *title = [currentItem valueForProperty:MPMediaItemPropertyTitle];
+	title = (title ? title : @"Unknown Title");
+	
+	NSString *artist = [currentItem valueForProperty:MPMediaItemPropertyArtist];
+	artist = (artist ? artist : @"Unknown Artist");
+	
+	NSString *album = [currentItem valueForProperty:MPMediaItemPropertyAlbumTitle];
+	album = (album ? album : @"Unknown Album");
+	
+	NSString *finalStr = [NSString stringWithFormat:@"is listening to %@ by %@, from %@", title, artist, album];
+	
 	return finalStr;
 }
 

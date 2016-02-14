@@ -29,17 +29,17 @@ typedef NS_ENUM(NSInteger, RCConnectionFailure) {
 };
 
 typedef NS_ENUM(NSInteger, RCSocketStatus) {
+	RCSocketStatusClosed = 0,
 	RCSocketStatusConnecting,
 	RCSocketStatusConnected,
 	RCSocketStatusError,
-	RCSocketStatusClosed
 };
 
 @protocol RCChannelDelegate <NSObject>
 - (void)channel:(RCChannel *)channel userJoined:(NSString *)user;
 - (void)channel:(RCChannel *)channel userParted:(NSString *)user message:(NSString *)message;
-- (void)channel:(RCChannel *)channel userKicked:(NSString *)user reason:(NSString *)message;
-- (void)channel:(RCChannel *)channel userBanned:(NSString *)user reason:(NSString *)reason;
+- (void)channel:(RCChannel *)channel userKicked:(NSString *)user kicker:(NSString *)kicker reason:(NSString *)message;
+- (void)channel:(RCChannel *)channel userBanned:(NSString *)user banner:(NSString *)banner reason:(NSString *)reason;
 - (void)channel:(RCChannel *)channel userModeChanged:(NSString *)user modes:(int)modes;
 - (void)channel:(RCChannel *)channel receivedMessage:(RCMessage *)message;
 
@@ -58,15 +58,15 @@ typedef NS_ENUM(NSInteger, RCSocketStatus) {
 
 @interface RCNetwork : NSObject
 @property (nonatomic, retain) NSDictionary *operatorModes;
-@property (nonatomic, readonly) NSMutableArray *channels;
+@property (nonatomic, readonly) NSMutableOrderedSet *channels;
 @property (nonatomic, retain) NSString *stringDescription;
-@property (nonatomic, retain) NSString *serverAddress;
+@property (nonatomic, retain) NSURL *serverAddress;
 @property (nonatomic, retain) NSString *nickname;
 @property (nonatomic, retain) NSString *username;
 @property (nonatomic, retain) NSString *realname;
 @property (nonatomic, retain) NSString *serverPassword;
 @property (nonatomic, retain) NSString *nickServPassword;
-@property (nonatomic, retain) NSString *uUID;
+@property (readonly, retain) NSString *uniqueIdentifier;
 @property (nonatomic, assign) uint16_t port;
 @property (nonatomic, readonly, getter=isRegistered) BOOL registered;
 
