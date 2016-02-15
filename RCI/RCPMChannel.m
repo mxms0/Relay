@@ -6,7 +6,7 @@
 //
 
 #import "RCPMChannel.h"
-#import "RCNetwork.h"
+#import "RCI.h"
 
 @implementation RCPMChannel
 @synthesize ipInfo=_ipInfo, chanInfos=_chanInfos, wantsWhois=_wantsWhois, hasWhois=_hasWhois, connectionInfo=_connectionInfo;

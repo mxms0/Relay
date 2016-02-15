@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5005CEFD1C72084C009DFE73 /* RCChannelInternal.h in Headers */ = {isa = PBXBuildFile; fileRef = 5005CEFC1C72084C009DFE73 /* RCChannelInternal.h */; };
 		5021D3FF1B5DCF37006D7F85 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5021D3FE1B5DCF37006D7F85 /* main.m */; };
 		5021D4021B5DCF38006D7F85 /* RAAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5021D4011B5DCF38006D7F85 /* RAAppDelegate.m */; };
 		5021D4051B5DCF38006D7F85 /* RAMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5021D4041B5DCF38006D7F85 /* RAMainViewController.m */; };
@@ -91,6 +92,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		5005CEFC1C72084C009DFE73 /* RCChannelInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCChannelInternal.h; sourceTree = "<group>"; };
 		5021D3F91B5DCF37006D7F85 /* Relay IRC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Relay IRC.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5021D3FD1B5DCF37006D7F85 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5021D3FE1B5DCF37006D7F85 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -293,6 +295,7 @@
 		507A9BC01B6B70DD00CD47CF /* Channels */ = {
 			isa = PBXGroup;
 			children = (
+				5005CEFC1C72084C009DFE73 /* RCChannelInternal.h */,
 				5021D45D1B5E0BFF006D7F85 /* RCChannel.h */,
 				5021D45E1B5E0BFF006D7F85 /* RCChannel.m */,
 				5021D45F1B5E0BFF006D7F85 /* RCPMChannel.h */,
@@ -353,6 +356,7 @@
 				502CB7CD1C70488E00AF46A8 /* RCNetworkInternal.h in Headers */,
 				5021D47D1B5E0CD1006D7F85 /* NSMutableAttributedString+RCAdditions.h in Headers */,
 				5021D4371B5DD6B7006D7F85 /* RCI.h in Headers */,
+				5005CEFD1C72084C009DFE73 /* RCChannelInternal.h in Headers */,
 				5021D4671B5E0BFF006D7F85 /* RCConsoleChannel.h in Headers */,
 				5021D47B1B5E0CD1006D7F85 /* NSData+RCNewLineSet.h in Headers */,
 				5021D4651B5E0BFF006D7F85 /* RCPMChannel.h in Headers */,

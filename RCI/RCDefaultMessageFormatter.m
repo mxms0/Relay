@@ -6,7 +6,7 @@
 //
 
 #import "RCDefaultMessageFormatter.h"
-#import "RCI.h"
+#import "RCMessage.h"
 
 @implementation RCDefaultMessageFormatter
 @synthesize message=_message;

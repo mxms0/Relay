@@ -6,12 +6,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "RCChannel.h"
-#import "RCConsoleChannel.h"
-#import "RCPMChannel.h"
-#import "RCMessage.h"
-#import <objc/message.h>
-#import "NSString+Utils.h"
 
 typedef NS_ENUM(NSInteger, RCLineType) {
 	RCLineGlobal,
@@ -35,14 +29,15 @@ typedef NS_ENUM(NSInteger, RCSocketStatus) {
 	RCSocketStatusError,
 };
 
+@class RCNetwork, RCChannel, RCConsoleChannel, RCPMChannel, RCMessage;
+
 @protocol RCChannelDelegate <NSObject>
 - (void)channel:(RCChannel *)channel userJoined:(NSString *)user;
 - (void)channel:(RCChannel *)channel userParted:(NSString *)user message:(NSString *)message;
 - (void)channel:(RCChannel *)channel userKicked:(NSString *)user kicker:(NSString *)kicker reason:(NSString *)message;
-- (void)channel:(RCChannel *)channel userBanned:(NSString *)user banner:(NSString *)banner reason:(NSString *)reason;
+- (void)channel:(RCChannel *)channel userBanned:(NSString *)user banner:(NSString *)banner;
 - (void)channel:(RCChannel *)channel userModeChanged:(NSString *)user modes:(int)modes;
 - (void)channel:(RCChannel *)channel receivedMessage:(RCMessage *)message;
-
 @end
 
 @protocol RCNetworkDelegate <NSObject>
@@ -78,6 +73,7 @@ typedef NS_ENUM(NSInteger, RCSocketStatus) {
 @property (nonatomic, copy) void (^channelCreationHandler)(RCChannel *);
 @property (nonatomic, retain) NSMutableArray *alternateNicknames;
 @property (nonatomic, retain) NSDictionary *numericStringFormatOverride;
+@property (nonatomic, readonly) RCSocketStatus status;
 
 - (void)connect;
 - (BOOL)disconnect;
@@ -90,7 +86,7 @@ typedef NS_ENUM(NSInteger, RCSocketStatus) {
 - (RCChannel *)addChannel:(NSString *)_chan join:(BOOL)join;
 - (RCPMChannel *)pmChannelWithChannelName:(NSString *)chan;
 - (RCChannel *)channelWithChannelName:(NSString *)chan;
-- (void)moveChannelAtIndex:(NSUInteger)idx toIndex:(NSUInteger)newIdx;
+- (void)aggregateAddChannels:(NSArray<NSString *> *)channelNames joinPair:(BOOL *)pair;
 - (void)removeChannel:(RCChannel *)chan;
 - (void)enumerateOverChannelsWithBlock:(void (^)(RCChannel *channel, BOOL *stop))block;
 @end

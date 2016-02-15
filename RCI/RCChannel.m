@@ -8,6 +8,9 @@
 #import "RCChannel.h"
 #import "RCNetwork.h"
 
+#import "RCI.h"
+#import "NSString+Utils.h"
+
 #define M_COLOR 20
 @implementation RCChannel
 
@@ -114,6 +117,7 @@ char RCUserHash(NSString *from) {
 }
 
 - (void)setShouldHoldUserListUpdates:(BOOL)hld {
+	RCIUnimplemented();
 //	if (holdUserListUpdates == hld) return;
 //	holdUserListUpdates = hld;
 //	if (hld) {
@@ -206,12 +210,13 @@ char RCUserHash(NSString *from) {
 	return NO;
 }
 
-- (NSMutableArray *)usersMatchingWord:(NSString *)word {
-	NSMutableArray *usrs = [[NSMutableArray alloc] initWithCapacity:8]; // yea 8's great
+- (NSArray *)usersMatchingString:(NSString *)word {
+	NSMutableArray *usrs = [[NSMutableArray alloc] init];
+	
 	[fullUserList enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		NSInteger ln = [RCUserRank(obj, [self network]) length];
 		NSString *obj_ = [obj substringFromIndex:ln];
-		if ([obj_ hasPrefixNoCase:word])
+		if ([obj_ rangeOfString:word options:NSCaseInsensitiveSearch].location != NSNotFound)
 			[usrs addObject:obj_];
 	}];
 	return [usrs autorelease];
@@ -388,7 +393,7 @@ char RCUserHash(NSString *from) {
 //}\
 //// i promise i'll get rid of this one day.
 //
-//- (void)setMode:(NSString *)modes forUser:(NSString *)user {
+- (void)setMode:(NSString *)modes forUser:(NSString *)user {
 //	@synchronized(userRanksAdv) {
 //		@try {
 //			NSArray *users = [user componentsSeparatedByString:@" "];
@@ -425,7 +430,7 @@ char RCUserHash(NSString *from) {
 //			NSLog(@"exc %@", exception);
 //		}
 //	}
-//}
+}
 
 - (void)join {
 	if ([self joined]) return;
@@ -509,6 +514,14 @@ char RCUserHash(NSString *from) {
 //	}
 //	[[RCCommandEngine sharedInstance] handleCommand:msg fromNetwork:[self delegate] forChannel:self];
 //}
+
+- (void)kickUser:(NSString *)user reason:(NSString *)reason {
+	
+}
+
+- (void)banUser:(NSString *)user {
+	
+}
 
 - (BOOL)isPrivate {
 	return NO;

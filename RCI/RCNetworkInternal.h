@@ -13,6 +13,7 @@
 
 @interface RCNetwork ()
 @property (nonatomic, retain) NSString *uniqueIdentifier;
+@property (atomic, readwrite) RCSocketStatus status;
 @end
 
 #endif /* RCNetworkInternal_h */

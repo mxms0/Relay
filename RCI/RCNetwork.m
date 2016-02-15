@@ -7,6 +7,15 @@
 
 #import "RCNetwork.h"
 #import "RCNetworkInternal.h"
+#import "RCChannelInternal.h"
+
+#import "RCMIRCParser.h"
+#import "RCChannel.h"
+#import "RCConsoleChannel.h"
+#import "RCPMChannel.h"
+#import "RCMessage.h"
+#import <objc/message.h>
+#import "NSString+Utils.h"
 
 #import "NSData+RCNewLineSet.h"
 #import <objc/runtime.h>
@@ -14,15 +23,14 @@
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 
-static NSString *const RCConsoleChannelName = @"\x01IRC";
+static NSString *const RCConsoleChannelName = @"IRC";
+static dispatch_queue_t socketQueue = nil;
 
-inline BOOL RCIRCStringIsValid(NSString *string) {
+static inline BOOL RCIRCStringIsValid(NSString *string) {
 	return (string) && (![string isEqualToString:@""]) && (![string isEqualToString:@"\r\n"]);
 }
 
 void RCParseUserMask(NSString *mask, NSString **_nick, NSString **user, NSString **hostmask) {
-	// this is experimental. ;P
-	// well, not really anymore. ;P ~Maximus
 	if (_nick)
 		*_nick = nil;
 	if (user)
@@ -63,7 +71,6 @@ SSL_CTX *RCInitContext(void) {
 	int sockfd;
 	SSL_CTX *ctx;
 	SSL *ssl;
-	RCSocketStatus status;
 	
 	NSMutableString *writebuf;
 	
@@ -169,6 +176,28 @@ SSL_CTX *RCInitContext(void) {
 	return [self channelWithChannelName:chan];
 }
 
+- (void)aggregateAddChannels:(NSArray<NSString *> *)channelNames joinPair:(BOOL *)pair {
+	NSString *joinBase = @"JOIN ";
+	NSMutableString *channelJoinString = [joinBase mutableCopy];
+	for (int i = 0; i < [channelNames count]; i++) {
+		NSString *channelName = channelNames[i];
+		BOOL join = YES;
+		
+		[self addChannel:channelName join:NO];
+		
+		if (pair)
+			join = pair[i];
+		
+		if (join) {
+			[channelJoinString appendString:channelName];
+			[channelJoinString appendString:@","];
+		}
+		
+		if (![channelJoinString isEqualToString:joinBase])
+			[self sendMessage:channelJoinString];
+	}
+}
+
 - (RCChannel *)addChannel:(NSString *)_chan join:(BOOL)join {
 	RCChannel *ret = [self channelWithChannelName:_chan ifNilCreate:NO];
 	
@@ -194,7 +223,7 @@ SSL_CTX *RCInitContext(void) {
 	if (join)
 		[chan join];
 	
-	[chan release];
+	[chan release]; // relinquish ownership to array
 	
 	return [[chan retain] autorelease];
 }
@@ -204,26 +233,15 @@ SSL_CTX *RCInitContext(void) {
 }
 
 - (void)removeChannel:(RCChannel *)chan withMessage:(NSString *)quitter {
-	@synchronized(self) {
-		if (!chan) return;
+	if (!chan) return;
+	
+	if ([chan joined])
 		[chan partWithMessage:quitter];
-		@synchronized(_channels) {
-			[_channels removeObject:chan];
-		}
-	}
-}
-
-- (void)moveChannelAtIndex:(NSUInteger)idx toIndex:(NSUInteger)newIdx; {
+	
 	@synchronized(_channels) {
-		RCChannel *ctrlChan = [_channels objectAtIndex:idx];
-		[ctrlChan retain];
-		[_channels removeObjectAtIndex:idx];
-		[_channels insertObject:ctrlChan atIndex:newIdx-1];
-		[ctrlChan release];
+		[_channels removeObject:chan];
 	}
-//	[[RCNetworkManager sharedNetworkManager] saveNetworks];
 }
-
 
 - (void)enumerateOverChannelsWithBlock:(void (^)(RCChannel *channel, BOOL *stop))block {
 	@synchronized(_channels) {
@@ -241,7 +259,7 @@ SSL_CTX *RCInitContext(void) {
 
 - (BOOL)hasPendingBites {
 	if (!writebuf) return NO;
-	return [writebuf length] > 0;
+	return ([writebuf length] > 0);
 }
 
 - (void)setUseSSL:(BOOL)useSSL {
@@ -370,8 +388,8 @@ SSL_CTX *RCInitContext(void) {
 - (void)connect {
 	[disconnectTimer invalidate];
 	disconnectTimer = nil;
-	if (status == RCSocketStatusConnected || status == RCSocketStatusConnecting) return;
-	status = RCSocketStatusConnecting;
+	if (self.status == RCSocketStatusConnected || self.status == RCSocketStatusConnecting) return;
+	self.status = RCSocketStatusConnecting;
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	writebuf = [[NSMutableString alloc] init];
@@ -456,7 +474,7 @@ SSL_CTX *RCInitContext(void) {
 }
 
 - (BOOL)isTryingToConnectOrConnected {
-	return ([self isConnected] || status == RCSocketStatusConnecting);
+	return ([self isConnected] || self.status == RCSocketStatusConnecting);
 }
 
 - (NSString *)defaultQuitMessage {
@@ -468,8 +486,8 @@ SSL_CTX *RCInitContext(void) {
 }
 
 - (BOOL)disconnectWithMessage:(NSString *)msg {
-	if (status == RCSocketStatusConnecting) {
-		status = RCSocketStatusClosed;
+	if (self.status == RCSocketStatusConnecting) {
+		self.status = RCSocketStatusClosed;
 		close(sockfd);
 		sockfd = -1;
 		[writebuf release];
@@ -481,7 +499,7 @@ SSL_CTX *RCInitContext(void) {
 			[channel disconnected:msg];
 		}];
 	}
-	else if (status == RCSocketStatusConnected) {
+	else if (self.status == RCSocketStatusConnected) {
 		// also unset away (znc)
 		[self sendMessage:@"AWAY" canWait:NO];
 		[self sendMessage:[@"QUIT :" stringByAppendingString:([msg isEqualToString:@"Disconnected."] ? [self defaultQuitMessage] : msg)] canWait:NO];
@@ -499,9 +517,9 @@ SSL_CTX *RCInitContext(void) {
 
 - (void)disconnectCleanupWithMessage:(NSString *)msg {
 	// put lock around status and stuff
-	if (status == RCSocketStatusClosed) return;
+	if (self.status == RCSocketStatusClosed) return;
 	
-	status = RCSocketStatusClosed;
+	self.status = RCSocketStatusClosed;
 	
 	dispatch_release(readSource);
 	readSource = nil;
@@ -527,7 +545,7 @@ SSL_CTX *RCInitContext(void) {
 }
 
 - (BOOL)isConnected {
-	return (status == RCSocketStatusConnected);
+	return (self.status == RCSocketStatusConnected);
 }
 
 #pragma mark IRC Protocol
@@ -540,7 +558,7 @@ SSL_CTX *RCInitContext(void) {
 - (void)handle001:(RCMessage *)message {
 	// RPL_WELCOME
 	// :Welcome to the Internet Relay Network <nick>!<user>@<host>
-	status = RCSocketStatusConnected;
+	self.status = RCSocketStatusConnected;
 	_registered = YES;
 	
 	[self.delegate networkConnected:self];
@@ -1173,6 +1191,7 @@ SSL_CTX *RCInitContext(void) {
 	RCParseUserMask(from, &from, nil, nil);
 	RCChannel *channel = [self channelWithChannelName:[message parameterAtIndex:0]];
 	if ([self.nickname isEqualToString:from]) {
+		// this should get sent to the channel as a PART, and the channel should figure it out
 		[channel setSuccessfullyJoined:NO];
 	}
 	if (![[message parameterAtIndex:0] isEqualToString:message.message])

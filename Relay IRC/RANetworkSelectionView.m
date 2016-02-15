@@ -9,6 +9,7 @@
 #import "RANetworkSelectionView.h"
 #import "RATableView.h"
 #import "RANetworkManager.h"
+#import "RCI/RCChannel.h"
 
 @implementation RANetworkSelectionView
 

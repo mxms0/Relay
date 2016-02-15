@@ -12,6 +12,7 @@
 #import "RAChannelProxy.h"
 #import "RCDefaultMessageFormatter.h"
 #import "RCNetwork.h"
+#import <objc/runtime.h>
 
 RAChannelProxy *RAChannelProxyForChannel(RCChannel *channel) {
 	if (!channel) return nil;
@@ -40,7 +41,7 @@ RAChannelProxy *RAChannelProxyForChannel(RCChannel *channel) {
 //	RAChannelProxy *proxy = [self proxyForChannel:channel];
 }
 
-- (void)channel:(RCChannel *)channel userBanned:(NSString *)user banner:(NSString *)banner reason:(NSString *)reason {
+- (void)channel:(RCChannel *)channel userBanned:(NSString *)user banner:(NSString *)banner {
 //	RAChannelProxy *proxy = [self proxyForChannel:channel];
 	
 }

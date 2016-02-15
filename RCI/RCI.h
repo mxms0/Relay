@@ -15,27 +15,12 @@ FOUNDATION_EXPORT double RCIVersionNumber;
 FOUNDATION_EXPORT const unsigned char RCIVersionString[];
 
 #import "RCMIRCParser.h"
-
-typedef enum RCMessageType {
-	RCMessageTypeAction = 0,
-	RCMessageTypeNormal,
-	RCMessageTypeNotice,
-	RCMessageTypeKick,
-	RCMessageTypeBan,
-	RCMessageTypePart,
-	RCMessageTypeJoin,
-	RCMessageTypeTopic,
-	RCMessageTypeQuit,
-	RCMessageTypeMode,
-	RCMessageTypeError,
-	RCMessageTypeEvent,
-	RCMessageTypeUnknown
-} RCMessageType;
-
-static dispatch_queue_t socketQueue = nil;
+#import "RCNetwork.h"
+#import "RCChannel.h"
+#import "RCPMChannel.h"
+#import "RCConsoleChannel.h"
 
 void RCParseUserMask(NSString *mask, NSString **nick, NSString **user, NSString **hostmask);
-BOOL RCIRCStringIsValid(NSString *string);
 
 static const int32_t mIRCColors[] = {
 	0xFFFFFF, // white
@@ -73,4 +58,8 @@ static const int32_t internalColors[] = {
 #define CMLog(format, ...) NSLog(@"(%s) in [%s:%d] ::: %@", __PRETTY_FUNCTION__, __FILE__, __LINE__, [NSString stringWithFormat:format, ## __VA_ARGS__])
 #define MARK CMLog(@"%s", __PRETTY_FUNCTION__);
 #define BACKTRACE CMLog(@"%@", [NSThread callStackSymbols]);
+
+#define RCIUnimplemented() do { \
+		NSLog(@"UNIMPL'D. %s:%s", __PRETTY_FUNCTION__, __FILE__); \
+	} while (0);
 

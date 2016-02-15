@@ -11,6 +11,9 @@
 #import "RAChatController.h"
 #import "RATableHeaderView.h"
 
+#import <objc/runtime.h>
+
+
 @implementation RAMainViewController {
 	BOOL showingChannelSelectionView;
 }

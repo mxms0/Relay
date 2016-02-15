@@ -6,7 +6,22 @@
 //	no correlation to RCMessageFormatter
 
 #import <Foundation/Foundation.h>
-#import "RCI.h"
+
+typedef enum RCMessageType {
+	RCMessageTypeAction = 0,
+	RCMessageTypeNormal,
+	RCMessageTypeNotice,
+	RCMessageTypeKick,
+	RCMessageTypeBan,
+	RCMessageTypePart,
+	RCMessageTypeJoin,
+	RCMessageTypeTopic,
+	RCMessageTypeQuit,
+	RCMessageTypeMode,
+	RCMessageTypeError,
+	RCMessageTypeEvent,
+	RCMessageTypeUnknown
+} RCMessageType;
 
 @interface RCMessage : NSObject {
 	NSString *_numeric;
