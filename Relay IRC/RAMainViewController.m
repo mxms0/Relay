@@ -28,6 +28,7 @@
 	CALayer *statusBarFix = [CALayer layer];
 	[statusBarFix setBackgroundColor:[[UIColor colorWithRed:49/255.0 green:67/255.0 blue:82/255.0 alpha:1.0] CGColor]];
 	[statusBarFix setFrame:CGRectMake(0, 0, self.view.frame.size.width, 20)];
+	[statusBarFix setZPosition:10000];
 	[self.view.layer addSublayer:statusBarFix];
 	
 	self.view.backgroundColor = [UIColor colorWithRed:245.0/255.0 green:245.0/255.0 blue:245.0/255.0 alpha:1.0];
@@ -41,8 +42,8 @@
 	
 	NSArray *nets = @[
 					  @"irc.saurik.com",
-					  @"irc.freenode.org",
-					  @"irc.rizon.net"
+					  //@"irc.freenode.org",
+					  //	  @"irc.rizon.net"
 					  ];
 	
 	

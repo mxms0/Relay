@@ -38,7 +38,11 @@
 			case RCMessageTypeMode:
 			case RCMessageTypeError:
 			case RCMessageTypeAction:
-			case RCMessageTypeNormal:
+				break;
+			case RCMessageTypeNormal: {
+				NSLog(@"normal msg %@:%@", self.message.sender, self.message.message);
+				break;
+			}
 			case RCMessageTypeNotice:
 			case RCMessageTypeUnknown:
 			default:

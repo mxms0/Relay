@@ -26,6 +26,7 @@ typedef NS_ENUM(NSInteger, RCSocketStatus) {
 	RCSocketStatusClosed = 0,
 	RCSocketStatusConnecting,
 	RCSocketStatusConnected,
+	RCSocketStatusDisconnecting,
 	RCSocketStatusError,
 };
 
@@ -79,7 +80,7 @@ typedef NS_ENUM(NSInteger, RCSocketStatus) {
 - (BOOL)disconnect;
 - (void)disconnectCleanupWithMessage:(NSString *)msg;
 - (BOOL)isConnected;
-- (BOOL)isTryingToConnectOrConnected;
+- (BOOL)isConnectedOrTryingToConnect;
 - (BOOL)sendMessage:(NSString *)msg;
 - (BOOL)sendMessage:(NSString *)msg canWait:(BOOL)canWait;
 - (RCChannel *)consoleChannel;

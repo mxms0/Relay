@@ -62,6 +62,7 @@
 	}
 	_arguments = [arguments retain];
 	self.message = [dataSegment substringFromIndex:1];
+#warning ASSIGN self.messageType HERE !!!!!
 }
 
 - (void)parseIRCV3MessageTags {

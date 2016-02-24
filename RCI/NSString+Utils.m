@@ -54,7 +54,6 @@
 			data = (data << 6);
 		}
 	}
-	
 	return encodedResult;
 }
 

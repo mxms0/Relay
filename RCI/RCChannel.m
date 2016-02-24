@@ -463,7 +463,7 @@ char RCUserHash(NSString *from) {
 
 - (BOOL)isEqual:(id)obj {
 	if ([obj isKindOfClass:[RCChannel class]]) {
-		return ([self.channelName isEqual:[obj channelName]] && [[self network] isEqual:[obj delegate]]);
+		return ([self.channelName isEqual:[obj channelName]] && [[self network] isEqual:[obj network]]);
 	}
 	return NO;
 }

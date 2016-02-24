@@ -62,7 +62,7 @@ RAChannelProxy *RAChannelProxyForChannel(RCChannel *channel) {
 
 - (void)networkConnected:(RCNetwork *)network {
 	NSLog(@"Connecetd %@", network);
-	[network addChannel:@"#fds" join:YES];
+	[network addChannel:@"#__relaytesting" join:YES];
 }
 
 - (void)networkDisconnected:(RCNetwork *)network {

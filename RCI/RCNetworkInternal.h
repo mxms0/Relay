@@ -11,9 +11,17 @@
 
 #import "RCNetwork.h"
 
+#define RCUnimplemented() \
+	do {\
+		NSLog(@"UNIMPLEMENTED. %s", __PRETTY_FUNCTION__);\
+	} while (0);
+
 @interface RCNetwork ()
 @property (nonatomic, retain) NSString *uniqueIdentifier;
 @property (atomic, readwrite) RCSocketStatus status;
+@property (atomic, readwrite) BOOL reading;
+@property (atomic, readwrite) BOOL writing;
+@property (atomic, readwrite) NSTimer *disconnectTimer;
 @end
 
 #endif /* RCNetworkInternal_h */

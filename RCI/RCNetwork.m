@@ -31,19 +31,15 @@ static inline BOOL RCIRCStringIsValid(NSString *string) {
 }
 
 void RCParseUserMask(NSString *mask, NSString **_nick, NSString **user, NSString **hostmask) {
-	if (_nick)
-		*_nick = nil;
-	if (user)
-		*user = nil;
-	if (hostmask)
-		*hostmask = nil;
 	NSRange nickRange = [mask rangeOfString:@"!"];
 	NSRange userRange = [mask rangeOfString:@"@"];
 	if (nickRange.location == NSNotFound || userRange.location == NSNotFound) {
-		*_nick = mask;
+		if (_nick)
+			*_nick = mask;
 		return;
 	}
-	*_nick = [mask substringWithRange:NSMakeRange(0, nickRange.location)];
+	if (_nick)
+		*_nick = [mask substringWithRange:NSMakeRange(0, nickRange.location)];
 	if (!user) return;
 	*user = [mask substringWithRange:NSMakeRange(nickRange.location + 1, userRange.location - (nickRange.location + 1))];
 	if (!hostmask) return;
@@ -67,19 +63,14 @@ SSL_CTX *RCInitContext(void) {
 
 @implementation RCNetwork {
 	NSMutableData *readCache;
+	NSMutableString *writebuf;
+
 	dispatch_source_t readSource;
 	int sockfd;
 	SSL_CTX *ctx;
 	SSL *ssl;
 	
-	NSMutableString *writebuf;
-	
-	BOOL reading;
-	BOOL writing;
-	
 	BOOL _saslWasSuccessful;
-	
-	NSTimer *disconnectTimer;
 	
 	RCConsoleChannel *consoleChannel;
 }
@@ -89,6 +80,9 @@ SSL_CTX *RCInitContext(void) {
 - (instancetype)init {
 	if ((self = [super init])) {
 		sockfd = -1;
+		
+		writebuf = [[NSMutableString alloc] init];
+		
 		_channels = [[NSMutableOrderedSet alloc] init];
 		_alternateNicknames = [[NSMutableArray alloc] init];
 		
@@ -126,6 +120,12 @@ SSL_CTX *RCInitContext(void) {
 	consoleChannel = nil;
 	
 	self.operatorModes = nil;
+	
+	if (readSource) {
+		dispatch_suspend(readSource);
+		dispatch_release(readSource);
+		readSource = nil;
+	}
 	
 	[super dealloc];
 }
@@ -177,7 +177,7 @@ SSL_CTX *RCInitContext(void) {
 }
 
 - (void)aggregateAddChannels:(NSArray<NSString *> *)channelNames joinPair:(BOOL *)pair {
-	NSString *joinBase = @"JOIN ";
+	NSString *const joinBase = @"JOIN ";
 	NSMutableString *channelJoinString = [joinBase mutableCopy];
 	for (int i = 0; i < [channelNames count]; i++) {
 		NSString *channelName = channelNames[i];
@@ -192,10 +192,10 @@ SSL_CTX *RCInitContext(void) {
 			[channelJoinString appendString:channelName];
 			[channelJoinString appendString:@","];
 		}
-		
-		if (![channelJoinString isEqualToString:joinBase])
-			[self sendMessage:channelJoinString];
 	}
+	if (![channelJoinString isEqualToString:joinBase])
+		[self sendMessage:channelJoinString];
+	[channelJoinString release];
 }
 
 - (RCChannel *)addChannel:(NSString *)_chan join:(BOOL)join {
@@ -263,7 +263,7 @@ SSL_CTX *RCInitContext(void) {
 }
 
 - (void)setUseSSL:(BOOL)useSSL {
-	if ([self isTryingToConnectOrConnected]) {
+	if ([self isConnectedOrTryingToConnect]) {
 		assert(NO && "setting SSL while connected is superbad");
 	}
 	_useSSL = useSSL;
@@ -273,9 +273,9 @@ SSL_CTX *RCInitContext(void) {
 	
 	if (sockfd == -1) return NO;
 
-	if (reading) return YES;
+	if (self.reading) return YES;
 	
-	reading = YES;
+	self.reading = YES;
 	// do this in a thread safe manner
 	if (!readCache)
 		readCache = [[NSMutableData alloc] init];
@@ -293,6 +293,7 @@ SSL_CTX *RCInitContext(void) {
 	
 	[readCache appendBytes:buf length:rc];
 	NSRange rr = [readCache rangeOfData:[NSData nlCharacterDataSet] options:0 range:NSMakeRange(0, [readCache length])];
+	// this should be moved to something like NSCharacterSet, messages could end with only \n
 	while (rr.location != NSNotFound) {
 		NSData *data = [readCache subdataWithRange:NSMakeRange(0, rr.location + 2)];
 		NSString *recd = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
@@ -309,15 +310,15 @@ SSL_CTX *RCInitContext(void) {
 		rr = [readCache rangeOfData:[NSData nlCharacterDataSet] options:0 range:NSMakeRange(0, [readCache length])];
 	}
 	
-	reading = NO;
+	self.reading = NO;
 	return YES;
 }
 
 - (BOOL)write {
 	
 	if (sockfd == -1) return NO;
-	if (writing) return NO;
-	writing = YES;
+	if (self.writing) return NO;
+	self.writing = YES;
 	ssize_t written = 0;
 	if (self.useSSL) {
 		written = SSL_write(ssl, [writebuf UTF8String], (int)strlen([writebuf UTF8String]));
@@ -330,7 +331,7 @@ SSL_CTX *RCInitContext(void) {
 	[writebuf release];
 	writebuf = [[NSMutableString alloc] initWithCString:buf encoding:NSUTF8StringEncoding];
 	// this math works. But there must be a more sensible way.
-	writing = NO;
+	self.writing = NO;
 	return YES;
 }
 
@@ -362,6 +363,7 @@ SSL_CTX *RCInitContext(void) {
 - (void)_handleMessage:(NSString *)messageString {
 	if (!RCIRCStringIsValid(messageString)) return;
 	messageString = [messageString substringToIndex:[messageString length] - 2];
+	// again, assuming \r\n always, and not just \n
 #if LOGALL
 	NSLog(@"received: %@:[%@]", self, messageString);
 #endif
@@ -369,7 +371,7 @@ SSL_CTX *RCInitContext(void) {
 	RCMessage *message = [[RCMessage alloc] initWithString:messageString];
 	[message parse];
 	
-	NSString *selName = [NSString stringWithFormat:@"handle%@:", [message numeric]];
+	NSString *selName = [NSString stringWithFormat:@"_handle%@:", [message numeric]];
 	SEL pSEL = NSSelectorFromString(selName);
 	if ([self respondsToSelector:pSEL]) ((void (*)(id, SEL, id))objc_msgSend)(self, pSEL, message);
 	else {
@@ -377,6 +379,7 @@ SSL_CTX *RCInitContext(void) {
 		// but if it's a privmsg, hm..
 		// Albeit PRIVMSG is handled separately, and can handle this properly..
 		// Will consult with expr
+		NSLog(@"u wot");
 		RCChannel *channel = [self channelWithChannelName:[message destination] ifNilCreate:YES];
 		[channel receivedMessage:message];
 	}
@@ -386,13 +389,13 @@ SSL_CTX *RCInitContext(void) {
 #pragma mark Connection State Management
 
 - (void)connect {
-	[disconnectTimer invalidate];
-	disconnectTimer = nil;
+	[self.disconnectTimer invalidate];
+	self.disconnectTimer = nil;
 	if (self.status == RCSocketStatusConnected || self.status == RCSocketStatusConnecting) return;
 	self.status = RCSocketStatusConnecting;
+	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	writebuf = [[NSMutableString alloc] init];
 	_registered = NO;
 	
 	sockfd = [self _connectSocket];
@@ -412,20 +415,33 @@ SSL_CTX *RCInitContext(void) {
 			[self write];
 	});
 	
+	dispatch_source_set_cancel_handler(readSource, ^ {
+		[self disconnect];
+		if (readSource) {
+			dispatch_release(readSource);
+			readSource = nil;
+		}
+	});
+	
 	dispatch_resume(readSource);
 	
 	[self sendMessage:@"CAP LS" canWait:NO];
+	
 	if ([self.serverPassword length] > 0) {
 		[self sendMessage:[@"PASS " stringByAppendingString:self.serverPassword] canWait:NO];
 	}
+	
 	if (!self.nickname || [self.nickname isEqualToString:@""]) {
 		[self setNickname:@"RelayUser"];
 	}
+	
 	[self sendMessage:[@"USER " stringByAppendingFormat:@"%@ %@ %@ :%@",
 					   (self.username ? self.username: self.nickname),
 					   self.nickname, self.nickname,
 					   (self.realname ? self.realname : self.nickname)] canWait:NO];
+	
 	[self sendMessage:[@"NICK " stringByAppendingString:self.nickname] canWait:NO];
+	
 	[pool drain];
 }
 
@@ -473,7 +489,7 @@ SSL_CTX *RCInitContext(void) {
 	return _sockfd;
 }
 
-- (BOOL)isTryingToConnectOrConnected {
+- (BOOL)isConnectedOrTryingToConnect {
 	return ([self isConnected] || self.status == RCSocketStatusConnecting);
 }
 
@@ -490,8 +506,7 @@ SSL_CTX *RCInitContext(void) {
 		self.status = RCSocketStatusClosed;
 		close(sockfd);
 		sockfd = -1;
-		[writebuf release];
-		writebuf = nil;
+
 		if (self.useSSL)
 			SSL_CTX_free(ctx);
 		_registered = NO;
@@ -504,12 +519,12 @@ SSL_CTX *RCInitContext(void) {
 		[self sendMessage:@"AWAY" canWait:NO];
 		[self sendMessage:[@"QUIT :" stringByAppendingString:([msg isEqualToString:@"Disconnected."] ? [self defaultQuitMessage] : msg)] canWait:NO];
 	}
-	disconnectTimer = [NSTimer scheduledTimerWithTimeInterval:2.5 target:self selector:@selector(forceDisconnect) userInfo:nil repeats:NO];
+	self.disconnectTimer = [NSTimer scheduledTimerWithTimeInterval:2.5 target:self selector:@selector(forceDisconnect) userInfo:nil repeats:NO];
 	return YES;
 }
 
 - (void)forceDisconnect {
-	disconnectTimer = nil;
+	self.disconnectTimer = nil;
 	if ([self isConnected]) {
 		[self disconnectCleanupWithMessage:[self defaultQuitMessage]];
 	}
@@ -520,9 +535,11 @@ SSL_CTX *RCInitContext(void) {
 	if (self.status == RCSocketStatusClosed) return;
 	
 	self.status = RCSocketStatusClosed;
-	
-	dispatch_release(readSource);
-	readSource = nil;
+	if (readSource) {
+		dispatch_suspend(readSource);
+		dispatch_release(readSource);
+		readSource = nil;
+	}
 	readCache = nil;
 	
 	close(sockfd);
@@ -555,7 +572,7 @@ SSL_CTX *RCInitContext(void) {
 	[self sendMessage:[NSString stringWithFormat:@"AUTHENTICATE %@", b64] canWait:NO];
 }
 
-- (void)handle001:(RCMessage *)message {
+- (void)_handle001:(RCMessage *)message {
 	// RPL_WELCOME
 	// :Welcome to the Internet Relay Network <nick>!<user>@<host>
 	self.status = RCSocketStatusConnected;
@@ -602,7 +619,19 @@ SSL_CTX *RCInitContext(void) {
 // 475 ERR_BANNEDFROMCHANNNEL
 // 482 ERR_BANNEDFROMCHANNEL
 
-- (void)handle005:(RCMessage *)message {
+- (void)_handle002:(RCMessage *)message {
+	RCUnimplemented();
+}
+
+- (void)_handle003:(RCMessage *)message {
+	RCUnimplemented();
+}
+
+- (void)_handle004:(RCMessage *)message {
+	RCUnimplemented();
+}
+
+- (void)_handle005:(RCMessage *)message {
 	// RPL_ISUPPORT
 	@synchronized(self) {
 		NSString *capsString = [message.message substringFromIndex:[message.message rangeOfString:@" "].location + 1];
@@ -643,7 +672,7 @@ SSL_CTX *RCInitContext(void) {
 	}
 }
 
-- (void)handle010:(RCMessage *)message {
+- (void)_handle010:(RCMessage *)message {
 	// RPL_BOUNCE
 //	NSString *redirServer = [message parameterAtIndex:1];
 //	NSString *redirPort = [message parameterAtIndex:2];
@@ -666,56 +695,56 @@ SSL_CTX *RCInitContext(void) {
 //	}
 }
 
-- (void)handle042:(RCMessage *)message {
+- (void)_handle042:(RCMessage *)message {
 	
 }
 
-- (void)handle250:(RCMessage *)message {
+- (void)_handle250:(RCMessage *)message {
 	// RPL_STATSCONN
 }
 
-- (void)handle251:(RCMessage *)message {
+- (void)_handle251:(RCMessage *)message {
 	// RPL_LUSERCLIENT
 }
 
-- (void)handle252:(RCMessage *)message {
+- (void)_handle252:(RCMessage *)message {
 	// RPL_LUSEROP
 }
 
-- (void)handle253:(RCMessage *)message {
+- (void)_handle253:(RCMessage *)message {
 	// RPL_LUSERUNKNOWN
 }
 
-- (void)handle254:(RCMessage *)message {
+- (void)_handle254:(RCMessage *)message {
 	// RPL_LUSERCHANNELS
 }
 
-- (void)handle255:(RCMessage *)message {
+- (void)_handle255:(RCMessage *)message {
 	// RPL_LUSERME
 }
 
-- (void)handle265:(RCMessage *)message {
+- (void)_handle265:(RCMessage *)message {
 	// RPL_LOCALUSERS
 }
 
-- (void)handle266:(RCMessage *)message {
+- (void)_handle266:(RCMessage *)message {
 	// RPL_GLOBALUSERS
 }
 
-- (void)handle301:(RCMessage *)message {
+- (void)_handle301:(RCMessage *)message {
 	// RPL_AWAY
 }
 
-- (void)handle303:(RCMessage *)message {
+- (void)_handle303:(RCMessage *)message {
 	// RPL_ISON
 }
 
-- (void)handle305:(RCMessage *)message {
+- (void)_handle305:(RCMessage *)message {
 	// RPL_UNAWAY
 	self.away = NO;
 }
 
-- (void)handle306:(RCMessage *)message {
+- (void)_handle306:(RCMessage *)message {
 	// RPL_NOWAWAY
 	self.away = YES;
 }
@@ -730,7 +759,7 @@ SSL_CTX *RCInitContext(void) {
  ~Maximus
  */
 
-- (void)handle311:(RCMessage *)message {
+- (void)_handle311:(RCMessage *)message {
 	// RPL_WHOISUSER
 	// :irc.saurik.com 311 __mxms flux ~flux 192.252.217.30 * :flux
 //	NSString *name = [message parameterAtIndex:1];
@@ -748,7 +777,7 @@ SSL_CTX *RCInitContext(void) {
 //    }
 }
 
-- (void)handle312:(RCMessage *)message {
+- (void)_handle312:(RCMessage *)message {
 	// RPL_WHOISSERVER
 	// :irc.saurik.com 312 mxms__ Maximus *.irc.saurik.com :Saurik
 //	NSString *connInfo = [NSString stringWithFormat:@"%@ is connected on %@ (%@)", [message parameterAtIndex:1], [message parameterAtIndex:2], [message parameterAtIndex:3]];
@@ -763,24 +792,24 @@ SSL_CTX *RCInitContext(void) {
 //    }
 }
 
-- (void)handle313:(RCMessage *)message {
+- (void)_handle313:(RCMessage *)message {
 	// RPL_WHOISOPERATOR
 }
 
-- (void)handle317:(RCMessage *)message {
+- (void)_handle317:(RCMessage *)message {
 	// :irc.saurik.com 317 mxms__ Maximus 12 1376202021 :seconds idle, signon time
 	// i don't want to parse this. ever.
 	// Format should be
 	// [01:38:29] Ouroboros signed on at December 25, 2013 at 8:09:05 PM EST and has been idle for 23 Seconds
 }
 
-- (void)handle318:(RCMessage *)message {
+- (void)_handle318:(RCMessage *)message {
 //	RCPMChannel *channel = (RCPMChannel *)[self pmChannelWithChannelName:[message parameterAtIndex:1]];
 //	[channel receivedWHOISInformation];
 	// RPL_ENDOFWHOIS
 }
 
-- (void)handle319:(RCMessage *)message {
+- (void)_handle319:(RCMessage *)message {
 	// RPL_WHOISCHANNELS
 	NSString *whoisChannels = [message parameterAtIndex:2];
 //	if (channel) {
@@ -815,12 +844,12 @@ SSL_CTX *RCInitContext(void) {
 	// :irc.saurik.com 319 mxms__ Maximus :#theos #iphonedev #bacon @#k @#_k
 }
 
-- (void)handle321:(RCMessage *)message {
+- (void)_handle321:(RCMessage *)message {
 //	[listCallback setUpdating:YES];
 	// RPL_LISTSTART
 }
 
-- (void)handle322:(RCMessage *)message {
+- (void)_handle322:(RCMessage *)message {
 //	// RPL_LIST
 //	if (!listCallback) return;
 //	NSString *chan = [message parameterAtIndex:1];
@@ -837,13 +866,17 @@ SSL_CTX *RCInitContext(void) {
 	// :hitchcock.freenode.net 322 mxms_ #testchannelpleaseignore 3 :http://i.imgur.com/LbPvWUV.jpg
 }
 
-- (void)handle323:(RCMessage *)message {
+- (void)_handle323:(RCMessage *)message {
 	// RPL_LISTEND
 //	[listCallback setUpdating:NO];
 //	listCallback = nil;
 }
 
-- (void)handle333:(RCMessage *)message {
+- (void)_handle332:(RCMessage *)message {
+	RCUnimplemented();
+}
+
+- (void)_handle333:(RCMessage *)message {
 	// RPL_TOPICWHOTIME(?)
 	NSString *channel = [message parameterAtIndex:1];
 	NSString *setter = [message parameterAtIndex:2];
@@ -856,7 +889,7 @@ SSL_CTX *RCInitContext(void) {
 	[[self channelWithChannelName:channel] receivedMessage:[NSString stringWithFormat:@"Set by %c%@%c on %@", RCIRCAttributeBold, setter, RCIRCAttributeBold, time] from:@"" time:nil type:RCMessageTypeNormal];
 }
 
-- (void)handle353:(RCMessage *)message {
+- (void)_handle353:(RCMessage *)message {
 	// RPL_NAMREPLY
 	NSString *room = [message parameterAtIndex:2];
 	NSString *users = [message parameterAtIndex:3];
@@ -872,7 +905,11 @@ SSL_CTX *RCInitContext(void) {
 	}
 }
 
-- (void)handle372:(RCMessage *)message {
+- (void)_handle366:(RCMessage *)message {
+	RCUnimplemented();
+}
+
+- (void)_handle372:(RCMessage *)message {
 	// RPL_MOTD
 //	NSString *val = [[RCNetworkManager sharedNetworkManager] valueForSetting:SHOW_MOTD_KEY];
 //	if (val) {
@@ -884,7 +921,7 @@ SSL_CTX *RCInitContext(void) {
 //	}
 }
 
-- (void)handle375:(RCMessage *)message {
+- (void)_handle375:(RCMessage *)message {
 	// RPL_ENDOFMOTD
 //	NSString *val = [[RCNetworkManager sharedNetworkManager] valueForSetting:SHOW_MOTD_KEY];
 //	if (val) {
@@ -896,15 +933,15 @@ SSL_CTX *RCInitContext(void) {
 //	}
 }
 
-- (void)handle376:(RCMessage *)message {
+- (void)_handle376:(RCMessage *)message {
 	// :irc.saurik.com 376 _m :End of message of the day.
 }
 
-- (void)handle381:(RCMessage *)message {
+- (void)_handle381:(RCMessage *)message {
 	_networkOperator = YES;
 }
 
-- (void)handle401:(RCMessage *)message {
+- (void)_handle401:(RCMessage *)message {
 	// no such nick/channel
     // Please don't hate me Maximus
     RCPMChannel *user = (RCPMChannel *)[self pmChannelWithChannelName:[message parameterAtIndex:1]];
@@ -914,11 +951,11 @@ SSL_CTX *RCInitContext(void) {
     [user setChanInfos:@""];
 }
 
-- (void)handle403:(RCMessage *)message {
+- (void)_handle403:(RCMessage *)message {
 	// no such channel
 }
 
-- (void)handle421:(RCMessage *)message {
+- (void)_handle421:(RCMessage *)message {
 	// ERR_UNKNOWNCOMMAND
 //	NSString *command = [message parameterAtIndex:1];
 //	NSString *reason = [message parameterAtIndex:2];
@@ -929,11 +966,11 @@ SSL_CTX *RCInitContext(void) {
 //	[[[RCChatController sharedController] currentChannel] receivedMessage:string from:@"" time:nil type:RCMessageTypeError];
 }
 
-- (void)handle422:(RCMessage *)message {
+- (void)_handle422:(RCMessage *)message {
 	// ERR_NOMOTD
 }
 
-- (void)handle432:(RCMessage *)message {
+- (void)_handle432:(RCMessage *)message {
 	// ERR_ERRONEUSNICKNAME
 //	dispatch_async(dispatch_get_main_queue(), ^{
 //		RCPrettyAlertView *ac = [[RCPrettyAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Invalid Nickname (%@)", [self _description]] message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Change", nil];
@@ -944,13 +981,13 @@ SSL_CTX *RCInitContext(void) {
 //	});
 }
 
-- (void)handle433:(RCMessage *)message {
+- (void)_handle433:(RCMessage *)message {
 	// nERR_NICKNAMEINUSE
 	self.nickname = [self.nickname stringByAppendingString:@"_"];
 	[self sendMessage:[@"NICK " stringByAppendingString:self.nickname] canWait:NO];
 }
 
-- (void)handle437:(RCMessage *)message {
+- (void)_handle437:(RCMessage *)message {
 //	[[self consoleChannel] receivedMessage:[message parameterAtIndex:2] from:nil time:nil type:RCMessageTypeNormal];
 //	dispatch_async(dispatch_get_main_queue(), ^{
 //		RCPrettyAlertView *ac = [[RCPrettyAlertView alloc] initWithTitle:@"Nickname Unavailable" message:[NSString stringWithFormat:@"Please input another nickname for %@ below.", [self _description]] delegate:self cancelButtonTitle:@"Disconnect" otherButtonTitles:@"Retry", nil];
@@ -961,7 +998,7 @@ SSL_CTX *RCInitContext(void) {
 //	});
 }
 
-- (void)handle461:(RCMessage *)message {
+- (void)_handle461:(RCMessage *)message {
 	// this is broken
 	// type /nick for example.
 	// wether you hit change or cancel, it disconnects you
@@ -977,7 +1014,7 @@ SSL_CTX *RCInitContext(void) {
 //	}
 }
 
-- (void)handle464:(RCMessage *)message {
+- (void)_handle464:(RCMessage *)message {
 //	dispatch_async(dispatch_get_main_queue(), ^{
 //		RCPrettyAlertView *ac = [[RCPrettyAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Invalid Server Password (%@)", [self _description]] message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Change", nil];
 //		[ac setTag:RCALERR_INCSPASS];
@@ -987,30 +1024,30 @@ SSL_CTX *RCInitContext(void) {
 //	});
 }
 
-- (void)handle900:(RCMessage *)message {
+- (void)_handle900:(RCMessage *)message {
 	_saslWasSuccessful = YES;
 	[[self consoleChannel] receivedMessage:@"SASL Authenticate was successful" from:nil time:nil type:RCMessageTypeNormal];
 }
 
-- (void)handle903:(RCMessage *)message {
+- (void)_handle903:(RCMessage *)message {
 	[self sendMessage:@"CAP END" canWait:NO];
 }
 
-- (void)handle904:(RCMessage *)message {
+- (void)_handle904:(RCMessage *)message {
 	[self sendMessage:@"CAP END" canWait:NO];
 	[[self consoleChannel] receivedMessage:@"SASL Authentication failed." from:nil time:nil type:RCMessageTypeNormal];
 }
 
-- (void)handle906:(RCMessage *)message {
+- (void)_handle906:(RCMessage *)message {
 	// :asimov.freenode.net 906 Mxms :SASL authentication aborted
 }
 
-- (void)handle998:(RCMessage *)message {
+- (void)_handle998:(RCMessage *)message {
 	// good work University of Michigan. Making the IRC protocol more difficult than it needs to be
 	// (╯°□°）╯︵ ┻━┻ T H I S  I S  R I D I C U L O U S
 }
 
-- (void)handleAUTHENTICATE:(NSString *)auth {
+- (void)_handleAUTHENTICATE:(NSString *)auth {
 	NSScanner *scanner = [[NSScanner alloc] initWithString:auth];
 	NSString *tag = nil;
 	NSString *message = nil;
@@ -1022,7 +1059,7 @@ SSL_CTX *RCInitContext(void) {
 	[scanner release];
 }
 
-- (void)handleCAP:(RCMessage *)message {
+- (void)_handleCAP:(RCMessage *)message {
 	if ([[message parameterAtIndex:1] isEqualToString:@"LS"]) {
 		NSArray *capabilities = [[message parameterAtIndex:2] componentsSeparatedByString:@" "];
 		NSMutableArray *supported = [[NSMutableArray alloc] init];
@@ -1065,7 +1102,7 @@ SSL_CTX *RCInitContext(void) {
 	}
 }
 
-- (void)handleCTCPRequest:(NSString *)req from:(NSString *)from_ {
+- (void)_handleCTCPRequest:(NSString *)req from:(NSString *)from_ {
 	NSString *extra = nil;
 	NSString *command = req;
 	NSString *from = nil;
@@ -1092,11 +1129,11 @@ SSL_CTX *RCInitContext(void) {
 	[self sendMessage:[@"NOTICE " stringByAppendingFormat:@"%@ :\x01%@ %@\x01", from, command, extra]];
 }
 
-- (void)handleERROR:(RCMessage *)message {
+- (void)_handleERROR:(RCMessage *)message {
 	NSLog(@"ERROR ENCOUNTERED. %@:%@", self, message);
 }
 
-- (void)handleINVITE:(RCMessage *)message {
+- (void)_handleINVITE:(RCMessage *)message {
 //	NSString *from = nil;
 //	NSString *channel = [message parameterAtIndex:1];
 //	RCParseUserMask(message.sender, &from, nil, nil);
@@ -1107,7 +1144,7 @@ SSL_CTX *RCInitContext(void) {
 //	});
 }
 
-- (void)handleJOIN:(RCMessage *)message {
+- (void)_handleJOIN:(RCMessage *)message {
 	NSString *from = nil;
 	RCParseUserMask(message.sender, &from, nil, nil);
 	if ([from isEqualToString:self.nickname]) {
@@ -1118,7 +1155,7 @@ SSL_CTX *RCInitContext(void) {
 		[[self channelWithChannelName:[message parameterAtIndex:0]] setUserJoined:from];
 }
 
-- (void)handleKICK:(RCMessage *)message {
+- (void)_handleKICK:(RCMessage *)message {
 	NSString *from = nil;
 	RCParseUserMask(message.sender, &from, nil, nil);
 	NSArray *kickInfo = [NSArray arrayWithObjects:[message parameterAtIndex:1], [message parameterAtIndex:2], nil];
@@ -1138,7 +1175,7 @@ SSL_CTX *RCInitContext(void) {
 	}
 }
 
-- (void)handleMODE:(RCMessage *)message {
+- (void)_handleMODE:(RCMessage *)message {
 	RCChannel *targetChannel = [self channelWithChannelName:[message parameterAtIndex:0]];
 	NSString *from = nil;
 	RCParseUserMask(message.sender, &from, nil, nil);
@@ -1152,7 +1189,7 @@ SSL_CTX *RCInitContext(void) {
 	// Relay[2626:f803] MSG: :ac3xx!ac3xx@rox-103C7229.ac3xx.com MODE #chat +o _m
 }
 
-- (void)handleNICK:(RCMessage *)message {
+- (void)_handleNICK:(RCMessage *)message {
 	NSString *person = nil;
 	NSString *newNick = [message parameterAtIndex:0];
 	RCParseUserMask(message.sender, &person, nil, nil);
@@ -1165,7 +1202,7 @@ SSL_CTX *RCInitContext(void) {
 	}];
 }
 
-- (void)handleNOTICE:(RCMessage *)message {
+- (void)_handleNOTICE:(RCMessage *)message {
 	if (!self.isRegistered) return;
 	NSString *from = nil;
 	RCParseUserMask(message.sender, &from, nil, nil);
@@ -1186,7 +1223,7 @@ SSL_CTX *RCInitContext(void) {
 //	}
 }
 
-- (void)handlePART:(RCMessage *)message {
+- (void)_handlePART:(RCMessage *)message {
 	NSString *from = message.sender;
 	RCParseUserMask(from, &from, nil, nil);
 	RCChannel *channel = [self channelWithChannelName:[message parameterAtIndex:0]];
@@ -1199,55 +1236,20 @@ SSL_CTX *RCInitContext(void) {
 	else [channel receivedMessage:@"" from:from time:nil type:RCMessageTypePart];
 }
 
-- (void)handlePING:(id)pong {
+- (void)_handlePING:(id)pong {
 	// RCMessage when read from buffer.
 	// NSString when passed from CTCP call
 	[self sendMessage:[@"PONG :" stringByAppendingString:[(RCMessage *)pong message]] canWait:NO];
 }
 
-- (void)handlePRIVMSG:(RCMessage *)message {
-	NSString *fullMessage = [message message];
-	RCMessageType typ = RCMessageTypeNormal;
-	NSString *userMessage = nil;
-	NSString *from = nil;
+- (void)_handlePRIVMSG:(RCMessage *)message {
 	NSString *target = [message destination];
-	RCParseUserMask(message.sender, &from, nil, nil);
-	if ([fullMessage hasPrefix:@"\x01"] && [fullMessage hasSuffix:@"\x01"]) {
-		fullMessage = [fullMessage substringWithRange:NSMakeRange(1, [fullMessage length]-2)];
-		if ([fullMessage hasPrefix:@"ACTION"]) {
-			userMessage = [fullMessage substringFromIndex:7];
-			if (![[message parameterAtIndex:0] hasPrefix:@"#"]) {
-				target = from;
-			}
-			typ = RCMessageTypeAction;
-		}
-		else if ([fullMessage hasPrefix:@"PING"]) {
-			[self handlePING:message];
-			return;
-		}
-		else {
-			NSRange actionTag = [fullMessage rangeOfString:@" "];
-			if (actionTag.location != NSNotFound) {
-				NSString *action = [fullMessage substringWithRange:NSMakeRange(0, actionTag.location)];
-				[self handleCTCPRequest:action from:message.sender];
-			}
-			else {
-				[self handleCTCPRequest:fullMessage from:message.sender];
-			}
-			return;
-		}
-	}
-	else {
-		if (![[message parameterAtIndex:0] hasPrefix:@"#"]) {
-			RCParseUserMask(message.sender, &target, nil, nil);
-		}
-		userMessage = [message parameterAtIndex:1];
-	}
-//	RCChannel *channel = [self channelWithChannelName:target ifNilCreate:YES];
-//	[channel receivedMessage:userMessage from:from time:nil type:typ];
+	
+	RCChannel *channel = [self channelWithChannelName:target ifNilCreate:YES];
+	[channel receivedMessage:message];
 }
 
-- (void)handleQUIT:(RCMessage *)message {
+- (void)_handleQUIT:(RCMessage *)message {
 	NSString *from = message.sender;
 	RCParseUserMask(from, &from, nil, nil);
 	[self enumerateOverChannelsWithBlock:^(RCChannel *chan, BOOL *stop) {
@@ -1255,7 +1257,7 @@ SSL_CTX *RCInitContext(void) {
 	}];
 }
 
-- (void)handleTOPIC:(RCMessage *)message {
+- (void)_handleTOPIC:(RCMessage *)message {
 	// RPL_SOMETHINGTOPICRELATED
 	NSString *from = nil;
 	RCParseUserMask(message.sender, &from, nil, nil);
